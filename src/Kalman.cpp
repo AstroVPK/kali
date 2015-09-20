@@ -499,8 +499,11 @@ void DLM::allocDLM(int numP, int numQ) {
 		}
 	allocated += (p+q+1)*sizeof(double);
 
-	A = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
+	A = static_cast<double*>(_mm_malloc(mSq*sizeof(double),64));
 	B = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+
+	allocated += m*m*sizeof(double)
+	allocated += m*sizeof(double)
 
 	I = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
