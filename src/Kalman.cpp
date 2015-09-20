@@ -328,6 +328,8 @@ DLM::DLM() {
 	ARwi = nullptr;
 	MAwr = nullptr;
 	MAwi = nullptr;
+	A = nullptr;
+	B = nullptr;
 	I = nullptr;
 	F = nullptr;
 	FKron = nullptr;
@@ -382,6 +384,8 @@ DLM::~DLM() {
 	MAwr = nullptr;
 	MAwi = nullptr;
 	Theta = nullptr;
+	A = nullptr;
+	B = nullptr;
 	I = nullptr;
 	F = nullptr;
 	FKron = nullptr;
@@ -494,6 +498,9 @@ void DLM::allocDLM(int numP, int numQ) {
 		Theta[i] = 0.0;
 		}
 	allocated += (p+q+1)*sizeof(double);
+
+	A = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
+	B = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
 
 	I = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
@@ -798,6 +805,16 @@ void DLM::deallocDLM() {
 	if (Theta) {
 		_mm_free(Theta);
 		Theta = nullptr;
+		}
+
+	if (A) {
+		_mm_free(A);
+		A = nullptr;
+		}
+
+	if (B) {
+		_mm_free(B);
+		B = nullptr;
 		}
 
 	if (I) {
