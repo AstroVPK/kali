@@ -10,6 +10,7 @@
 #include "Constants.hpp"
 #include "Kalman.hpp"
 #include <stdio.h>
+#include <stdlib.h>
 
 //#define TIMEALL
 //#define TIMEPER
@@ -313,7 +314,6 @@ DLM::DLM() {
 	q = 0;
 	m = 0;
 	mSq = 0;
-	distSigma = 0.0;
 	ilo = nullptr;
 	ihi = nullptr;
 	ARz = nullptr;
@@ -415,10 +415,14 @@ void DLM::allocDLM(int numP, int numQ) {
 	printf("allocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
 	#endif
 
+	if (numP < numQ) {
+		printf("FATAL LOGIC ERROR: numP MUST BE >= numQ\n");
+		exit(1);
+		}
 	p = numP;
 	q = numQ;
 	allocated = 0;
-	m = static_cast<int>(fmax(static_cast<double>(p),static_cast<double>(q+1)));
+	m = p;
 	mSq = m*m;
 
 	ilo = static_cast<lapack_int*>(_mm_malloc(sizeof(lapack_int),64));
