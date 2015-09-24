@@ -298,7 +298,7 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 	}
 
 DLM::DLM() {
-
+	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model. */
 	#ifdef DEBUG_CTORDLM
 	int threadNum = omp_get_thread_num();
 	printf("DLM - threadNum: %d; Address of System: %p\n",threadNum,this);
