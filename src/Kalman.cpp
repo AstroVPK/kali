@@ -309,7 +309,7 @@ DLM::DLM() {
 	isStable = 0;
 	isInvertible = 0;
 	isNotRedundant = 0;
-	isReasonable = 0;
+	hasUniqueEigenValues = 0;
 	p = 0;
 	q = 0;
 	m = 0;
@@ -363,7 +363,7 @@ DLM::~DLM() {
 	isStable = 0;
 	isInvertible = 0;
 	isNotRedundant = 0;
-	isReasonable = 0;
+	hasUniqueEigenValues = 0;
 	p = 0;
 	q = 0;
 	m = 0;
@@ -913,7 +913,7 @@ void DLM::setDLM(double* Theta) {
 	isStable = 1;
 	isInvertible = 1;
 	isNotRedundant = 1;
-	isReasonable = 0;
+	hasUniqueEigenValues = 1;
 
 	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
@@ -1157,100 +1157,42 @@ int DLM::checkCARMAParams(double* Theta) {
 	int threadNum = omp_get_thread_num();
 	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < p+q; dimNum++) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
 	printf("checkARMAParams - threadNum: %d; distSigma: %f\n",threadNum,distSigma);
 	#endif
 
-	if (distSigma > 0.0) {
-		isReasonable = 1;
-		if ((p == 1) and ((Theta[1] >= 1.0) or (Theta[1] <= -1.0))) { // Single AR component. Just check if -1 < phi_1 < 1.
-			isStable = 0;
-		} else if (p > 1) { // Only have to do this if AR Poly is atleast 2nd Order.
+	lapack_int YesNo;
 
-			lapack_int YesNo;
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Address of ARMatrix: %p\n",threadNum,&ARMatrix);
-			printf("checkARMAParams - threadNum: %d; ARMatrix\n",threadNum);
-			viewMatrix(p,p,ARMatrix);
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-			#endif
-
-			YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', p, ARMatrix, p, ilo, ihi, ARScale);
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-			#endif
-
-			YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, p, *ilo, *ihi, ARMatrix, p, ARTau);
-
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-			#endif
-
-			YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', p, *ilo, *ihi, ARMatrix, p, ARwr, ARwi, ARz, 1);
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Done checking AR Matrix!\n",threadNum);
-			#endif
-
-			for (int i = 0; i < p; i++) {
-
-				#ifdef DEBUG_CHECKARMAPARAMS
-				printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-				printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-				for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-					printf("%f ",Theta[dimNum]);
-					}
-				printf("\n");
-				printf("checkARMAParams - threadNum: %d; Root: %f\n",threadNum,pow(ARwr[i], 2.0) + pow(ARwi[i],2.0));
-				#endif
-
-				if (pow(ARwr[i], 2.0) + pow(ARwi[i],2.0) <= 1.0) {
-
-					#ifdef DEBUG_CHECKARMAPARAMS
-					printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-					printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-					for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-						printf("%f ",Theta[dimNum]);
-						}
-					printf("\n");
-					printf("checkARMAParams - threadNum: %d; badRoot!!!: %f\n",threadNum,pow(ARwr[i], 2.0) + pow(ARwi[i],2.0));
-					#endif
-
-					isStable = 0;
-					} 
-				}
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q; dimNum++) {
+		printf("%f ",Theta[dimNum]);
 		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Address of ARMatrix: %p\n",threadNum,&ARMatrix);
+	printf("checkARMAParams - threadNum: %d; ARMatrix\n",threadNum);
+	viewMatrix(p,p,ARMatrix);
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
+	#endif
+
+	YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', p, ARMatrix, p, ilo, ihi, ARScale);
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
+	#endif
+
+	YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, p, *ilo, *ihi, ARMatrix, p, ARTau);
 
 
 	#ifdef DEBUG_CHECKARMAPARAMS
@@ -1260,97 +1202,150 @@ int DLM::checkCARMAParams(double* Theta) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
 	#endif
 
-		if ((q == 1) and ((Theta[p+1] >= 1.0) or (Theta[p+1] <= -1.0))) { // Single MA component. Just check if < 1.
-			isInvertible = 0;
-		} else if (q > 1) { // Only have to do this if MA Poly is atleast 2nd Order.
+	YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', p, *ilo, *ihi, ARMatrix, p, ARwr, ARwi, ARz, 1);
 
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-			#endif
-
-			lapack_int YesNo;
-
-			YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', q, MAMatrix, q, ilo, ihi, MAScale);
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-			#endif
-
-			YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, q, *ilo, *ihi, MAMatrix, q, MATau);
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-			#endif
-
-			YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', q, *ilo, *ihi, MAMatrix, q, MAwr, MAwi, MAz, 1);
-
-			#ifdef DEBUG_CHECKARMAPARAMS
-			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-				printf("%f ",Theta[dimNum]);
-				}
-			printf("\n");
-			printf("checkARMAParams - threadNum: %d; Done checking MA Matrix!\n",threadNum);
-			#endif
-
-			for (int i = 0; i < q; i++) {
-
-				#ifdef DEBUG_CHECKARMAPARAMS
-				printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-				printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-				for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-					printf("%f ",Theta[dimNum]);
-					}
-				printf("\n");
-				printf("checkARMAParams - threadNum: %d; Root: %f\n",threadNum,pow(MAwr[i], 2.0) + pow(MAwi[i],2.0));
-				#endif
-
-				if (pow(MAwr[i], 2.0) + pow(MAwi[i],2.0) <= 1.0) {
-
-					#ifdef DEBUG_CHECKARMAPARAMS
-					printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-					printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-					for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-						printf("%f ",Theta[dimNum]);
-						}
-					printf("\n");
-					printf("checkARMAParams - threadNum: %d; badRoot!!!: %f\n",threadNum,pow(MAwr[i], 2.0) + pow(MAwi[i],2.0));
-					#endif
-
-					isInvertible = 0;
-					}
-				}
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
 		}
-		for (int i = 1; i < p; i++) {
-			for (int j = 1; j < q; j++) {
-				if ((ARwr[i] == MAwr[j]) and (ARwi[i] == MAwi[j])) {
-					isNotRedundant = 0;
-					}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Done checking AR Matrix!\n",threadNum);
+	#endif
+
+	for (int i = 0; i < p; i++) {
+
+		#ifdef DEBUG_CHECKARMAPARAMS
+		printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+		printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%f ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("checkARMAParams - threadNum: %d; Root: %f\n",threadNum,pow(ARwr[i], 2.0) + pow(ARwi[i],2.0));
+		#endif
+
+		if (ARwr[i] >= 0.0) {
+
+			#ifdef DEBUG_CHECKARMAPARAMS
+			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+				printf("%f ",Theta[dimNum]);
+				}
+			printf("\n");
+			printf("checkARMAParams - threadNum: %d; badRoot!!!: %f\n",threadNum,pow(ARwr[i], 2.0) + pow(ARwi[i],2.0));
+			#endif
+
+			isStable = 0;
+			}
+			
+		for (int j = i+1; j < p; j++) { // Only need to check e-values against each other once.
+			if (ARwr[i] == ARwr[j]) and (ARwi[i] == ARwi[j]) {
+				hasUniqueEigenValues = 0;
 				}
 			}
-		} else {
-		isReasonable = 0;
+			
+		}
+
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	#endif
+
+	// Now check CMA Poly
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
+	#endif
+
+	lapack_int YesNo;
+
+	YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', q, MAMatrix, q, ilo, ihi, MAScale);
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
+	#endif
+
+	YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, q, *ilo, *ihi, MAMatrix, q, MATau);
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
+	#endif
+
+	YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', q, *ilo, *ihi, MAMatrix, q, MAwr, MAwi, MAz, 1);
+
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkARMAParams - threadNum: %d; Done checking MA Matrix!\n",threadNum);
+	#endif
+
+	for (int i = 0; i < q; i++) {
+
+		#ifdef DEBUG_CHECKARMAPARAMS
+		printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+		printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%f ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("checkARMAParams - threadNum: %d; Root: %f\n",threadNum,pow(MAwr[i], 2.0) + pow(MAwi[i],2.0));
+		#endif
+
+		if (MAwr[i] > 0.0) {
+
+			#ifdef DEBUG_CHECKARMAPARAMS
+			printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+			printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+				printf("%f ",Theta[dimNum]);
+				}
+			printf("\n");
+			printf("checkARMAParams - threadNum: %d; badRoot!!!: %f\n",threadNum,pow(MAwr[i], 2.0) + pow(MAwi[i],2.0));
+			#endif
+
+			isInvertible = 0;
+			}
+		}
+
+	for (int i = 1; i < p; i++) {
+		for (int j = 1; j < q; j++) {
+			if ((ARwr[i] == MAwr[j]) and (ARwi[i] == MAwi[j])) {
+				isNotRedundant = 0;
+				}
+			}
 		}
 
 	#ifdef DEBUG_CHECKARMAPARAMS
@@ -1365,7 +1360,7 @@ int DLM::checkCARMAParams(double* Theta) {
 	printf("checkARMAParams - threadNum: %d; isReasonable: %d\n",threadNum,isReasonable);
 	#endif
 
-	return isStable*isInvertible*isNotRedundant*isReasonable;
+	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
 	}
 
 void DLM::getARRoots(double*& RealAR, double*& ImagAR) {
