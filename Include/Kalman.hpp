@@ -25,7 +25,6 @@ public:
 	int q;
 	int m;
 	int mSq;
-	double distSigma;
 	lapack_int* ilo;
 	lapack_int* ihi;
 	double* ARz;
@@ -41,6 +40,8 @@ public:
 	double* MAwr;
 	double* MAwi;
 	double* Theta;
+	double* A;
+	double* B;
 	double* I;
 	double* F;
 	double* FKron;
@@ -61,6 +62,7 @@ public:
 	void allocDLM(int numP, int numQ);
 	void deallocDLM();
 	void setDLM(double* Theta);
+	void integrateSystem(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();
 	int checkARMAParams(double* Theta);

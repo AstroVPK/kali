@@ -415,8 +415,8 @@ void DLM::allocDLM(int numP, int numQ) {
 	printf("allocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
 	#endif
 
-	if (numP < numQ) {
-		printf("FATAL LOGIC ERROR: numP MUST BE >= numQ\n");
+	if ((numQ >= numP) or (numQ < 0)) {
+		printf("FATAL LOGIC ERROR: numP MUST BE > numQ >= 0!\n");
 		exit(1);
 		}
 	p = numP;
@@ -511,87 +511,7 @@ void DLM::allocDLM(int numP, int numQ) {
 
 	I = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-
-/*
-	printf("allocDLM - threadNum: %d, Address of System: %p; Value of F: %p\n",threadNum,this,F);
-	fflush(0);
-	for(int i=0; i < m*m; ++i)
-	{
-		printf("address of F[%d]: 0x%x\n", i, &(F[i]));
-		fflush(0);
-	}
-	
-	
-	//printf("allocDLM - guessed size of F: 0x%X\n", *((size_t*)(((void*)F));
-	//printf("allocDLM - guessed size of F: 0x%X\n", *((size_t*)(((void*)F) - sizeof(size_t))) );
-	//printf("allocDLM - causing trouble 0x%x\n", *((int*)(*((size_t*)(((void*)F) - sizeof(size_t))))) );
-	//fflush(0);
-
-	printf("***************************************\n");
-	printf("Looking at F BEFORE FKron\n");
-	viewMatrix(m,m,F);
-	printf("***************************************\n");
-	
-	printf("Exploring memory of F in 8 byte increments\n");
-	double* temp = F;
-	while( temp != &F[m*m-1]+1) 
-	{
-		printf("Looking at address %p, dumped value: %f\n", temp, *temp);
-		fflush(0);
-		temp++;
-	}
-	
-	printf("Exploring extra memory after F to FKron in 8 byte increments\n");
-	
-	MKL_INT64* temp1 = (MKL_INT64*)(&F[m*m-1])+1;
-	while( temp1 != ((MKL_INT64*)F)+16) 
-	{
-		char buf[8];
-		//memcpy(buf, temp1, 8);
-		printf("Looking at address %p, dumped value: 0x%x\n", temp1, *temp1);
-		fflush(0);
-		temp1++;
-	}
-	*/
 	FKron = static_cast<double*>(_mm_malloc(mSq*mSq*sizeof(double),64));
-	/*
-	printf("THIS IS THE VALUE OF FKRON!!!!!! %p\n", FKron);
-	
-	printf("***************************************\n");
-	printf("Looking at F AFTER FKron\n");
-	viewMatrix(m,m,F);
-	printf("***************************************\n");
-	
-	printf("Exploring memory of F in 8 byte increments\n");
-	temp = F;
-	while( temp != &F[m*m-1]+1) 
-	{
-		printf("Looking at address %p, dumped value: %f\n", temp, *temp);
-		fflush(0);
-		temp++;
-	}
-	
-	printf("Exploring extra memory after F to FKron in 8 byte increments\n");
-	
-	temp1 = (MKL_INT64*)(&F[m*m-1])+1;
-	while( temp1 != (MKL_INT64*)FKron) 
-	{
-		//memcpy(buf, temp1, 8);
-		printf("Looking at address %p, dumped value: 0x%x\n", temp1, *temp1);
-		fflush(0);
-		temp1++;
-	}
-	* */
-	//FKron = static_cast<double*>(malloc(mSq*mSq*sizeof(double)));
-	
-
-	/*printf("FKron is mSq*mSq*sizeof(double) = %d bytes\n",mSq*mSq*sizeof(double));
-	printf("allocDLM - threadNum: %d, Address of System: %p; Value of Fkron: %p\n",threadNum,this,FKron);
-	fflush(0);
-	printf("allocDLM - guessed size of FKron: 0x%X\n", *((size_t*)(((void*)FKron) - sizeof(size_t))) );
-	fflush(0);*/
-
-	//FKronPiv = static_cast<lapack_int*>(_mm_malloc((mSq+1)*sizeof(lapack_int),64));
 	FKronPiv = static_cast<lapack_int*>(_mm_malloc(mSq*mSq*sizeof(lapack_int),64));
 	Q = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
 	P = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
@@ -640,12 +560,11 @@ void DLM::allocDLM(int numP, int numQ) {
 	R = static_cast<double*>(_mm_malloc(sizeof(double),64));
 	allocated += sizeof(double);
 
-	D[0] = 1.0;
 	R[0] = 0.0;
 
 	#pragma omp simd
 	for (int i = 1; i < m; i++) {
-		F[i*m+(i-1)] = 1.0;
+		A[i*m+(i-1)] = 1.0;
 		I[(i-1)*m+(i-1)] = 1.0;
 		}
 	I[(m-1)*m+(m-1)] = 1.0;
@@ -834,63 +753,20 @@ void DLM::deallocDLM() {
 	stepNum += 1;
 	#endif
 
-	/*printf("***************************************\n");
-	printf("Looking at F\n");
-	viewMatrix(m,m,F);
-	printf("***************************************\n");
-
-	printf("Exploring memory of F in 8 byte increments\n");
-	double* temp = F;
-	while( temp != &F[m*m-1]+1) 
-	{
-		printf("Looking at address %p, dumped value: %f\n", temp, *temp);
-		fflush(0);
-		temp++;
-	}
-	
-	printf("Exploring extra memory after F to FKron in 4 byte increments\n");
-	
-	MKL_INT64* temp1 = (MKL_INT64*)(&F[m*m-1])+1;
-	while( temp1 != (MKL_INT64*)FKron) 
-	{
-		char buf[8];
-		//memcpy(buf, temp1, 8);
-		printf("Looking at address %p, dumped value: 0x%x\n", temp1, *temp1);
-		fflush(0);
-		temp1++;
-	}
-	
-	printf("deallocDLM - threadNum: %d, Address of System: %p; Address of F: %p\n",threadNum,this,F);
-	fflush(0);*/
-
 	if (F) {
 		_mm_free(F);
 		F = nullptr;
 		}
-
-	/*printf("deallocDLM - threadNum: %d, Address of System: %p; Address of F: %p\n",threadNum,this,F);
-	fflush(0);*/
 
 	#ifdef DEBUG_DEALLOCATEDLM_DEEP
 	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 16
 	stepNum += 1;
 	#endif
 
-	/*printf("deallocDLM - threadNum: %d, Address of System: %p; Address of FKRON: %p\n",threadNum,this,FKron);
-	fflush(0);
-
-	printf("***************************************\n");
-	printf("Looking at FKron\n");
-	viewMatrix(mSq,mSq,FKron);
-	printf("***************************************\n");*/
-
 	if (FKron) {
 		_mm_free(FKron);
 		FKron = nullptr;
 		}
-
-	/*printf("deallocDLM - threadNum: %d, Address of System: %p; Address of FKRON: %p\n",threadNum,this,FKron);
-	fflush(0);*/
 
 	#ifdef DEBUG_DEALLOCATEDLM_DEEP
 	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 17
@@ -1049,11 +925,6 @@ void DLM::setDLM(double* Theta) {
 	printf("setDLM - threadNum: %d; isInvertible: %d\n",threadNum,isInvertible);
 	printf("setDLM - threadNum: %d; isNotRedundant: %d\n",threadNum,isNotRedundant);
 	printf("setDLM - threadNum: %d; isReasonable: %d\n",threadNum,isReasonable);
-	#endif
-
-	distSigma = Theta[0];
-
-	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
 	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 		printf("%f ",Theta[dimNum]);
@@ -1079,10 +950,10 @@ void DLM::setDLM(double* Theta) {
 	viewMatrix(p,p,ARMatrix);
 	#endif
 
-	ARMatrix[(p-1)*p] = 1.0/Theta[p]; // ARMatrix has -1 at top right!
 	#pragma omp simd
+	ARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		ARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[rowCtr]/Theta[p]; // Rightmost column of ARMatrix has AR coeffs.
+		ARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
 		ARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
 		}
 
@@ -1115,12 +986,13 @@ void DLM::setDLM(double* Theta) {
 			}
 		}
 
-	MAMatrix[(q-1)*q] = -1.0/Theta[p+q]; // MAMatrix has -1 at top right!
+	MAMatrix[(q-1)*q] = -1.0*Theta[p+q-1]/Theta[p]; // MAMatrix has -beta_q/-beta_0 at top right!
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < q; rowCtr++) {
-		MAMatrix[rowCtr+(q-1)*q] = -1.0*Theta[p+rowCtr]/Theta[p+q]; // Rightmost column of MAMatrix has -MA coeffs.
+		MAMatrix[rowCtr+(q-1)*q] = -1.0*Theta[p+q-1-rowCtr]/Theta[p]; // Rightmost column of MAMatrix has -MA coeffs.
 		MAMatrix[rowCtr+(rowCtr-1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
 		}
+
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q-1; rowCtr++) {
 		MAScale[rowCtr] = 0.0;
@@ -1135,17 +1007,17 @@ void DLM::setDLM(double* Theta) {
 
 	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < p+q; dimNum++) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
-	printf("setDLM - threadNum: %d; F\n",threadNum);
-	viewMatrix(m,m,F);
+	printf("setDLM - threadNum: %d; A\n",threadNum);
+	viewMatrix(m,m,A);
 	#endif
 
 	#pragma omp simd
 	for (int i = 0; i < p; i++) {
-		F[i] = Theta[1+i];
+		A[i] = -1.0*Theta[i];
 		}
 
 	#ifdef DEBUG_SETDLM
@@ -1154,8 +1026,8 @@ void DLM::setDLM(double* Theta) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
-	printf("setDLM - threadNum: %d; F\n",threadNum);
-	viewMatrix(m,m,F);
+	printf("setDLM - threadNum: %d; A\n",threadNum);
+	viewMatrix(m,m,A);
 	printf("\n");
 	#endif
 
@@ -1169,56 +1041,30 @@ void DLM::setDLM(double* Theta) {
 
 	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
-	printf("setDLM - threadNum: %d; D\n",threadNum);
-	viewMatrix(m,1,D);
+	printf("setDLM - threadNum: %d; B\n",threadNum);
+	viewMatrix(m,1,B);
 	#endif
 
 	#pragma omp simd
 	for (int i = 0; i < q; i++) {
-		D[i+1] = Theta[1+p+i];
+		B[p-q+i] = Theta[p+i];
 		}
 
 	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < p+q; dimNum++) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
-	printf("setDLM - threadNum: %d; D\n",threadNum);
-	viewMatrix(m,1,D);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_SETDLM
-	int threadNum = omp_get_thread_num();
-	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("setDLM - threadNum: %d; Q\n",threadNum);
-	viewMatrix(m,m,Q);
-	#endif
-
-	for (int i = 0; i < m; i++) {
-		#pragma omp simd
-		for (int j = 0; j < m; j++) {
-			Q[i*m+j] = pow(distSigma,2.0)*D[i]*D[j];
-			}
-		}
-
-	#ifdef DEBUG_SETDLM
-	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("setDLM - threadNum: %d; Q\n",threadNum);
-	viewMatrix(m,m,Q);
+	printf("setDLM - threadNum: %d; B\n",threadNum);
+	viewMatrix(m,1,B);
 	printf("\n");
 	#endif
 
 	H[0] = 1.0;
+	}
+
+void DLM::integrateSystem(double dt) {
 	}
 
 void DLM::resetState(double InitUncertainty) {
@@ -1303,7 +1149,7 @@ void DLM::resetState() {
 
 	}
 
-int DLM::checkARMAParams(double* Theta) {
+int DLM::checkCARMAParams(double* Theta) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 
