@@ -27,8 +27,8 @@ public:
 	int mSq;
 	lapack_int* ilo;
 	lapack_int* ihi;
-	double* ARz;
-	double* MAz;
+	//double* ARz;
+	//double* MAz;
 	double* ARMatrix;
 	double* MAMatrix;
 	double* ARScale;
@@ -41,10 +41,17 @@ public:
 	double* MAwi;
 	double* Theta;
 	double* A;
+	double* Awr;
+	double* Awi;
+	double* Avr;
+	double* Ascale;
 	double* B;
 	double* I;
 	double* F;
 	double* FKron;
+	double* FKronAF;
+	double* FKronR;
+	double* FKronC;
 	lapack_int* FKronPiv;
 	double* D;
 	double* Q;

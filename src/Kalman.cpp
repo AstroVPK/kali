@@ -316,8 +316,8 @@ DLM::DLM() {
 	mSq = 0;
 	ilo = nullptr;
 	ihi = nullptr;
-	ARz = nullptr;
-	MAz = nullptr;
+	//ARz = nullptr;
+	//MAz = nullptr;
 	ARMatrix = nullptr;
 	MAMatrix = nullptr;
 	ARScale = nullptr;
@@ -329,6 +329,12 @@ DLM::DLM() {
 	MAwr = nullptr;
 	MAwi = nullptr;
 	A = nullptr;
+	Awr = nullptr;
+	Awi = nullptr;
+	Avr = nullptr;
+	Ailo = nullptr;
+	Aihi = nullptr;
+	Ascale = nullptr;
 	B = nullptr;
 	I = nullptr;
 	F = nullptr;
@@ -371,8 +377,8 @@ DLM::~DLM() {
 	distSigma = 0.0;
 	ilo = nullptr;
 	ihi = nullptr;
-	ARz = nullptr;
-	MAz = nullptr;
+	//ARz = nullptr;
+	//MAz = nullptr;
 	ARMatrix = nullptr;
 	MAMatrix = nullptr;
 	ARScale = nullptr;
@@ -385,6 +391,12 @@ DLM::~DLM() {
 	MAwi = nullptr;
 	Theta = nullptr;
 	A = nullptr;
+	Awr = nullptr;
+	Awi = nullptr;
+	Avr = nullptr;
+	Ailo = nullptr;
+	Aihi = nullptr;
+	Ascale = nullptr;
 	B = nullptr;
 	I = nullptr;
 	F = nullptr;
@@ -432,12 +444,12 @@ void DLM::allocDLM(int numP, int numQ) {
 	ilo[0] = 0;
 	ihi[0] = 0;
 
-	ARz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	MAz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	allocated += 2*sizeof(double);
+	//ARz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	//MAz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	//allocated += 2*sizeof(double);
 
-	ARz[0] = 0.0;
-	MAz[0] = 0.0;
+	//ARz[0] = 0.0;
+	//MAz[0] = 0.0;
 
 	ARScale = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	ARwr = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
@@ -504,10 +516,15 @@ void DLM::allocDLM(int numP, int numQ) {
 	allocated += (p+q+1)*sizeof(double);
 
 	A = static_cast<double*>(_mm_malloc(mSq*sizeof(double),64));
+	Awr = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+	Awi = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+	Avr = static_cast<double*>(_mm_malloc(mSq*sizeof(double),64));
+	Ascale = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+
 	B = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
 
-	allocated += m*m*sizeof(double)
-	allocated += m*sizeof(double)
+	allocated += 2*mSq*sizeof(double)
+	allocated += 4*m*sizeof(double)
 
 	I = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
@@ -534,10 +551,14 @@ void DLM::allocDLM(int numP, int numQ) {
 		H[i] = 0.0;
 		K[i] = 0.0;
 		X[i] = 0.0;
+		Awr[i] = 0.0;
+		Awi[i] = 0.0;
+		Ascale[i] = 0.0;
 		XMinus[i] = 0.0;
 		VScratch[i] = 0.0;
 		#pragma omp simd
 		for (int j = 0; j < m; j++) {
+			Avr[im+j] = 0.0;
 			I[i*m+j] = 0.0;
 			F[i*m+j] = 0.0;
 			Q[i*m+j] = 0.0;
@@ -582,151 +603,65 @@ void DLM::deallocDLM() {
 	printf("deallocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
 	#endif
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	int stepNum = 0;
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 0
-	stepNum += 1;
-	#endif
-
 	if (ilo) {
 		_mm_free(ilo);
 		ilo = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 1
-	stepNum += 1;
-	#endif
 
 	if (ihi) {
 		_mm_free(ihi);
 		ihi = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 2
-	stepNum += 1;
-	#endif
-
-	if (ARz) {
-		_mm_free(ARz);
-		ARz = nullptr;
-		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 3
-	stepNum += 1;
-	#endif
-
-	if (MAz) {
-		_mm_free(MAz);
-		MAz = nullptr;
-		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 4
-	stepNum += 1;
-	#endif
-
 	if (ARTau) {
 		_mm_free(ARTau);
 		ARTau = nullptr;
 	}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 5
-	stepNum += 1;
-	#endif
 
 	if (MATau) {
 		_mm_free(MATau);
 		MATau = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 6
-	stepNum += 1;
-	#endif
-
 	if (ARScale) {
 		_mm_free(ARScale);
 		ARScale = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 7
-	stepNum += 1;
-	#endif
 
 	if (MAScale) {
 		_mm_free(MAScale);
 		MAScale = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 8
-	stepNum += 1;
-	#endif
-
 	if (ARMatrix) {
 		_mm_free(ARMatrix);
 		ARMatrix = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 9
-	stepNum += 1;
-	#endif
 
 	if (MAMatrix) {
 		_mm_free(MAMatrix);
 		MAMatrix = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 10
-	stepNum += 1;
-	#endif
-
 	if (ARwr) {
 		_mm_free(ARwr);
 		ARwr = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 11
-	stepNum += 1;
-	#endif
 
 	if (ARwi) {
 		_mm_free(ARwi);
 		ARwi = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 12
-	stepNum += 1;
-	#endif
-
 	if (MAwr) {
 		_mm_free(MAwr);
 		MAwr = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 13
-	stepNum += 1;
-	#endif
-
 	if (MAwi) {
 		_mm_free(MAwi);
 		MAwi = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 14
-	stepNum += 1;
-	#endif
 
 	if (Theta) {
 		_mm_free(Theta);
@@ -736,6 +671,26 @@ void DLM::deallocDLM() {
 	if (A) {
 		_mm_free(A);
 		A = nullptr;
+		}
+
+	if (Avr) {
+		_mm_free(Avr);
+		Avr = nullptr;
+		}
+
+	if (Awr) {
+		_mm_free(Awr);
+		Awr = nullptr;
+		}
+
+	if (Awi) {
+		_mm_free(Awi);
+		Awi = nullptr;
+		}
+
+	if (Ascale) {
+		_mm_free(Ascale);
+		Ascale = nullptr;
 		}
 
 	if (B) {
@@ -748,150 +703,75 @@ void DLM::deallocDLM() {
 		I = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 15
-	stepNum += 1;
-	#endif
-
 	if (F) {
 		_mm_free(F);
 		F = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 16
-	stepNum += 1;
-	#endif
 
 	if (FKron) {
 		_mm_free(FKron);
 		FKron = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 17
-	stepNum += 1;
-	#endif
-
 	if (FKronPiv) {
 		_mm_free(FKronPiv);
 		FKronPiv = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 18
-	stepNum += 1;
-	#endif
 
 	if (D) {
 		_mm_free(D);
 		D = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 19
-	stepNum += 1;
-	#endif
-
 	if (Q) {
 		_mm_free(Q);
 		Q = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 20
-	stepNum += 1;
-	#endif
 
 	if (H) {
 		_mm_free(H);
 		H = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 21
-	stepNum += 1;
-	#endif
-
 	if (R) {
 		_mm_free(R);
 		R = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 22
-	stepNum += 1;
-	#endif
 
 	if (K) {
 		_mm_free(K);
 		K = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 23
-	stepNum += 1;
-	#endif
-
 	if (X) {
 		_mm_free(X);
 		X = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 24
-	stepNum += 1;
-	#endif
 
 	if (P) {
 		_mm_free(P);
 		P = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 25
-	stepNum += 1;
-	#endif
-
 	if (XMinus) {
 		_mm_free(XMinus);
 		XMinus = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 26
-	stepNum += 1;
-	#endif
 
 	if (PMinus) {
 		_mm_free(PMinus);
 		PMinus = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 27
-	stepNum += 1;
-	#endif
-
 	if (VScratch) {
 		_mm_free(VScratch);
 		VScratch = nullptr;
-		} 
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 28
-	stepNum += 1;
-	#endif
+		}
 
 	if (MScratch) {
 		_mm_free(MScratch);
 		MScratch = nullptr;
 		}
-
-	#ifdef DEBUG_DEALLOCATEDLM_DEEP
-	printf("deallocDLM - threadNum: %d; Address of System: %p; Step: %d\n",threadNum,this,stepNum); // 29
-	stepNum += 1;
-	#endif
 
 	#ifdef DEBUG_DEALLOCATEDLM
 	printf("deallocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
@@ -1039,6 +919,10 @@ void DLM::setDLM(double* Theta) {
 			}
 		}
 
+	lapack_int YesNo;
+	cblas_dcopy (m, A, 1, AEVecs, 1);
+	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', m, A, m, Awr, Awi, nullptr, 1, Avr, m, ilo, ihi, Ascale, nullptr, nullptr, nullptr);
+
 	#ifdef DEBUG_SETDLM
 	printf("setDLM - threadNum: %d; walkerPos: ",threadNum);
 	printf("setDLM - threadNum: %d; B\n",threadNum);
@@ -1106,54 +990,59 @@ void DLM::resetState() {
 		FKron[i*mSq + i] += 1.0;
 		}
 
-	#ifdef DEBUG_RESETSTATE
-	printf("***************************************\n");
-	printf("Looking at FKron in reset before LAPACK\n");
-	viewMatrix(mSq,mSq,FKron);
-	printf("***************************************\n");
-	#endif
-
-/*****************************************THIS IS WHERE THE BUG IS****************************************/
-
-
 	lapack_int YesNo;
-	YesNo = LAPACKE_dgetrf(LAPACK_COL_MAJOR, mSq, mSq, FKron, mSq, FKronPiv);
+	cblas_dcopy(mSq, Q, 1, P, 1);
+	YesNo = LAPACKE_dgesvx(LAPACK_COL_MAJOR, 'E', 'N', mSq, 1, FKron, mSq, FKronAF, mSq, FKronPiv, 'N', FKronR, FKronC, Q, mSq, P, mSq, nullptr, nullptr, nullptr, nullptr);
+
+	//#ifdef DEBUG_RESETSTATE
+	//printf("***************************************\n");
+	//printf("Looking at FKron in reset before LAPACK\n");
+	//viewMatrix(mSq,mSq,FKron);
+	//printf("***************************************\n");
+	//#endif
+
+/*****************************************THIS IS WHERE THE BUG IS****************************************/
+
+
+	//lapack_int YesNo;
+	//YesNo = LAPACKE_dgetrf(LAPACK_COL_MAJOR, mSq, mSq, FKron, mSq, FKronPiv);
 
 
 /*****************************************THIS IS WHERE THE BUG IS****************************************/
 
-	#ifdef DEBUG_RESETSTATE
-	printf("***************************************\n");
-	printf("Looking at FKron in reset after LAPACK\n");
-	viewMatrix(mSq,mSq,FKron);
-	printf("***************************************\n");
-	#endif
+	//#ifdef DEBUG_RESETSTATE
+	//printf("***************************************\n");
+	//printf("Looking at FKron in reset after LAPACK\n");
+	//viewMatrix(mSq,mSq,FKron);
+	//printf("***************************************\n");
+	//#endif
 
-	cblas_dcopy(mSq, Q, 1, P, 1);
+	//cblas_dcopy(mSq, Q, 1, P, 1);
 
-	#ifdef DEBUG_RESETSTATE
-	printf("***************************************\n");
-	printf("Looking at FKron in reset after LAPACK\n");
-	viewMatrix(mSq,mSq,FKron);
-	printf("***************************************\n");
-	#endif
+	//#ifdef DEBUG_RESETSTATE
+	//printf("***************************************\n");
+	//printf("Looking at FKron in reset after LAPACK\n");
+	//viewMatrix(mSq,mSq,FKron);
+	//printf("***************************************\n");
+	//#endif
 
-	YesNo = LAPACKE_dgetrs(LAPACK_COL_MAJOR, 'N', mSq, 1, FKron, mSq, FKronPiv, P, mSq);
+	//YesNo = LAPACKE_dgetrs(LAPACK_COL_MAJOR, 'N', mSq, 1, FKron, mSq, FKronPiv, P, mSq);
 
-	#ifdef DEBUG_RESETSTATE
-	printf("***************************************\n");
-	printf("Looking at FKron in reset after LAPACK\n");
-	viewMatrix(mSq,mSq,FKron);
-	printf("***************************************\n");
-	#endif
+	//#ifdef DEBUG_RESETSTATE
+	//printf("***************************************\n");
+	//printf("Looking at FKron in reset after LAPACK\n");
+	//viewMatrix(mSq,mSq,FKron);
+	//printf("***************************************\n");
+	//#endif
 
 	}
 
 int DLM::checkCARMAParams(double* Theta) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	lapack_int YesNo;
 
-	#ifdef DEBUG_CHECKARMAPARAMS
+	/*#ifdef DEBUG_CHECKARMAPARAMS
 	int threadNum = omp_get_thread_num();
 	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
@@ -1163,8 +1052,6 @@ int DLM::checkCARMAParams(double* Theta) {
 	printf("\n");
 	printf("checkARMAParams - threadNum: %d; distSigma: %f\n",threadNum,distSigma);
 	#endif
-
-	lapack_int YesNo;
 
 	#ifdef DEBUG_CHECKARMAPARAMS
 	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
@@ -1206,7 +1093,7 @@ int DLM::checkCARMAParams(double* Theta) {
 	#endif
 
 	YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', p, *ilo, *ihi, ARMatrix, p, ARwr, ARwi, ARz, 1);
-
+	
 	#ifdef DEBUG_CHECKARMAPARAMS
 	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
@@ -1215,7 +1102,10 @@ int DLM::checkCARMAParams(double* Theta) {
 		}
 	printf("\n");
 	printf("checkARMAParams - threadNum: %d; Done checking AR Matrix!\n",threadNum);
-	#endif
+	#endif*/
+
+	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', p, ARMatrix, p, ARwr, ARwi, nullptr, 1, nullptr, 1, ilo, ihi, ARscale, nullptr, nullptr, nullptr);
+
 
 	for (int i = 0; i < p; i++) {
 
@@ -1253,7 +1143,7 @@ int DLM::checkCARMAParams(double* Theta) {
 		}
 
 
-	#ifdef DEBUG_CHECKARMAPARAMS
+	/*#ifdef DEBUG_CHECKARMAPARAMS
 	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
 	for (int dimNum = 0; dimNum < p+q; dimNum++) {
@@ -1273,8 +1163,6 @@ int DLM::checkCARMAParams(double* Theta) {
 	printf("\n");
 	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
 	#endif
-
-	lapack_int YesNo;
 
 	YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', q, MAMatrix, q, ilo, ihi, MAScale);
 
@@ -1310,7 +1198,9 @@ int DLM::checkCARMAParams(double* Theta) {
 		}
 	printf("\n");
 	printf("checkARMAParams - threadNum: %d; Done checking MA Matrix!\n",threadNum);
-	#endif
+	#endif*/
+	
+	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', q, MAMatrix, q, MAwr, MAwi, nullptr, 1, nullptr, 1, ilo, ihi, MAscale, nullptr, nullptr, nullptr);
 
 	for (int i = 0; i < q; i++) {
 
