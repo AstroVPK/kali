@@ -40,10 +40,12 @@ public:
 	double* MAwr;
 	double* MAwi;
 	double* Theta;
-	double* A;
+	MKL_Complex16* A;
 	double* Awr;
 	double* Awi;
 	double* Avr;
+	double* Avr_real;
+	double* Avr_imag;
 	double* Ascale;
 	double* B;
 	double* I;
@@ -69,6 +71,8 @@ public:
 	void allocDLM(int numP, int numQ);
 	void deallocDLM();
 	void setDLM(double* Theta);
+	void integrateSystem(double dt);
+	void operator() (const state_type &x, state type &dxdt, const double t);
 	void integrateSystem(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();

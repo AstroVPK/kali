@@ -515,10 +515,10 @@ void DLM::allocDLM(int numP, int numQ) {
 		}
 	allocated += (p+q+1)*sizeof(double);
 
-	A = static_cast<double*>(_mm_malloc(mSq*sizeof(double),64));
-	Awr = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	Awi = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	Avr = static_cast<double*>(_mm_malloc(mSq*sizeof(double),64));
+	A = static_cast<MKL_Complex16*>(_mm_malloc(mSq*sizeof(MKL_Complex16),64));
+	Aw = static_cast<MKL_Complex16*>(_mm_malloc(m*sizeof(MKL_Complex16),64));
+	//Awi = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+	Avr = static_cast<MKL_Complex16*>(_mm_malloc(mSq*sizeof(MKL_Complex16),64));
 	Ascale = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
 
 	B = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
@@ -551,14 +551,17 @@ void DLM::allocDLM(int numP, int numQ) {
 		H[i] = 0.0;
 		K[i] = 0.0;
 		X[i] = 0.0;
-		Awr[i] = 0.0;
-		Awi[i] = 0.0;
+		Aw[i].real = 0.0;
+		Aw[i].imag = 0.0;
 		Ascale[i] = 0.0;
 		XMinus[i] = 0.0;
 		VScratch[i] = 0.0;
 		#pragma omp simd
 		for (int j = 0; j < m; j++) {
-			Avr[im+j] = 0.0;
+			A[i].real = 0.0;
+			A[i].imag[i] = 0.0;
+			Avr[i*m+j].real = 0.0;
+			Avr[i*m+j].imag = 0.0;
 			I[i*m+j] = 0.0;
 			F[i*m+j] = 0.0;
 			Q[i*m+j] = 0.0;
@@ -920,7 +923,7 @@ void DLM::setDLM(double* Theta) {
 		}
 
 	lapack_int YesNo;
-	cblas_dcopy (m, A, 1, AEVecs, 1);
+	//cblas_dcopy (m, A, 1, ACopy, 1);
 	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', m, A, m, Awr, Awi, nullptr, 1, Avr, m, ilo, ihi, Ascale, nullptr, nullptr, nullptr);
 
 	#ifdef DEBUG_SETDLM
@@ -948,7 +951,12 @@ void DLM::setDLM(double* Theta) {
 	H[0] = 1.0;
 	}
 
-void DLM::integrateSystem(double dt) {
+void DLM::operator() (const state_type &x, state type &dxdt, const double t) {
+	
+	}
+
+void DLM::integrateSystemSystem(double dt) {
+	
 	}
 
 void DLM::resetState(double InitUncertainty) {
@@ -994,47 +1002,6 @@ void DLM::resetState() {
 	cblas_dcopy(mSq, Q, 1, P, 1);
 	YesNo = LAPACKE_dgesvx(LAPACK_COL_MAJOR, 'E', 'N', mSq, 1, FKron, mSq, FKronAF, mSq, FKronPiv, 'N', FKronR, FKronC, Q, mSq, P, mSq, nullptr, nullptr, nullptr, nullptr);
 
-	//#ifdef DEBUG_RESETSTATE
-	//printf("***************************************\n");
-	//printf("Looking at FKron in reset before LAPACK\n");
-	//viewMatrix(mSq,mSq,FKron);
-	//printf("***************************************\n");
-	//#endif
-
-/*****************************************THIS IS WHERE THE BUG IS****************************************/
-
-
-	//lapack_int YesNo;
-	//YesNo = LAPACKE_dgetrf(LAPACK_COL_MAJOR, mSq, mSq, FKron, mSq, FKronPiv);
-
-
-/*****************************************THIS IS WHERE THE BUG IS****************************************/
-
-	//#ifdef DEBUG_RESETSTATE
-	//printf("***************************************\n");
-	//printf("Looking at FKron in reset after LAPACK\n");
-	//viewMatrix(mSq,mSq,FKron);
-	//printf("***************************************\n");
-	//#endif
-
-	//cblas_dcopy(mSq, Q, 1, P, 1);
-
-	//#ifdef DEBUG_RESETSTATE
-	//printf("***************************************\n");
-	//printf("Looking at FKron in reset after LAPACK\n");
-	//viewMatrix(mSq,mSq,FKron);
-	//printf("***************************************\n");
-	//#endif
-
-	//YesNo = LAPACKE_dgetrs(LAPACK_COL_MAJOR, 'N', mSq, 1, FKron, mSq, FKronPiv, P, mSq);
-
-	//#ifdef DEBUG_RESETSTATE
-	//printf("***************************************\n");
-	//printf("Looking at FKron in reset after LAPACK\n");
-	//viewMatrix(mSq,mSq,FKron);
-	//printf("***************************************\n");
-	//#endif
-
 	}
 
 int DLM::checkCARMAParams(double* Theta) {
@@ -1042,70 +1009,7 @@ int DLM::checkCARMAParams(double* Theta) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	lapack_int YesNo;
 
-	/*#ifdef DEBUG_CHECKARMAPARAMS
-	int threadNum = omp_get_thread_num();
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; distSigma: %f\n",threadNum,distSigma);
-	#endif
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Address of ARMatrix: %p\n",threadNum,&ARMatrix);
-	printf("checkARMAParams - threadNum: %d; ARMatrix\n",threadNum);
-	viewMatrix(p,p,ARMatrix);
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', p, ARMatrix, p, ilo, ihi, ARScale);
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, p, *ilo, *ihi, ARMatrix, p, ARTau);
-
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking AR Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', p, *ilo, *ihi, ARMatrix, p, ARwr, ARwi, ARz, 1);
-	
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Done checking AR Matrix!\n",threadNum);
-	#endif*/
-
 	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', p, ARMatrix, p, ARwr, ARwi, nullptr, 1, nullptr, 1, ilo, ihi, ARscale, nullptr, nullptr, nullptr);
-
 
 	for (int i = 0; i < p; i++) {
 
@@ -1141,64 +1045,6 @@ int DLM::checkCARMAParams(double* Theta) {
 			}
 			
 		}
-
-
-	/*#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	#endif
-
-	// Now check CMA Poly
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dgebal(LAPACK_COL_MAJOR, 'B', q, MAMatrix, q, ilo, ihi, MAScale);
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dgehrd(LAPACK_COL_MAJOR, q, *ilo, *ihi, MAMatrix, q, MATau);
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Checking MA Matrix...\n",threadNum);
-	#endif
-
-	YesNo = LAPACKE_dhseqr(LAPACK_COL_MAJOR,'E', 'N', q, *ilo, *ihi, MAMatrix, q, MAwr, MAwi, MAz, 1);
-
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
-	printf("checkARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkARMAParams - threadNum: %d; Done checking MA Matrix!\n",threadNum);
-	#endif*/
 	
 	YesNo = LAPACKE_dgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', q, MAMatrix, q, MAwr, MAwi, nullptr, 1, nullptr, 1, ilo, ihi, MAscale, nullptr, nullptr, nullptr);
 
