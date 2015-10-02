@@ -3,12 +3,14 @@
 #include <limits>
 #include <mathimf.h>
 #include <omp.h>
-#include <mkl.h>
 #include <mkl_types.h>
+#define MKL_Complex8 std::complex<float>
+#define MKL_Complex16 std::complex<double>
+#include <mkl.h>
 #include <iostream>
 #include <vector>
 #include "Constants.hpp"
-#include "Kalman.hpp"
+#include "CARMA.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,7 +39,7 @@
 
 using namespace std;
 
-double calcARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
+double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	if (!grad.empty()) {
 		for (int i = 0; i < x.size(); ++i) {
 			grad[i] = 0.0;
@@ -94,7 +96,7 @@ double calcARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Arg
 
 	}
 
-double calcARMALnLike(double* walkerPos, void* func_args) {
+double calcCARMALnLike(double* walkerPos, void* func_args) {
 
 	int threadNum = omp_get_thread_num();
 
@@ -298,7 +300,7 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 		}
 	}
 
-DLM::DLM() {
+CARMA::CARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model. */
 	#ifdef DEBUG_CTORDLM
 	int threadNum = omp_get_thread_num();
@@ -318,16 +320,16 @@ DLM::DLM() {
 	ihi = nullptr;
 	//ARz = nullptr;
 	//MAz = nullptr;
-	ARMatrix = nullptr;
-	MAMatrix = nullptr;
-	ARScale = nullptr;
-	MAScale = nullptr;
-	ARTau = nullptr;
-	MATau = nullptr;
-	ARwr = nullptr;
-	ARwi = nullptr;
-	MAwr = nullptr;
-	MAwi = nullptr;
+	CARMatrix = nullptr;
+	CMAMatrix = nullptr;
+	CARScale = nullptr;
+	CMAScale = nullptr;
+	CARTau = nullptr;
+	CMATau = nullptr;
+	CARwr = nullptr;
+	CARwi = nullptr;
+	CMAwr = nullptr;
+	CMAwi = nullptr;
 	A = nullptr;
 	Awr = nullptr;
 	Awi = nullptr;
@@ -358,7 +360,7 @@ DLM::DLM() {
 
 	}
 
-DLM::~DLM() {
+CARMA::~CARMA() {
 
 	#ifdef DEBUG_DTORDLM
 	int threadNum = omp_get_thread_num();
@@ -374,21 +376,20 @@ DLM::~DLM() {
 	q = 0;
 	m = 0;
 	mSq = 0;
-	distSigma = 0.0;
 	ilo = nullptr;
 	ihi = nullptr;
 	//ARz = nullptr;
 	//MAz = nullptr;
-	ARMatrix = nullptr;
-	MAMatrix = nullptr;
-	ARScale = nullptr;
-	MAScale = nullptr;
-	ARTau = nullptr;
-	MATau = nullptr;
-	ARwr = nullptr;
-	ARwi = nullptr;
-	MAwr = nullptr;
-	MAwi = nullptr;
+	CARMatrix = nullptr;
+	CMAMatrix = nullptr;
+	CARScale = nullptr;
+	CMAScale = nullptr;
+	CARTau = nullptr;
+	CMATau = nullptr;
+	CARwr = nullptr;
+	CARwi = nullptr;
+	CMAwr = nullptr;
+	CMAwi = nullptr;
 	Theta = nullptr;
 	A = nullptr;
 	Awr = nullptr;
@@ -420,7 +421,7 @@ DLM::~DLM() {
 
 	}
 
-void DLM::allocDLM(int numP, int numQ) {
+void CARMA::allocCARMA(int numP, int numQ) {
 
 	#ifdef DEBUG_ALLOCATEDLM
 	int threadNum = omp_get_thread_num();
@@ -599,7 +600,7 @@ void DLM::allocDLM(int numP, int numQ) {
 
 	}
 
-void DLM::deallocDLM() {
+void CARMA::deallocCARMA() {
 
 	#ifdef DEBUG_DEALLOCATEDLM
 	int threadNum = omp_get_thread_num();
@@ -782,7 +783,7 @@ void DLM::deallocDLM() {
 
 	}
 
-void DLM::setDLM(double* Theta) {
+void CARMA::setCARMA(double* Theta) {
 
 	#ifdef DEBUG_SETDLM
 	int threadNum = omp_get_thread_num();
@@ -951,15 +952,13 @@ void DLM::setDLM(double* Theta) {
 	H[0] = 1.0;
 	}
 
-void DLM::operator() (const state_type &x, state type &dxdt, const double t) {
-	
+void CARMA::solveSystem(double dt) {
 	}
 
-void DLM::integrateSystemSystem(double dt) {
-	
+void CARMA::operator() (const state_type &x, state type &dxdt, const double t) {
 	}
 
-void DLM::resetState(double InitUncertainty) {
+void CARMA::resetState(double InitUncertainty) {
 
 	for (int i = 0; i < m; i++) {
 		X[i] = 0.0;
@@ -975,7 +974,7 @@ void DLM::resetState(double InitUncertainty) {
 		}
 	}
 
-void DLM::resetState() {
+void CARMA::resetState() {
 
 	for (int i = 0; i < m; i++) {
 		X[i] = 0.0;
@@ -1004,7 +1003,7 @@ void DLM::resetState() {
 
 	}
 
-int DLM::checkCARMAParams(double* Theta) {
+int CARMA::checkCARMAParams(double* Theta) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	lapack_int YesNo;
@@ -1099,17 +1098,17 @@ int DLM::checkCARMAParams(double* Theta) {
 	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
 	}
 
-void DLM::getARRoots(double*& RealAR, double*& ImagAR) {
+void CARMA::getCARRoots(double*& RealAR, double*& ImagAR) {
 	RealAR = ARwr;
 	ImagAR = ARwi;
 	}
 
-void DLM::getMARoots(double*& RealMA, double*& ImagMA) {
+void CARMA::getMARoots(double*& RealMA, double*& ImagMA) {
 	RealMA = MAwr;
 	ImagMA = MAwi;
 	}
 
-void DLM::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
+void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 
 	#ifdef DEBUG_BURNSYSTEM
 	int threadNum = omp_get_thread_num();
@@ -1193,7 +1192,7 @@ void DLM::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 		}
 	}
 
-double DLM::observeSystem(double distRand, double noiseRand) {
+double CARMA::observeSystem(double distRand, double noiseRand) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, VScratch, 1);
@@ -1202,7 +1201,7 @@ double DLM::observeSystem(double distRand, double noiseRand) {
 	return cblas_ddot(m, H, 1, X, 1) + noiseRand;
 	}
 
-double DLM::observeSystem(double distRand, double noiseRand, double mask) {
+double CARMA::observeSystem(double distRand, double noiseRand, double mask) {
 
 	double result;
 	if (mask != 0.0) {
@@ -1213,7 +1212,7 @@ double DLM::observeSystem(double distRand, double noiseRand, double mask) {
 	return result;
 	}
 
-void DLM::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y) {
+void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
@@ -1275,7 +1274,7 @@ void DLM::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSee
 	vslDeleteStream(&noiseStream);
 	}
 
-void DLM::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask) {
+void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
@@ -1337,7 +1336,7 @@ void DLM::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSee
 	vslDeleteStream(&noiseStream);
 	}
 
-double DLM::computeLnLike(int numPts, double* y, double* yerr) {
+double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnLike = 0.0;
@@ -1499,7 +1498,7 @@ double DLM::computeLnLike(int numPts, double* y, double* yerr) {
 	return LnLike;
 	}
 
-double DLM::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
+double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 
 	double maxDouble = numeric_limits<double>::max();
 

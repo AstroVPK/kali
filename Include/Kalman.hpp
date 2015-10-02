@@ -1,20 +1,22 @@
-#ifndef KALMAN_HPP
-#define KALMAN_HPP
+#ifndef CARMA_HPP
+#define CARMA_HPP
 
-#include <mkl.h>
 #include <mkl_types.h>
+#define MKL_Complex8 std::complex<float>
+#define MKL_Complex16 std::complex<double>
+#include <mkl.h>
 
 using namespace std;
 
-double calcARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
+double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcARMALnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcCARMALnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
 
 double calcLnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
 
-class DLM {
+class CARMA {
 public:
 	int allocated;
 	int isStable;
@@ -29,16 +31,16 @@ public:
 	lapack_int* ihi;
 	//double* ARz;
 	//double* MAz;
-	double* ARMatrix;
-	double* MAMatrix;
-	double* ARScale;
-	double* MAScale;
-	double* ARTau;
-	double* MATau;
-	double* ARwr;
-	double* ARwi;
-	double* MAwr;
-	double* MAwi;
+	double* CARMatrix;
+	double* CMAMatrix;
+	double* CARScale;
+	double* CMAScale;
+	double* CARTau;
+	double* CMATau;
+	double* CARwr;
+	double* CARwi;
+	double* CMAwr;
+	double* CMAwi;
 	double* Theta;
 	MKL_Complex16* A;
 	double* Awr;
@@ -66,19 +68,18 @@ public:
 	double* PMinus;
 	double* VScratch;
 	double* MScratch;
-	DLM();
-	~DLM();
-	void allocDLM(int numP, int numQ);
-	void deallocDLM();
-	void setDLM(double* Theta);
-	void integrateSystem(double dt);
+	CARMA();
+	~CARMA();
+	void allocCARMA(int numP, int numQ);
+	void deallocCARMA();
+	void setCARMA(double* Theta);
+	void solveCARMA(double dt);
 	void operator() (const state_type &x, state type &dxdt, const double t);
-	void integrateSystem(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();
-	int checkARMAParams(double* Theta);
-	void getARRoots(double*& RealAR, double*& ImagARW);
-	void getMARoots(double*& RealMA, double*& ImagMA);
+	int checkCARMAParams(double* Theta);
+	void getCARRoots(double*& RealAR, double*& ImagARW);
+	void getCMARoots(double*& RealMA, double*& ImagMA);
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
 	double observeSystem(double distRand, double noiseRand);
 	double observeSystem(double distRand, double noiseRand, double mask);
@@ -99,7 +100,7 @@ struct LnLikeData {
 
 struct LnLikeArgs {
 	int numThreads;
-	DLM* Systems;
+	CARMA* Systems;
 	LnLikeData Data;
 	}; 
 
