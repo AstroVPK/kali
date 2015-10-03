@@ -1,6 +1,7 @@
 #ifndef CARMA_HPP
 #define CARMA_HPP
 
+#inlude <complex>
 #include <mkl_types.h>
 #define MKL_Complex8 std::complex<float>
 #define MKL_Complex16 std::complex<double>
@@ -25,59 +26,57 @@ public:
 	int isReasonable;
 	int p;
 	int q;
-	int m;
-	int mSq;
-	lapack_int* ilo;
-	lapack_int* ihi;
-	//double* ARz;
-	//double* MAz;
-	double* CARMatrix;
-	double* CMAMatrix;
-	double* CARScale;
-	double* CMAScale;
-	double* CARTau;
-	double* CMATau;
-	double* CARwr;
-	double* CARwi;
-	double* CMAwr;
-	double* CMAwi;
-	double* Theta;
-	MKL_Complex16* A;
-	double* Awr;
-	double* Awi;
-	double* Avr;
-	double* Avr_real;
-	double* Avr_imag;
-	double* Ascale;
-	double* B;
-	double* I;
-	double* F;
-	double* FKron;
-	double* FKronAF;
-	double* FKronR;
-	double* FKronC;
-	lapack_int* FKronPiv;
-	double* D;
-	double* Q;
-	double* H;
-	double* R;
-	double* K;
-	double* X;
-	double* P;
-	double* XMinus;
-	double* PMinus;
-	double* VScratch;
-	double* MScratch;
+	int pSq;
+	// ilo, ihi and abnrm are arrays of size 1 so they can be re-used by everything. No need to make multiple copies for A, CAR and CMA
+	lapack_int *ilo;
+	lapack_int *ihi;
+	double *abnrm;
+
+	// Arrays used to compute expm(A dt)
+	complex<double> *w;
+	complex<double> *expw;
+	complex<double> *CARw;
+	complex<double> *CMAw;
+	complex<double> *scale;
+	complex<double> *vr;
+	complex<double> *vrInv;
+	double *rconde;
+	double *rcondv;
+	lapack_int *ipiv
+
+	double *Theta;
+	complex<double> *A;
+	double *B;
+	double *I;
+	double *F;
+	complex<double> *FScratch;
+	double *FKron;
+	double *FKronAF;
+	double *FKronR;
+	double *FKronC;
+	lapack_int *FKronPiv;
+	double *D;
+	double *Q;
+	double *H;
+	double *R;
+	double *K;
+	double *X;
+	double *P;
+	double *XMinus;
+	double *PMinus;
+	double *VScratch;
+	double *MScratch;
 	CARMA();
 	~CARMA();
 	void allocCARMA(int numP, int numQ);
 	void deallocCARMA();
+	int checkCARMAParams(double* Theta);
 	void setCARMA(double* Theta);
-	void solveCARMA(double dt);
+	void expm(double xi, double* out);
 	void operator() (const state_type &x, state type &dxdt, const double t);
+	void solveCARMA(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();
-	int checkCARMAParams(double* Theta);
 	void getCARRoots(double*& RealAR, double*& ImagARW);
 	void getCMARoots(double*& RealMA, double*& ImagMA);
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
