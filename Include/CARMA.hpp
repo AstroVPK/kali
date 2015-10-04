@@ -73,7 +73,7 @@ public:
 	int checkCARMAParams(double* Theta);
 	void setCARMA(double* Theta);
 	void expm(double xi, double* out);
-	void operator() (const state_type &x, state type &dxdt, const double t);
+	void operator()(const double* &x, double* &dxdt, const double t);
 	void solveCARMA(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();

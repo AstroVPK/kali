@@ -1042,7 +1042,30 @@ void CARMA::expm(double xi, double* out) {
 		}
 	}
 
-void CARMA::operator() (const state_type &x, state type &dxdt, const double t) {
+void CARMA::operator()(const double* &x, double* &dxdt, const double t) {
+	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
+
+	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\mathbfss{Q} = \int_{t_{0}}^{t} \mathrm{e}^{\mathbfss{A}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\mathbfss{A}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\mathbfss{Q}\f$ is symmetric positive definate and only the first column needfs to be computed.
+	*/
+
+	// First compute expm(A dt)
+	#pragma omp simd
+	for (int i = 0; i < p; ++i) {
+		expw[i + i*p] = exp(t*w[i]);
+		}
+
+	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, FScratch, p);
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			out[rowCtr + colCtr*p] = FScratch[rowCtr + colCtr*p];
+			}
+		}
+
+	// Next compute expm(trans(A) dt)
 	}
 
 void CARMA::solveCARMA(double dt) {
