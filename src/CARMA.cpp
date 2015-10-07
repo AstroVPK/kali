@@ -323,12 +323,9 @@ CARMA::CARMA() {
 	hasUniqueEigenValues = 0;
 	p = 0;
 	q = 0;
-	m = 0;
-	mSq = 0;
+	pSq = 0;
 	ilo = nullptr;
 	ihi = nullptr;
-	//ARz = nullptr;
-	//MAz = nullptr;
 	CARMatrix = nullptr;
 	CMAMatrix = nullptr;
 	CARScale = nullptr;
@@ -1155,8 +1152,7 @@ void CARMA::resetState() {
 
 	lapack_int YesNo;
 	cblas_dcopy(mSq, Q, 1, P, 1);
-	YesNo = LAPACKE_dgesvx(LAPACK_COL_MAJOR, 'E', 'N', mSq, 1, FKron, mSq, FKronAF, mSq, FKronPiv, 'N', FKronR, FKronC, Q, mSq, P, mSq, nullptr, nullptr, nullptr, nullptr);
-
+	YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, 'N', FKron_r, FKronC_c, pSq, P, pSq,FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr);
 	}
 
 void CARMA::getCARRoots(double*& RealAR, double*& ImagAR) {
