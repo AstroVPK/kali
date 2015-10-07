@@ -1032,7 +1032,7 @@ void CARMA::expm(double xi, double* out) {
 
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, FScratch, p);
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
@@ -1042,13 +1042,50 @@ void CARMA::expm(double xi, double* out) {
 		}
 	}
 
-void CARMA::operator()(const double* &x, double* &dxdt, const double t) {
+void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double t) {
 	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
 
 	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\mathbfss{Q} = \int_{t_{0}}^{t} \mathrm{e}^{\mathbfss{A}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\mathbfss{A}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\mathbfss{Q}\f$ is symmetric positive definate and only the first column needfs to be computed.
 	*/
 
-	// First compute expm(A dt)
+	// Start by computing expw = exp(w*t) where w is an e-value of A i.e. the doagonal of expw consists of the exponents of the e-values of A times t
+	#pragma omp simd
+	for (int i = 0; i < p; ++i) {
+		expw[i + i*p] = exp(t*w[i]);
+		}
+	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
+
+	// Begin by computing vr*expw. This is a pXp matrix. Store it in A.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
+
+	// Next compute expm(A*t) = (vr*expw)*vrInv. This is a pXp matrix. Store it in AScratch.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+
+	// Next compute expm(A*t)*B = ((vr*expw)*vrInv)*B. This is a pX1 vector. Store it in BScratch.
+	cblas_zgemv(CblasColMajor, CblasNoTrans, p, p, &alpha, FScratch, p, B, 1, &beta, BScratch, 1);
+
+	// Next compute expm(A*t)*B*trans(B) = (((vr*expw)*vrInv)*B)*trans(B). This is a pXp matrix. Store it in A.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, B, 1, &beta, A, p);
+
+	// Next compute expm(A*t)*B*trans(B)*vrInv = ((((vr*expw)*vrInv)*B)*trans(B))*vrInv.  This is a pXp matrix. Store it in AScratch.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+
+	// Next compute  expm(A*t)*B*trans(B)*trans(vrInv)*expw = (((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw.  This is a pXp matrix. Store it in A.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, AScratch, p, expw, p, &beta, A, p);
+
+	// Finally compute  expm(A*t)*B*trans(B)*expm(trans(A)*t) = ((((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw)*trans(A).  This is a pXp matrix. Store it in AScratch.
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, A, p, vr, p, &beta, AScratch, p);
+
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		dxdt[rowCtr] = AScratch[rowCtr].real();
+		}
+
+	}
+
+void CARMA::solveCARMA(double t) {
+
+	// First compute expm(A*t)
 	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
 		expw[i + i*p] = exp(t*w[i]);
@@ -1056,19 +1093,25 @@ void CARMA::operator()(const double* &x, double* &dxdt, const double t) {
 
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, FScratch, p);
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			out[rowCtr + colCtr*p] = FScratch[rowCtr + colCtr*p];
+			F[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
 			}
 		}
 
-	// Next compute expm(trans(A) dt)
-	}
+	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
+	vector<double> initX(p); 
+	size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t);
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		BScratch[rowCtr] = sqrt(initX[rowCtr]);
+		}
 
-void CARMA::solveCARMA(double dt) {
+	// Finally compute Q
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, BScratch, 1, &beta, Q, p);
 	}
 
 void CARMA::resetState(double InitUncertainty) {

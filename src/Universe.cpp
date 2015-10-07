@@ -103,7 +103,7 @@ Universe& Universe::operator=(const Universe& orig) {
 	sizeH = orig.sizeH;
 	ageH = orig.ageH;
 	return *this;
-	}					
+	}
 
 void Universe::operator()(const vector<double> &x, vector<double> &dxdt, const double t) {
 	dxdt[0] = 1.0/pow(OmegaL + pow(1.0+t,3.0)*OmegaM + pow(1.0+t,4.0)*OmegaG + pow(1.0+t,2.0)*OmegaK, 0.5);

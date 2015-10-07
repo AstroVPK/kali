@@ -46,10 +46,11 @@ public:
 
 	double *Theta;
 	complex<double> *A;
-	double *B;
+	complex<double> *B;
 	double *I;
 	double *F;
-	complex<double> *FScratch;
+	complex<double> *AScratch;
+	complex<double> *BScratch;
 	double *FKron;
 	double *FKronAF;
 	double *FKronR;
