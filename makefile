@@ -4,7 +4,7 @@ IDIR = include/
 SRCDIR = src
 ODIR = src/obj
 BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
-BOOSTLIB = ~/Documents/Research/code/trunk/Boost/boost_1_57_0/
+BOOSTLIB = ~/code/trunk/boost_1_57_0/
 
 VERFLAGS = -gxx-name=g++-4.8 -std=c++11
 # -g -Wall
@@ -47,12 +47,12 @@ REPORTFLAG = -qopt-report-phase=vec -qopt-report-file=stdout -openmp-report=0
 #     source     - enables intermediates in source precision
 #     strict     - enables -fp-model precise -fp-model except and disables floating point multiply add
 
-_DEPENDENCIES = Constants.hpp Utilities.hpp Acquire.hpp Universe.hpp Spherical.hpp Obj.hpp Kepler.hpp Kalman.hpp MCMC.hpp DLAPACKE.hpp Correlation.hpp
+_DEPENDENCIES = Constants.hpp Utilities.hpp Acquire.hpp Universe.hpp Spherical.hpp Obj.hpp Kepler.hpp CARMA.hpp MCMC.hpp Correlation.hpp
 #PRH.hpp DLAPACKE.hpp
 DEPENDENCIES = $(patsubst %,$(IDIR)/%,$(_DEPENDENCIES))
 
-_OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler.o Kalman.o MCMC.o DLAPACKE.o Correlation.o
-# PRH.o DLAPACKE.o
+_OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler.o CARMA.o MCMC.o Correlation.o
+#PRH.o DLAPACKE.o
 OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 
 EXEC1 = testPoint
@@ -93,7 +93,7 @@ $(ODIR)/Universe.o: $(SRCDIR)/Universe.cpp $(IDIR)/Universe.hpp
 $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OFFLOAD_FLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
-$(ODIR)/Kalman.o: $(SRCDIR)/Kalman.cpp $(IDIR)/Kalman.hpp
+$(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
