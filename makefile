@@ -1,6 +1,6 @@
 CPPC = icpc
 
-IDIR = include/
+IDIR = include
 SRCDIR = src
 ODIR = src/obj
 BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
