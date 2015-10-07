@@ -1101,7 +1101,8 @@ void CARMA::solveCARMA(double t) {
 
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
-	size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t);
+	//size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t); // JohnS suggests that I try "this" 
+	size_t steps = integrate(this, initX, 0.0, t, 1.0e-6*t);
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		BScratch[rowCtr] = sqrt(initX[rowCtr]);
