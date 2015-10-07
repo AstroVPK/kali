@@ -105,6 +105,9 @@ $(ODIR)/DLAPACKE.o: $(SRCDIR)/DLAPACKE.cpp $(IDIR)/DLAPACKE.hpp
 $(ODIR)/Correlation.o: $(SRCDIR)/Correlation.cpp $(IDIR)/Correlation.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
+$(ODIR)/Constants.o: $(SRCDIR)/Constants.cpp $(IDIR)/Constants.hpp
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+
 $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@
 
