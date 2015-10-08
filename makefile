@@ -3,7 +3,7 @@ CPPC = icpc
 IDIR = include
 SRCDIR = src
 ODIR = src/obj
-BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
+BOOSTLINK = -Bstatic -lboost -lboost_system -lboost_filesystem -lboost_system
 BOOSTLIB = ~/code/trunk/boost_1_57_0/
 
 VERFLAGS = -gxx-name=g++-4.8 -std=c++11
@@ -94,7 +94,7 @@ $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OFFLOAD_FLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@

@@ -82,12 +82,12 @@ public:
 	void deallocCARMA();
 	int checkCARMAParams(double* Theta);
 	void setCARMA(double* Theta);
-	void operator()(const double* &x, double* &dxdt, const double t);
+	void operator()(const vector<double> &x, vector<double> &dxdt, const double t);
 	void solveCARMA(double dt);
 	void resetState(double InitUncertainty);
 	void resetState();
-	void getCARRoots(double*& RealAR, double*& ImagARW);
-	void getCMARoots(double*& RealMA, double*& ImagMA);
+	void getCARRoots(complex<double>*& CARoots);
+	void getCMARoots(complex<double>*& CMARoots);
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
 	double observeSystem(double distRand, double noiseRand);
 	double observeSystem(double distRand, double noiseRand, double mask);

@@ -10,6 +10,7 @@
 #include <mkl.h>
 #include <iostream>
 #include <vector>
+#include "boost/numeric/odeint.hpp"
 #include "Constants.hpp"
 #include "CARMA.hpp"
 #include <stdio.h>
@@ -1055,7 +1056,7 @@ void CARMA::setCARMA(double* Theta) {
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
 		A[i] = -1.0*Theta[i];
-		A[i*p+(i-1)] = 1.0;
+		A[i*p + (i - 1)] = 1.0;
 		}
 
 	#ifdef DEBUG_SETDLM
@@ -1094,8 +1095,8 @@ void CARMA::setCARMA(double* Theta) {
 	#endif
 
 	#pragma omp simd
-	for (int i = 0; i < q; i++) {
-		B[p-q+i] = Theta[p+i];
+	for (int rowCtr = 0; rowCtr < q; rowCtr++) {
+		B[p - q + rowCtr] = Theta[p + rowCtr];
 		}
 
 	#ifdef DEBUG_SETDLM
@@ -1111,11 +1112,19 @@ void CARMA::setCARMA(double* Theta) {
 
 	H[0] = 1.0;
 
+	FKron_rcond[0] = 0.0;
+	FKron_rpvgrw[0] = 0.0;
+	FKron_berr[0] = 0.0;
+	FKron_err_bnds_norm[0] = 0.0;
+	FKron_err_bnds_comp[0] = 0.0;
 	for (int colCtr = 0; colCtr < pSq; ++colCtr) {
+		FKron_r[colCtr] = 0.0;
+		FKron_c[colCtr] = 0.0;
 		#pragma omp simd
-		for (int rowctr = 0; rowCtr < pSq; ++rowCtr) {
-			FKron[rowCtr + pSq*colCtr] = 0.0;
-			FKronPiv[rowCtr + pSq*colCtr] = 0;
+		for (int rowCtr = 0; rowCtr < pSq; ++rowCtr) {
+			FKron_ipiv[rowCtr + colCtr*pSq] = 0;
+			FKron[rowCtr + colCtr*pSq] = 0.0;
+			FKron_af[rowCtr + colCtr*pSq] = 0.0;
 			}
 		}
 
@@ -1141,7 +1150,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
 
 	// Next compute expm(A*t)*B = ((vr*expw)*vrInv)*B. This is a pX1 vector. Store it in BScratch.
-	cblas_zgemv(CblasColMajor, CblasNoTrans, p, p, &alpha, FScratch, p, B, 1, &beta, BScratch, 1);
+	cblas_zgemv(CblasColMajor, CblasNoTrans, p, p, &alpha, AScratch, p, B, 1, &beta, BScratch, 1);
 
 	// Next compute expm(A*t)*B*trans(B) = (((vr*expw)*vrInv)*B)*trans(B). This is a pXp matrix. Store it in A.
 	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, B, 1, &beta, A, p);
@@ -1184,7 +1193,7 @@ void CARMA::solveCARMA(double t) {
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
 	//size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t); // JohnS suggests that I try "this" 
-	size_t steps = integrate(this, initX, 0.0, t, 1.0e-6*t);
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, t, 1.0e-6*t);
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		BScratch[rowCtr] = sqrt(initX[rowCtr]);
@@ -1196,56 +1205,55 @@ void CARMA::solveCARMA(double t) {
 
 void CARMA::resetState(double InitUncertainty) {
 
-	for (int i = 0; i < m; i++) {
+	for (int i = 0; i < p; i++) {
 		X[i] = 0.0;
 		XMinus[i] = 0.0;
 		VScratch[i] = 0.0;
 		#pragma omp simd
-		for (int j = 0; j < m; j++) {
-			P[i*m+j] = 0.0;
-			PMinus[i*m+j] = 0.0;
-			MScratch[i*m+j] = 0.0;
+		for (int j = 0; j < p; j++) {
+			P[i*p+j] = 0.0;
+			PMinus[i*p+j] = 0.0;
+			MScratch[i*p+j] = 0.0;
 			}
-		P[i*m+i] = InitUncertainty;
+		P[i*p+i] = InitUncertainty;
 		}
 	}
 
 void CARMA::resetState() {
 
-	for (int i = 0; i < m; i++) {
-		X[i] = 0.0;
-		XMinus[i] = 0.0;
-		VScratch[i] = 0.0;
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		X[colCtr] = 0.0;
+		XMinus[colCtr] = 0.0;
+		VScratch[colCtr] = 0.0;
 		#pragma omp simd
-		for (int j = 0; j < m; j++) {
-			P[i*m+j] = 0.0;
-			PMinus[i*m+j] = 0.0;
-			MScratch[i*m+j] = 0.0;
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			P[rowCtr + colCtr*p] = 0.0;
+			PMinus[rowCtr + colCtr*p] = 0.0;
+			MScratch[rowCtr + colCtr*p] = 0.0;
 			}
 		}
 
-	kron(m,m,F,m,m,F,FKron);
-	for (int i = 0; i < mSq; i++) {
+	kron(p,p,F,p,p,F,FKron);
+	for (int i = 0; i < pSq; i++) {
 		#pragma omp simd
-		for (int j = 0; j < mSq; j++) {
-			FKron[i*mSq + j] *= -1.0;
+		for (int j = 0; j < pSq; j++) {
+			FKron[i*pSq + j] *= -1.0;
 			}
-		FKron[i*mSq + i] += 1.0;
+		FKron[i*pSq + i] += 1.0;
 		}
 
 	lapack_int YesNo;
-	cblas_dcopy(mSq, Q, 1, P, 1);
-	YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, 'N', FKron_r, FKronC_c, pSq, P, pSq,FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr);
+	char equed = 'N';
+	cblas_dcopy(pSq, Q, 1, P, 1);
+	YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, &equed, FKron_r, FKron_c, Q, pSq, P, pSq, FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr);
 	}
 
-void CARMA::getCARRoots(double*& RealAR, double*& ImagAR) {
-	RealAR = ARwr;
-	ImagAR = ARwi;
+void CARMA::getCARRoots(complex<double>*& CARRoots) {
+	CARRoots = CARw;
 	}
 
-void CARMA::getMARoots(double*& RealMA, double*& ImagMA) {
-	RealMA = MAwr;
-	ImagMA = MAwi;
+void CARMA::getCMARoots(complex<double>*& CMARoots) {
+	CMARoots = CMAw;
 	}
 
 void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
@@ -1258,7 +1266,7 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream;
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, distSigma);
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, Theta[p]); // Check
 	vslDeleteStream(&burnStream);
 
 	#ifdef WRITE
@@ -1280,53 +1288,53 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << burnRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "F" << endl;
-		viewMatrix(m, m, F);
+		viewMatrix(p, p, F);
 		cout << "VScratch" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, VScratch, 1); // VScratch = F*X
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*X
 
 		#ifdef DEBUG_BURNSYSTEM
 		cout << endl;
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << burnRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "F" << endl;
-		viewMatrix(m, m, F);
+		viewMatrix(p, p, F);
 		cout << "VScratch" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		#endif
 
-		cblas_dcopy(m, VScratch, 1, X, 1); // X = VScratch
+		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 
 		#ifdef DEBUG_BURNSYSTEM
 		cout << endl;
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << burnRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "F" << endl;
-		viewMatrix(m, m, F);
+		viewMatrix(p, p, F);
 		cout << "VScratch" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		#endif
 
-		cblas_daxpy(m, burnRand[i], D, 1, X, 1); // X = w*D + X
+		cblas_daxpy(p, burnRand[i], D, 1, X, 1); // X = w*D + X
 
 		#ifdef DEBUG_BURNSYSTEM
 		cout << endl;
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << burnRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "F" << endl;
-		viewMatrix(m, m, F);
+		viewMatrix(p, p, F);
 		cout << "VScratch" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		#endif
 
 		}
@@ -1335,10 +1343,10 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 double CARMA::observeSystem(double distRand, double noiseRand) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, VScratch, 1);
-	cblas_dcopy(m, VScratch, 1, X, 1);
-	cblas_daxpy(m, distRand, D, 1, X, 1);
-	return cblas_ddot(m, H, 1, X, 1) + noiseRand;
+	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
+	cblas_dcopy(p, VScratch, 1, X, 1);
+	cblas_daxpy(p, distRand, D, 1, X, 1);
+	return cblas_ddot(p, H, 1, X, 1) + noiseRand;
 	}
 
 double CARMA::observeSystem(double distRand, double noiseRand, double mask) {
@@ -1359,7 +1367,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, distSigma);
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, Theta[p]); // Check Theta[p] == old distSigma
 	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, numObs, noiseRand, 0.0, noiseSigma);
 
 	#ifdef WRITE
@@ -1387,20 +1395,20 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << distRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, VScratch, 1);
-		cblas_dcopy(m, VScratch, 1, X, 1);
-		cblas_daxpy(m, distRand[i], D, 1, X, 1);
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
+		cblas_dcopy(p, VScratch, 1, X, 1);
+		cblas_daxpy(p, distRand[i], D, 1, X, 1);
 
 		#ifdef DEBUG_OBS
 		cout << "X_+" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "Noise: " << noiseRand[i] << endl;
 		#endif
 
-		//y[i] = cblas_ddot(m, H, 1, X, 1) + noiseRand[i];
+		//y[i] = cblas_ddot(p, H, 1, X, 1) + noiseRand[i];
 		y[i] = X[0] + noiseRand[i];
 
 		#ifdef DEBUG_OBS
@@ -1421,7 +1429,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, distSigma);
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, Theta[p]); // Check Theta[p] = distSigma
 	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, numObs, noiseRand, 0.0, noiseSigma);
 
 	#ifdef WRITE
@@ -1449,20 +1457,20 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << distRand[i] << endl;
 		cout << "X_-" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, VScratch, 1);
-		cblas_dcopy(m, VScratch, 1, X, 1);
-		cblas_daxpy(m, distRand[i], D, 1, X, 1);
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
+		cblas_dcopy(p, VScratch, 1, X, 1);
+		cblas_daxpy(p, distRand[i], D, 1, X, 1);
 
 		#ifdef DEBUG_OBS
 		cout << "X_+" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << "Noise: " << noiseRand[i] << endl;
 		#endif
 
-		//y[i] = cblas_ddot(m, H, 1, X, 1) + noiseRand[i];
+		//y[i] = cblas_ddot(p, H, 1, X, 1) + noiseRand[i];
 		y[i] = mask[i]*(X[0] + noiseRand[i]);
 
 		#ifdef DEBUG_OBS
@@ -1499,36 +1507,36 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
 		#ifdef DEBUG_LNLIKE
 		cout << "X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << endl;
 		#endif
 
 		#ifdef DEBUG_LNLIKE
 		cout << "P" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, P);
+		viewMatrix(p, p, P);
 		cout << endl;
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 
 		#ifdef DEBUG_LNLIKE
 		cout << "XMinus" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, XMinus);
+		viewMatrix(p, 1, XMinus);
 		cout << endl;
 		#endif
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, F, m, P, m, 0.0, MScratch, m); // Compute MScratch = F*P
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, m, m, 1.0, MScratch, m, F, m, 0.0, PMinus, m); // Compute PMinus = MScratch*F_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, I, m, Q, m, 1.0, PMinus, m); // Compute PMinus = I*Q + PMinus;
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 
 		#ifdef DEBUG_LNLIKE
 		cout << "PMinus" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, PMinus);
+		viewMatrix(p, p, PMinus);
 		cout << endl;
 		#endif
 
@@ -1549,9 +1557,9 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
 		cout << endl;
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasTrans, m, m, 1.0, PMinus, m, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 
-		S = cblas_ddot(m, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 
 		#ifdef DEBUG_LNLIKE
 		cout << "S[" << i << "]: " << S << endl;
@@ -1565,64 +1573,64 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
 		cout << endl;
 		#endif
 
-		cblas_dscal(m, SInv, K, 1); // Compute K = SInv*K
+		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 
 		#ifdef DEBUG_LNLIKE
 		cout << "K" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, K);
+		viewMatrix(p, 1, K);
 		cout << endl;
 		#endif
 
-		for (int colCounter = 0; colCounter < m; colCounter++) {
+		for (int colCounter = 0; colCounter < p; colCounter++) {
 			#pragma omp simd
-			for (int rowCounter = 0; rowCounter < m; rowCounter++) {
-				MScratch[rowCounter*m+colCounter] = I[colCounter*m+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
 				}
 			}
 
 		#ifdef DEBUG_LNLIKE
 		cout << "IMinusKH" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, MScratch);
+		viewMatrix(p, p, MScratch);
 		cout << endl;
 		#endif
 
-		cblas_dcopy(m, K, 1, VScratch, 1); // Compute VScratch = K
+		cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, MScratch, m, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
 
 		#ifdef DEBUG_LNLIKE
 		cout << "VScratch == X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		cout << endl;
 		#endif
 
-		cblas_dcopy(m, VScratch, 1, X, 1); // Compute X = VScratch
+		cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
 
 		#ifdef DEBUG_LNLIKE
 		cout << "X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << endl;
 		#endif
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, MScratch, m, PMinus, m, 0.0, P, m); // Compute P = IMinusKH*PMinus
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, m, m, 1.0, P, m, MScratch, m, 0.0, PMinus, m); // Compute PMinus = P*IMinusKH_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
 
-		for (int colCounter = 0; colCounter < m; colCounter++) {
+		for (int colCounter = 0; colCounter < p; colCounter++) {
 			#pragma omp simd
-			for (int rowCounter = 0; rowCounter < m; rowCounter++) {
-				P[colCounter*m+rowCounter] = PMinus[colCounter*m+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
 
 		#ifdef DEBUG_LNLIKE
 		cout << "P" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, P);
+		viewMatrix(p, p, P);
 		cout << endl;
 		#endif
 
@@ -1664,36 +1672,36 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 		#ifdef DEBUG_LNLIKE
 		cout << "X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << endl;
 		#endif
 
 		#ifdef DEBUG_LNLIKE
 		cout << "P" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, P);
+		viewMatrix(p, p, P);
 		cout << endl;
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, F, m, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 
 		#ifdef DEBUG_LNLIKE
 		cout << "XMinus" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, XMinus);
+		viewMatrix(p, 1, XMinus);
 		cout << endl;
 		#endif
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, F, m, P, m, 0.0, MScratch, m); // Compute MScratch = F*P
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, m, m, 1.0, MScratch, m, F, m, 0.0, PMinus, m); // Compute PMinus = MScratch*F_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, I, m, Q, m, 1.0, PMinus, m); // Compute PMinus = I*Q + PMinus;
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 
 		#ifdef DEBUG_LNLIKE
 		cout << "PMinus" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, PMinus);
+		viewMatrix(p, p, PMinus);
 		cout << endl;
 		#endif
 
@@ -1714,9 +1722,9 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 		cout << endl;
 		#endif
 
-		cblas_dgemv(CblasColMajor, CblasTrans, m, m, 1.0, PMinus, m, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 
-		S = cblas_ddot(m, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 
 		#ifdef DEBUG_LNLIKE
 		cout << "S[" << i << "]: " << S << endl;
@@ -1730,64 +1738,64 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 		cout << endl;
 		#endif
 
-		cblas_dscal(m, SInv, K, 1); // Compute K = SInv*K
+		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 
 		#ifdef DEBUG_LNLIKE
 		cout << "K" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, K);
+		viewMatrix(p, 1, K);
 		cout << endl;
 		#endif
 
-		for (int colCounter = 0; colCounter < m; colCounter++) {
+		for (int colCounter = 0; colCounter < p; colCounter++) {
 			#pragma omp simd
-			for (int rowCounter = 0; rowCounter < m; rowCounter++) {
-				MScratch[rowCounter*m+colCounter] = I[colCounter*m+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
 				}
 			}
 
 		#ifdef DEBUG_LNLIKE
 		cout << "IMinusKH" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, MScratch);
+		viewMatrix(p, p, MScratch);
 		cout << endl;
 		#endif
 
-		cblas_dcopy(m, K, 1, VScratch, 1); // Compute VScratch = K
+		cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
 
-		cblas_dgemv(CblasColMajor, CblasNoTrans, m, m, 1.0, MScratch, m, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
 
 		#ifdef DEBUG_LNLIKE
 		cout << "VScratch == X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, VScratch);
+		viewMatrix(p, 1, VScratch);
 		cout << endl;
 		#endif
 
-		cblas_dcopy(m, VScratch, 1, X, 1); // Compute X = VScratch
+		cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
 
 		#ifdef DEBUG_LNLIKE
 		cout << "X" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, 1, X);
+		viewMatrix(p, 1, X);
 		cout << endl;
 		#endif
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1.0, MScratch, m, PMinus, m, 0.0, P, m); // Compute P = IMinusKH*PMinus
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
 
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, m, m, 1.0, P, m, MScratch, m, 0.0, PMinus, m); // Compute PMinus = P*IMinusKH_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
 
-		for (int colCounter = 0; colCounter < m; colCounter++) {
+		for (int colCounter = 0; colCounter < p; colCounter++) {
 			#pragma omp simd
-			for (int rowCounter = 0; rowCounter < m; rowCounter++) {
-				P[colCounter*m+rowCounter] = PMinus[colCounter*m+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
 
 		#ifdef DEBUG_LNLIKE
 		cout << "P" << endl;
 		cout << "--------" << endl;
-		viewMatrix(m, m, P);
+		viewMatrix(p, p, P);
 		cout << endl;
 		#endif
 
