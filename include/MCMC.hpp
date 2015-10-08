@@ -1,7 +1,7 @@
 #ifndef MCMC_HPP
 #define MCMC_HPP
 
-#include <string>
+//#include <string>
 //#include "Kalman.hpp"
 
 using namespace std;

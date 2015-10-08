@@ -174,11 +174,11 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
 	#endif
 
-	for (int i = 0; i < (Systems[threadNum].p+Systems[threadNum].q+1); ++i) {
+	for (int i = 0; i < (Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1); ++i) {
 		Systems[threadNum].Theta[i] = x[i];
 
 		#ifdef DEBUG_CALCLNLIKE
-		printf("%f ",Systems[threadNum].Theta[i]);
+		printf("%f ",Systems[threadNum].get_Theta(i));
 		#endif
 
 		}
@@ -384,7 +384,8 @@ CARMA::CARMA() {
 	rcondv = nullptr;
 	ipiv = nullptr;
 
-	Theta = nullptr;
+	CAR = nullptr;
+	CMA = nullptr;
 	A = nullptr;
 	AScratch = nullptr;
 	B = nullptr;
@@ -450,7 +451,8 @@ CARMA::~CARMA() {
 	rcondv = nullptr;
 	ipiv = nullptr;
 
-	Theta = nullptr;
+	CAR = nullptr;
+	CMA = nullptr;
 	A = nullptr;
 	AScratch = nullptr;
 	B = nullptr;
@@ -602,11 +604,18 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			}
 		}
 
-	Theta = static_cast<double*>(_mm_malloc((p+q+1)*sizeof(double),64));
-	allocated += (p+q+1)*sizeof(double);
+	CAR = static_cast<double*>(_mm_malloc((p)*sizeof(double),64));
+	allocated += p*sizeof(double);
 
-	for (int rowCtr = 0; rowCtr < (p+q+1); ++rowCtr) {
-		Theta[rowCtr] = 0.0;
+	CMA = static_cast<double*>(_mm_malloc((q+1)*sizeof(double),64));
+	allocated += (q + 1)*sizeof(double);
+
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		CAR[rowCtr] = 0.0;
+		}
+
+	for (int rowCtr = 0; rowCtr < q+1; ++rowCtr) {
+		CMA[rowCtr] = 0.0;
 		}
 
 	D = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
@@ -793,7 +802,6 @@ void CARMA::deallocCARMA() {
 		FKron_c = nullptr;
 		}
 
-	lapack_int *FKron_ipiv;
 	if (FKron_ipiv) {
 		_mm_free(FKron_ipiv);
 		FKron_ipiv = nullptr;
@@ -822,6 +830,16 @@ void CARMA::deallocCARMA() {
 	if (FKron_err_bnds_comp) {
 		_mm_free(FKron_err_bnds_comp);
 		FKron_err_bnds_comp = nullptr;
+		}
+
+	if (CAR) {
+		_mm_free(CAR);
+		CAR = nullptr;
+		}
+
+	if (CMA) {
+		_mm_free(CMA);
+		CMA = nullptr;
 		}
 
 	if (D) {
@@ -884,7 +902,19 @@ void CARMA::deallocCARMA() {
 	#endif
 	}
 
-int CARMA::checkCARMAParams(double* Theta) {
+int CARMA::get_p() {
+	return p;
+	}
+
+int CARMA::get_q() {
+	return q;
+	}
+
+double CARMA::get_t() {
+	return t;
+	}
+
+int CARMA::checkCARMAParams(double *CAR, double *CMA) {
 
 	isStable = 1;
 	isInvertible = 1;
@@ -898,10 +928,10 @@ int CARMA::checkCARMAParams(double* Theta) {
 			}
 		}
 
-	CARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*CAR[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		CARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*CAR[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
 		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
@@ -970,11 +1000,11 @@ int CARMA::checkCARMAParams(double* Theta) {
 			CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
 			}
 		}
-	CMAMatrix[(q-1)*q] = -1.0*Theta[p+q-1]/Theta[p]; // MAMatrix has -beta_q/-beta_0 at top right!
+	CMAMatrix[(q-1)*q] = -1.0*CMA[q-1]/CMA[0]; // MAMatrix has -beta_q/-beta_0 at top right!
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-		CMAMatrix[rowCtr+(q-1)*q] = -1.0*Theta[p+q-1-rowCtr]/Theta[p]; // Rightmost column of MAMatrix has -MA coeffs.
-		CMAMatrix[rowCtr+(rowCtr-1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
+		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*CMA[q - 1 - rowCtr]/CMA[0]; // Rightmost column of MAMatrix has -MA coeffs.
+		CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
 	ihi[0] = 0;
@@ -1043,7 +1073,15 @@ int CARMA::checkCARMAParams(double* Theta) {
 	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
 	}
 
-void CARMA::setCARMA(double* Theta) {
+void CARMA::setCARMA(double *CARList, double *CMAList) {
+
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		CAR[rowCtr] = CARList[rowCtr];
+		}
+
+	for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
+		CMA[rowCtr] = CMAList[rowCtr];
+		}
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
@@ -1052,10 +1090,10 @@ void CARMA::setCARMA(double* Theta) {
 			}
 		}
 
-	A[0] = -1.0*Theta[0];
+	A[0] = -1.0*CAR[0];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i] = -1.0*Theta[i];
+		A[i] = -1.0*CAR[i];
 		A[i*p + (i - 1)] = 1.0;
 		}
 
@@ -1096,7 +1134,7 @@ void CARMA::setCARMA(double* Theta) {
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q; rowCtr++) {
-		B[p - q + rowCtr] = Theta[p + rowCtr];
+		B[p - q + rowCtr] = CMA[rowCtr];
 		}
 
 	#ifdef DEBUG_SETDLM

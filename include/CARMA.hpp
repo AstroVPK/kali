@@ -48,7 +48,8 @@ private:
 	double *rcondv; // len p
 	lapack_int *ipiv; // len p
 
-	double *Theta;
+	double *CAR;
+	double *CMA;
 	complex<double> *A;
 	complex<double> *B;
 	double *I;
@@ -79,10 +80,13 @@ private:
 public:
 	CARMA();
 	~CARMA();
+	int get_p();
+	int get_q();
+	double get_t();
 	void allocCARMA(int numP, int numQ);
 	void deallocCARMA();
-	int checkCARMAParams(double* Theta);
-	void setCARMA(double* Theta);
+	int checkCARMAParams(double* CAR, double* CMA);
+	void setCARMA(double* CARMAParams);
 	void operator()(const vector<double> &x, vector<double> &dxdt, const double t);
 	void solveCARMA(double dt);
 	void resetState(double InitUncertainty);
