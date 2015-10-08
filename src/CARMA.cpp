@@ -3,6 +3,7 @@
 #include <limits>
 #include <mathimf.h>
 #include <omp.h>
+#include <complex>
 #include <mkl_types.h>
 #define MKL_Complex8 std::complex<float>
 #define MKL_Complex16 std::complex<double>
@@ -264,6 +265,38 @@ double calcLnLike(double* walkerPos, void* func_args) {
 	return LnLike;
 	}
 
+void zeroMatrix(int nRows, int nCols, int* mat) {
+	for (int colNum = 0; colNum < nCols; ++colNum) {
+		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
+			mat[rowNum + nRows*colNum] = 0;
+			}
+		}
+	}
+
+void zeroMatrix(int nRows, int nCols, lapack_int* mat) {
+	for (int colNum = 0; colNum < nCols; ++colNum) {
+		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
+			mat[rowNum + nRows*colNum] = 0;
+			}
+		}
+	}
+
+void zeroMatrix(int nRows, int nCols, double* mat) {
+	for (int colNum = 0; colNum < nCols; ++colNum) {
+		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
+			mat[rowNum + nRows*colNum] = 0.0;
+			}
+		}
+	}
+
+void zeroMatrix(int nRows, int nCols, complex<double>* mat) {
+	for (int colNum = 0; colNum < nCols; ++colNum) {
+		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
+			mat[rowNum + nRows*colNum] = 0.0;
+			}
+		}
+	}
+
 void viewMatrix(int nRows, int nCols, double* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
@@ -324,30 +357,41 @@ CARMA::CARMA() {
 	p = 0;
 	q = 0;
 	pSq = 0;
-	ilo = nullptr;
-	ihi = nullptr;
-	CARMatrix = nullptr;
-	CMAMatrix = nullptr;
-	CARScale = nullptr;
-	CMAScale = nullptr;
-	CARTau = nullptr;
-	CMATau = nullptr;
-	CARwr = nullptr;
-	CARwi = nullptr;
-	CMAwr = nullptr;
-	CMAwi = nullptr;
+	t = 0.0;
+
+	ilo = nullptr; // len 1
+	ihi = nullptr; // len 1
+	abnrm = nullptr; // len 1
+
+	// Arrays used to compute expm(A dt)
+	w = nullptr; // len p
+	expw = nullptr; // len p
+	CARw = nullptr; // len p
+	CMAw = nullptr; //len q
+	scale = nullptr;
+	vr = nullptr;
+	vrInv = nullptr;
+	rconde = nullptr;
+	rcondv = nullptr;
+	ipiv = nullptr;
+
+	Theta = nullptr;
 	A = nullptr;
-	Awr = nullptr;
-	Awi = nullptr;
-	Avr = nullptr;
-	Ailo = nullptr;
-	Aihi = nullptr;
-	Ascale = nullptr;
+	AScratch = nullptr;
 	B = nullptr;
+	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
 	FKron = nullptr;
-	FKronPiv = nullptr;
+	FKron_af = nullptr;
+	FKron_r = nullptr;
+	FKron_c = nullptr;
+	FKron_ipiv = nullptr;
+	FKron_rcond = nullptr;
+	FKron_rpvgrw = nullptr;
+	FKron_berr = nullptr;
+	FKron_err_bnds_norm = nullptr;
+	FKron_err_bnds_comp = nullptr;
 	D = nullptr;
 	Q = nullptr;
 	H = nullptr;
@@ -380,35 +424,42 @@ CARMA::~CARMA() {
 	hasUniqueEigenValues = 0;
 	p = 0;
 	q = 0;
-	m = 0;
-	mSq = 0;
-	ilo = nullptr;
-	ihi = nullptr;
-	//ARz = nullptr;
-	//MAz = nullptr;
-	CARMatrix = nullptr;
-	CMAMatrix = nullptr;
-	CARScale = nullptr;
-	CMAScale = nullptr;
-	CARTau = nullptr;
-	CMATau = nullptr;
-	CARwr = nullptr;
-	CARwi = nullptr;
-	CMAwr = nullptr;
-	CMAwi = nullptr;
+	pSq = 0;
+	t = 0.0;
+
+	ilo = nullptr; // len 1
+	ihi = nullptr; // len 1
+	abnrm = nullptr; // len 1
+
+	// Arrays used to compute expm(A dt)
+	w = nullptr; // len p
+	expw = nullptr; // len p
+	CARw = nullptr; // len p
+	CMAw = nullptr; //len q
+	scale = nullptr;
+	vr = nullptr;
+	vrInv = nullptr;
+	rconde = nullptr;
+	rcondv = nullptr;
+	ipiv = nullptr;
+
 	Theta = nullptr;
 	A = nullptr;
-	Awr = nullptr;
-	Awi = nullptr;
-	Avr = nullptr;
-	Ailo = nullptr;
-	Aihi = nullptr;
-	Ascale = nullptr;
+	AScratch = nullptr;
 	B = nullptr;
+	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
 	FKron = nullptr;
-	FKronPiv = nullptr;
+	FKron_af = nullptr;
+	FKron_r = nullptr;
+	FKron_c = nullptr;
+	FKron_ipiv = nullptr;
+	FKron_rcond = nullptr;
+	FKron_rpvgrw = nullptr;
+	FKron_berr = nullptr;
+	FKron_err_bnds_norm = nullptr;
+	FKron_err_bnds_comp = nullptr;
 	D = nullptr;
 	Q = nullptr;
 	H = nullptr;

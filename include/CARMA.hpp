@@ -1,7 +1,7 @@
 #ifndef CARMA_HPP
 #define CARMA_HPP
 
-#inlude <complex>
+#include <complex>
 #include <mkl_types.h>
 #define MKL_Complex8 std::complex<float>
 #define MKL_Complex16 std::complex<double>
@@ -27,22 +27,23 @@ public:
 	int p;
 	int q;
 	int pSq;
+	double t; // This is the last used step time to compute F and Q.
 	// ilo, ihi and abnrm are arrays of size 1 so they can be re-used by everything. No need to make multiple copies for A, CAR and CMA
-	lapack_int *ilo;
-	lapack_int *ihi;
-	double *abnrm;
+	lapack_int *ilo; // len 1
+	lapack_int *ihi; // len 1
+	double *abnrm; // len 1
 
 	// Arrays used to compute expm(A dt)
-	complex<double> *w;
-	complex<double> *expw;
-	complex<double> *CARw;
-	complex<double> *CMAw;
+	complex<double> *w; // len p
+	complex<double> *expw; // len p
+	complex<double> *CARw; // len p
+	complex<double> *CMAw; //len q
 	complex<double> *scale;
 	complex<double> *vr;
 	complex<double> *vrInv;
 	double *rconde;
 	double *rcondv;
-	lapack_int *ipiv
+	lapack_int *ipiv;
 
 	double *Theta;
 	complex<double> *A;
@@ -109,7 +110,17 @@ struct LnLikeArgs {
 	LnLikeData Data;
 	}; 
 
+void zeroMatrix(int nRows, int nCols, int* mat);
+
+void zeroMatrix(int nRows, int nCols, lapack_int* mat);
+
+void zeroMatrix(int nRows, int nCols, double* mat);
+
+void zeroMatrix(int nRows, int nCols, complex<double>* mat);
+
 void viewMatrix(int nRows, int nCols, double* mat);
+
+void viewMatrix(int nRows, int nCols, complex<double>* mat);
 
 double dtime();
 
