@@ -23,7 +23,7 @@ public:
 	int isStable;
 	int isInvertible;
 	int isNotRedundant;
-	int isReasonable;
+	int hasUniqueEigenValues;
 	int p;
 	int q;
 	int pSq;
@@ -113,8 +113,6 @@ struct LnLikeArgs {
 	}; 
 
 void zeroMatrix(int nRows, int nCols, int* mat);
-
-void zeroMatrix(int nRows, int nCols, lapack_int* mat);
 
 void zeroMatrix(int nRows, int nCols, double* mat);
 
