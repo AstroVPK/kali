@@ -18,7 +18,7 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
 double calcLnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 class CARMA {
-public:
+private:
 	int allocated;
 	int isStable;
 	int isInvertible;
@@ -76,6 +76,7 @@ public:
 	double *PMinus;
 	double *VScratch;
 	double *MScratch;
+public:
 	CARMA();
 	~CARMA();
 	void allocCARMA(int numP, int numQ);
