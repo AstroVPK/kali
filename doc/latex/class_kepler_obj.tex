@@ -1,0 +1,911 @@
+\hypertarget{class_kepler_obj}{\section{Kepler\-Obj Class Reference}
+\label{class_kepler_obj}\index{Kepler\-Obj@{Kepler\-Obj}}
+}
+
+
+{\ttfamily \#include $<$Kepler.\-hpp$>$}
+
+
+
+Inheritance diagram for Kepler\-Obj\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=138pt]{class_kepler_obj__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Kepler\-Obj\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=149pt]{class_kepler_obj__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_kepler_obj_afd0b831e625b2c4f5c75c458a2dd0ba7}{Kepler\-Obj} ()=default
+\item 
+\hyperlink{class_kepler_obj_a6f5497c0170b840769e22e317332644e}{Kepler\-Obj} (string id, string path, \hyperlink{class_equatorial}{Equatorial} loc)
+\item 
+string \hyperlink{class_kepler_obj_a268fc8a6f87be9489c5ee4d52903fd2c}{get\-I\-D} ()
+\item 
+string \hyperlink{class_kepler_obj_a3e99e434a7328f45137b94ae9557ceeb}{get\-Path} ()
+\item 
+\hyperlink{class_equatorial}{Equatorial} \hyperlink{class_kepler_obj_ace9583f6845dc6db9e0e23ec60bb0c54}{get\-Location} ()
+\item 
+double \hyperlink{class_kepler_obj_aa39f1254aa63f9cec80061be6da46a58}{get\-Red\-Shift} ()
+\item 
+int \hyperlink{class_kepler_obj_acd3e416bd288f43a30a7b753a6697f99}{get\-Order} ()
+\item 
+void \hyperlink{class_kepler_obj_af7e062113cc6222956d892733b36142f}{set\-Order} (int ord)
+\item 
+int \hyperlink{class_kepler_obj_ad953af55b06af0234c68e54c6275d7e4}{get\-Num\-Cadences} ()
+\item 
+int \hyperlink{class_kepler_obj_a1980eedbf8b3b8c7e04b41dc887630f1}{get\-Num\-Lags} ()
+\item 
+int \hyperlink{class_kepler_obj_ad44d1900ee67daddc8d7c93887a05f46}{get\-Over\-Sample\-Factor} ()
+\item 
+void \hyperlink{class_kepler_obj_a8cf9e305908521eaf390f5dd96fe9b4a}{set\-Over\-Sample\-Factor} (int over\-Sample\-Factor)
+\item 
+int \hyperlink{class_kepler_obj_a37ec5e30230b9e91a9f4e54033097fc9}{get\-Num\-Quarters} ()
+\item 
+double \hyperlink{class_kepler_obj_a5fd1060cb4c3c1cbc804e0bf20eddfa0}{get\-Start\-Epoch} ()
+\item 
+double \hyperlink{class_kepler_obj_a195fb841c86bb6d947bcd9a7c45ec56e}{get\-Mean\-Flux} ()
+\item 
+int \hyperlink{class_kepler_obj_a8f53290957f8902ddb5668a21527e4ba}{get\-First\-Cadence} ()
+\item 
+int \hyperlink{class_kepler_obj_ad2c733e73ddd622f8c2b74b070ba9f51}{get\-Last\-Cadence} ()
+\item 
+void \hyperlink{class_kepler_obj_a7ac5a2d3bdaa7a41a39a238788f8a6fa}{set\-Frac\-H\-O\-S\-T} (double frac\-H\-O\-S\-T)
+\item 
+double \hyperlink{class_kepler_obj_a230eab3c510a51b2197cf6ec7e30fd75}{get\-Frac\-H\-O\-S\-T} ()
+\item 
+void \hyperlink{class_kepler_obj_a612da6fa87b8f97c4f161bc5f39fe9ea}{set\-Frac\-M\-I\-C} (double frac\-M\-I\-C)
+\item 
+double \hyperlink{class_kepler_obj_a0ff0576f717c68e5e4b9f0757c3f80f7}{get\-Frac\-M\-I\-C} ()
+\item 
+int \hyperlink{class_kepler_obj_a9dadabc2f3314221e358a3c056b22f21}{get\-Stage} ()
+\item 
+void \hyperlink{class_kepler_obj_afcd5f85bcd1f39d590d70e0dcdc1ee08}{set\-Stage} (int stage)
+\item 
+void \hyperlink{class_kepler_obj_ace628ec6c767aff9168497ec63984ccc}{set\-Num\-Sims\-S\-I} (int num\-Sims\-S\-I)
+\item 
+int \hyperlink{class_kepler_obj_ade4482c97b7fc9ea66ec8b94a289f881}{get\-Num\-Sims\-S\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_a43d6d7205c8a92397558a97217511b62}{set\-Max\-Evals\-S\-I} (int max\-Evals\-S\-I)
+\item 
+int \hyperlink{class_kepler_obj_aa23b06e8009166f41be3885df24317d4}{get\-Max\-Evals\-S\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_a3e6045761b050157a17fb578685bdd9a}{set\-F\-Tol\-S\-I} (double f\-Tol\-S\-I)
+\item 
+double \hyperlink{class_kepler_obj_a4fb09c27d3291bd40875d78cfdc2e80c}{get\-F\-Tol\-S\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_a762cbe9392ac57bcb4fa64858826e1f1}{set\-Num\-Sims\-S\-I\-I} (int num\-Sims\-S\-I\-I)
+\item 
+int \hyperlink{class_kepler_obj_aa3cf9a27159e7e6a4035434c5e10d65b}{get\-Num\-Sims\-S\-I\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_ab6eaf04d2a806c718a41c38a44af6190}{set\-Max\-Evals\-S\-I\-I} (int max\-Evals\-S\-I\-I)
+\item 
+int \hyperlink{class_kepler_obj_a5c3a7895c5a602b005bbb2042e1650e8}{get\-Max\-Evals\-S\-I\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_a799a2b684a67435c404e6071af7b00f6}{set\-F\-Tol\-S\-I\-I} (double f\-Tol\-S\-I\-I)
+\item 
+double \hyperlink{class_kepler_obj_acbf137e5718db7b15f72c91fa4d2f726}{get\-F\-Tol\-S\-I\-I} ()
+\item 
+void \hyperlink{class_kepler_obj_a78ddbc7c63e7d698e968a65d04ed5ae1}{set\-Num\-Sims\-C\-S} (int num\-Sims\-C\-S)
+\item 
+int \hyperlink{class_kepler_obj_a70fe38e2ebdfda98be4284f00e6c4734}{get\-Num\-Sims\-C\-S} ()
+\item 
+void \hyperlink{class_kepler_obj_a00f426d160b0674bfe52d2f36014e465}{set\-Max\-Evals\-C\-S} ()
+\item 
+int \hyperlink{class_kepler_obj_adda2765461c9fe80a8427f39b8f841ed}{get\-Max\-Evals\-C\-S} ()
+\item 
+void \hyperlink{class_kepler_obj_a94b23d5f4fe9142053e2c0a8d5a7eab4}{set\-Num\-Chi\-Sq} (int num\-Chi\-Sq)
+\item 
+int \hyperlink{class_kepler_obj_a7c4abbe2e792cff003d957d9b631dc74}{get\-Num\-Chi\-Sq} ()
+\item 
+void \hyperlink{class_kepler_obj_afaefc71cee5ab1f7fed60366910b77d2}{set\-Num\-Seeds} (int num\-Seeds)
+\item 
+int \hyperlink{class_kepler_obj_aff16c04462b1714a474a1c2bb3be30ff}{get\-Num\-Seeds} ()
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_a9162e912a70706492323c4a7b84e25a7}{get\-Data} ()
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_ac372c45b9df44b41192324c50629dd92}{get\-Data} (int stitch\-Method)
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_acb2e980082a9a943dbecb40cf4dcd0bb}{get\-Data} (bool force\-Calibrate, int stitch\-Method)
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_a3f09ad774ae8ffad8936ff1c2f91bcbb}{get\-Data} (string \&file\-Name, bool cbv\-O\-Rpdc)
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_af0c74aa514da769c45ddd1b5d6fa09d8}{get\-Data} (string \&filename, bool cbv\-O\-Rpdc, int stitch\-Method)
+\item 
+tuple$<$ vector$<$ array$<$ int, 2 $>$\\*
+ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ \hyperlink{class_kepler_obj_a4f90cf9b7aa47fdaca37001c9032fea1}{get\-Data} (string \&file\-Name, bool cbv\-O\-Rpdc, bool force\-Calibrate, int stitch\-Method)
+\item 
+void \hyperlink{class_kepler_obj_a18ece34d36959a5eb0c75c34bdeea2ae}{set\-Properties} (const tuple$<$ vector$<$ array$<$ int, 2 $>$$>$, vector$<$ array$<$ double, 5 $>$$>$$>$ \&data\-Array)
+\item 
+void \hyperlink{class_kepler_obj_a0712485c7f8f87047dff986c06bca53e}{set\-Mask} (const tuple$<$ vector$<$ array$<$ int, 2 $>$$>$, vector$<$ array$<$ double, 5 $>$$>$$>$ \&data\-Array, double $\ast$mask)
+\item 
+vector$<$ unsigned int $>$ \hyperlink{class_kepler_obj_ab0d9b5872db2ceaf8a589da7a6c5b24a}{get\-Seeds} ()
+\item 
+vector$<$ unsigned int $>$ \hyperlink{class_kepler_obj_ad493b1e9867acac00840229d31b71e2a}{get\-Seeds} (int num\-Seeds\-Req)
+\item 
+int \hyperlink{class_kepler_obj_ac57d999ff4bdb6cbcfc710803d034cc1}{epoch\-Toindex} (double epoch)
+\item 
+double \hyperlink{class_kepler_obj_a7b822c1719305ecc53c4594fab113c99}{index\-Toepoch} (int index)
+\item 
+vector$<$ int $>$ \hyperlink{class_kepler_obj_a707be7b6de877f1d4a66f022f5f7b08e}{epoch\-Toindex} (vector$<$ double $>$ epoch\-List)
+\item 
+vector$<$ double $>$ \hyperlink{class_kepler_obj_a89d53cab1519c3cb5d337da37565b60d}{index\-Toepoch} (vector$<$ int $>$ index\-List)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 11 of file Kepler.\-hpp.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_kepler_obj_afd0b831e625b2c4f5c75c458a2dd0ba7}{\index{Kepler\-Obj@{Kepler\-Obj}!Kepler\-Obj@{Kepler\-Obj}}
+\index{Kepler\-Obj@{Kepler\-Obj}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{Kepler\-Obj}]{\setlength{\rightskip}{0pt plus 5cm}Kepler\-Obj\-::\-Kepler\-Obj (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [default]}}}\label{class_kepler_obj_afd0b831e625b2c4f5c75c458a2dd0ba7}
+\hypertarget{class_kepler_obj_a6f5497c0170b840769e22e317332644e}{\index{Kepler\-Obj@{Kepler\-Obj}!Kepler\-Obj@{Kepler\-Obj}}
+\index{Kepler\-Obj@{Kepler\-Obj}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{Kepler\-Obj}]{\setlength{\rightskip}{0pt plus 5cm}Kepler\-Obj\-::\-Kepler\-Obj (
+\begin{DoxyParamCaption}
+\item[{string}]{id, }
+\item[{string}]{path, }
+\item[{{\bf Equatorial}}]{loc}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a6f5497c0170b840769e22e317332644e}
+
+
+Definition at line 23 of file Kepler.\-cpp.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_kepler_obj_ac57d999ff4bdb6cbcfc710803d034cc1}{\index{Kepler\-Obj@{Kepler\-Obj}!epoch\-Toindex@{epoch\-Toindex}}
+\index{epoch\-Toindex@{epoch\-Toindex}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{epoch\-Toindex}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::epoch\-Toindex (
+\begin{DoxyParamCaption}
+\item[{double}]{epoch}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ac57d999ff4bdb6cbcfc710803d034cc1}
+
+
+Definition at line 822 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a707be7b6de877f1d4a66f022f5f7b08e}{\index{Kepler\-Obj@{Kepler\-Obj}!epoch\-Toindex@{epoch\-Toindex}}
+\index{epoch\-Toindex@{epoch\-Toindex}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{epoch\-Toindex}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$ int $>$ Kepler\-Obj\-::epoch\-Toindex (
+\begin{DoxyParamCaption}
+\item[{vector$<$ double $>$}]{epoch\-List}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a707be7b6de877f1d4a66f022f5f7b08e}
+
+
+Definition at line 832 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a9162e912a70706492323c4a7b84e25a7}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a9162e912a70706492323c4a7b84e25a7}
+
+
+Definition at line 559 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=254pt]{class_kepler_obj_a9162e912a70706492323c4a7b84e25a7_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_ac372c45b9df44b41192324c50629dd92}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+\item[{int}]{stitch\-Method}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ac372c45b9df44b41192324c50629dd92}
+
+
+Definition at line 565 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_acb2e980082a9a943dbecb40cf4dcd0bb}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+\item[{bool}]{force\-Calibrate, }
+\item[{int}]{stitch\-Method}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_acb2e980082a9a943dbecb40cf4dcd0bb}
+
+
+Definition at line 571 of file Kepler.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{class_kepler_obj_acb2e980082a9a943dbecb40cf4dcd0bb_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a3f09ad774ae8ffad8936ff1c2f91bcbb}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+\item[{string \&}]{file\-Name, }
+\item[{bool}]{cbv\-O\-Rpdc}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a3f09ad774ae8ffad8936ff1c2f91bcbb}
+
+
+Definition at line 727 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_af0c74aa514da769c45ddd1b5d6fa09d8}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+\item[{string \&}]{filename, }
+\item[{bool}]{cbv\-O\-Rpdc, }
+\item[{int}]{stitch\-Method}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_af0c74aa514da769c45ddd1b5d6fa09d8}
+
+
+Definition at line 733 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a4f90cf9b7aa47fdaca37001c9032fea1}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Data@{get\-Data}}
+\index{get\-Data@{get\-Data}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Data}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$ vector$<$ array$<$ int, 2 $>$ $>$, vector$<$ array$<$ double, 5 $>$ $>$ $>$ Kepler\-Obj\-::get\-Data (
+\begin{DoxyParamCaption}
+\item[{string \&}]{file\-Name, }
+\item[{bool}]{cbv\-O\-Rpdc, }
+\item[{bool}]{force\-Calibrate, }
+\item[{int}]{stitch\-Method}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a4f90cf9b7aa47fdaca37001c9032fea1}
+
+
+Definition at line 649 of file Kepler.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{class_kepler_obj_a4f90cf9b7aa47fdaca37001c9032fea1_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a8f53290957f8902ddb5668a21527e4ba}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-First\-Cadence@{get\-First\-Cadence}}
+\index{get\-First\-Cadence@{get\-First\-Cadence}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-First\-Cadence}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-First\-Cadence (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a8f53290957f8902ddb5668a21527e4ba}
+
+
+Definition at line 739 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=292pt]{class_kepler_obj_a8f53290957f8902ddb5668a21527e4ba_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a230eab3c510a51b2197cf6ec7e30fd75}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Frac\-H\-O\-S\-T@{get\-Frac\-H\-O\-S\-T}}
+\index{get\-Frac\-H\-O\-S\-T@{get\-Frac\-H\-O\-S\-T}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Frac\-H\-O\-S\-T}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-Frac\-H\-O\-S\-T (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a230eab3c510a51b2197cf6ec7e30fd75}
+
+
+Definition at line 98 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a0ff0576f717c68e5e4b9f0757c3f80f7}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Frac\-M\-I\-C@{get\-Frac\-M\-I\-C}}
+\index{get\-Frac\-M\-I\-C@{get\-Frac\-M\-I\-C}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Frac\-M\-I\-C}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-Frac\-M\-I\-C (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a0ff0576f717c68e5e4b9f0757c3f80f7}
+
+
+Definition at line 106 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a4fb09c27d3291bd40875d78cfdc2e80c}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-F\-Tol\-S\-I@{get\-F\-Tol\-S\-I}}
+\index{get\-F\-Tol\-S\-I@{get\-F\-Tol\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-F\-Tol\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-F\-Tol\-S\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a4fb09c27d3291bd40875d78cfdc2e80c}
+
+
+Definition at line 142 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_acbf137e5718db7b15f72c91fa4d2f726}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-F\-Tol\-S\-I\-I@{get\-F\-Tol\-S\-I\-I}}
+\index{get\-F\-Tol\-S\-I\-I@{get\-F\-Tol\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-F\-Tol\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-F\-Tol\-S\-I\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_acbf137e5718db7b15f72c91fa4d2f726}
+
+
+Definition at line 166 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a268fc8a6f87be9489c5ee4d52903fd2c}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-I\-D@{get\-I\-D}}
+\index{get\-I\-D@{get\-I\-D}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}string Kepler\-Obj\-::get\-I\-D (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a268fc8a6f87be9489c5ee4d52903fd2c}
+
+
+Definition at line 58 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ad2c733e73ddd622f8c2b74b070ba9f51}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Last\-Cadence@{get\-Last\-Cadence}}
+\index{get\-Last\-Cadence@{get\-Last\-Cadence}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Last\-Cadence}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Last\-Cadence (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ad2c733e73ddd622f8c2b74b070ba9f51}
+
+
+Definition at line 743 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=292pt]{class_kepler_obj_ad2c733e73ddd622f8c2b74b070ba9f51_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_ace9583f6845dc6db9e0e23ec60bb0c54}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Location@{get\-Location}}
+\index{get\-Location@{get\-Location}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Location}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Equatorial} Kepler\-Obj\-::get\-Location (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ace9583f6845dc6db9e0e23ec60bb0c54}
+
+
+Definition at line 66 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_adda2765461c9fe80a8427f39b8f841ed}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Max\-Evals\-C\-S@{get\-Max\-Evals\-C\-S}}
+\index{get\-Max\-Evals\-C\-S@{get\-Max\-Evals\-C\-S}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Max\-Evals\-C\-S}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Max\-Evals\-C\-S (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_adda2765461c9fe80a8427f39b8f841ed}
+
+
+Definition at line 182 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_aa23b06e8009166f41be3885df24317d4}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Max\-Evals\-S\-I@{get\-Max\-Evals\-S\-I}}
+\index{get\-Max\-Evals\-S\-I@{get\-Max\-Evals\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Max\-Evals\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Max\-Evals\-S\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_aa23b06e8009166f41be3885df24317d4}
+
+
+Definition at line 134 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a5c3a7895c5a602b005bbb2042e1650e8}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Max\-Evals\-S\-I\-I@{get\-Max\-Evals\-S\-I\-I}}
+\index{get\-Max\-Evals\-S\-I\-I@{get\-Max\-Evals\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Max\-Evals\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Max\-Evals\-S\-I\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a5c3a7895c5a602b005bbb2042e1650e8}
+
+
+Definition at line 158 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a195fb841c86bb6d947bcd9a7c45ec56e}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Mean\-Flux@{get\-Mean\-Flux}}
+\index{get\-Mean\-Flux@{get\-Mean\-Flux}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Mean\-Flux}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-Mean\-Flux (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a195fb841c86bb6d947bcd9a7c45ec56e}
+
+
+Definition at line 206 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ad953af55b06af0234c68e54c6275d7e4}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Cadences@{get\-Num\-Cadences}}
+\index{get\-Num\-Cadences@{get\-Num\-Cadences}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Cadences}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Cadences (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ad953af55b06af0234c68e54c6275d7e4}
+
+
+Definition at line 82 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=298pt]{class_kepler_obj_ad953af55b06af0234c68e54c6275d7e4_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a7c4abbe2e792cff003d957d9b631dc74}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Chi\-Sq@{get\-Num\-Chi\-Sq}}
+\index{get\-Num\-Chi\-Sq@{get\-Num\-Chi\-Sq}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Chi\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Chi\-Sq (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a7c4abbe2e792cff003d957d9b631dc74}
+
+
+Definition at line 186 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a1980eedbf8b3b8c7e04b41dc887630f1}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Lags@{get\-Num\-Lags}}
+\index{get\-Num\-Lags@{get\-Num\-Lags}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Lags}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Lags (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a1980eedbf8b3b8c7e04b41dc887630f1}
+
+
+Definition at line 86 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a37ec5e30230b9e91a9f4e54033097fc9}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Quarters@{get\-Num\-Quarters}}
+\index{get\-Num\-Quarters@{get\-Num\-Quarters}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Quarters}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Quarters (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a37ec5e30230b9e91a9f4e54033097fc9}
+
+
+Definition at line 202 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_aff16c04462b1714a474a1c2bb3be30ff}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Seeds@{get\-Num\-Seeds}}
+\index{get\-Num\-Seeds@{get\-Num\-Seeds}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Seeds}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Seeds (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_aff16c04462b1714a474a1c2bb3be30ff}
+
+
+Definition at line 194 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a70fe38e2ebdfda98be4284f00e6c4734}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Sims\-C\-S@{get\-Num\-Sims\-C\-S}}
+\index{get\-Num\-Sims\-C\-S@{get\-Num\-Sims\-C\-S}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Sims\-C\-S}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Sims\-C\-S (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a70fe38e2ebdfda98be4284f00e6c4734}
+
+
+Definition at line 170 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ade4482c97b7fc9ea66ec8b94a289f881}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Sims\-S\-I@{get\-Num\-Sims\-S\-I}}
+\index{get\-Num\-Sims\-S\-I@{get\-Num\-Sims\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Sims\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Sims\-S\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ade4482c97b7fc9ea66ec8b94a289f881}
+
+
+Definition at line 122 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_aa3cf9a27159e7e6a4035434c5e10d65b}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Num\-Sims\-S\-I\-I@{get\-Num\-Sims\-S\-I\-I}}
+\index{get\-Num\-Sims\-S\-I\-I@{get\-Num\-Sims\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Num\-Sims\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Num\-Sims\-S\-I\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_aa3cf9a27159e7e6a4035434c5e10d65b}
+
+
+Definition at line 146 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_acd3e416bd288f43a30a7b753a6697f99}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Order@{get\-Order}}
+\index{get\-Order@{get\-Order}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Order}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Order (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_acd3e416bd288f43a30a7b753a6697f99}
+
+
+Definition at line 74 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ad44d1900ee67daddc8d7c93887a05f46}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Over\-Sample\-Factor@{get\-Over\-Sample\-Factor}}
+\index{get\-Over\-Sample\-Factor@{get\-Over\-Sample\-Factor}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Over\-Sample\-Factor}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Over\-Sample\-Factor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ad44d1900ee67daddc8d7c93887a05f46}
+
+
+Definition at line 90 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a3e99e434a7328f45137b94ae9557ceeb}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Path@{get\-Path}}
+\index{get\-Path@{get\-Path}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Path}]{\setlength{\rightskip}{0pt plus 5cm}string Kepler\-Obj\-::get\-Path (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a3e99e434a7328f45137b94ae9557ceeb}
+
+
+Definition at line 62 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_aa39f1254aa63f9cec80061be6da46a58}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Red\-Shift@{get\-Red\-Shift}}
+\index{get\-Red\-Shift@{get\-Red\-Shift}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Red\-Shift}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-Red\-Shift (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_aa39f1254aa63f9cec80061be6da46a58}
+
+
+Definition at line 70 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ab0d9b5872db2ceaf8a589da7a6c5b24a}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Seeds@{get\-Seeds}}
+\index{get\-Seeds@{get\-Seeds}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Seeds}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$ unsigned int $>$ Kepler\-Obj\-::get\-Seeds (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ab0d9b5872db2ceaf8a589da7a6c5b24a}
+
+
+Definition at line 770 of file Kepler.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=268pt]{class_kepler_obj_ab0d9b5872db2ceaf8a589da7a6c5b24a_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_ad493b1e9867acac00840229d31b71e2a}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Seeds@{get\-Seeds}}
+\index{get\-Seeds@{get\-Seeds}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Seeds}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$ unsigned int $>$ Kepler\-Obj\-::get\-Seeds (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Seeds\-Req}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ad493b1e9867acac00840229d31b71e2a}
+
+
+Definition at line 794 of file Kepler.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=268pt]{class_kepler_obj_ad493b1e9867acac00840229d31b71e2a_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a9dadabc2f3314221e358a3c056b22f21}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Stage@{get\-Stage}}
+\index{get\-Stage@{get\-Stage}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Stage}]{\setlength{\rightskip}{0pt plus 5cm}int Kepler\-Obj\-::get\-Stage (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a9dadabc2f3314221e358a3c056b22f21}
+
+
+Definition at line 114 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a5fd1060cb4c3c1cbc804e0bf20eddfa0}{\index{Kepler\-Obj@{Kepler\-Obj}!get\-Start\-Epoch@{get\-Start\-Epoch}}
+\index{get\-Start\-Epoch@{get\-Start\-Epoch}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{get\-Start\-Epoch}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::get\-Start\-Epoch (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a5fd1060cb4c3c1cbc804e0bf20eddfa0}
+
+
+Definition at line 210 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a7b822c1719305ecc53c4594fab113c99}{\index{Kepler\-Obj@{Kepler\-Obj}!index\-Toepoch@{index\-Toepoch}}
+\index{index\-Toepoch@{index\-Toepoch}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{index\-Toepoch}]{\setlength{\rightskip}{0pt plus 5cm}double Kepler\-Obj\-::index\-Toepoch (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a7b822c1719305ecc53c4594fab113c99}
+
+
+Definition at line 827 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a89d53cab1519c3cb5d337da37565b60d}{\index{Kepler\-Obj@{Kepler\-Obj}!index\-Toepoch@{index\-Toepoch}}
+\index{index\-Toepoch@{index\-Toepoch}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{index\-Toepoch}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$ double $>$ Kepler\-Obj\-::index\-Toepoch (
+\begin{DoxyParamCaption}
+\item[{vector$<$ int $>$}]{index\-List}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a89d53cab1519c3cb5d337da37565b60d}
+
+
+Definition at line 842 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a7ac5a2d3bdaa7a41a39a238788f8a6fa}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Frac\-H\-O\-S\-T@{set\-Frac\-H\-O\-S\-T}}
+\index{set\-Frac\-H\-O\-S\-T@{set\-Frac\-H\-O\-S\-T}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Frac\-H\-O\-S\-T}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Frac\-H\-O\-S\-T (
+\begin{DoxyParamCaption}
+\item[{double}]{frac\-H\-O\-S\-T}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a7ac5a2d3bdaa7a41a39a238788f8a6fa}
+
+
+Definition at line 102 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a612da6fa87b8f97c4f161bc5f39fe9ea}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Frac\-M\-I\-C@{set\-Frac\-M\-I\-C}}
+\index{set\-Frac\-M\-I\-C@{set\-Frac\-M\-I\-C}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Frac\-M\-I\-C}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Frac\-M\-I\-C (
+\begin{DoxyParamCaption}
+\item[{double}]{frac\-M\-I\-C}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a612da6fa87b8f97c4f161bc5f39fe9ea}
+
+
+Definition at line 110 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a3e6045761b050157a17fb578685bdd9a}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-F\-Tol\-S\-I@{set\-F\-Tol\-S\-I}}
+\index{set\-F\-Tol\-S\-I@{set\-F\-Tol\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-F\-Tol\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-F\-Tol\-S\-I (
+\begin{DoxyParamCaption}
+\item[{double}]{f\-Tol\-S\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a3e6045761b050157a17fb578685bdd9a}
+
+
+Definition at line 138 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a799a2b684a67435c404e6071af7b00f6}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-F\-Tol\-S\-I\-I@{set\-F\-Tol\-S\-I\-I}}
+\index{set\-F\-Tol\-S\-I\-I@{set\-F\-Tol\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-F\-Tol\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-F\-Tol\-S\-I\-I (
+\begin{DoxyParamCaption}
+\item[{double}]{f\-Tol\-S\-I\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a799a2b684a67435c404e6071af7b00f6}
+
+
+Definition at line 162 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a0712485c7f8f87047dff986c06bca53e}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Mask@{set\-Mask}}
+\index{set\-Mask@{set\-Mask}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Mask (
+\begin{DoxyParamCaption}
+\item[{const tuple$<$ vector$<$ array$<$ int, 2 $>$$>$, vector$<$ array$<$ double, 5 $>$$>$$>$ \&}]{data\-Array, }
+\item[{double $\ast$}]{mask}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a0712485c7f8f87047dff986c06bca53e}
+
+
+Definition at line 759 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=258pt]{class_kepler_obj_a0712485c7f8f87047dff986c06bca53e_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_a00f426d160b0674bfe52d2f36014e465}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Max\-Evals\-C\-S@{set\-Max\-Evals\-C\-S}}
+\index{set\-Max\-Evals\-C\-S@{set\-Max\-Evals\-C\-S}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Max\-Evals\-C\-S}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Max\-Evals\-C\-S (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a00f426d160b0674bfe52d2f36014e465}
+
+
+Definition at line 178 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a43d6d7205c8a92397558a97217511b62}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Max\-Evals\-S\-I@{set\-Max\-Evals\-S\-I}}
+\index{set\-Max\-Evals\-S\-I@{set\-Max\-Evals\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Max\-Evals\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Max\-Evals\-S\-I (
+\begin{DoxyParamCaption}
+\item[{int}]{max\-Evals\-S\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a43d6d7205c8a92397558a97217511b62}
+
+
+Definition at line 130 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ab6eaf04d2a806c718a41c38a44af6190}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Max\-Evals\-S\-I\-I@{set\-Max\-Evals\-S\-I\-I}}
+\index{set\-Max\-Evals\-S\-I\-I@{set\-Max\-Evals\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Max\-Evals\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Max\-Evals\-S\-I\-I (
+\begin{DoxyParamCaption}
+\item[{int}]{max\-Evals\-S\-I\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ab6eaf04d2a806c718a41c38a44af6190}
+
+
+Definition at line 154 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a94b23d5f4fe9142053e2c0a8d5a7eab4}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Num\-Chi\-Sq@{set\-Num\-Chi\-Sq}}
+\index{set\-Num\-Chi\-Sq@{set\-Num\-Chi\-Sq}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Num\-Chi\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Num\-Chi\-Sq (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Chi\-Sq}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a94b23d5f4fe9142053e2c0a8d5a7eab4}
+
+
+Definition at line 190 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_afaefc71cee5ab1f7fed60366910b77d2}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Num\-Seeds@{set\-Num\-Seeds}}
+\index{set\-Num\-Seeds@{set\-Num\-Seeds}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Num\-Seeds}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Num\-Seeds (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Seeds}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_afaefc71cee5ab1f7fed60366910b77d2}
+
+
+Definition at line 198 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a78ddbc7c63e7d698e968a65d04ed5ae1}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Num\-Sims\-C\-S@{set\-Num\-Sims\-C\-S}}
+\index{set\-Num\-Sims\-C\-S@{set\-Num\-Sims\-C\-S}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Num\-Sims\-C\-S}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Num\-Sims\-C\-S (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Sims\-C\-S}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a78ddbc7c63e7d698e968a65d04ed5ae1}
+
+
+Definition at line 174 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_ace628ec6c767aff9168497ec63984ccc}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Num\-Sims\-S\-I@{set\-Num\-Sims\-S\-I}}
+\index{set\-Num\-Sims\-S\-I@{set\-Num\-Sims\-S\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Num\-Sims\-S\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Num\-Sims\-S\-I (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Sims\-S\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_ace628ec6c767aff9168497ec63984ccc}
+
+
+Definition at line 126 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a762cbe9392ac57bcb4fa64858826e1f1}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Num\-Sims\-S\-I\-I@{set\-Num\-Sims\-S\-I\-I}}
+\index{set\-Num\-Sims\-S\-I\-I@{set\-Num\-Sims\-S\-I\-I}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Num\-Sims\-S\-I\-I}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Num\-Sims\-S\-I\-I (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Sims\-S\-I\-I}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a762cbe9392ac57bcb4fa64858826e1f1}
+
+
+Definition at line 150 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_af7e062113cc6222956d892733b36142f}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Order@{set\-Order}}
+\index{set\-Order@{set\-Order}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Order}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Order (
+\begin{DoxyParamCaption}
+\item[{int}]{ord}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_af7e062113cc6222956d892733b36142f}
+
+
+Definition at line 78 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a8cf9e305908521eaf390f5dd96fe9b4a}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Over\-Sample\-Factor@{set\-Over\-Sample\-Factor}}
+\index{set\-Over\-Sample\-Factor@{set\-Over\-Sample\-Factor}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Over\-Sample\-Factor}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Over\-Sample\-Factor (
+\begin{DoxyParamCaption}
+\item[{int}]{over\-Sample\-Factor}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a8cf9e305908521eaf390f5dd96fe9b4a}
+
+
+Definition at line 94 of file Kepler.\-cpp.
+
+\hypertarget{class_kepler_obj_a18ece34d36959a5eb0c75c34bdeea2ae}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Properties@{set\-Properties}}
+\index{set\-Properties@{set\-Properties}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Properties}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Properties (
+\begin{DoxyParamCaption}
+\item[{const tuple$<$ vector$<$ array$<$ int, 2 $>$$>$, vector$<$ array$<$ double, 5 $>$$>$$>$ \&}]{data\-Array}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_a18ece34d36959a5eb0c75c34bdeea2ae}
+
+
+Definition at line 747 of file Kepler.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=278pt]{class_kepler_obj_a18ece34d36959a5eb0c75c34bdeea2ae_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_kepler_obj_afcd5f85bcd1f39d590d70e0dcdc1ee08}{\index{Kepler\-Obj@{Kepler\-Obj}!set\-Stage@{set\-Stage}}
+\index{set\-Stage@{set\-Stage}!KeplerObj@{Kepler\-Obj}}
+\subsubsection[{set\-Stage}]{\setlength{\rightskip}{0pt plus 5cm}void Kepler\-Obj\-::set\-Stage (
+\begin{DoxyParamCaption}
+\item[{int}]{stage}
+\end{DoxyParamCaption}
+)}}\label{class_kepler_obj_afcd5f85bcd1f39d590d70e0dcdc1ee08}
+
+
+Definition at line 118 of file Kepler.\-cpp.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/include/\hyperlink{_kepler_8hpp}{Kepler.\-hpp}\item 
+/home/vish/code/trunk/cpp/libcarma/src/\hyperlink{_kepler_8cpp}{Kepler.\-cpp}\end{DoxyCompactItemize}

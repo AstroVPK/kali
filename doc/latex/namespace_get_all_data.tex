@@ -1,0 +1,324 @@
+\hypertarget{namespace_get_all_data}{\section{Get\-All\-Data Namespace Reference}
+\label{namespace_get_all_data}\index{Get\-All\-Data@{Get\-All\-Data}}
+}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}{lightcurves\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/lightcurves/'
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}{target\-\_\-pixel\-\_\-files\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/target\-\_\-pixel\-\_\-files/'
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}{cbv\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/cbv/'
+\item 
+tuple \hyperlink{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{data\-Folder} = str(sys.\-argv\mbox{[}1\mbox{]})
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a651d69300ed082b3426d3910b6c6a5f7}{target\-List\-File} = \hyperlink{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{data\-Folder}+'kplr\-\_\-target\-List.\-dat'
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a92d210ac17aea3c86c2cae13d5dcf53a}{cbv\-Folder} = \hyperlink{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{data\-Folder}+'cbv/'
+\item 
+tuple \hyperlink{namespace_get_all_data_ac340b879890051d52eef59bb312d86c6}{cbvpath} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}{cbv\-Path})
+\item 
+tuple \hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} = cbvpath.\-read()
+\item 
+tuple \hyperlink{namespace_get_all_data_ab13b78016ebaf3b18c13c40b75b9ae3a}{cbv\-Pattern} = re.\-compile('kplr' + '\mbox{[}0-\/9\mbox{]}$\ast$-\/q\mbox{[}0-\/9\mbox{]}$\ast$-\/d\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lcbv.\-fits')
+\item 
+tuple \hyperlink{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}{cbv\-List} = cbv\-Pattern.\-findall(\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string})
+\item 
+tuple \hyperlink{namespace_get_all_data_a59840d46d0e238ee525782c0fbe13eeb}{remote\-C\-B\-V\-File} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}{cbv\-Path} + \hyperlink{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}{cbv\-List}\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a48b2086a8ab4a4eb4383aaa810014866}{local\-C\-B\-V\-File} = open(\hyperlink{namespace_get_all_data_a92d210ac17aea3c86c2cae13d5dcf53a}{cbv\-Folder} + \hyperlink{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}{cbv\-List}\mbox{[}2$\ast$i\mbox{]},'wb')
+\item 
+tuple \hyperlink{namespace_get_all_data_a7f0291de88ec75252bb7cfaa9a33997e}{t\-L\-File} = open(\hyperlink{namespace_get_all_data_a651d69300ed082b3426d3910b6c6a5f7}{target\-List\-File})
+\item 
+tuple \hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target} = target.\-rstrip('\textbackslash{}n')
+\item 
+\hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{obj\-Folder} = \hyperlink{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{data\-Folder}+\hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target}
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a16ca85b9e5a52cb403c24f90f47e5380}{F\-I\-T\-S\-Folder} = \hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{obj\-Folder}+'/llc/'
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_ab8e095b44d1d2a618b9f44a372540200}{sim\-Folder} = \hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{obj\-Folder}+'/sim/'
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_a3f0df6e75a64830be35cfc3f992806c4}{lpdtarg\-Folder} = \hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{obj\-Folder}+'/lpd-\/targ/'
+\item 
+list \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{X\-X\-X\-X} = \hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target}\mbox{[}4\-:8\mbox{]}
+\item 
+list \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{K\-K\-K\-K\-K\-K\-K\-K\-K} = \hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target}\mbox{[}4\-:13\mbox{]}
+\item 
+tuple \hyperlink{namespace_get_all_data_ae1e57e5321d57891fb95a9c9326c9713}{urlpath} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}{lightcurves\-Path} + \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{X\-X\-X\-X} + '/' + \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{K\-K\-K\-K\-K\-K\-K\-K\-K})
+\item 
+tuple \hyperlink{namespace_get_all_data_a2dafe0984549f093bb5d258640946102}{targpath} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}{target\-\_\-pixel\-\_\-files\-Path} + \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{X\-X\-X\-X} + '/' + \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{K\-K\-K\-K\-K\-K\-K\-K\-K})
+\item 
+tuple \hyperlink{namespace_get_all_data_a6125644c05ef4f47c70dee8f9f271b21}{string\-Targ} = targpath.\-read()
+\item 
+tuple \hyperlink{namespace_get_all_data_a826165aca23510d517a06f85902411be}{quarter\-Pattern} = re.\-compile(\hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target} + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-llc.\-fits')
+\item 
+tuple \hyperlink{namespace_get_all_data_ad05a0da5848b788cf7824b79fa516b64}{targ\-Pattern} = re.\-compile(\hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{target} + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lpd-\/targ.\-fits.\-gz')
+\item 
+tuple \hyperlink{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{quarter\-List} = quarter\-Pattern.\-findall(\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string})
+\item 
+tuple \hyperlink{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}{targ\-List} = targ\-Pattern.\-findall(\hyperlink{namespace_get_all_data_a6125644c05ef4f47c70dee8f9f271b21}{string\-Targ})
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_ac9174f2a0b0215a84e06e5f8a4f5e5e6}{epoch\-List\-File} = \hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{obj\-Folder}+'/'
+\item 
+tuple \hyperlink{namespace_get_all_data_aaf35a1611b07a1bc49bb090dccfaef8e}{e\-L\-File} = open(\hyperlink{namespace_get_all_data_ac9174f2a0b0215a84e06e5f8a4f5e5e6}{epoch\-List\-File},'w')
+\item 
+tuple \hyperlink{namespace_get_all_data_abb46709e621fe2edfea6055c1749afd5}{num\-Quarters} = len(\hyperlink{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{quarter\-List})
+\item 
+\hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{string} \hyperlink{namespace_get_all_data_acc2308c98b84b6b6eebcc695fff211ef}{e\-L\-File\-Line} = '\%s.\-dat\textbackslash{}n'
+\item 
+tuple \hyperlink{namespace_get_all_data_af072517ff6c21d5eab5ab2b237b0baf6}{remote\-Quarter\-File} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}{lightcurves\-Path} + \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{X\-X\-X\-X} + '/' + \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{K\-K\-K\-K\-K\-K\-K\-K\-K} + '/' + \hyperlink{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{quarter\-List}\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a7b84aca19fc066108a7f1216a37d8bc2}{remote\-Targ\-File} = urllib2.\-urlopen(\hyperlink{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}{target\-\_\-pixel\-\_\-files\-Path} + \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{X\-X\-X\-X} + '/' + \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{K\-K\-K\-K\-K\-K\-K\-K\-K} + '/' + \hyperlink{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}{targ\-List}\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a877740889eb38000b292aaee018666fb}{local\-Quarter\-File} = open(\hyperlink{namespace_get_all_data_a16ca85b9e5a52cb403c24f90f47e5380}{F\-I\-T\-S\-Folder} + \hyperlink{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{quarter\-List}\mbox{[}2$\ast$i\mbox{]},'wb')
+\item 
+tuple \hyperlink{namespace_get_all_data_a5da9f0ddc286550f618680b99a09f13e}{local\-Targ\-File} = open(\hyperlink{namespace_get_all_data_a3f0df6e75a64830be35cfc3f992806c4}{lpdtarg\-Folder} + \hyperlink{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}{targ\-List}\mbox{[}2$\ast$i\mbox{]},'wb')
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespace_get_all_data_a92d210ac17aea3c86c2cae13d5dcf53a}{\index{Get\-All\-Data@{Get\-All\-Data}!cbv\-Folder@{cbv\-Folder}}
+\index{cbv\-Folder@{cbv\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{cbv\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-cbv\-Folder = {\bf data\-Folder}+'cbv/'}}\label{namespace_get_all_data_a92d210ac17aea3c86c2cae13d5dcf53a}
+
+
+Definition at line 25 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}{\index{Get\-All\-Data@{Get\-All\-Data}!cbv\-List@{cbv\-List}}
+\index{cbv\-List@{cbv\-List}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{cbv\-List}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-cbv\-List = cbv\-Pattern.\-findall({\bf string})}}\label{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}
+
+
+Definition at line 31 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}{\index{Get\-All\-Data@{Get\-All\-Data}!cbv\-Path@{cbv\-Path}}
+\index{cbv\-Path@{cbv\-Path}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{cbv\-Path}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-cbv\-Path = 'http\-://archive.\-stsci.\-edu/pub/kepler/cbv/'}}\label{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}
+
+
+Definition at line 9 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ac340b879890051d52eef59bb312d86c6}{\index{Get\-All\-Data@{Get\-All\-Data}!cbvpath@{cbvpath}}
+\index{cbvpath@{cbvpath}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{cbvpath}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-cbvpath = urllib2.\-urlopen({\bf cbv\-Path})}}\label{namespace_get_all_data_ac340b879890051d52eef59bb312d86c6}
+
+
+Definition at line 28 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ab13b78016ebaf3b18c13c40b75b9ae3a}{\index{Get\-All\-Data@{Get\-All\-Data}!cbv\-Pattern@{cbv\-Pattern}}
+\index{cbv\-Pattern@{cbv\-Pattern}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{cbv\-Pattern}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-cbv\-Pattern = re.\-compile('kplr' + '\mbox{[}0-\/9\mbox{]}$\ast$-\/q\mbox{[}0-\/9\mbox{]}$\ast$-\/d\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lcbv.\-fits')}}\label{namespace_get_all_data_ab13b78016ebaf3b18c13c40b75b9ae3a}
+
+
+Definition at line 30 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{\index{Get\-All\-Data@{Get\-All\-Data}!data\-Folder@{data\-Folder}}
+\index{data\-Folder@{data\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{data\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-data\-Folder = str(sys.\-argv\mbox{[}1\mbox{]})}}\label{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}
+
+
+Definition at line 12 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_aaf35a1611b07a1bc49bb090dccfaef8e}{\index{Get\-All\-Data@{Get\-All\-Data}!e\-L\-File@{e\-L\-File}}
+\index{e\-L\-File@{e\-L\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{e\-L\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-e\-L\-File = open({\bf epoch\-List\-File},'w')}}\label{namespace_get_all_data_aaf35a1611b07a1bc49bb090dccfaef8e}
+
+
+Definition at line 66 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_acc2308c98b84b6b6eebcc695fff211ef}{\index{Get\-All\-Data@{Get\-All\-Data}!e\-L\-File\-Line@{e\-L\-File\-Line}}
+\index{e\-L\-File\-Line@{e\-L\-File\-Line}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{e\-L\-File\-Line}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-e\-L\-File\-Line = '\%s.\-dat\textbackslash{}n'}}\label{namespace_get_all_data_acc2308c98b84b6b6eebcc695fff211ef}
+
+
+Definition at line 69 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ac9174f2a0b0215a84e06e5f8a4f5e5e6}{\index{Get\-All\-Data@{Get\-All\-Data}!epoch\-List\-File@{epoch\-List\-File}}
+\index{epoch\-List\-File@{epoch\-List\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{epoch\-List\-File}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-epoch\-List\-File = {\bf obj\-Folder}+'/'}}\label{namespace_get_all_data_ac9174f2a0b0215a84e06e5f8a4f5e5e6}
+
+
+Definition at line 65 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a16ca85b9e5a52cb403c24f90f47e5380}{\index{Get\-All\-Data@{Get\-All\-Data}!F\-I\-T\-S\-Folder@{F\-I\-T\-S\-Folder}}
+\index{F\-I\-T\-S\-Folder@{F\-I\-T\-S\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{F\-I\-T\-S\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-F\-I\-T\-S\-Folder = {\bf obj\-Folder}+'/llc/'}}\label{namespace_get_all_data_a16ca85b9e5a52cb403c24f90f47e5380}
+
+
+Definition at line 46 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{\index{Get\-All\-Data@{Get\-All\-Data}!K\-K\-K\-K\-K\-K\-K\-K\-K@{K\-K\-K\-K\-K\-K\-K\-K\-K}}
+\index{K\-K\-K\-K\-K\-K\-K\-K\-K@{K\-K\-K\-K\-K\-K\-K\-K\-K}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{K\-K\-K\-K\-K\-K\-K\-K\-K}]{\setlength{\rightskip}{0pt plus 5cm}list Get\-All\-Data.\-K\-K\-K\-K\-K\-K\-K\-K\-K = {\bf target}\mbox{[}4\-:13\mbox{]}}}\label{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}
+
+
+Definition at line 56 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}{\index{Get\-All\-Data@{Get\-All\-Data}!lightcurves\-Path@{lightcurves\-Path}}
+\index{lightcurves\-Path@{lightcurves\-Path}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{lightcurves\-Path}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-lightcurves\-Path = 'http\-://archive.\-stsci.\-edu/pub/kepler/lightcurves/'}}\label{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}
+
+
+Definition at line 7 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a48b2086a8ab4a4eb4383aaa810014866}{\index{Get\-All\-Data@{Get\-All\-Data}!local\-C\-B\-V\-File@{local\-C\-B\-V\-File}}
+\index{local\-C\-B\-V\-File@{local\-C\-B\-V\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{local\-C\-B\-V\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-local\-C\-B\-V\-File = open({\bf cbv\-Folder} + {\bf cbv\-List}\mbox{[}2$\ast$i\mbox{]},'wb')}}\label{namespace_get_all_data_a48b2086a8ab4a4eb4383aaa810014866}
+
+
+Definition at line 34 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a877740889eb38000b292aaee018666fb}{\index{Get\-All\-Data@{Get\-All\-Data}!local\-Quarter\-File@{local\-Quarter\-File}}
+\index{local\-Quarter\-File@{local\-Quarter\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{local\-Quarter\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-local\-Quarter\-File = open({\bf F\-I\-T\-S\-Folder} + {\bf quarter\-List}\mbox{[}2$\ast$i\mbox{]},'wb')}}\label{namespace_get_all_data_a877740889eb38000b292aaee018666fb}
+
+
+Definition at line 73 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a5da9f0ddc286550f618680b99a09f13e}{\index{Get\-All\-Data@{Get\-All\-Data}!local\-Targ\-File@{local\-Targ\-File}}
+\index{local\-Targ\-File@{local\-Targ\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{local\-Targ\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-local\-Targ\-File = open({\bf lpdtarg\-Folder} + {\bf targ\-List}\mbox{[}2$\ast$i\mbox{]},'wb')}}\label{namespace_get_all_data_a5da9f0ddc286550f618680b99a09f13e}
+
+
+Definition at line 74 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a3f0df6e75a64830be35cfc3f992806c4}{\index{Get\-All\-Data@{Get\-All\-Data}!lpdtarg\-Folder@{lpdtarg\-Folder}}
+\index{lpdtarg\-Folder@{lpdtarg\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{lpdtarg\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-lpdtarg\-Folder = {\bf obj\-Folder}+'/lpd-\/targ/'}}\label{namespace_get_all_data_a3f0df6e75a64830be35cfc3f992806c4}
+
+
+Definition at line 48 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_abb46709e621fe2edfea6055c1749afd5}{\index{Get\-All\-Data@{Get\-All\-Data}!num\-Quarters@{num\-Quarters}}
+\index{num\-Quarters@{num\-Quarters}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{num\-Quarters}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-num\-Quarters = len({\bf quarter\-List})}}\label{namespace_get_all_data_abb46709e621fe2edfea6055c1749afd5}
+
+
+Definition at line 67 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{\index{Get\-All\-Data@{Get\-All\-Data}!obj\-Folder@{obj\-Folder}}
+\index{obj\-Folder@{obj\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{obj\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}Get\-All\-Data.\-obj\-Folder = {\bf data\-Folder}+{\bf target}}}\label{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}
+
+
+Definition at line 43 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{\index{Get\-All\-Data@{Get\-All\-Data}!quarter\-List@{quarter\-List}}
+\index{quarter\-List@{quarter\-List}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{quarter\-List}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-quarter\-List = quarter\-Pattern.\-findall({\bf string})}}\label{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}
+
+
+Definition at line 63 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a826165aca23510d517a06f85902411be}{\index{Get\-All\-Data@{Get\-All\-Data}!quarter\-Pattern@{quarter\-Pattern}}
+\index{quarter\-Pattern@{quarter\-Pattern}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{quarter\-Pattern}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-quarter\-Pattern = re.\-compile({\bf target} + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-llc.\-fits')}}\label{namespace_get_all_data_a826165aca23510d517a06f85902411be}
+
+
+Definition at line 61 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a59840d46d0e238ee525782c0fbe13eeb}{\index{Get\-All\-Data@{Get\-All\-Data}!remote\-C\-B\-V\-File@{remote\-C\-B\-V\-File}}
+\index{remote\-C\-B\-V\-File@{remote\-C\-B\-V\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{remote\-C\-B\-V\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-remote\-C\-B\-V\-File = urllib2.\-urlopen({\bf cbv\-Path} + {\bf cbv\-List}\mbox{[}2$\ast$i\mbox{]})}}\label{namespace_get_all_data_a59840d46d0e238ee525782c0fbe13eeb}
+
+
+Definition at line 33 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_af072517ff6c21d5eab5ab2b237b0baf6}{\index{Get\-All\-Data@{Get\-All\-Data}!remote\-Quarter\-File@{remote\-Quarter\-File}}
+\index{remote\-Quarter\-File@{remote\-Quarter\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{remote\-Quarter\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-remote\-Quarter\-File = urllib2.\-urlopen({\bf lightcurves\-Path} + {\bf X\-X\-X\-X} + '/' + {\bf K\-K\-K\-K\-K\-K\-K\-K\-K} + '/' + {\bf quarter\-List}\mbox{[}2$\ast$i\mbox{]})}}\label{namespace_get_all_data_af072517ff6c21d5eab5ab2b237b0baf6}
+
+
+Definition at line 71 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a7b84aca19fc066108a7f1216a37d8bc2}{\index{Get\-All\-Data@{Get\-All\-Data}!remote\-Targ\-File@{remote\-Targ\-File}}
+\index{remote\-Targ\-File@{remote\-Targ\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{remote\-Targ\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-remote\-Targ\-File = urllib2.\-urlopen({\bf target\-\_\-pixel\-\_\-files\-Path} + {\bf X\-X\-X\-X} + '/' + {\bf K\-K\-K\-K\-K\-K\-K\-K\-K} + '/' + {\bf targ\-List}\mbox{[}2$\ast$i\mbox{]})}}\label{namespace_get_all_data_a7b84aca19fc066108a7f1216a37d8bc2}
+
+
+Definition at line 72 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ab8e095b44d1d2a618b9f44a372540200}{\index{Get\-All\-Data@{Get\-All\-Data}!sim\-Folder@{sim\-Folder}}
+\index{sim\-Folder@{sim\-Folder}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{sim\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-sim\-Folder = {\bf obj\-Folder}+'/sim/'}}\label{namespace_get_all_data_ab8e095b44d1d2a618b9f44a372540200}
+
+
+Definition at line 47 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{\index{Get\-All\-Data@{Get\-All\-Data}!string@{string}}
+\index{string@{string}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{string}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-string = cbvpath.\-read()}}\label{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}
+
+
+Definition at line 29 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a6125644c05ef4f47c70dee8f9f271b21}{\index{Get\-All\-Data@{Get\-All\-Data}!string\-Targ@{string\-Targ}}
+\index{string\-Targ@{string\-Targ}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{string\-Targ}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-string\-Targ = targpath.\-read()}}\label{namespace_get_all_data_a6125644c05ef4f47c70dee8f9f271b21}
+
+
+Definition at line 60 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{\index{Get\-All\-Data@{Get\-All\-Data}!target@{target}}
+\index{target@{target}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{target}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-target = target.\-rstrip('\textbackslash{}n')}}\label{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}
+
+
+Definition at line 42 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}{\index{Get\-All\-Data@{Get\-All\-Data}!target\-\_\-pixel\-\_\-files\-Path@{target\-\_\-pixel\-\_\-files\-Path}}
+\index{target\-\_\-pixel\-\_\-files\-Path@{target\-\_\-pixel\-\_\-files\-Path}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{target\-\_\-pixel\-\_\-files\-Path}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-target\-\_\-pixel\-\_\-files\-Path = 'http\-://archive.\-stsci.\-edu/pub/kepler/target\-\_\-pixel\-\_\-files/'}}\label{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}
+
+
+Definition at line 8 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a651d69300ed082b3426d3910b6c6a5f7}{\index{Get\-All\-Data@{Get\-All\-Data}!target\-List\-File@{target\-List\-File}}
+\index{target\-List\-File@{target\-List\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{target\-List\-File}]{\setlength{\rightskip}{0pt plus 5cm}{\bf string} Get\-All\-Data.\-target\-List\-File = {\bf data\-Folder}+'kplr\-\_\-target\-List.\-dat'}}\label{namespace_get_all_data_a651d69300ed082b3426d3910b6c6a5f7}
+
+
+Definition at line 15 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}{\index{Get\-All\-Data@{Get\-All\-Data}!targ\-List@{targ\-List}}
+\index{targ\-List@{targ\-List}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{targ\-List}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-targ\-List = targ\-Pattern.\-findall({\bf string\-Targ})}}\label{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}
+
+
+Definition at line 64 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a2dafe0984549f093bb5d258640946102}{\index{Get\-All\-Data@{Get\-All\-Data}!targpath@{targpath}}
+\index{targpath@{targpath}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{targpath}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-targpath = urllib2.\-urlopen({\bf target\-\_\-pixel\-\_\-files\-Path} + {\bf X\-X\-X\-X} + '/' + {\bf K\-K\-K\-K\-K\-K\-K\-K\-K})}}\label{namespace_get_all_data_a2dafe0984549f093bb5d258640946102}
+
+
+Definition at line 58 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ad05a0da5848b788cf7824b79fa516b64}{\index{Get\-All\-Data@{Get\-All\-Data}!targ\-Pattern@{targ\-Pattern}}
+\index{targ\-Pattern@{targ\-Pattern}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{targ\-Pattern}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-targ\-Pattern = re.\-compile({\bf target} + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lpd-\/targ.\-fits.\-gz')}}\label{namespace_get_all_data_ad05a0da5848b788cf7824b79fa516b64}
+
+
+Definition at line 62 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a7f0291de88ec75252bb7cfaa9a33997e}{\index{Get\-All\-Data@{Get\-All\-Data}!t\-L\-File@{t\-L\-File}}
+\index{t\-L\-File@{t\-L\-File}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{t\-L\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-t\-L\-File = open({\bf target\-List\-File})}}\label{namespace_get_all_data_a7f0291de88ec75252bb7cfaa9a33997e}
+
+
+Definition at line 39 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_ae1e57e5321d57891fb95a9c9326c9713}{\index{Get\-All\-Data@{Get\-All\-Data}!urlpath@{urlpath}}
+\index{urlpath@{urlpath}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{urlpath}]{\setlength{\rightskip}{0pt plus 5cm}tuple Get\-All\-Data.\-urlpath = urllib2.\-urlopen({\bf lightcurves\-Path} + {\bf X\-X\-X\-X} + '/' + {\bf K\-K\-K\-K\-K\-K\-K\-K\-K})}}\label{namespace_get_all_data_ae1e57e5321d57891fb95a9c9326c9713}
+
+
+Definition at line 57 of file Get\-All\-Data.\-py.
+
+\hypertarget{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{\index{Get\-All\-Data@{Get\-All\-Data}!X\-X\-X\-X@{X\-X\-X\-X}}
+\index{X\-X\-X\-X@{X\-X\-X\-X}!GetAllData@{Get\-All\-Data}}
+\subsubsection[{X\-X\-X\-X}]{\setlength{\rightskip}{0pt plus 5cm}list Get\-All\-Data.\-X\-X\-X\-X = {\bf target}\mbox{[}4\-:8\mbox{]}}}\label{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}
+
+
+Definition at line 55 of file Get\-All\-Data.\-py.
+

@@ -1,0 +1,502 @@
+\hypertarget{class_universe}{\section{Universe Class Reference}
+\label{class_universe}\index{Universe@{Universe}}
+}
+
+
+Class to create universe objects.  
+
+
+
+
+{\ttfamily \#include $<$Universe.\-hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_universe_a4d137a146dd3c2514dfb692dfbab6984}{Universe} ()
+\item 
+\hyperlink{class_universe_aa8287eefad81a39bd22e4fc4b3469913}{Universe} (double h0)
+\item 
+\hyperlink{class_universe_aa3a2ada69e53bfbe237755c821110d31}{Universe} (double omega\-M, double omega\-L)
+\item 
+\hyperlink{class_universe_a4d57eccd5bccb65a07ee8014d874f742}{Universe} (double h0, double omega\-M, double omega\-L)
+\item 
+\hyperlink{class_universe_a267e0955820c139f031d838894ae378e}{Universe} (double h0, double omega\-M, double omega\-L, double omega\-G)
+\item 
+\hyperlink{class_universe_a6deb72c0b3ae4774ca3608451fce7ce6}{Universe} (const \hyperlink{class_universe}{Universe} \&orig)
+\item 
+\hyperlink{class_universe}{Universe} \& \hyperlink{class_universe_a446172cfdff7993bf67e0ca200d784e0}{operator=} (const \hyperlink{class_universe}{Universe} \&orig)
+\item 
+\hyperlink{class_universe_af63f567a85ac8c644c446b1ff53995cf}{$\sim$\-Universe} ()=default
+\item 
+bool \hyperlink{class_universe_a8f7d3385d0a7adf659b4a68300f744e6}{operator==} (const \hyperlink{class_universe}{Universe} \&univ1)
+\item 
+void \hyperlink{class_universe_a45c5e437ac9f03652f753a5d86f314f0}{operator()} (const vector$<$ double $>$ \&x, vector$<$ double $>$ \&dxdt, const double t)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{class_universe_aa9e574f4cac819cfa806f24c24eec60e}{dist\-H} = \hyperlink{class_universe_a397c3302597d221feaaacac332837fd2}{c}/(67.\-77$\ast$1.\-0e3)
+\item 
+double \hyperlink{class_universe_a7a1b9c18475efced2a8260420dfc3911}{time\-H} = (Mpc2\-Km/67.\-77)/(Yrs2\-Sec$\ast$1.\-0e9)
+\item 
+double \hyperlink{class_universe_a478a9072a4445f6fc3dd9cf2bc641683}{age\-H} = 0.\-0
+\item 
+double \hyperlink{class_universe_af2ce871543e110d45306c37c705b0574}{size\-H} = 0.\-0
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr double \hyperlink{class_universe_a397c3302597d221feaaacac332837fd2}{c} = 299792458.\-0
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_universe_acb9341c7022366ea58f9779acad08e11}{Spherical}
+\item 
+class \hyperlink{class_universe_a0480ccbf91fcb415696ba466a7ae1401}{Equatorial}
+\item 
+class \hyperlink{class_universe_a2ba8175dcf9e583c18ffef6d19ee6e9d}{Galactic}
+\item 
+class \hyperlink{class_universe_a438b315afa8c872673a2dc740ac8243d}{Obj}
+\item 
+class \hyperlink{class_universe_ab594011d9eb73ce33234ae0e11850252}{Kepler\-Obj}
+\item 
+bool \hyperlink{class_universe_ad7426db61680a1aa7bf601a316f50296}{operator==} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{class_universe_a923ffb102f2f1cf8c018e2fdab71e759}{operator!=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{class_universe_ae6d5ff462dc8f2a42c1c89dfbb045a70}{operator$<$} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{class_universe_ac646834ee273250d89054f51c560ad90}{operator$>$} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{class_universe_aedb45560ee22b1f0d1913bd40c716f3e}{operator$<$=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{class_universe_ad2f27b03dcb666cb1e5f00840f3cffe2}{operator$>$=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+ostream \& \hyperlink{class_universe_af3dca6b540cbad8426d8aae6dc1f6f32}{operator$<$$<$} (ostream \&os, const \hyperlink{class_universe}{Universe} \&u)
+\item 
+istream \& \hyperlink{class_universe_ad347ea8dc2c56d9d77d9c6f673d5927e}{operator$>$$>$} (istream \&is, \hyperlink{class_universe}{Universe} \&u)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to create universe objects. 
+
+This class lets you create Friedmann universes with arbitrary values of the standard basic cosmological parameters. The standard cosmological parameters that are user adjustable in this version are -\/ $H_{0}$ (default\-: $H_{0} = 67.77 \ km/s/Mpc$), $\Omega_{M}$ (default\-: $\Omega_{M} = 0.3071$), $\Omega_{\Lambda}$ (default\-: $\Omega_{\Lambda} = 0.6914$), $\Omega_{\gamma}$ (default\-: $\Omega_{\gamma} = 8.24 \times 10^{-5}$), and $\Omega_{K}$ (default\-: $\Omega_{K} = 0.0014$). Universes can be instantated with several different combinations of parameters.
+
+\begin{DoxyAuthor}{Author}
+Vishal Kasliwal 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\-9.\-1.\-0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+02-\/04-\/2014 
+\end{DoxyDate}
+\begin{DoxyPrecond}{Precondition}
+N\-I\-L 
+\end{DoxyPrecond}
+\begin{DoxyRefDesc}{Bug}
+\item[\hyperlink{bug__bug000001}{Bug}]N\-I\-L \begin{DoxyWarning}{Warning}
+Read the documentation 
+\end{DoxyWarning}
+\begin{DoxyCopyright}{Copyright}
+Vishal Kasliwal 
+\end{DoxyCopyright}
+\end{DoxyRefDesc}
+
+
+Definition at line 22 of file Universe.\-hpp.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_universe_a4d137a146dd3c2514dfb692dfbab6984}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a4d137a146dd3c2514dfb692dfbab6984}
+Creates a default initialized \hyperlink{class_universe}{Universe} with $H_{0} = 67.77 \ km/s/Mpc$, $ \Omega_{M} = 0.3071 $, $ \Omega_{\Lambda} = 0.6914 $, $ \Omega_{\gamma} = 8.24 \times 10^{-5} $, $ \Omega_{k} = 0.0014 $. 
+
+Definition at line 8 of file Universe.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_universe_a4d137a146dd3c2514dfb692dfbab6984_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_universe_aa8287eefad81a39bd22e4fc4b3469913}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+\item[{double}]{h0}
+\end{DoxyParamCaption}
+)}}\label{class_universe_aa8287eefad81a39bd22e4fc4b3469913}
+Creates a universe with $H_{0} = $h0 $ \ km/s/Mpc$. All other values are set to the default. 
+\begin{DoxyParams}{Parameters}
+{\em h0} & Units\-: $km/s/Mpc$ \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 23 of file Universe.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_universe_aa8287eefad81a39bd22e4fc4b3469913_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_universe_aa3a2ada69e53bfbe237755c821110d31}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+\item[{double}]{omega\-M, }
+\item[{double}]{omega\-L}
+\end{DoxyParamCaption}
+)}}\label{class_universe_aa3a2ada69e53bfbe237755c821110d31}
+Creates a universe with $\Omega_{M} =$ omega\-M and $\Omega_{\Lambda} =$ omega\-L. All other values are set to the default. 
+\begin{DoxyParams}{Parameters}
+{\em omega\-M} & Units\-: N\-A \\
+\hline
+{\em omega\-L} & Units\-: N\-A \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 38 of file Universe.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_universe_aa3a2ada69e53bfbe237755c821110d31_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_universe_a4d57eccd5bccb65a07ee8014d874f742}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+\item[{double}]{h0, }
+\item[{double}]{omega\-M, }
+\item[{double}]{omega\-L}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a4d57eccd5bccb65a07ee8014d874f742}
+Creates a universe with $H_{0} = $ h0 $km/s/Mpc$, $\Omega_{M} =$ omega\-M, and $\Omega_{\Lambda} =$ omega\-L. All other values are set to the default. 
+\begin{DoxyParams}{Parameters}
+{\em h0} & Units\-: $km/s/Mpc$ \\
+\hline
+{\em omega\-M} & Units\-: N\-A \\
+\hline
+{\em omega\-L} & Units\-: N\-A \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 53 of file Universe.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_universe_a4d57eccd5bccb65a07ee8014d874f742_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_universe_a267e0955820c139f031d838894ae378e}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+\item[{double}]{h0, }
+\item[{double}]{omega\-M, }
+\item[{double}]{omega\-L, }
+\item[{double}]{omega\-G}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a267e0955820c139f031d838894ae378e}
+Creates a universe with $H_{0} =$ h0 $km/s/Mpc$, $\Omega_{M} =$ omega\-M, $\Omega_{\Lambda} =$ omega\-L, and $\Omega_{\gamma} =$ omega\-G. All other values are set to the default. 
+\begin{DoxyParams}{Parameters}
+{\em h0} & Units\-: $km/s/Mpc$ \\
+\hline
+{\em omega\-M} & Units\-: N\-A \\
+\hline
+{\em omega\-L} & Units\-: N\-A \\
+\hline
+{\em omega\-G} & Units\-: N\-A \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 68 of file Universe.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_universe_a267e0955820c139f031d838894ae378e_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_universe_a6deb72c0b3ae4774ca3608451fce7ce6}{\index{Universe@{Universe}!Universe@{Universe}}
+\index{Universe@{Universe}!Universe@{Universe}}
+\subsubsection[{Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::\-Universe (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{orig}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a6deb72c0b3ae4774ca3608451fce7ce6}
+Creates a copy of \hyperlink{class_universe}{Universe} orig. 
+
+Definition at line 83 of file Universe.\-cpp.
+
+\hypertarget{class_universe_af63f567a85ac8c644c446b1ff53995cf}{\index{Universe@{Universe}!$\sim$\-Universe@{$\sim$\-Universe}}
+\index{$\sim$\-Universe@{$\sim$\-Universe}!Universe@{Universe}}
+\subsubsection[{$\sim$\-Universe}]{\setlength{\rightskip}{0pt plus 5cm}Universe\-::$\sim$\-Universe (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [default]}}}\label{class_universe_af63f567a85ac8c644c446b1ff53995cf}
+Destroys universe. 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_universe_a45c5e437ac9f03652f753a5d86f314f0}{\index{Universe@{Universe}!operator()@{operator()}}
+\index{operator()@{operator()}!Universe@{Universe}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}void Universe\-::operator() (
+\begin{DoxyParamCaption}
+\item[{const vector$<$ double $>$ \&}]{x, }
+\item[{vector$<$ double $>$ \&}]{dxdt, }
+\item[{const double}]{t}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a45c5e437ac9f03652f753a5d86f314f0}
+
+
+Definition at line 108 of file Universe.\-cpp.
+
+\hypertarget{class_universe_a446172cfdff7993bf67e0ca200d784e0}{\index{Universe@{Universe}!operator=@{operator=}}
+\index{operator=@{operator=}!Universe@{Universe}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Universe} \& Universe\-::operator= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{orig}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a446172cfdff7993bf67e0ca200d784e0}
+Makes universe U equal to universe orig. Two universes are equal if all the cosmological parameters are the same. 
+\begin{DoxyParams}{Parameters}
+{\em orig} & Units\-: N\-A \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 95 of file Universe.\-cpp.
+
+\hypertarget{class_universe_a8f7d3385d0a7adf659b4a68300f744e6}{\index{Universe@{Universe}!operator==@{operator==}}
+\index{operator==@{operator==}!Universe@{Universe}}
+\subsubsection[{operator==}]{\setlength{\rightskip}{0pt plus 5cm}bool Universe\-::operator== (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1}
+\end{DoxyParamCaption}
+)}}\label{class_universe_a8f7d3385d0a7adf659b4a68300f744e6}
+Checks to see if universe U is equal to universe univ1. Two universes are equal if all the cosmological parameters are the same. 
+\begin{DoxyParams}{Parameters}
+{\em univ1} & Units\-: N\-A \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{class_universe_a0480ccbf91fcb415696ba466a7ae1401}{\index{Universe@{Universe}!Equatorial@{Equatorial}}
+\index{Equatorial@{Equatorial}!Universe@{Universe}}
+\subsubsection[{Equatorial}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf Equatorial}\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_a0480ccbf91fcb415696ba466a7ae1401}
+
+
+Definition at line 24 of file Universe.\-hpp.
+
+\hypertarget{class_universe_a2ba8175dcf9e583c18ffef6d19ee6e9d}{\index{Universe@{Universe}!Galactic@{Galactic}}
+\index{Galactic@{Galactic}!Universe@{Universe}}
+\subsubsection[{Galactic}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf Galactic}\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_a2ba8175dcf9e583c18ffef6d19ee6e9d}
+
+
+Definition at line 25 of file Universe.\-hpp.
+
+\hypertarget{class_universe_ab594011d9eb73ce33234ae0e11850252}{\index{Universe@{Universe}!Kepler\-Obj@{Kepler\-Obj}}
+\index{Kepler\-Obj@{Kepler\-Obj}!Universe@{Universe}}
+\subsubsection[{Kepler\-Obj}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf Kepler\-Obj}\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ab594011d9eb73ce33234ae0e11850252}
+
+
+Definition at line 27 of file Universe.\-hpp.
+
+\hypertarget{class_universe_a438b315afa8c872673a2dc740ac8243d}{\index{Universe@{Universe}!Obj@{Obj}}
+\index{Obj@{Obj}!Universe@{Universe}}
+\subsubsection[{Obj}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf Obj}\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_a438b315afa8c872673a2dc740ac8243d}
+
+
+Definition at line 26 of file Universe.\-hpp.
+
+\hypertarget{class_universe_a923ffb102f2f1cf8c018e2fdab71e759}{\index{Universe@{Universe}!operator!=@{operator!=}}
+\index{operator!=@{operator!=}!Universe@{Universe}}
+\subsubsection[{operator!=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator!= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_a923ffb102f2f1cf8c018e2fdab71e759}
+
+
+Definition at line 131 of file Universe.\-cpp.
+
+\hypertarget{class_universe_ae6d5ff462dc8f2a42c1c89dfbb045a70}{\index{Universe@{Universe}!operator$<$@{operator$<$}}
+\index{operator$<$@{operator$<$}!Universe@{Universe}}
+\subsubsection[{operator$<$}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ae6d5ff462dc8f2a42c1c89dfbb045a70}
+
+
+Definition at line 139 of file Universe.\-cpp.
+
+\hypertarget{class_universe_af3dca6b540cbad8426d8aae6dc1f6f32}{\index{Universe@{Universe}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Universe@{Universe}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}ostream\& operator$<$$<$ (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{os, }
+\item[{const {\bf Universe} \&}]{u}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_af3dca6b540cbad8426d8aae6dc1f6f32}
+
+
+Definition at line 168 of file Universe.\-cpp.
+
+\hypertarget{class_universe_aedb45560ee22b1f0d1913bd40c716f3e}{\index{Universe@{Universe}!operator$<$=@{operator$<$=}}
+\index{operator$<$=@{operator$<$=}!Universe@{Universe}}
+\subsubsection[{operator$<$=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_aedb45560ee22b1f0d1913bd40c716f3e}
+
+
+Definition at line 153 of file Universe.\-cpp.
+
+\hypertarget{class_universe_ad7426db61680a1aa7bf601a316f50296}{\index{Universe@{Universe}!operator==@{operator==}}
+\index{operator==@{operator==}!Universe@{Universe}}
+\subsubsection[{operator==}]{\setlength{\rightskip}{0pt plus 5cm}bool operator== (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ad7426db61680a1aa7bf601a316f50296}
+
+
+Definition at line 123 of file Universe.\-cpp.
+
+\hypertarget{class_universe_ac646834ee273250d89054f51c560ad90}{\index{Universe@{Universe}!operator$>$@{operator$>$}}
+\index{operator$>$@{operator$>$}!Universe@{Universe}}
+\subsubsection[{operator$>$}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$>$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ac646834ee273250d89054f51c560ad90}
+
+
+Definition at line 146 of file Universe.\-cpp.
+
+\hypertarget{class_universe_ad2f27b03dcb666cb1e5f00840f3cffe2}{\index{Universe@{Universe}!operator$>$=@{operator$>$=}}
+\index{operator$>$=@{operator$>$=}!Universe@{Universe}}
+\subsubsection[{operator$>$=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$>$= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ad2f27b03dcb666cb1e5f00840f3cffe2}
+
+
+Definition at line 160 of file Universe.\-cpp.
+
+\hypertarget{class_universe_ad347ea8dc2c56d9d77d9c6f673d5927e}{\index{Universe@{Universe}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!Universe@{Universe}}
+\subsubsection[{operator$>$$>$}]{\setlength{\rightskip}{0pt plus 5cm}istream\& operator$>$$>$ (
+\begin{DoxyParamCaption}
+\item[{istream \&}]{is, }
+\item[{{\bf Universe} \&}]{u}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_ad347ea8dc2c56d9d77d9c6f673d5927e}
+
+
+Definition at line 173 of file Universe.\-cpp.
+
+\hypertarget{class_universe_acb9341c7022366ea58f9779acad08e11}{\index{Universe@{Universe}!Spherical@{Spherical}}
+\index{Spherical@{Spherical}!Universe@{Universe}}
+\subsubsection[{Spherical}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf Spherical}\hspace{0.3cm}{\ttfamily [friend]}}}\label{class_universe_acb9341c7022366ea58f9779acad08e11}
+
+
+Definition at line 23 of file Universe.\-hpp.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_universe_a478a9072a4445f6fc3dd9cf2bc641683}{\index{Universe@{Universe}!age\-H@{age\-H}}
+\index{age\-H@{age\-H}!Universe@{Universe}}
+\subsubsection[{age\-H}]{\setlength{\rightskip}{0pt plus 5cm}double Universe\-::age\-H = 0.\-0}}\label{class_universe_a478a9072a4445f6fc3dd9cf2bc641683}
+$ a_{H}$ -\/ the age of the \hyperlink{class_universe}{Universe}. 
+
+Definition at line 43 of file Universe.\-hpp.
+
+\hypertarget{class_universe_a397c3302597d221feaaacac332837fd2}{\index{Universe@{Universe}!c@{c}}
+\index{c@{c}!Universe@{Universe}}
+\subsubsection[{c}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double Universe\-::c = 299792458.\-0\hspace{0.3cm}{\ttfamily [static]}}}\label{class_universe_a397c3302597d221feaaacac332837fd2}
+$c = 299792458.0 \ m/s$ -\/ the speed of light. 
+
+Definition at line 40 of file Universe.\-hpp.
+
+\hypertarget{class_universe_aa9e574f4cac819cfa806f24c24eec60e}{\index{Universe@{Universe}!dist\-H@{dist\-H}}
+\index{dist\-H@{dist\-H}!Universe@{Universe}}
+\subsubsection[{dist\-H}]{\setlength{\rightskip}{0pt plus 5cm}double Universe\-::dist\-H = {\bf c}/(67.\-77$\ast$1.\-0e3)}}\label{class_universe_aa9e574f4cac819cfa806f24c24eec60e}
+$d_{H} = c/H_{0}$ -\/ the Hubble distance. 
+
+Definition at line 41 of file Universe.\-hpp.
+
+\hypertarget{class_universe_af2ce871543e110d45306c37c705b0574}{\index{Universe@{Universe}!size\-H@{size\-H}}
+\index{size\-H@{size\-H}!Universe@{Universe}}
+\subsubsection[{size\-H}]{\setlength{\rightskip}{0pt plus 5cm}double Universe\-::size\-H = 0.\-0}}\label{class_universe_af2ce871543e110d45306c37c705b0574}
+$ s_{H}$ -\/ the size of the \hyperlink{class_universe}{Universe}. 
+
+Definition at line 44 of file Universe.\-hpp.
+
+\hypertarget{class_universe_a7a1b9c18475efced2a8260420dfc3911}{\index{Universe@{Universe}!time\-H@{time\-H}}
+\index{time\-H@{time\-H}!Universe@{Universe}}
+\subsubsection[{time\-H}]{\setlength{\rightskip}{0pt plus 5cm}double Universe\-::time\-H = (Mpc2\-Km/67.\-77)/(Yrs2\-Sec$\ast$1.\-0e9)}}\label{class_universe_a7a1b9c18475efced2a8260420dfc3911}
+$t_{H} = 1/H_{0}$ -\/ the Hubble time. 
+
+Definition at line 42 of file Universe.\-hpp.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/include/\hyperlink{_universe_8hpp}{Universe.\-hpp}\item 
+/home/vish/code/trunk/cpp/libcarma/src/\hyperlink{_universe_8cpp}{Universe.\-cpp}\end{DoxyCompactItemize}

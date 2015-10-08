@@ -1,0 +1,81 @@
+\hypertarget{_get_all_data_8py}{\section{/home/vish/code/trunk/cpp/libcarma/\-Get\-All\-Data.py File Reference}
+\label{_get_all_data_8py}\index{/home/vish/code/trunk/cpp/libcarma/\-Get\-All\-Data.\-py@{/home/vish/code/trunk/cpp/libcarma/\-Get\-All\-Data.\-py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespace_get_all_data}{Get\-All\-Data}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespace_get_all_data_aa7dab644473a8e6caaa150aa36384dbe}{Get\-All\-Data.\-lightcurves\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/lightcurves/'
+\item 
+string \hyperlink{namespace_get_all_data_a45b4d0dc9728eff931ef547819c19225}{Get\-All\-Data.\-target\-\_\-pixel\-\_\-files\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/target\-\_\-pixel\-\_\-files/'
+\item 
+string \hyperlink{namespace_get_all_data_a0d44f716af41966e5d4c1e8ec5daca53}{Get\-All\-Data.\-cbv\-Path} = 'http\-://archive.\-stsci.\-edu/pub/kepler/cbv/'
+\item 
+tuple \hyperlink{namespace_get_all_data_a8ff73cf768ddd833d026b762528dc864}{Get\-All\-Data.\-data\-Folder} = str(sys.\-argv\mbox{[}1\mbox{]})
+\item 
+string \hyperlink{namespace_get_all_data_a651d69300ed082b3426d3910b6c6a5f7}{Get\-All\-Data.\-target\-List\-File} = data\-Folder+'kplr\-\_\-target\-List.\-dat'
+\item 
+string \hyperlink{namespace_get_all_data_a92d210ac17aea3c86c2cae13d5dcf53a}{Get\-All\-Data.\-cbv\-Folder} = data\-Folder+'cbv/'
+\item 
+tuple \hyperlink{namespace_get_all_data_ac340b879890051d52eef59bb312d86c6}{Get\-All\-Data.\-cbvpath} = urllib2.\-urlopen(cbv\-Path)
+\item 
+tuple \hyperlink{namespace_get_all_data_aa3f14258ba79c9dd527fc1805b92c818}{Get\-All\-Data.\-string} = cbvpath.\-read()
+\item 
+tuple \hyperlink{namespace_get_all_data_ab13b78016ebaf3b18c13c40b75b9ae3a}{Get\-All\-Data.\-cbv\-Pattern} = re.\-compile('kplr' + '\mbox{[}0-\/9\mbox{]}$\ast$-\/q\mbox{[}0-\/9\mbox{]}$\ast$-\/d\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lcbv.\-fits')
+\item 
+tuple \hyperlink{namespace_get_all_data_aef4e9610ed4d2405e028274abbfcdb43}{Get\-All\-Data.\-cbv\-List} = cbv\-Pattern.\-findall(string)
+\item 
+tuple \hyperlink{namespace_get_all_data_a59840d46d0e238ee525782c0fbe13eeb}{Get\-All\-Data.\-remote\-C\-B\-V\-File} = urllib2.\-urlopen(cbv\-Path + cbv\-List\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a48b2086a8ab4a4eb4383aaa810014866}{Get\-All\-Data.\-local\-C\-B\-V\-File} = open(cbv\-Folder + cbv\-List\mbox{[}2$\ast$i\mbox{]},'wb')
+\item 
+tuple \hyperlink{namespace_get_all_data_a7f0291de88ec75252bb7cfaa9a33997e}{Get\-All\-Data.\-t\-L\-File} = open(target\-List\-File)
+\item 
+tuple \hyperlink{namespace_get_all_data_ae7c93a35b37e6a7e1f63026786f921e3}{Get\-All\-Data.\-target} = target.\-rstrip('\textbackslash{}n')
+\item 
+\hyperlink{namespace_get_all_data_ad1a3a2da71089668ef951488bd43ec72}{Get\-All\-Data.\-obj\-Folder} = data\-Folder+target
+\item 
+string \hyperlink{namespace_get_all_data_a16ca85b9e5a52cb403c24f90f47e5380}{Get\-All\-Data.\-F\-I\-T\-S\-Folder} = obj\-Folder+'/llc/'
+\item 
+string \hyperlink{namespace_get_all_data_ab8e095b44d1d2a618b9f44a372540200}{Get\-All\-Data.\-sim\-Folder} = obj\-Folder+'/sim/'
+\item 
+string \hyperlink{namespace_get_all_data_a3f0df6e75a64830be35cfc3f992806c4}{Get\-All\-Data.\-lpdtarg\-Folder} = obj\-Folder+'/lpd-\/targ/'
+\item 
+list \hyperlink{namespace_get_all_data_a0ad0a5c98585457adf46115ebccbba6d}{Get\-All\-Data.\-X\-X\-X\-X} = target\mbox{[}4\-:8\mbox{]}
+\item 
+list \hyperlink{namespace_get_all_data_a8ae2235ff0e5280acf89f07808293bda}{Get\-All\-Data.\-K\-K\-K\-K\-K\-K\-K\-K\-K} = target\mbox{[}4\-:13\mbox{]}
+\item 
+tuple \hyperlink{namespace_get_all_data_ae1e57e5321d57891fb95a9c9326c9713}{Get\-All\-Data.\-urlpath} = urllib2.\-urlopen(lightcurves\-Path + X\-X\-X\-X + '/' + K\-K\-K\-K\-K\-K\-K\-K\-K)
+\item 
+tuple \hyperlink{namespace_get_all_data_a2dafe0984549f093bb5d258640946102}{Get\-All\-Data.\-targpath} = urllib2.\-urlopen(target\-\_\-pixel\-\_\-files\-Path + X\-X\-X\-X + '/' + K\-K\-K\-K\-K\-K\-K\-K\-K)
+\item 
+tuple \hyperlink{namespace_get_all_data_a6125644c05ef4f47c70dee8f9f271b21}{Get\-All\-Data.\-string\-Targ} = targpath.\-read()
+\item 
+tuple \hyperlink{namespace_get_all_data_a826165aca23510d517a06f85902411be}{Get\-All\-Data.\-quarter\-Pattern} = re.\-compile(target + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-llc.\-fits')
+\item 
+tuple \hyperlink{namespace_get_all_data_ad05a0da5848b788cf7824b79fa516b64}{Get\-All\-Data.\-targ\-Pattern} = re.\-compile(target + '-\/\mbox{[}0-\/9\mbox{]}$\ast$\-\_\-lpd-\/targ.\-fits.\-gz')
+\item 
+tuple \hyperlink{namespace_get_all_data_a05b955962336cb4b084d9ebadce6bebc}{Get\-All\-Data.\-quarter\-List} = quarter\-Pattern.\-findall(string)
+\item 
+tuple \hyperlink{namespace_get_all_data_a0e405ac3485c0d9036936f1e1639d262}{Get\-All\-Data.\-targ\-List} = targ\-Pattern.\-findall(string\-Targ)
+\item 
+string \hyperlink{namespace_get_all_data_ac9174f2a0b0215a84e06e5f8a4f5e5e6}{Get\-All\-Data.\-epoch\-List\-File} = obj\-Folder+'/'
+\item 
+tuple \hyperlink{namespace_get_all_data_aaf35a1611b07a1bc49bb090dccfaef8e}{Get\-All\-Data.\-e\-L\-File} = open(epoch\-List\-File,'w')
+\item 
+tuple \hyperlink{namespace_get_all_data_abb46709e621fe2edfea6055c1749afd5}{Get\-All\-Data.\-num\-Quarters} = len(quarter\-List)
+\item 
+string \hyperlink{namespace_get_all_data_acc2308c98b84b6b6eebcc695fff211ef}{Get\-All\-Data.\-e\-L\-File\-Line} = '\%s.\-dat\textbackslash{}n'
+\item 
+tuple \hyperlink{namespace_get_all_data_af072517ff6c21d5eab5ab2b237b0baf6}{Get\-All\-Data.\-remote\-Quarter\-File} = urllib2.\-urlopen(lightcurves\-Path + X\-X\-X\-X + '/' + K\-K\-K\-K\-K\-K\-K\-K\-K + '/' + quarter\-List\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a7b84aca19fc066108a7f1216a37d8bc2}{Get\-All\-Data.\-remote\-Targ\-File} = urllib2.\-urlopen(target\-\_\-pixel\-\_\-files\-Path + X\-X\-X\-X + '/' + K\-K\-K\-K\-K\-K\-K\-K\-K + '/' + targ\-List\mbox{[}2$\ast$i\mbox{]})
+\item 
+tuple \hyperlink{namespace_get_all_data_a877740889eb38000b292aaee018666fb}{Get\-All\-Data.\-local\-Quarter\-File} = open(F\-I\-T\-S\-Folder + quarter\-List\mbox{[}2$\ast$i\mbox{]},'wb')
+\item 
+tuple \hyperlink{namespace_get_all_data_a5da9f0ddc286550f618680b99a09f13e}{Get\-All\-Data.\-local\-Targ\-File} = open(lpdtarg\-Folder + targ\-List\mbox{[}2$\ast$i\mbox{]},'wb')
+\end{DoxyCompactItemize}

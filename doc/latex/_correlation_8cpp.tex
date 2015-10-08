@@ -1,0 +1,149 @@
+\hypertarget{_correlation_8cpp}{\section{/home/vish/code/trunk/cpp/libcarma/src/\-Correlation.cpp File Reference}
+\label{_correlation_8cpp}\index{/home/vish/code/trunk/cpp/libcarma/src/\-Correlation.\-cpp@{/home/vish/code/trunk/cpp/libcarma/src/\-Correlation.\-cpp}}
+}
+{\ttfamily \#include $<$malloc.\-h$>$}\\*
+{\ttfamily \#include $<$limits$>$}\\*
+{\ttfamily \#include $<$mathimf.\-h$>$}\\*
+{\ttfamily \#include $<$omp.\-h$>$}\\*
+{\ttfamily \#include $<$sys/sysinfo.\-h$>$}\\*
+{\ttfamily \#include $<$unistd.\-h$>$}\\*
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$mkl.\-h$>$}\\*
+{\ttfamily \#include $<$mkl\-\_\-types.\-h$>$}\\*
+{\ttfamily \#include \char`\"{}Correlation.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}D\-L\-A\-P\-A\-C\-K\-E.\-hpp\char`\"{}}\\*
+{\ttfamily \#include $<$stdio.\-h$>$}\\*
+Include dependency graph for Correlation.\-cpp\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_correlation_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{_correlation_8cpp_ab5d562f3b6a902b3dcabe4fcebf9f581}{A\-C\-V\-F} (int num\-Cadences, const double $\ast$const y, const double $\ast$const mask, double $\ast$acvf)
+\item 
+void \hyperlink{_correlation_8cpp_a0733d619e610b9c1d5949f8a93e7af50}{A\-C\-F} (int num\-Cadences, const double $\ast$const acvf, double $\ast$acf)
+\item 
+void \hyperlink{_correlation_8cpp_aa90de21932497f2965056021a30149b7}{P\-A\-C\-F} (int num\-Cadences, int max\-Lag, const double $\ast$const acvf, double $\ast$pacf)
+\item 
+void \hyperlink{_correlation_8cpp_abf87d03b9b305f4e43dc5c20da98c7a2}{S\-F1} (int num\-Cadences, const double $\ast$const acvf, double $\ast$sf1)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_correlation_8cpp_a0733d619e610b9c1d5949f8a93e7af50}{\index{Correlation.\-cpp@{Correlation.\-cpp}!A\-C\-F@{A\-C\-F}}
+\index{A\-C\-F@{A\-C\-F}!Correlation.cpp@{Correlation.\-cpp}}
+\subsubsection[{A\-C\-F}]{\setlength{\rightskip}{0pt plus 5cm}void A\-C\-F (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{const double $\ast$const}]{acvf, }
+\item[{double $\ast$}]{acf}
+\end{DoxyParamCaption}
+)}}\label{_correlation_8cpp_a0733d619e610b9c1d5949f8a93e7af50}
+
+
+Definition at line 61 of file Correlation.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=192pt]{_correlation_8cpp_a0733d619e610b9c1d5949f8a93e7af50_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_correlation_8cpp_ab5d562f3b6a902b3dcabe4fcebf9f581}{\index{Correlation.\-cpp@{Correlation.\-cpp}!A\-C\-V\-F@{A\-C\-V\-F}}
+\index{A\-C\-V\-F@{A\-C\-V\-F}!Correlation.cpp@{Correlation.\-cpp}}
+\subsubsection[{A\-C\-V\-F}]{\setlength{\rightskip}{0pt plus 5cm}void A\-C\-V\-F (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{const double $\ast$const}]{y, }
+\item[{const double $\ast$const}]{mask, }
+\item[{double $\ast$}]{acvf}
+\end{DoxyParamCaption}
+)}}\label{_correlation_8cpp_ab5d562f3b6a902b3dcabe4fcebf9f581}
+First remove the mean.
+
+Now, following \char`\"{}\-Spectrum Estimation with Missing Observations\char`\"{} by Richard H. Jones (Rcvd 1969, Rvsd 1971) we compute for each lag.
+
+Following \char`\"{}\-Modern Applied Statistics with S\char`\"{} by W.\-N. Venables \& B.\-D. Ripley (4th Ed, 1992) we compute for each lag. 
+
+Definition at line 18 of file Correlation.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=198pt]{_correlation_8cpp_ab5d562f3b6a902b3dcabe4fcebf9f581_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_correlation_8cpp_aa90de21932497f2965056021a30149b7}{\index{Correlation.\-cpp@{Correlation.\-cpp}!P\-A\-C\-F@{P\-A\-C\-F}}
+\index{P\-A\-C\-F@{P\-A\-C\-F}!Correlation.cpp@{Correlation.\-cpp}}
+\subsubsection[{P\-A\-C\-F}]{\setlength{\rightskip}{0pt plus 5cm}void P\-A\-C\-F (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{int}]{max\-Lag, }
+\item[{const double $\ast$const}]{acvf, }
+\item[{double $\ast$}]{pacf}
+\end{DoxyParamCaption}
+)}}\label{_correlation_8cpp_aa90de21932497f2965056021a30149b7}
+
+
+Definition at line 70 of file Correlation.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=266pt]{_correlation_8cpp_aa90de21932497f2965056021a30149b7_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=198pt]{_correlation_8cpp_aa90de21932497f2965056021a30149b7_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_correlation_8cpp_abf87d03b9b305f4e43dc5c20da98c7a2}{\index{Correlation.\-cpp@{Correlation.\-cpp}!S\-F1@{S\-F1}}
+\index{S\-F1@{S\-F1}!Correlation.cpp@{Correlation.\-cpp}}
+\subsubsection[{S\-F1}]{\setlength{\rightskip}{0pt plus 5cm}void S\-F1 (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{const double $\ast$const}]{acvf, }
+\item[{double $\ast$}]{sf1}
+\end{DoxyParamCaption}
+)}}\label{_correlation_8cpp_abf87d03b9b305f4e43dc5c20da98c7a2}
+
+
+Definition at line 127 of file Correlation.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=190pt]{_correlation_8cpp_abf87d03b9b305f4e43dc5c20da98c7a2_icgraph}
+\end{center}
+\end{figure}
+
+

@@ -1,0 +1,52 @@
+\hypertarget{_plot_a_r_m_a_regions_8py}{\section{/home/vish/code/trunk/cpp/libcarma/\-Plot\-A\-R\-M\-A\-Regions.py File Reference}
+\label{_plot_a_r_m_a_regions_8py}\index{/home/vish/code/trunk/cpp/libcarma/\-Plot\-A\-R\-M\-A\-Regions.\-py@{/home/vish/code/trunk/cpp/libcarma/\-Plot\-A\-R\-M\-A\-Regions.\-py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespace_plot_a_r_m_a_regions}{Plot\-A\-R\-M\-A\-Regions}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespace_plot_a_r_m_a_regions_ab8d32e5943f6391d1de1d360f78a4e1c}{Plot\-A\-R\-M\-A\-Regions.\-M\-A\-D}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a911f440b0b304e72e7588c7508cacd20}{Plot\-A\-R\-M\-A\-Regions.\-sec\-Per\-Sidereal\-Day} = 86164.\-0905
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a54e4c79468e19409c96e67dfdb482f0a}{Plot\-A\-R\-M\-A\-Regions.\-int\-Time} = 6.\-019802903
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a5329612770d2afb1002bfc0672f392d8}{Plot\-A\-R\-M\-A\-Regions.\-read\-Time} = 0.\-5189485261
+\item 
+int \hyperlink{namespace_plot_a_r_m_a_regions_a9a622e1006cc8cc55b062f42b9e4c980}{Plot\-A\-R\-M\-A\-Regions.\-num\-Int\-L\-C} = 270
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a7b437af6d1c5ce7f40b5f27233d5f4b1}{Plot\-A\-R\-M\-A\-Regions.\-deltat} = (num\-Int\-L\-C$\ast$(int\-Time+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time}))
+\item 
+string \hyperlink{namespace_plot_a_r_m_a_regions_a35b8724b6b0849cfed30c080d79c775e}{Plot\-A\-R\-M\-A\-Regions.\-Tri\-File\-Path} = base\-Path+'mcmc\-Out\-\_\-\%d\-\_\-\%d.\-dat'
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a418058aa77527961189e1d40f3d8091d}{Plot\-A\-R\-M\-A\-Regions.\-Tri\-File} = open(Tri\-File\-Path)
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a478b5b50b6eddf2098c4a31f8a83b86d}{Plot\-A\-R\-M\-A\-Regions.\-line} = Tri\-File.\-readline()
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{Plot\-A\-R\-M\-A\-Regions.\-values} = line.\-split()
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{Plot\-A\-R\-M\-A\-Regions.\-nsteps} = int(values\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_ad8d2b4da6dbf7506bdf2e3ae4a66e626}{Plot\-A\-R\-M\-A\-Regions.\-nwalkers} = int(values\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{Plot\-A\-R\-M\-A\-Regions.\-ndim} = int(values\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a3c04a644963d85e8e23169a93ce616be}{Plot\-A\-R\-M\-A\-Regions.\-walkers} = np.\-zeros((nsteps,nwalkers,ndim))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a52850befe6ca5dd531f3da54183de7af}{Plot\-A\-R\-M\-A\-Regions.\-median\-Walker} = np.\-zeros((nsteps,ndim))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aebce0372a3a0163d83eb67756a668e9c}{Plot\-A\-R\-M\-A\-Regions.\-median\-Dev\-Walker} = np.\-zeros((nsteps,ndim))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aeab291d1791e6713eb80e5d400f942f5}{Plot\-A\-R\-M\-A\-Regions.\-step\-Arr} = np.\-arange(nsteps)
+\item 
+list \hyperlink{namespace_plot_a_r_m_a_regions_aa67f172c43ed86ba8625f428144531b0}{Plot\-A\-R\-M\-A\-Regions.\-samples} = walkers\mbox{[}chop\-:,\-:,\-:\mbox{]}
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aeadeb0d1d3349eeeafd2ee3cf0c17c41}{Plot\-A\-R\-M\-A\-Regions.\-lbls} = list()
+\end{DoxyCompactItemize}

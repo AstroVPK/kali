@@ -1,0 +1,4 @@
+<map id="Spherical" name="Spherical">
+<area shape="rect" id="node2" href="$class_equatorial.html" title="Equatorial" alt="" coords="5,80,84,107"/>
+<area shape="rect" id="node3" href="$class_galactic.html" title="Galactic" alt="" coords="110,80,180,107"/>
+</map>

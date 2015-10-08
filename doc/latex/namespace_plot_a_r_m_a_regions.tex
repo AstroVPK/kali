@@ -1,0 +1,201 @@
+\hypertarget{namespace_plot_a_r_m_a_regions}{\section{Plot\-A\-R\-M\-A\-Regions Namespace Reference}
+\label{namespace_plot_a_r_m_a_regions}\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespace_plot_a_r_m_a_regions_ab8d32e5943f6391d1de1d360f78a4e1c}{M\-A\-D}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a911f440b0b304e72e7588c7508cacd20}{sec\-Per\-Sidereal\-Day} = 86164.\-0905
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a54e4c79468e19409c96e67dfdb482f0a}{int\-Time} = 6.\-019802903
+\item 
+float \hyperlink{namespace_plot_a_r_m_a_regions_a5329612770d2afb1002bfc0672f392d8}{read\-Time} = 0.\-5189485261
+\item 
+int \hyperlink{namespace_plot_a_r_m_a_regions_a9a622e1006cc8cc55b062f42b9e4c980}{num\-Int\-L\-C} = 270
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a7b437af6d1c5ce7f40b5f27233d5f4b1}{deltat} = (\hyperlink{namespace_plot_a_r_m_a_regions_a9a622e1006cc8cc55b062f42b9e4c980}{num\-Int\-L\-C}$\ast$(\hyperlink{namespace_plot_a_r_m_a_regions_a54e4c79468e19409c96e67dfdb482f0a}{int\-Time}+\hyperlink{namespace_plot_a_r_m_a_regions_a5329612770d2afb1002bfc0672f392d8}{read\-Time}))
+\item 
+string \hyperlink{namespace_plot_a_r_m_a_regions_a35b8724b6b0849cfed30c080d79c775e}{Tri\-File\-Path} = base\-Path+'mcmc\-Out\-\_\-\%d\-\_\-\%d.\-dat'
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a418058aa77527961189e1d40f3d8091d}{Tri\-File} = open(\hyperlink{namespace_plot_a_r_m_a_regions_a35b8724b6b0849cfed30c080d79c775e}{Tri\-File\-Path})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a478b5b50b6eddf2098c4a31f8a83b86d}{line} = Tri\-File.\-readline()
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{values} = line.\-split()
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{nsteps} = int(\hyperlink{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{values}\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_ad8d2b4da6dbf7506bdf2e3ae4a66e626}{nwalkers} = int(\hyperlink{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{values}\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{ndim} = int(\hyperlink{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{values}\mbox{[}1\mbox{]})
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a3c04a644963d85e8e23169a93ce616be}{walkers} = np.\-zeros((\hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{nsteps},\hyperlink{namespace_plot_a_r_m_a_regions_ad8d2b4da6dbf7506bdf2e3ae4a66e626}{nwalkers},\hyperlink{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{ndim}))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_a52850befe6ca5dd531f3da54183de7af}{median\-Walker} = np.\-zeros((\hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{nsteps},\hyperlink{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{ndim}))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aebce0372a3a0163d83eb67756a668e9c}{median\-Dev\-Walker} = np.\-zeros((\hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{nsteps},\hyperlink{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{ndim}))
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aeab291d1791e6713eb80e5d400f942f5}{step\-Arr} = np.\-arange(\hyperlink{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{nsteps})
+\item 
+list \hyperlink{namespace_plot_a_r_m_a_regions_aa67f172c43ed86ba8625f428144531b0}{samples} = \hyperlink{namespace_plot_a_r_m_a_regions_a3c04a644963d85e8e23169a93ce616be}{walkers}\mbox{[}chop\-:,\-:,\-:\mbox{]}
+\item 
+tuple \hyperlink{namespace_plot_a_r_m_a_regions_aeadeb0d1d3349eeeafd2ee3cf0c17c41}{lbls} = list()
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespace_plot_a_r_m_a_regions_ab8d32e5943f6391d1de1d360f78a4e1c}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!M\-A\-D@{M\-A\-D}}
+\index{M\-A\-D@{M\-A\-D}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{M\-A\-D}]{\setlength{\rightskip}{0pt plus 5cm}def Plot\-A\-R\-M\-A\-Regions.\-M\-A\-D (
+\begin{DoxyParamCaption}
+\item[{}]{a}
+\end{DoxyParamCaption}
+)}}\label{namespace_plot_a_r_m_a_regions_ab8d32e5943f6391d1de1d360f78a4e1c}
+
+
+Definition at line 18 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespace_plot_a_r_m_a_regions_ab8d32e5943f6391d1de1d360f78a4e1c_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespace_plot_a_r_m_a_regions_a7b437af6d1c5ce7f40b5f27233d5f4b1}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!deltat@{deltat}}
+\index{deltat@{deltat}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{deltat}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-deltat = ({\bf num\-Int\-L\-C}$\ast$({\bf int\-Time}+{\bf read\-Time}))}}\label{namespace_plot_a_r_m_a_regions_a7b437af6d1c5ce7f40b5f27233d5f4b1}
+
+
+Definition at line 16 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a54e4c79468e19409c96e67dfdb482f0a}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!int\-Time@{int\-Time}}
+\index{int\-Time@{int\-Time}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{int\-Time}]{\setlength{\rightskip}{0pt plus 5cm}float Plot\-A\-R\-M\-A\-Regions.\-int\-Time = 6.\-019802903}}\label{namespace_plot_a_r_m_a_regions_a54e4c79468e19409c96e67dfdb482f0a}
+
+
+Definition at line 13 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_aeadeb0d1d3349eeeafd2ee3cf0c17c41}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!lbls@{lbls}}
+\index{lbls@{lbls}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{lbls}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-lbls = list()}}\label{namespace_plot_a_r_m_a_regions_aeadeb0d1d3349eeeafd2ee3cf0c17c41}
+
+
+Definition at line 94 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a478b5b50b6eddf2098c4a31f8a83b86d}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!line@{line}}
+\index{line@{line}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{line}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-line = Tri\-File.\-readline()}}\label{namespace_plot_a_r_m_a_regions_a478b5b50b6eddf2098c4a31f8a83b86d}
+
+
+Definition at line 46 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_aebce0372a3a0163d83eb67756a668e9c}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!median\-Dev\-Walker@{median\-Dev\-Walker}}
+\index{median\-Dev\-Walker@{median\-Dev\-Walker}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{median\-Dev\-Walker}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-median\-Dev\-Walker = np.\-zeros(({\bf nsteps},{\bf ndim}))}}\label{namespace_plot_a_r_m_a_regions_aebce0372a3a0163d83eb67756a668e9c}
+
+
+Definition at line 69 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a52850befe6ca5dd531f3da54183de7af}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!median\-Walker@{median\-Walker}}
+\index{median\-Walker@{median\-Walker}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{median\-Walker}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-median\-Walker = np.\-zeros(({\bf nsteps},{\bf ndim}))}}\label{namespace_plot_a_r_m_a_regions_a52850befe6ca5dd531f3da54183de7af}
+
+
+Definition at line 68 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!ndim@{ndim}}
+\index{ndim@{ndim}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{ndim}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-ndim = int({\bf values}\mbox{[}1\mbox{]})}}\label{namespace_plot_a_r_m_a_regions_a6d9523e891d3f88e36e2c83da27f05a9}
+
+
+Definition at line 57 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!nsteps@{nsteps}}
+\index{nsteps@{nsteps}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{nsteps}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-nsteps = int({\bf values}\mbox{[}1\mbox{]})}}\label{namespace_plot_a_r_m_a_regions_a400da7acac41459d918d50e10fcd9735}
+
+
+Definition at line 49 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a9a622e1006cc8cc55b062f42b9e4c980}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!num\-Int\-L\-C@{num\-Int\-L\-C}}
+\index{num\-Int\-L\-C@{num\-Int\-L\-C}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{num\-Int\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}int Plot\-A\-R\-M\-A\-Regions.\-num\-Int\-L\-C = 270}}\label{namespace_plot_a_r_m_a_regions_a9a622e1006cc8cc55b062f42b9e4c980}
+
+
+Definition at line 15 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_ad8d2b4da6dbf7506bdf2e3ae4a66e626}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!nwalkers@{nwalkers}}
+\index{nwalkers@{nwalkers}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{nwalkers}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-nwalkers = int({\bf values}\mbox{[}1\mbox{]})}}\label{namespace_plot_a_r_m_a_regions_ad8d2b4da6dbf7506bdf2e3ae4a66e626}
+
+
+Definition at line 53 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a5329612770d2afb1002bfc0672f392d8}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!read\-Time@{read\-Time}}
+\index{read\-Time@{read\-Time}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{read\-Time}]{\setlength{\rightskip}{0pt plus 5cm}float Plot\-A\-R\-M\-A\-Regions.\-read\-Time = 0.\-5189485261}}\label{namespace_plot_a_r_m_a_regions_a5329612770d2afb1002bfc0672f392d8}
+
+
+Definition at line 14 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_aa67f172c43ed86ba8625f428144531b0}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!samples@{samples}}
+\index{samples@{samples}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{samples}]{\setlength{\rightskip}{0pt plus 5cm}list Plot\-A\-R\-M\-A\-Regions.\-samples = {\bf walkers}\mbox{[}chop\-:,\-:,\-:\mbox{]}}}\label{namespace_plot_a_r_m_a_regions_aa67f172c43ed86ba8625f428144531b0}
+
+
+Definition at line 93 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a911f440b0b304e72e7588c7508cacd20}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!sec\-Per\-Sidereal\-Day@{sec\-Per\-Sidereal\-Day}}
+\index{sec\-Per\-Sidereal\-Day@{sec\-Per\-Sidereal\-Day}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{sec\-Per\-Sidereal\-Day}]{\setlength{\rightskip}{0pt plus 5cm}float Plot\-A\-R\-M\-A\-Regions.\-sec\-Per\-Sidereal\-Day = 86164.\-0905}}\label{namespace_plot_a_r_m_a_regions_a911f440b0b304e72e7588c7508cacd20}
+
+
+Definition at line 12 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_aeab291d1791e6713eb80e5d400f942f5}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!step\-Arr@{step\-Arr}}
+\index{step\-Arr@{step\-Arr}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{step\-Arr}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-step\-Arr = np.\-arange({\bf nsteps})}}\label{namespace_plot_a_r_m_a_regions_aeab291d1791e6713eb80e5d400f942f5}
+
+
+Definition at line 74 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a418058aa77527961189e1d40f3d8091d}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!Tri\-File@{Tri\-File}}
+\index{Tri\-File@{Tri\-File}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{Tri\-File}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-Tri\-File = open({\bf Tri\-File\-Path})}}\label{namespace_plot_a_r_m_a_regions_a418058aa77527961189e1d40f3d8091d}
+
+
+Definition at line 45 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a35b8724b6b0849cfed30c080d79c775e}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!Tri\-File\-Path@{Tri\-File\-Path}}
+\index{Tri\-File\-Path@{Tri\-File\-Path}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{Tri\-File\-Path}]{\setlength{\rightskip}{0pt plus 5cm}string Plot\-A\-R\-M\-A\-Regions.\-Tri\-File\-Path = base\-Path+'mcmc\-Out\-\_\-\%d\-\_\-\%d.\-dat'}}\label{namespace_plot_a_r_m_a_regions_a35b8724b6b0849cfed30c080d79c775e}
+
+
+Definition at line 44 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!values@{values}}
+\index{values@{values}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{values}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-values = line.\-split()}}\label{namespace_plot_a_r_m_a_regions_a4e1eb2c62fce8e30d2ac6b5152291a8a}
+
+
+Definition at line 48 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+
+\hypertarget{namespace_plot_a_r_m_a_regions_a3c04a644963d85e8e23169a93ce616be}{\index{Plot\-A\-R\-M\-A\-Regions@{Plot\-A\-R\-M\-A\-Regions}!walkers@{walkers}}
+\index{walkers@{walkers}!PlotARMARegions@{Plot\-A\-R\-M\-A\-Regions}}
+\subsubsection[{walkers}]{\setlength{\rightskip}{0pt plus 5cm}tuple Plot\-A\-R\-M\-A\-Regions.\-walkers = np.\-zeros(({\bf nsteps},{\bf nwalkers},{\bf ndim}))}}\label{namespace_plot_a_r_m_a_regions_a3c04a644963d85e8e23169a93ce616be}
+
+
+Definition at line 58 of file Plot\-A\-R\-M\-A\-Regions.\-py.
+

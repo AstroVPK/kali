@@ -1,0 +1,84 @@
+\hypertarget{plot_a_r_m_a_regions_8cpp}{\section{/home/vish/code/trunk/cpp/libcarma/src/plot\-A\-R\-M\-A\-Regions.cpp File Reference}
+\label{plot_a_r_m_a_regions_8cpp}\index{/home/vish/code/trunk/cpp/libcarma/src/plot\-A\-R\-M\-A\-Regions.\-cpp@{/home/vish/code/trunk/cpp/libcarma/src/plot\-A\-R\-M\-A\-Regions.\-cpp}}
+}
+{\ttfamily \#include $<$mathimf.\-h$>$}\\*
+{\ttfamily \#include $<$mkl.\-h$>$}\\*
+{\ttfamily \#include $<$mkl\-\_\-types.\-h$>$}\\*
+{\ttfamily \#include $<$omp.\-h$>$}\\*
+{\ttfamily \#include $<$sys/sysinfo.\-h$>$}\\*
+{\ttfamily \#include $<$unistd.\-h$>$}\\*
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$array$>$}\\*
+{\ttfamily \#include $<$tuple$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$fstream$>$}\\*
+{\ttfamily \#include $<$nlopt.\-hpp$>$}\\*
+{\ttfamily \#include \char`\"{}Acquire.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Kalman.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Universe.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Kepler.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}M\-C\-M\-C.\-hpp\char`\"{}}\\*
+Include dependency graph for plot\-A\-R\-M\-A\-Regions.\-cpp\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{plot_a_r_m_a_regions_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{plot_a_r_m_a_regions_8cpp_af1a43a55f50dea06366f9de6940e3e39}{T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E}
+\item 
+\#define \hyperlink{plot_a_r_m_a_regions_8cpp_ae3f370bd2a68105370ee90f3f5805e86}{T\-I\-M\-E\-\_\-\-M\-C\-M\-C}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{plot_a_r_m_a_regions_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{plot_a_r_m_a_regions_8cpp_af1a43a55f50dea06366f9de6940e3e39}{\index{plot\-A\-R\-M\-A\-Regions.\-cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}!T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E@{T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E}}
+\index{T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E@{T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E}!plotARMARegions.cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}}
+\subsubsection[{T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\-I\-M\-E\-\_\-\-L\-N\-L\-I\-K\-E}}\label{plot_a_r_m_a_regions_8cpp_af1a43a55f50dea06366f9de6940e3e39}
+
+
+Definition at line 22 of file plot\-A\-R\-M\-A\-Regions.\-cpp.
+
+\hypertarget{plot_a_r_m_a_regions_8cpp_ae3f370bd2a68105370ee90f3f5805e86}{\index{plot\-A\-R\-M\-A\-Regions.\-cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}!T\-I\-M\-E\-\_\-\-M\-C\-M\-C@{T\-I\-M\-E\-\_\-\-M\-C\-M\-C}}
+\index{T\-I\-M\-E\-\_\-\-M\-C\-M\-C@{T\-I\-M\-E\-\_\-\-M\-C\-M\-C}!plotARMARegions.cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}}
+\subsubsection[{T\-I\-M\-E\-\_\-\-M\-C\-M\-C}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\-I\-M\-E\-\_\-\-M\-C\-M\-C}}\label{plot_a_r_m_a_regions_8cpp_ae3f370bd2a68105370ee90f3f5805e86}
+
+
+Definition at line 23 of file plot\-A\-R\-M\-A\-Regions.\-cpp.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{plot_a_r_m_a_regions_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{\index{plot\-A\-R\-M\-A\-Regions.\-cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}!main@{main}}
+\index{main@{main}!plotARMARegions.cpp@{plot\-A\-R\-M\-A\-Regions.\-cpp}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{plot_a_r_m_a_regions_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}
+
+
+Definition at line 30 of file plot\-A\-R\-M\-A\-Regions.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=304pt]{plot_a_r_m_a_regions_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4_cgraph}
+\end{center}
+\end{figure}
+
+

@@ -1,0 +1,133 @@
+\hypertarget{_acquire_8hpp}{\section{/home/vish/code/trunk/cpp/libcarma/include/\-Acquire.hpp File Reference}
+\label{_acquire_8hpp}\index{/home/vish/code/trunk/cpp/libcarma/include/\-Acquire.\-hpp@{/home/vish/code/trunk/cpp/libcarma/include/\-Acquire.\-hpp}}
+}
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$limits$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$boost/system/error\-\_\-code.\-hpp$>$}\\*
+{\ttfamily \#include $<$boost/system/system\-\_\-error.\-hpp$>$}\\*
+{\ttfamily \#include $<$boost/system/linux\-\_\-error.\-hpp$>$}\\*
+{\ttfamily \#include $<$boost/filesystem.\-hpp$>$}\\*
+{\ttfamily \#include $<$boost/io/detail/quoted\-\_\-manip.\-hpp$>$}\\*
+Include dependency graph for Acquire.\-hpp\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_acquire_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_acquire_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename In\-Type $>$ }\\void \hyperlink{_acquire_8hpp_a42cdc40f31099f8ddbbe1334c24306c4}{Acquire\-Input} (ostream \&Os, istream \&Is, const string \&Prompt, const string \&Fail\-String, In\-Type \&Result)
+\item 
+{\footnotesize template$<$typename In\-Type $>$ }\\In\-Type \hyperlink{_acquire_8hpp_a76ef36c83d924d0967514c156ca762b2}{Acquire\-Input} (ostream \&Os, istream \&Is, const string \&Prompt, const string \&Fail\-String)
+\item 
+void \hyperlink{_acquire_8hpp_a4c4565084a152b01217e6f1650fc3450}{Acquire\-Directory} (ostream \&Os, istream \&Is, const string \&Prompt, const string \&Fail\-String, string \&Result)
+\item 
+void \hyperlink{_acquire_8hpp_a6d8415f6f6ba7cb8f43f36fd22d002a6}{Acquire\-File} (ostream \&Os, istream \&Is, const string \&Prompt, const string \&Fail\-String, string \&Result)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_acquire_8hpp_a4c4565084a152b01217e6f1650fc3450}{\index{Acquire.\-hpp@{Acquire.\-hpp}!Acquire\-Directory@{Acquire\-Directory}}
+\index{Acquire\-Directory@{Acquire\-Directory}!Acquire.hpp@{Acquire.\-hpp}}
+\subsubsection[{Acquire\-Directory}]{\setlength{\rightskip}{0pt plus 5cm}void Acquire\-Directory (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{Os, }
+\item[{istream \&}]{Is, }
+\item[{const string \&}]{Prompt, }
+\item[{const string \&}]{Fail\-String, }
+\item[{string \&}]{Result}
+\end{DoxyParamCaption}
+)}}\label{_acquire_8hpp_a4c4565084a152b01217e6f1650fc3450}
+
+
+Definition at line 16 of file Acquire.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=244pt]{_acquire_8hpp_a4c4565084a152b01217e6f1650fc3450_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_acquire_8hpp_a6d8415f6f6ba7cb8f43f36fd22d002a6}{\index{Acquire.\-hpp@{Acquire.\-hpp}!Acquire\-File@{Acquire\-File}}
+\index{Acquire\-File@{Acquire\-File}!Acquire.hpp@{Acquire.\-hpp}}
+\subsubsection[{Acquire\-File}]{\setlength{\rightskip}{0pt plus 5cm}void Acquire\-File (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{Os, }
+\item[{istream \&}]{Is, }
+\item[{const string \&}]{Prompt, }
+\item[{const string \&}]{Fail\-String, }
+\item[{string \&}]{Result}
+\end{DoxyParamCaption}
+)}}\label{_acquire_8hpp_a6d8415f6f6ba7cb8f43f36fd22d002a6}
+
+
+Definition at line 65 of file Acquire.\-cpp.
+
+\hypertarget{_acquire_8hpp_a42cdc40f31099f8ddbbe1334c24306c4}{\index{Acquire.\-hpp@{Acquire.\-hpp}!Acquire\-Input@{Acquire\-Input}}
+\index{Acquire\-Input@{Acquire\-Input}!Acquire.hpp@{Acquire.\-hpp}}
+\subsubsection[{Acquire\-Input}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename In\-Type $>$ void Acquire\-Input (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{Os, }
+\item[{istream \&}]{Is, }
+\item[{const string \&}]{Prompt, }
+\item[{const string \&}]{Fail\-String, }
+\item[{In\-Type \&}]{Result}
+\end{DoxyParamCaption}
+)}}\label{_acquire_8hpp_a42cdc40f31099f8ddbbe1334c24306c4}
+
+
+Definition at line 18 of file Acquire.\-hpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{_acquire_8hpp_a42cdc40f31099f8ddbbe1334c24306c4_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_acquire_8hpp_a76ef36c83d924d0967514c156ca762b2}{\index{Acquire.\-hpp@{Acquire.\-hpp}!Acquire\-Input@{Acquire\-Input}}
+\index{Acquire\-Input@{Acquire\-Input}!Acquire.hpp@{Acquire.\-hpp}}
+\subsubsection[{Acquire\-Input}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename In\-Type $>$ In\-Type Acquire\-Input (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{Os, }
+\item[{istream \&}]{Is, }
+\item[{const string \&}]{Prompt, }
+\item[{const string \&}]{Fail\-String}
+\end{DoxyParamCaption}
+)}}\label{_acquire_8hpp_a76ef36c83d924d0967514c156ca762b2}
+
+
+Definition at line 33 of file Acquire.\-hpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{_acquire_8hpp_a76ef36c83d924d0967514c156ca762b2_cgraph}
+\end{center}
+\end{figure}
+
+

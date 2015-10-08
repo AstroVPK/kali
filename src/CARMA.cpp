@@ -342,6 +342,24 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 		}
 	}
 
+void expm(double xi, double* out) {
+	#pragma omp simd
+	for (int i = 0; i < p; ++i) {
+		expw[i + i*p] = exp(dt*w[i]);
+		}
+
+	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
+	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			out[rowCtr + colCtr*p] = FScratch[rowCtr + colCtr*p];
+			}
+		}
+	}
+
 CARMA::CARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/
 	#ifdef DEBUG_CTORDLM
@@ -365,9 +383,9 @@ CARMA::CARMA() {
 
 	// Arrays used to compute expm(A dt)
 	w = nullptr; // len p
-	expw = nullptr; // len p
+	expw = nullptr; // len pSq
 	CARw = nullptr; // len p
-	CMAw = nullptr; //len q
+	CMAw = nullptr; //len p
 	scale = nullptr;
 	vr = nullptr;
 	vrInv = nullptr;
@@ -427,15 +445,13 @@ CARMA::~CARMA() {
 	pSq = 0;
 	t = 0.0;
 
-	ilo = nullptr; // len 1
-	ihi = nullptr; // len 1
-	abnrm = nullptr; // len 1
-
-	// Arrays used to compute expm(A dt)
-	w = nullptr; // len p
-	expw = nullptr; // len p
-	CARw = nullptr; // len p
-	CMAw = nullptr; //len q
+	ilo = nullptr;
+	ihi = nullptr;
+	abnrm = nullptr;
+	w = nullptr;
+	expw = nullptr;
+	CARw = nullptr;
+	CMAw = nullptr;
 	scale = nullptr;
 	vr = nullptr;
 	vrInv = nullptr;
@@ -493,132 +509,140 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	q = numQ;
 	allocated = 0;
 	pSq = p*p;
+	qSq = q*q;
 
 	ilo = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
 	ihi = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
 	allocated += 2*sizeof(lapack_int);
 
+	abnrm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	allocated += sizeof(double);
+
 	ilo[0] = 0;
 	ihi[0] = 0;
+	abnrm[0] = 0.0;
 
-	//ARz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	//MAz = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	//allocated += 2*sizeof(double);
+	ipiv = static_cast<lapack_int*>(_mm_malloc(p*sizeof(lapack_int),64));
+	allocated += p*sizeof(lapack_int);
 
-	//ARz[0] = 0.0;
-	//MAz[0] = 0.0;
-
-	ARScale = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
-	ARwr = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
-	ARwi = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	scale = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	rconde = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	rcondv = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	allocated += 3*p*sizeof(double);
 
-	#pragma omp simd
-	for (int i = 0; i < p; i++) {
-		ARScale[i] = 0.0;
-		ARwr[i] = 0.0;
-		ARwi[i] = 0.0;
-		}
+	w = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+	CARw = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	CMAw = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	B = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+	BScratch = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+	allocated += 4*p*sizeof(complex<double>);
+	allocated += q*sizeof(complex<double>);
 
-	MAScale = static_cast<double*>(_mm_malloc(q*sizeof(double),64));
-	MAwr = static_cast<double*>(_mm_malloc(q*sizeof(double),64));
-	MAwi = static_cast<double*>(_mm_malloc(q*sizeof(double),64));
-	allocated += 3*q*sizeof(double);
+	CARMatrix = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	CMAMatrix = static_cast<complex<double>*>(_mm_malloc(qSq*sizeof(complex<double>),64));
+	expw = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	vr = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	vrInv = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	allocated += 6*pSq*sizeof(double);
+	allocated += qSq*sizeof(complex<double>);
 
-	#pragma omp simd
-	for (int i = 0; i < q; i++) {
-		MAScale[i] = 0.0;
-		MAwr[i] = 0.0;
-		MAwi[i] = 0.0;
-		}
-
-	ARTau = static_cast<double*>(_mm_malloc((p-1)*sizeof(double),64));
-	allocated += (p-1)*sizeof(double);
-
-	#pragma omp simd
-	for (int i = 0; i < p-1; i++) {
-		ARTau[i] = 0.0;
-		}
-
-	MATau = static_cast<double*>(_mm_malloc((q-1)*sizeof(double),64));
-	allocated += (q-1)*sizeof(double);
-
-	#pragma omp simd
-	for (int i = 0; i < q-1; i++) {
-		MATau[i] = 0.0;
-		}
-
-	ARMatrix = static_cast<double*>(_mm_malloc(p*p*sizeof(double),64));
-	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
-		#pragma omp simd
-		for (int colCtr = 0; colCtr < p; colCtr++) {
-			ARMatrix[rowCtr + p*colCtr] = 0.0; // Initialize matrix.
+	for (int colCtr = 0; colCtr < q; ++colCtr) {
+		CMAw[colCtr] = 0.0+0.0i;
+		#pramgma omp simd
+		for (int rowCtr = 0; rowCtr < q; ++rowctr) {
+			CMAMatrix[rowCtr + colCtr*q] = 0.0+0.0i;
 			}
 		}
-	allocated += p*p*sizeof(double);
 
-	MAMatrix = static_cast<double*>(_mm_malloc(q*q*sizeof(double),64));
-	for (int rowCtr = 0; rowCtr < q; rowCtr++) {
-		#pragma omp simd
-		for (int colCtr = 0; colCtr < q; colCtr++) {
-			MAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		ipiv[colCtr] = 0;
+		scale[colCtr] = 0.0;
+		rconde[colCtr] = 0.0;
+		rcondv[colCtr] = 0.0;
+		w[colCtr] = 0.0+0.0i;
+		CARw[colCtr] = 0.0+0.0i;
+		B[colCtr] = 0.0;
+		BScratch[colCtr] = 0.0;
+		#pramgma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowctr) {
+			CARMatrix[rowCtr + colCtr*p] = 0.0+0.0i;
+			expw[rowCtr + colCtr*p] = 0.0+0.0i;
+			vr[rowCtr + colCtr*p] = 0.0+0.0i;
+			vrInv[rowCtr + colCtr*p] = 0.0+0.0i;
+			A[rowCtr + colCtr*p] = 0.0+0.0i;
+			AScratch[rowCtr + colCtr*p] = 0.0+0.0i;
 			}
 		}
-	allocated += q*q*sizeof(double);
+
+	FKron_rcond = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	FKron_rpvgrw = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	FKron_berr = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	FKron_err_bnds_norm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	FKron_err_bnds_comp = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	allocated += 5*sizeof(double);
+
+	FKron_r = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	FKron_c = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	allocated += pSq*sizeof(double);
+
+	FKron_ipiv = static_cast<lapack_int*>(_mm_malloc(pSq*pSq*sizeof(lapack_int),64));
+	allocated += pSq*pSq*sizeof(lapack_int);
+
+	FKron = static_cast<double*>(_mm_malloc(pSq*pSq*sizeof(double),64));
+	FKron_af = static_cast<double*>(_mm_malloc(pSq*pSq*sizeof(double),64));
+	allocated += pSq*pSq*sizeof(double);
+
+	FKron_rcond[0] = 0.0;
+	FKron_rpvgrw[0] = 0.0;
+	FKron_berr[0] = 0.0;
+	FKron_err_bnds_norm[0] = 0.0;
+	FKron_err_bnds_comp[0] = 0.0;
+
+	for (int colCtr = 0; colCtr < pSq; ++colCtr) {
+		FKron_r[colCtr] = 0.0;
+		FKron_c[colCtr] = 0.0;
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < pSq; ++rowCtr) {
+			FKron_ipiv[rowCtr + colCtr*pSq] = 0;
+			FKron[rowCtr + colCtr*pSq] = 0.0;
+			FKron_af[rowCtr + colCtr*pSq] = 0.0;
+			}
+		}
 
 	Theta = static_cast<double*>(_mm_malloc((p+q+1)*sizeof(double),64));
-	for (int i = 0; i < (p+q+1); ++i) {
-		Theta[i] = 0.0;
-		}
 	allocated += (p+q+1)*sizeof(double);
 
-	A = static_cast<MKL_Complex16*>(_mm_malloc(mSq*sizeof(MKL_Complex16),64));
-	Aw = static_cast<MKL_Complex16*>(_mm_malloc(m*sizeof(MKL_Complex16),64));
-	//Awi = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	Avr = static_cast<MKL_Complex16*>(_mm_malloc(mSq*sizeof(MKL_Complex16),64));
-	Ascale = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+	for (int rowCtr = 0; rowCtr < (p+q+1); ++rowCtr) {
+		Theta[rowCtr] = 0.0;
+		}
 
-	B = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
+	D = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	H = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	K = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	X = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	XMinus = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	VScratch = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	allocated += 6*p*sizeof(double);
 
-	allocated += 2*mSq*sizeof(double)
-	allocated += 4*m*sizeof(double)
-
-	I = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	F = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	FKron = static_cast<double*>(_mm_malloc(mSq*mSq*sizeof(double),64));
-	FKronPiv = static_cast<lapack_int*>(_mm_malloc(mSq*mSq*sizeof(lapack_int),64));
-	Q = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	P = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	PMinus = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	MScratch = static_cast<double*>(_mm_malloc(m*m*sizeof(double),64));
-	allocated += 6*m*m*sizeof(double);
-	allocated += mSq*mSq*sizeof(double);
-	allocated += mSq*mSq*sizeof(lapack_int);
-
-	D = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	H = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	K = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	X = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	XMinus = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	VScratch = static_cast<double*>(_mm_malloc(m*sizeof(double),64));
-	allocated += 6*m*sizeof(double);
+	I = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	F = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	Q = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	P = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	PMinus = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	MScratch = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	allocated += 6*pSq*sizeof(double);
 
 	for (int i = 0; i < m; i++) {
 		D[i] = 0.0;
 		H[i] = 0.0;
 		K[i] = 0.0;
 		X[i] = 0.0;
-		Aw[i].real = 0.0;
-		Aw[i].imag = 0.0;
-		Ascale[i] = 0.0;
 		XMinus[i] = 0.0;
 		VScratch[i] = 0.0;
 		#pragma omp simd
 		for (int j = 0; j < m; j++) {
-			A[i].real = 0.0;
-			A[i].imag[i] = 0.0;
-			Avr[i*m+j].real = 0.0;
-			Avr[i*m+j].imag = 0.0;
 			I[i*m+j] = 0.0;
 			F[i*m+j] = 0.0;
 			Q[i*m+j] = 0.0;
@@ -627,16 +651,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			MScratch[i*m+j] = 0.0;
 			}
 		}
-
-	for (int i = 0; i < mSq; i++) {
-		//FKronPiv[i] = 0;
-		#pragma omp simd
-		for (int j = 0; j < mSq; j++) {
-			FKron[i*mSq + j] = 0.0;
-			FKronPiv[i*mSq + j] = 0;
-			}
-		}
-	//FKronPiv[mSq] = 0;
 
 	R = static_cast<double*>(_mm_malloc(sizeof(double),64));
 	allocated += sizeof(double);
@@ -848,14 +862,14 @@ int CARMA::checkCARMAParams(double* Theta) {
 	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
 		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; colCtr++) {
-			ARMatrix[rowCtr + p*colCtr] = 0.0; // Reset matrix.
+			CARMatrix[rowCtr + p*colCtr] = 0.0; // Reset matrix.
 			}
 		}
 	#pragma omp simd
-	ARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		ARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
-		ARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
 	ihi[0] = 0;
@@ -933,8 +947,11 @@ int CARMA::checkCARMAParams(double* Theta) {
 	ihi[0] = 0;
 	abnrm[0] = 0.0;
 	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
+		CMAw[rowCtr] = 0.0+0.0i;
+		}
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		CMAw[rowCtr] = 0.0;
 		scale[rowCtr] = 0.0;
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
@@ -1072,28 +1089,10 @@ void CARMA::setCARMA(double* Theta) {
 
 	}
 
-void CARMA::expm(double xi, double* out) {
-	#pragma omp simd
-	for (int i = 0; i < p; ++i) {
-		expw[i + i*p] = exp(dt*w[i]);
-		}
-
-	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			out[rowCtr + colCtr*p] = FScratch[rowCtr + colCtr*p];
-			}
-		}
-	}
-
 void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double t) {
 	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
 
-	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\mathbfss{Q} = \int_{t_{0}}^{t} \mathrm{e}^{\mathbfss{A}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\mathbfss{A}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\mathbfss{Q}\f$ is symmetric positive definate and only the first column needfs to be computed.
+	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\textbf{\textsf{Q}}\f$ is symmetric positive definate and only the first column needfs to be computed.
 	*/
 
 	// Start by computing expw = exp(w*t) where w is an e-value of A i.e. the doagonal of expw consists of the exponents of the e-values of A times t

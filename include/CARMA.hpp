@@ -27,6 +27,7 @@ public:
 	int p;
 	int q;
 	int pSq;
+	int qSq;
 	double t; // This is the last used step time to compute F and Q.
 	// ilo, ihi and abnrm are arrays of size 1 so they can be re-used by everything. No need to make multiple copies for A, CAR and CMA
 	lapack_int *ilo; // len 1
@@ -35,15 +36,17 @@ public:
 
 	// Arrays used to compute expm(A dt)
 	complex<double> *w; // len p
-	complex<double> *expw; // len p
+	complex<double> *expw; // len pSq
+	complex<double> *CARMatrix; // len pSq
+	complex<double> *CMAMatrix; // len qSq
 	complex<double> *CARw; // len p
-	complex<double> *CMAw; //len q
-	complex<double> *scale;
-	complex<double> *vr;
-	complex<double> *vrInv;
-	double *rconde;
-	double *rcondv;
-	lapack_int *ipiv;
+	complex<double> *CMAw; // len q
+	double *scale; // len p
+	complex<double> *vr; // len pSq
+	complex<double> *vrInv; // len pSq
+	double *rconde; // len p
+	double *rcondv; // len p
+	lapack_int *ipiv; // len p
 
 	double *Theta;
 	complex<double> *A;
@@ -79,7 +82,6 @@ public:
 	void deallocCARMA();
 	int checkCARMAParams(double* Theta);
 	void setCARMA(double* Theta);
-	void expm(double xi, double* out);
 	void operator()(const double* &x, double* &dxdt, const double t);
 	void solveCARMA(double dt);
 	void resetState(double InitUncertainty);
@@ -125,5 +127,7 @@ void viewMatrix(int nRows, int nCols, complex<double>* mat);
 double dtime();
 
 void kron(int m, int n, double* A, int p, int q, double* B, double* C);
+
+void expm(double xi, double* out);
 
 #endif

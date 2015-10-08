@@ -1,0 +1,910 @@
+\hypertarget{class_c_a_r_m_a}{\section{C\-A\-R\-M\-A Class Reference}
+\label{class_c_a_r_m_a}\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}}
+}
+
+
+{\ttfamily \#include $<$C\-A\-R\-M\-A.\-hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_c_a_r_m_a_a8871e02b301b503a987c03afc15c573c}{C\-A\-R\-M\-A} ()
+\item 
+\hyperlink{class_c_a_r_m_a_a19f2c3c41d81428c5f77a71f983dcc0b}{$\sim$\-C\-A\-R\-M\-A} ()
+\item 
+void \hyperlink{class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0}{alloc\-C\-A\-R\-M\-A} (int num\-P, int num\-Q)
+\item 
+void \hyperlink{class_c_a_r_m_a_af850b7e2ba5af3ae028aacfc0891b830}{dealloc\-C\-A\-R\-M\-A} ()
+\item 
+int \hyperlink{class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4}{check\-C\-A\-R\-M\-A\-Params} (double $\ast$\hyperlink{class_c_a_r_m_a_a5717e11c4a42a0d3c932a69e6493d22b}{Theta})
+\item 
+void \hyperlink{class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e}{set\-C\-A\-R\-M\-A} (double $\ast$\hyperlink{class_c_a_r_m_a_a5717e11c4a42a0d3c932a69e6493d22b}{Theta})
+\item 
+void \hyperlink{class_c_a_r_m_a_a7c7b27991e17ddc782909f903f375f90}{expm} (double xi, double $\ast$out)
+\item 
+void \hyperlink{class_c_a_r_m_a_aab53261f484dfa74a29d88e345fa0715}{operator()} (const double $\ast$\&x, double $\ast$\&dxdt, const double \hyperlink{class_c_a_r_m_a_a47e298ceac5c77b96f70f520119d0eb7}{t})
+\item 
+void \hyperlink{class_c_a_r_m_a_ab40779c2e688ef40afe4c925a777ebc7}{solve\-C\-A\-R\-M\-A} (double dt)
+\item 
+void \hyperlink{class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9}{reset\-State} (double Init\-Uncertainty)
+\item 
+void \hyperlink{class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac}{reset\-State} ()
+\item 
+void \hyperlink{class_c_a_r_m_a_afad6e999f5171c8dbe5618f39ac49433}{get\-C\-A\-R\-Roots} (double $\ast$\&Real\-A\-R, double $\ast$\&Imag\-A\-R\-W)
+\item 
+void \hyperlink{class_c_a_r_m_a_a1d572ff7e85465abc3efb6ca1ac0cafc}{get\-C\-M\-A\-Roots} (double $\ast$\&Real\-M\-A, double $\ast$\&Imag\-M\-A)
+\item 
+void \hyperlink{class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba}{burn\-System} (int num\-Burn, unsigned int burn\-Seed, double $\ast$burn\-Rand)
+\item 
+double \hyperlink{class_c_a_r_m_a_a12f0019ddf951e20ffda09e46795b8f3}{observe\-System} (double dist\-Rand, double noise\-Rand)
+\item 
+double \hyperlink{class_c_a_r_m_a_adbfdf1b311724e3a128613d880db66c5}{observe\-System} (double dist\-Rand, double noise\-Rand, double mask)
+\item 
+void \hyperlink{class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de}{observe\-System} (int num\-Obs, unsigned int dist\-Seed, unsigned int noise\-Seed, double $\ast$dist\-Rand, double $\ast$noise\-Rand, double noise\-Sigma, double $\ast$y)
+\item 
+void \hyperlink{class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1}{observe\-System} (int num\-Obs, unsigned int dist\-Seed, unsigned int noise\-Seed, double $\ast$dist\-Rand, double $\ast$noise\-Rand, double noise\-Sigma, double $\ast$y, double $\ast$mask)
+\item 
+double \hyperlink{class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9}{compute\-Ln\-Like} (int num\-Pts, double $\ast$y, double $\ast$yerr)
+\item 
+double \hyperlink{class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e}{compute\-Ln\-Like} (int num\-Pts, double $\ast$y, double $\ast$yerr, double $\ast$mask)
+\item 
+void \hyperlink{class_c_a_r_m_a_a2d84c0d953b15519cbddcfffc50132b0}{get\-Residuals} (int num\-Pts, double $\ast$y, double $\ast$r)
+\item 
+void \hyperlink{class_c_a_r_m_a_af5d31db7b37973d2dea0dae07ef531b5}{fixed\-Interval\-Smoother} (int num\-Pts, double $\ast$y, double $\ast$r, double $\ast$x)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_c_a_r_m_a_a54245682ab3eba1ba3fde0898f9898a6}{allocated}
+\item 
+int \hyperlink{class_c_a_r_m_a_a5234c38768e071f37c8a6bdfaf06f499}{is\-Stable}
+\item 
+int \hyperlink{class_c_a_r_m_a_ab8907880b6740bbc95f011957495d41b}{is\-Invertible}
+\item 
+int \hyperlink{class_c_a_r_m_a_a1da5f1d423116967c885b09cd4729ca3}{is\-Not\-Redundant}
+\item 
+int \hyperlink{class_c_a_r_m_a_a845e25047e97b9b629b32a3c592f3d29}{is\-Reasonable}
+\item 
+int \hyperlink{class_c_a_r_m_a_a69668ba1aef7197cc54078cd0ae94ce2}{p}
+\item 
+int \hyperlink{class_c_a_r_m_a_a3322588d9691b02ebb6e7e1b4f9c8ecf}{q}
+\item 
+int \hyperlink{class_c_a_r_m_a_a6ae0464e80be268753c9421f7a103562}{p\-Sq}
+\item 
+int \hyperlink{class_c_a_r_m_a_a7fc41676954abf3a5b1c74f4ac8abe25}{q\-Sq}
+\item 
+double \hyperlink{class_c_a_r_m_a_a47e298ceac5c77b96f70f520119d0eb7}{t}
+\item 
+lapack\-\_\-int $\ast$ \hyperlink{class_c_a_r_m_a_a2faca89f81a95b8d788445b99527d79c}{ilo}
+\item 
+lapack\-\_\-int $\ast$ \hyperlink{class_c_a_r_m_a_a3def910e9268fefd309b90a98e13d323}{ihi}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a38d4be056f99144dd726b8a522873200}{abnrm}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a34484d60e14f53e2e2bb378a4e9e7344}{w}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a53bc76be0e75d214cb9bc18bdf07cab9}{expw}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a4753a35f5afb7c4f3a51f1fbfd8ddc96}{C\-A\-R\-Matrix}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_ae9fc6695efc343e26009ce33d07fdf27}{C\-M\-A\-Matrix}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a999a48a6285c64b5ce971cfbd2a4a549}{C\-A\-Rw}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a796f3af91b03b11b3d08f3ce668de258}{C\-M\-Aw}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ada896ef5d67dad63fb8671be1889b42a}{scale}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a7ef9e8afd4bd3adcf2931bad09c831af}{vr}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a1128984d1bb62a18c9046730fdc9b234}{vr\-Inv}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_abd47e4fb92d1a455aa1702a2242825d0}{rconde}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a6573aee6903bc05dd601c3355905f68d}{rcondv}
+\item 
+lapack\-\_\-int $\ast$ \hyperlink{class_c_a_r_m_a_ad000fbedcf5b10d37212f43c23e65431}{ipiv}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a5717e11c4a42a0d3c932a69e6493d22b}{Theta}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_af80126208923015a2149c11314bbc798}{A}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_ae95636dd50674cb98dc309ce7042f2ed}{B}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ab07ac5e7150cb4674150f4c27ce4afd7}{I}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_aad97cb3334f43c80bfb2aabb1b22bb52}{F}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a5ccd955a53c7473f750a8d03934d49cc}{A\-Scratch}
+\item 
+complex$<$ double $>$ $\ast$ \hyperlink{class_c_a_r_m_a_a1086542a2badf2a6d6cab3f4dc3825fd}{B\-Scratch}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a45b3f6243c0ebd0dbe4b3b2b6c41dc42}{F\-Kron}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_afb5265a4a649bda74d75346703633bd5}{F\-Kron\-\_\-af}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a8767db54a4a42729310a11e1fefc8fba}{F\-Kron\-\_\-r}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ae051792220350a8ca5bf9619d97351ac}{F\-Kron\-\_\-c}
+\item 
+lapack\-\_\-int $\ast$ \hyperlink{class_c_a_r_m_a_afaf0d0b033ee891862d59a7800d9cdaf}{F\-Kron\-\_\-ipiv}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a4d0801b15644b2e5b0580b0688119737}{F\-Kron\-\_\-rcond}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ae089a1c6d303b4c9573c943c0a729269}{F\-Kron\-\_\-rpvgrw}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_acae4a7d06cd91dfc10cf0c1bf87f6689}{F\-Kron\-\_\-berr}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a859299a912a8613c5143b8b9878b5842}{F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ac95cc03cafb7ce94ecccf055462b487a}{F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a95cd26896bd2a97497be37295e039dc8}{D}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a1cd98bc094e960bcf7d8af55528ae72c}{Q}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_aa2f506e700aa176fd5d8866552aa1f83}{H}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a40823ba436816d4e656185a3ae8a125f}{R}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a01b4c677af0ad6e7981851efe9fd3563}{K}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ad57c7f2816413aa6b7e98b147ad73712}{X}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ab6923d0ca4591a595c997549a0487cb3}{P}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a4f2333fe508efc7d8e59776aa98fdd50}{X\-Minus}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_aa0f1ac4385f61138ce0ad9f5dfc10d06}{P\-Minus}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_ad9d4a76333d0b578ce167d43801f9347}{V\-Scratch}
+\item 
+double $\ast$ \hyperlink{class_c_a_r_m_a_a17050731a928b7e2a024fd8c1b5acd6d}{M\-Scratch}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 20 of file C\-A\-R\-M\-A.\-hpp.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_c_a_r_m_a_a8871e02b301b503a987c03afc15c573c}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!C\-A\-R\-M\-A@{C\-A\-R\-M\-A}}
+\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}C\-A\-R\-M\-A\-::\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a8871e02b301b503a987c03afc15c573c}
+Object that holds data and methods for performing C-\/\-A\-R\-M\-A analysis. D\-L\-M objects hold pointers to blocks of data that are set as required based on the size of the C-\/\-A\-R\-M\-A model. 
+
+Definition at line 345 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a19f2c3c41d81428c5f77a71f983dcc0b}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!$\sim$\-C\-A\-R\-M\-A@{$\sim$\-C\-A\-R\-M\-A}}
+\index{$\sim$\-C\-A\-R\-M\-A@{$\sim$\-C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{$\sim$\-C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}C\-A\-R\-M\-A\-::$\sim$\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a19f2c3c41d81428c5f77a71f983dcc0b}
+
+
+Definition at line 413 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!alloc\-C\-A\-R\-M\-A@{alloc\-C\-A\-R\-M\-A}}
+\index{alloc\-C\-A\-R\-M\-A@{alloc\-C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{alloc\-C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::alloc\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-P, }
+\item[{int}]{num\-Q}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0}
+
+
+Definition at line 481 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!burn\-System@{burn\-System}}
+\index{burn\-System@{burn\-System}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{burn\-System}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::burn\-System (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Burn, }
+\item[{unsigned int}]{burn\-Seed, }
+\item[{double $\ast$}]{burn\-Rand}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba}
+
+
+Definition at line 1207 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=292pt]{class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!check\-C\-A\-R\-M\-A\-Params@{check\-C\-A\-R\-M\-A\-Params}}
+\index{check\-C\-A\-R\-M\-A\-Params@{check\-C\-A\-R\-M\-A\-Params}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{check\-C\-A\-R\-M\-A\-Params}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::check\-C\-A\-R\-M\-A\-Params (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Theta}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4}
+
+
+Definition at line 825 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!compute\-Ln\-Like@{compute\-Ln\-Like}}
+\index{compute\-Ln\-Like@{compute\-Ln\-Like}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{compute\-Ln\-Like}]{\setlength{\rightskip}{0pt plus 5cm}double C\-A\-R\-M\-A\-::compute\-Ln\-Like (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Pts, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9}
+
+
+Definition at line 1435 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!compute\-Ln\-Like@{compute\-Ln\-Like}}
+\index{compute\-Ln\-Like@{compute\-Ln\-Like}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{compute\-Ln\-Like}]{\setlength{\rightskip}{0pt plus 5cm}double C\-A\-R\-M\-A\-::compute\-Ln\-Like (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Pts, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e}
+
+
+Definition at line 1597 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_af850b7e2ba5af3ae028aacfc0891b830}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!dealloc\-C\-A\-R\-M\-A@{dealloc\-C\-A\-R\-M\-A}}
+\index{dealloc\-C\-A\-R\-M\-A@{dealloc\-C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{dealloc\-C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::dealloc\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_af850b7e2ba5af3ae028aacfc0891b830}
+
+
+Definition at line 643 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a7c7b27991e17ddc782909f903f375f90}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!expm@{expm}}
+\index{expm@{expm}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{expm}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::expm (
+\begin{DoxyParamCaption}
+\item[{double}]{xi, }
+\item[{double $\ast$}]{out}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a7c7b27991e17ddc782909f903f375f90}
+
+
+Definition at line 1062 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_af5d31db7b37973d2dea0dae07ef531b5}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!fixed\-Interval\-Smoother@{fixed\-Interval\-Smoother}}
+\index{fixed\-Interval\-Smoother@{fixed\-Interval\-Smoother}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{fixed\-Interval\-Smoother}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::fixed\-Interval\-Smoother (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Pts, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{r, }
+\item[{double $\ast$}]{x}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_af5d31db7b37973d2dea0dae07ef531b5}
+\hypertarget{class_c_a_r_m_a_afad6e999f5171c8dbe5618f39ac49433}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!get\-C\-A\-R\-Roots@{get\-C\-A\-R\-Roots}}
+\index{get\-C\-A\-R\-Roots@{get\-C\-A\-R\-Roots}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{get\-C\-A\-R\-Roots}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::get\-C\-A\-R\-Roots (
+\begin{DoxyParamCaption}
+\item[{double $\ast$\&}]{Real\-A\-R, }
+\item[{double $\ast$\&}]{Imag\-A\-R\-W}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_afad6e999f5171c8dbe5618f39ac49433}
+
+
+Definition at line 1197 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a1d572ff7e85465abc3efb6ca1ac0cafc}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!get\-C\-M\-A\-Roots@{get\-C\-M\-A\-Roots}}
+\index{get\-C\-M\-A\-Roots@{get\-C\-M\-A\-Roots}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{get\-C\-M\-A\-Roots}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::get\-C\-M\-A\-Roots (
+\begin{DoxyParamCaption}
+\item[{double $\ast$\&}]{Real\-M\-A, }
+\item[{double $\ast$\&}]{Imag\-M\-A}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a1d572ff7e85465abc3efb6ca1ac0cafc}
+\hypertarget{class_c_a_r_m_a_a2d84c0d953b15519cbddcfffc50132b0}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!get\-Residuals@{get\-Residuals}}
+\index{get\-Residuals@{get\-Residuals}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{get\-Residuals}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::get\-Residuals (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Pts, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{r}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a2d84c0d953b15519cbddcfffc50132b0}
+\hypertarget{class_c_a_r_m_a_a12f0019ddf951e20ffda09e46795b8f3}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!observe\-System@{observe\-System}}
+\index{observe\-System@{observe\-System}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{observe\-System}]{\setlength{\rightskip}{0pt plus 5cm}double C\-A\-R\-M\-A\-::observe\-System (
+\begin{DoxyParamCaption}
+\item[{double}]{dist\-Rand, }
+\item[{double}]{noise\-Rand}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a12f0019ddf951e20ffda09e46795b8f3}
+
+
+Definition at line 1291 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_adbfdf1b311724e3a128613d880db66c5}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!observe\-System@{observe\-System}}
+\index{observe\-System@{observe\-System}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{observe\-System}]{\setlength{\rightskip}{0pt plus 5cm}double C\-A\-R\-M\-A\-::observe\-System (
+\begin{DoxyParamCaption}
+\item[{double}]{dist\-Rand, }
+\item[{double}]{noise\-Rand, }
+\item[{double}]{mask}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_adbfdf1b311724e3a128613d880db66c5}
+
+
+Definition at line 1300 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!observe\-System@{observe\-System}}
+\index{observe\-System@{observe\-System}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{observe\-System}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::observe\-System (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Obs, }
+\item[{unsigned int}]{dist\-Seed, }
+\item[{unsigned int}]{noise\-Seed, }
+\item[{double $\ast$}]{dist\-Rand, }
+\item[{double $\ast$}]{noise\-Rand, }
+\item[{double}]{noise\-Sigma, }
+\item[{double $\ast$}]{y}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de}
+
+
+Definition at line 1311 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=308pt]{class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!observe\-System@{observe\-System}}
+\index{observe\-System@{observe\-System}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{observe\-System}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::observe\-System (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Obs, }
+\item[{unsigned int}]{dist\-Seed, }
+\item[{unsigned int}]{noise\-Seed, }
+\item[{double $\ast$}]{dist\-Rand, }
+\item[{double $\ast$}]{noise\-Rand, }
+\item[{double}]{noise\-Sigma, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{mask}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1}
+
+
+Definition at line 1373 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=308pt]{class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_aab53261f484dfa74a29d88e345fa0715}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!operator()@{operator()}}
+\index{operator()@{operator()}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::operator() (
+\begin{DoxyParamCaption}
+\item[{const double $\ast$\&}]{x, }
+\item[{double $\ast$\&}]{dxdt, }
+\item[{const double}]{t}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_aab53261f484dfa74a29d88e345fa0715}
+Compute and return the first column of expm(\-A$\ast$dt)$\ast$\-B$\ast$trans(B)$\ast$expm(trans(\-A)$\ast$dt)
+
+At every step, it is necessary to compute the conditional covariance matrix of the state given by $\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi$. Notice that the matrix $\textbf{\textsf{Q}}$ is symmetric positive definate and only the first column needfs to be computed.
+
+Definition at line 1080 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!reset\-State@{reset\-State}}
+\index{reset\-State@{reset\-State}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{reset\-State}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::reset\-State (
+\begin{DoxyParamCaption}
+\item[{double}]{Init\-Uncertainty}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9}
+
+
+Definition at line 1153 of file C\-A\-R\-M\-A.\-cpp.
+
+\hypertarget{class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!reset\-State@{reset\-State}}
+\index{reset\-State@{reset\-State}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{reset\-State}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::reset\-State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac}
+
+
+Definition at line 1169 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=256pt]{class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!set\-C\-A\-R\-M\-A@{set\-C\-A\-R\-M\-A}}
+\index{set\-C\-A\-R\-M\-A@{set\-C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{set\-C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::set\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Theta}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e}
+
+
+Definition at line 983 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=290pt]{class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{class_c_a_r_m_a_ab40779c2e688ef40afe4c925a777ebc7}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!solve\-C\-A\-R\-M\-A@{solve\-C\-A\-R\-M\-A}}
+\index{solve\-C\-A\-R\-M\-A@{solve\-C\-A\-R\-M\-A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{solve\-C\-A\-R\-M\-A}]{\setlength{\rightskip}{0pt plus 5cm}void C\-A\-R\-M\-A\-::solve\-C\-A\-R\-M\-A (
+\begin{DoxyParamCaption}
+\item[{double}]{dt}
+\end{DoxyParamCaption}
+)}}\label{class_c_a_r_m_a_ab40779c2e688ef40afe4c925a777ebc7}
+
+
+Definition at line 1121 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_c_a_r_m_a_af80126208923015a2149c11314bbc798}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!A@{A}}
+\index{A@{A}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{A}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-A}}\label{class_c_a_r_m_a_af80126208923015a2149c11314bbc798}
+
+
+Definition at line 52 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a38d4be056f99144dd726b8a522873200}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!abnrm@{abnrm}}
+\index{abnrm@{abnrm}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{abnrm}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::abnrm}}\label{class_c_a_r_m_a_a38d4be056f99144dd726b8a522873200}
+
+
+Definition at line 35 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a54245682ab3eba1ba3fde0898f9898a6}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!allocated@{allocated}}
+\index{allocated@{allocated}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{allocated}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::allocated}}\label{class_c_a_r_m_a_a54245682ab3eba1ba3fde0898f9898a6}
+
+
+Definition at line 22 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a5ccd955a53c7473f750a8d03934d49cc}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!A\-Scratch@{A\-Scratch}}
+\index{A\-Scratch@{A\-Scratch}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{A\-Scratch}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-A\-Scratch}}\label{class_c_a_r_m_a_a5ccd955a53c7473f750a8d03934d49cc}
+
+
+Definition at line 56 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ae95636dd50674cb98dc309ce7042f2ed}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!B@{B}}
+\index{B@{B}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{B}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-B}}\label{class_c_a_r_m_a_ae95636dd50674cb98dc309ce7042f2ed}
+
+
+Definition at line 53 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a1086542a2badf2a6d6cab3f4dc3825fd}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!B\-Scratch@{B\-Scratch}}
+\index{B\-Scratch@{B\-Scratch}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{B\-Scratch}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-B\-Scratch}}\label{class_c_a_r_m_a_a1086542a2badf2a6d6cab3f4dc3825fd}
+
+
+Definition at line 57 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a4753a35f5afb7c4f3a51f1fbfd8ddc96}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!C\-A\-R\-Matrix@{C\-A\-R\-Matrix}}
+\index{C\-A\-R\-Matrix@{C\-A\-R\-Matrix}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{C\-A\-R\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-C\-A\-R\-Matrix}}\label{class_c_a_r_m_a_a4753a35f5afb7c4f3a51f1fbfd8ddc96}
+
+
+Definition at line 40 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a999a48a6285c64b5ce971cfbd2a4a549}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!C\-A\-Rw@{C\-A\-Rw}}
+\index{C\-A\-Rw@{C\-A\-Rw}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{C\-A\-Rw}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-C\-A\-Rw}}\label{class_c_a_r_m_a_a999a48a6285c64b5ce971cfbd2a4a549}
+
+
+Definition at line 42 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ae9fc6695efc343e26009ce33d07fdf27}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!C\-M\-A\-Matrix@{C\-M\-A\-Matrix}}
+\index{C\-M\-A\-Matrix@{C\-M\-A\-Matrix}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{C\-M\-A\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-C\-M\-A\-Matrix}}\label{class_c_a_r_m_a_ae9fc6695efc343e26009ce33d07fdf27}
+
+
+Definition at line 41 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a796f3af91b03b11b3d08f3ce668de258}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!C\-M\-Aw@{C\-M\-Aw}}
+\index{C\-M\-Aw@{C\-M\-Aw}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{C\-M\-Aw}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::\-C\-M\-Aw}}\label{class_c_a_r_m_a_a796f3af91b03b11b3d08f3ce668de258}
+
+
+Definition at line 43 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a95cd26896bd2a97497be37295e039dc8}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!D@{D}}
+\index{D@{D}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{D}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-D}}\label{class_c_a_r_m_a_a95cd26896bd2a97497be37295e039dc8}
+
+
+Definition at line 68 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a53bc76be0e75d214cb9bc18bdf07cab9}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!expw@{expw}}
+\index{expw@{expw}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{expw}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::expw}}\label{class_c_a_r_m_a_a53bc76be0e75d214cb9bc18bdf07cab9}
+
+
+Definition at line 39 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_aad97cb3334f43c80bfb2aabb1b22bb52}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F@{F}}
+\index{F@{F}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F}}\label{class_c_a_r_m_a_aad97cb3334f43c80bfb2aabb1b22bb52}
+
+
+Definition at line 55 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a45b3f6243c0ebd0dbe4b3b2b6c41dc42}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron@{F\-Kron}}
+\index{F\-Kron@{F\-Kron}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron}}\label{class_c_a_r_m_a_a45b3f6243c0ebd0dbe4b3b2b6c41dc42}
+
+
+Definition at line 58 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_afb5265a4a649bda74d75346703633bd5}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-af@{F\-Kron\-\_\-af}}
+\index{F\-Kron\-\_\-af@{F\-Kron\-\_\-af}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-af}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-af}}\label{class_c_a_r_m_a_afb5265a4a649bda74d75346703633bd5}
+
+
+Definition at line 59 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_acae4a7d06cd91dfc10cf0c1bf87f6689}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-berr@{F\-Kron\-\_\-berr}}
+\index{F\-Kron\-\_\-berr@{F\-Kron\-\_\-berr}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-berr}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-berr}}\label{class_c_a_r_m_a_acae4a7d06cd91dfc10cf0c1bf87f6689}
+
+
+Definition at line 65 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ae051792220350a8ca5bf9619d97351ac}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-c@{F\-Kron\-\_\-c}}
+\index{F\-Kron\-\_\-c@{F\-Kron\-\_\-c}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-c}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-c}}\label{class_c_a_r_m_a_ae051792220350a8ca5bf9619d97351ac}
+
+
+Definition at line 61 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ac95cc03cafb7ce94ecccf055462b487a}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp@{F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp}}
+\index{F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp@{F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-err\-\_\-bnds\-\_\-comp}}\label{class_c_a_r_m_a_ac95cc03cafb7ce94ecccf055462b487a}
+
+
+Definition at line 67 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a859299a912a8613c5143b8b9878b5842}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm@{F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm}}
+\index{F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm@{F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-err\-\_\-bnds\-\_\-norm}}\label{class_c_a_r_m_a_a859299a912a8613c5143b8b9878b5842}
+
+
+Definition at line 66 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_afaf0d0b033ee891862d59a7800d9cdaf}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-ipiv@{F\-Kron\-\_\-ipiv}}
+\index{F\-Kron\-\_\-ipiv@{F\-Kron\-\_\-ipiv}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-ipiv}]{\setlength{\rightskip}{0pt plus 5cm}lapack\-\_\-int$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-ipiv}}\label{class_c_a_r_m_a_afaf0d0b033ee891862d59a7800d9cdaf}
+
+
+Definition at line 62 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a8767db54a4a42729310a11e1fefc8fba}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-r@{F\-Kron\-\_\-r}}
+\index{F\-Kron\-\_\-r@{F\-Kron\-\_\-r}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-r}}\label{class_c_a_r_m_a_a8767db54a4a42729310a11e1fefc8fba}
+
+
+Definition at line 60 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a4d0801b15644b2e5b0580b0688119737}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-rcond@{F\-Kron\-\_\-rcond}}
+\index{F\-Kron\-\_\-rcond@{F\-Kron\-\_\-rcond}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-rcond}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-rcond}}\label{class_c_a_r_m_a_a4d0801b15644b2e5b0580b0688119737}
+
+
+Definition at line 63 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ae089a1c6d303b4c9573c943c0a729269}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!F\-Kron\-\_\-rpvgrw@{F\-Kron\-\_\-rpvgrw}}
+\index{F\-Kron\-\_\-rpvgrw@{F\-Kron\-\_\-rpvgrw}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{F\-Kron\-\_\-rpvgrw}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-F\-Kron\-\_\-rpvgrw}}\label{class_c_a_r_m_a_ae089a1c6d303b4c9573c943c0a729269}
+
+
+Definition at line 64 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_aa2f506e700aa176fd5d8866552aa1f83}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!H@{H}}
+\index{H@{H}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{H}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-H}}\label{class_c_a_r_m_a_aa2f506e700aa176fd5d8866552aa1f83}
+
+
+Definition at line 70 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ab07ac5e7150cb4674150f4c27ce4afd7}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!I@{I}}
+\index{I@{I}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{I}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-I}}\label{class_c_a_r_m_a_ab07ac5e7150cb4674150f4c27ce4afd7}
+
+
+Definition at line 54 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a3def910e9268fefd309b90a98e13d323}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!ihi@{ihi}}
+\index{ihi@{ihi}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{ihi}]{\setlength{\rightskip}{0pt plus 5cm}lapack\-\_\-int$\ast$ C\-A\-R\-M\-A\-::ihi}}\label{class_c_a_r_m_a_a3def910e9268fefd309b90a98e13d323}
+
+
+Definition at line 34 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a2faca89f81a95b8d788445b99527d79c}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!ilo@{ilo}}
+\index{ilo@{ilo}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{ilo}]{\setlength{\rightskip}{0pt plus 5cm}lapack\-\_\-int$\ast$ C\-A\-R\-M\-A\-::ilo}}\label{class_c_a_r_m_a_a2faca89f81a95b8d788445b99527d79c}
+
+
+Definition at line 33 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ad000fbedcf5b10d37212f43c23e65431}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!ipiv@{ipiv}}
+\index{ipiv@{ipiv}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{ipiv}]{\setlength{\rightskip}{0pt plus 5cm}lapack\-\_\-int$\ast$ C\-A\-R\-M\-A\-::ipiv}}\label{class_c_a_r_m_a_ad000fbedcf5b10d37212f43c23e65431}
+
+
+Definition at line 49 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ab8907880b6740bbc95f011957495d41b}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!is\-Invertible@{is\-Invertible}}
+\index{is\-Invertible@{is\-Invertible}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{is\-Invertible}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::is\-Invertible}}\label{class_c_a_r_m_a_ab8907880b6740bbc95f011957495d41b}
+
+
+Definition at line 24 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a1da5f1d423116967c885b09cd4729ca3}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!is\-Not\-Redundant@{is\-Not\-Redundant}}
+\index{is\-Not\-Redundant@{is\-Not\-Redundant}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{is\-Not\-Redundant}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::is\-Not\-Redundant}}\label{class_c_a_r_m_a_a1da5f1d423116967c885b09cd4729ca3}
+
+
+Definition at line 25 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a845e25047e97b9b629b32a3c592f3d29}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!is\-Reasonable@{is\-Reasonable}}
+\index{is\-Reasonable@{is\-Reasonable}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{is\-Reasonable}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::is\-Reasonable}}\label{class_c_a_r_m_a_a845e25047e97b9b629b32a3c592f3d29}
+
+
+Definition at line 26 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a5234c38768e071f37c8a6bdfaf06f499}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!is\-Stable@{is\-Stable}}
+\index{is\-Stable@{is\-Stable}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{is\-Stable}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::is\-Stable}}\label{class_c_a_r_m_a_a5234c38768e071f37c8a6bdfaf06f499}
+
+
+Definition at line 23 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a01b4c677af0ad6e7981851efe9fd3563}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!K@{K}}
+\index{K@{K}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{K}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-K}}\label{class_c_a_r_m_a_a01b4c677af0ad6e7981851efe9fd3563}
+
+
+Definition at line 72 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a17050731a928b7e2a024fd8c1b5acd6d}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!M\-Scratch@{M\-Scratch}}
+\index{M\-Scratch@{M\-Scratch}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{M\-Scratch}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-M\-Scratch}}\label{class_c_a_r_m_a_a17050731a928b7e2a024fd8c1b5acd6d}
+
+
+Definition at line 78 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a69668ba1aef7197cc54078cd0ae94ce2}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!p@{p}}
+\index{p@{p}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{p}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::p}}\label{class_c_a_r_m_a_a69668ba1aef7197cc54078cd0ae94ce2}
+
+
+Definition at line 27 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ab6923d0ca4591a595c997549a0487cb3}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!P@{P}}
+\index{P@{P}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{P}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-P}}\label{class_c_a_r_m_a_ab6923d0ca4591a595c997549a0487cb3}
+
+
+Definition at line 74 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_aa0f1ac4385f61138ce0ad9f5dfc10d06}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!P\-Minus@{P\-Minus}}
+\index{P\-Minus@{P\-Minus}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{P\-Minus}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-P\-Minus}}\label{class_c_a_r_m_a_aa0f1ac4385f61138ce0ad9f5dfc10d06}
+
+
+Definition at line 76 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a6ae0464e80be268753c9421f7a103562}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!p\-Sq@{p\-Sq}}
+\index{p\-Sq@{p\-Sq}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{p\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::p\-Sq}}\label{class_c_a_r_m_a_a6ae0464e80be268753c9421f7a103562}
+
+
+Definition at line 29 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a3322588d9691b02ebb6e7e1b4f9c8ecf}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!q@{q}}
+\index{q@{q}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{q}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::q}}\label{class_c_a_r_m_a_a3322588d9691b02ebb6e7e1b4f9c8ecf}
+
+
+Definition at line 28 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a1cd98bc094e960bcf7d8af55528ae72c}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!Q@{Q}}
+\index{Q@{Q}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{Q}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-Q}}\label{class_c_a_r_m_a_a1cd98bc094e960bcf7d8af55528ae72c}
+
+
+Definition at line 69 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a7fc41676954abf3a5b1c74f4ac8abe25}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!q\-Sq@{q\-Sq}}
+\index{q\-Sq@{q\-Sq}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{q\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-::q\-Sq}}\label{class_c_a_r_m_a_a7fc41676954abf3a5b1c74f4ac8abe25}
+
+
+Definition at line 30 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a40823ba436816d4e656185a3ae8a125f}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!R@{R}}
+\index{R@{R}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{R}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-R}}\label{class_c_a_r_m_a_a40823ba436816d4e656185a3ae8a125f}
+
+
+Definition at line 71 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_abd47e4fb92d1a455aa1702a2242825d0}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!rconde@{rconde}}
+\index{rconde@{rconde}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{rconde}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::rconde}}\label{class_c_a_r_m_a_abd47e4fb92d1a455aa1702a2242825d0}
+
+
+Definition at line 47 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a6573aee6903bc05dd601c3355905f68d}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!rcondv@{rcondv}}
+\index{rcondv@{rcondv}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{rcondv}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::rcondv}}\label{class_c_a_r_m_a_a6573aee6903bc05dd601c3355905f68d}
+
+
+Definition at line 48 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ada896ef5d67dad63fb8671be1889b42a}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!scale@{scale}}
+\index{scale@{scale}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{scale}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::scale}}\label{class_c_a_r_m_a_ada896ef5d67dad63fb8671be1889b42a}
+
+
+Definition at line 44 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a47e298ceac5c77b96f70f520119d0eb7}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!t@{t}}
+\index{t@{t}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{t}]{\setlength{\rightskip}{0pt plus 5cm}double C\-A\-R\-M\-A\-::t}}\label{class_c_a_r_m_a_a47e298ceac5c77b96f70f520119d0eb7}
+
+
+Definition at line 31 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a5717e11c4a42a0d3c932a69e6493d22b}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!Theta@{Theta}}
+\index{Theta@{Theta}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{Theta}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-Theta}}\label{class_c_a_r_m_a_a5717e11c4a42a0d3c932a69e6493d22b}
+
+
+Definition at line 51 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a7ef9e8afd4bd3adcf2931bad09c831af}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!vr@{vr}}
+\index{vr@{vr}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{vr}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::vr}}\label{class_c_a_r_m_a_a7ef9e8afd4bd3adcf2931bad09c831af}
+
+
+Definition at line 45 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a1128984d1bb62a18c9046730fdc9b234}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!vr\-Inv@{vr\-Inv}}
+\index{vr\-Inv@{vr\-Inv}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{vr\-Inv}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::vr\-Inv}}\label{class_c_a_r_m_a_a1128984d1bb62a18c9046730fdc9b234}
+
+
+Definition at line 46 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ad9d4a76333d0b578ce167d43801f9347}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!V\-Scratch@{V\-Scratch}}
+\index{V\-Scratch@{V\-Scratch}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{V\-Scratch}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-V\-Scratch}}\label{class_c_a_r_m_a_ad9d4a76333d0b578ce167d43801f9347}
+
+
+Definition at line 77 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a34484d60e14f53e2e2bb378a4e9e7344}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!w@{w}}
+\index{w@{w}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{w}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$$\ast$ C\-A\-R\-M\-A\-::w}}\label{class_c_a_r_m_a_a34484d60e14f53e2e2bb378a4e9e7344}
+
+
+Definition at line 38 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_ad57c7f2816413aa6b7e98b147ad73712}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!X@{X}}
+\index{X@{X}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{X}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-X}}\label{class_c_a_r_m_a_ad57c7f2816413aa6b7e98b147ad73712}
+
+
+Definition at line 73 of file C\-A\-R\-M\-A.\-hpp.
+
+\hypertarget{class_c_a_r_m_a_a4f2333fe508efc7d8e59776aa98fdd50}{\index{C\-A\-R\-M\-A@{C\-A\-R\-M\-A}!X\-Minus@{X\-Minus}}
+\index{X\-Minus@{X\-Minus}!CARMA@{C\-A\-R\-M\-A}}
+\subsubsection[{X\-Minus}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ C\-A\-R\-M\-A\-::\-X\-Minus}}\label{class_c_a_r_m_a_a4f2333fe508efc7d8e59776aa98fdd50}
+
+
+Definition at line 75 of file C\-A\-R\-M\-A.\-hpp.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/include/\hyperlink{_c_a_r_m_a_8hpp}{C\-A\-R\-M\-A.\-hpp}\item 
+/home/vish/code/trunk/cpp/libcarma/src/\hyperlink{_c_a_r_m_a_8cpp}{C\-A\-R\-M\-A.\-cpp}\end{DoxyCompactItemize}

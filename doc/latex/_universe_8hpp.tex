@@ -1,0 +1,159 @@
+\hypertarget{_universe_8hpp}{\section{/home/vish/code/trunk/cpp/libcarma/include/\-Universe.hpp File Reference}
+\label{_universe_8hpp}\index{/home/vish/code/trunk/cpp/libcarma/include/\-Universe.\-hpp@{/home/vish/code/trunk/cpp/libcarma/include/\-Universe.\-hpp}}
+}
+This graph shows which files directly or indirectly include this file\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_universe_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_universe}{Universe}
+\begin{DoxyCompactList}\small\item\em Class to create universe objects. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{_universe_8hpp_a3a82e6d18714a64068b6ca270b75947f}{Hz} (const vector$<$ double $>$ \&x, vector$<$ double $>$ \&dxdt, const double t)
+\item 
+bool \hyperlink{_universe_8hpp_ad7426db61680a1aa7bf601a316f50296}{operator==} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{_universe_8hpp_a923ffb102f2f1cf8c018e2fdab71e759}{operator!=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{_universe_8hpp_ae6d5ff462dc8f2a42c1c89dfbb045a70}{operator$<$} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{_universe_8hpp_ac646834ee273250d89054f51c560ad90}{operator$>$} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{_universe_8hpp_aedb45560ee22b1f0d1913bd40c716f3e}{operator$<$=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+bool \hyperlink{_universe_8hpp_ad2f27b03dcb666cb1e5f00840f3cffe2}{operator$>$=} (const \hyperlink{class_universe}{Universe} \&univ1, const \hyperlink{class_universe}{Universe} \&univ2)
+\item 
+ostream \& \hyperlink{_universe_8hpp_af3dca6b540cbad8426d8aae6dc1f6f32}{operator$<$$<$} (ostream \&os, const \hyperlink{class_universe}{Universe} \&u)
+\item 
+istream \& \hyperlink{_universe_8hpp_ad347ea8dc2c56d9d77d9c6f673d5927e}{operator$>$$>$} (istream \&is, \hyperlink{class_universe}{Universe} \&u)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_universe_8hpp_a3a82e6d18714a64068b6ca270b75947f}{\index{Universe.\-hpp@{Universe.\-hpp}!Hz@{Hz}}
+\index{Hz@{Hz}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{Hz}]{\setlength{\rightskip}{0pt plus 5cm}void Hz (
+\begin{DoxyParamCaption}
+\item[{const vector$<$ double $>$ \&}]{x, }
+\item[{vector$<$ double $>$ \&}]{dxdt, }
+\item[{const double}]{t}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_a3a82e6d18714a64068b6ca270b75947f}
+This is the standard integrand. Integrating this between 0 and the current value of a gives the distance etc... 
+
+Definition at line 113 of file Universe.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{_universe_8hpp_a3a82e6d18714a64068b6ca270b75947f_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_universe_8hpp_a923ffb102f2f1cf8c018e2fdab71e759}{\index{Universe.\-hpp@{Universe.\-hpp}!operator!=@{operator!=}}
+\index{operator!=@{operator!=}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator!=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator!= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_a923ffb102f2f1cf8c018e2fdab71e759}
+
+
+Definition at line 131 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_ae6d5ff462dc8f2a42c1c89dfbb045a70}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$<$@{operator$<$}}
+\index{operator$<$@{operator$<$}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$<$}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_ae6d5ff462dc8f2a42c1c89dfbb045a70}
+
+
+Definition at line 139 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_af3dca6b540cbad8426d8aae6dc1f6f32}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}ostream\& operator$<$$<$ (
+\begin{DoxyParamCaption}
+\item[{ostream \&}]{os, }
+\item[{const {\bf Universe} \&}]{u}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_af3dca6b540cbad8426d8aae6dc1f6f32}
+
+
+Definition at line 168 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_aedb45560ee22b1f0d1913bd40c716f3e}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$<$=@{operator$<$=}}
+\index{operator$<$=@{operator$<$=}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$<$=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_aedb45560ee22b1f0d1913bd40c716f3e}
+
+
+Definition at line 153 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_ad7426db61680a1aa7bf601a316f50296}{\index{Universe.\-hpp@{Universe.\-hpp}!operator==@{operator==}}
+\index{operator==@{operator==}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator==}]{\setlength{\rightskip}{0pt plus 5cm}bool operator== (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_ad7426db61680a1aa7bf601a316f50296}
+
+
+Definition at line 123 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_ac646834ee273250d89054f51c560ad90}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$>$@{operator$>$}}
+\index{operator$>$@{operator$>$}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$>$}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$>$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_ac646834ee273250d89054f51c560ad90}
+
+
+Definition at line 146 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_ad2f27b03dcb666cb1e5f00840f3cffe2}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$>$=@{operator$>$=}}
+\index{operator$>$=@{operator$>$=}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$>$=}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$>$= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Universe} \&}]{univ1, }
+\item[{const {\bf Universe} \&}]{univ2}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_ad2f27b03dcb666cb1e5f00840f3cffe2}
+
+
+Definition at line 160 of file Universe.\-cpp.
+
+\hypertarget{_universe_8hpp_ad347ea8dc2c56d9d77d9c6f673d5927e}{\index{Universe.\-hpp@{Universe.\-hpp}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!Universe.hpp@{Universe.\-hpp}}
+\subsubsection[{operator$>$$>$}]{\setlength{\rightskip}{0pt plus 5cm}istream\& operator$>$$>$ (
+\begin{DoxyParamCaption}
+\item[{istream \&}]{is, }
+\item[{{\bf Universe} \&}]{u}
+\end{DoxyParamCaption}
+)}}\label{_universe_8hpp_ad347ea8dc2c56d9d77d9c6f673d5927e}
+
+
+Definition at line 173 of file Universe.\-cpp.
+

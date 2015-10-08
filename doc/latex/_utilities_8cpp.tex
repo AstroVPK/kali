@@ -1,0 +1,178 @@
+\hypertarget{_utilities_8cpp}{\section{/home/vish/code/trunk/cpp/libcarma/src/\-Utilities.cpp File Reference}
+\label{_utilities_8cpp}\index{/home/vish/code/trunk/cpp/libcarma/src/\-Utilities.\-cpp@{/home/vish/code/trunk/cpp/libcarma/src/\-Utilities.\-cpp}}
+}
+{\ttfamily \#include $<$mkl\-\_\-types.\-h$>$}\\*
+{\ttfamily \#include $<$cmath$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$tuple$>$}\\*
+{\ttfamily \#include $<$exception$>$}\\*
+{\ttfamily \#include $<$stdexcept$>$}\\*
+{\ttfamily \#include $<$fstream$>$}\\*
+{\ttfamily \#include \char`\"{}Utilities.\-hpp\char`\"{}}\\*
+Include dependency graph for Utilities.\-cpp\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_utilities_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+tuple$<$ vector$<$ double $>$\\*
+, vector$<$ int $>$ $>$ \hyperlink{_utilities_8cpp_a23c828de3a9181344b3e67d4cf7e536b}{histogram} (vector$<$ double $>$ data, int num\-Bins)
+\item 
+tuple$<$ vector$<$ double $>$\\*
+, vector$<$ int $>$ $>$ \hyperlink{_utilities_8cpp_aa1b675d9737d6eda249feb416589cd6f}{histogram} (vector$<$ double $>$ data, int num\-Bins, double base)
+\item 
+tuple$<$ vector$<$ double $>$\\*
+, vector$<$ int $>$ $>$ \hyperlink{_utilities_8cpp_a7fc29ebbe6ee3400b765c3314b8a5be8}{histogram} (vector$<$ double $>$ data, int num\-Bins, string base)
+\item 
+bool \hyperlink{_utilities_8cpp_a93b1964ec39c086d2cbca290ae8b53d2}{exists} (const string \&filename)
+\item 
+int \hyperlink{_utilities_8cpp_af23d9d3b957105f099417c29e1404852}{gcd} (int a, int b)
+\item 
+int \hyperlink{_utilities_8cpp_a0acb6ddf6c3154bd0d256dac3f1084b0}{lcm} (int a, int b)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_utilities_8cpp_a93b1964ec39c086d2cbca290ae8b53d2}{\index{Utilities.\-cpp@{Utilities.\-cpp}!exists@{exists}}
+\index{exists@{exists}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{exists}]{\setlength{\rightskip}{0pt plus 5cm}bool exists (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{filename}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_a93b1964ec39c086d2cbca290ae8b53d2}
+
+
+Definition at line 123 of file Utilities.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=268pt]{_utilities_8cpp_a93b1964ec39c086d2cbca290ae8b53d2_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_utilities_8cpp_af23d9d3b957105f099417c29e1404852}{\index{Utilities.\-cpp@{Utilities.\-cpp}!gcd@{gcd}}
+\index{gcd@{gcd}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{gcd}]{\setlength{\rightskip}{0pt plus 5cm}int gcd (
+\begin{DoxyParamCaption}
+\item[{int}]{a, }
+\item[{int}]{b}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_af23d9d3b957105f099417c29e1404852}
+
+
+Definition at line 130 of file Utilities.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=180pt]{_utilities_8cpp_af23d9d3b957105f099417c29e1404852_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_utilities_8cpp_a23c828de3a9181344b3e67d4cf7e536b}{\index{Utilities.\-cpp@{Utilities.\-cpp}!histogram@{histogram}}
+\index{histogram@{histogram}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{histogram}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$vector$<$double$>$,vector$<$int$>$ $>$ histogram (
+\begin{DoxyParamCaption}
+\item[{vector$<$ double $>$}]{data, }
+\item[{int}]{num\-Bins}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_a23c828de3a9181344b3e67d4cf7e536b}
+
+
+Definition at line 15 of file Utilities.\-cpp.
+
+
+
+Here is the caller graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{_utilities_8cpp_a23c828de3a9181344b3e67d4cf7e536b_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_utilities_8cpp_aa1b675d9737d6eda249feb416589cd6f}{\index{Utilities.\-cpp@{Utilities.\-cpp}!histogram@{histogram}}
+\index{histogram@{histogram}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{histogram}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$vector$<$double$>$,vector$<$int$>$ $>$ histogram (
+\begin{DoxyParamCaption}
+\item[{vector$<$ double $>$}]{data, }
+\item[{int}]{num\-Bins, }
+\item[{double}]{base}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_aa1b675d9737d6eda249feb416589cd6f}
+
+
+Definition at line 57 of file Utilities.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{_utilities_8cpp_aa1b675d9737d6eda249feb416589cd6f_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_utilities_8cpp_a7fc29ebbe6ee3400b765c3314b8a5be8}{\index{Utilities.\-cpp@{Utilities.\-cpp}!histogram@{histogram}}
+\index{histogram@{histogram}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{histogram}]{\setlength{\rightskip}{0pt plus 5cm}tuple$<$vector$<$double$>$,vector$<$int$>$ $>$ histogram (
+\begin{DoxyParamCaption}
+\item[{vector$<$ double $>$}]{data, }
+\item[{int}]{num\-Bins, }
+\item[{string}]{base}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_a7fc29ebbe6ee3400b765c3314b8a5be8}
+
+
+Definition at line 90 of file Utilities.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{_utilities_8cpp_a7fc29ebbe6ee3400b765c3314b8a5be8_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{_utilities_8cpp_a0acb6ddf6c3154bd0d256dac3f1084b0}{\index{Utilities.\-cpp@{Utilities.\-cpp}!lcm@{lcm}}
+\index{lcm@{lcm}!Utilities.cpp@{Utilities.\-cpp}}
+\subsubsection[{lcm}]{\setlength{\rightskip}{0pt plus 5cm}int lcm (
+\begin{DoxyParamCaption}
+\item[{int}]{a, }
+\item[{int}]{b}
+\end{DoxyParamCaption}
+)}}\label{_utilities_8cpp_a0acb6ddf6c3154bd0d256dac3f1084b0}
+
+
+Definition at line 138 of file Utilities.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=180pt]{_utilities_8cpp_a0acb6ddf6c3154bd0d256dac3f1084b0_cgraph}
+\end{center}
+\end{figure}
+
+
