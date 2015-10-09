@@ -11,6 +11,7 @@
 {\ttfamily \#include $<$mkl.\-h$>$}\\*
 {\ttfamily \#include $<$iostream$>$}\\*
 {\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include \char`\"{}boost/numeric/odeint.\-hpp\char`\"{}}\\*
 {\ttfamily \#include \char`\"{}Constants.\-hpp\char`\"{}}\\*
 {\ttfamily \#include \char`\"{}C\-A\-R\-M\-A.\-hpp\char`\"{}}\\*
 {\ttfamily \#include $<$stdio.\-h$>$}\\*
@@ -42,8 +43,6 @@ double \hyperlink{_c_a_r_m_a_8cpp_af9281261b466e28c15b702652226c5ed}{calc\-Ln\-L
 \item 
 void \hyperlink{_c_a_r_m_a_8cpp_a52e65b8de02410a2382d1c0858c43b25}{zero\-Matrix} (int n\-Rows, int n\-Cols, int $\ast$mat)
 \item 
-void \hyperlink{_c_a_r_m_a_8cpp_ad06e01d494041ea73f3fb05d5208765f}{zero\-Matrix} (int n\-Rows, int n\-Cols, lapack\-\_\-int $\ast$mat)
-\item 
 void \hyperlink{_c_a_r_m_a_8cpp_acbdde1f5b60f8f09a2561e877f8279e5}{zero\-Matrix} (int n\-Rows, int n\-Cols, double $\ast$mat)
 \item 
 void \hyperlink{_c_a_r_m_a_8cpp_aff867598dfd07c509cec6da77c33fb98}{zero\-Matrix} (int n\-Rows, int n\-Cols, complex$<$ double $>$ $\ast$mat)
@@ -55,6 +54,8 @@ void \hyperlink{_c_a_r_m_a_8cpp_ab43c14961907b75c90cee7b7fd28a3cc}{view\-Matrix}
 double \hyperlink{_c_a_r_m_a_8cpp_a7a7718261954382ab26f32dae64bf3f4}{dtime} ()
 \item 
 void \hyperlink{_c_a_r_m_a_8cpp_a0644b006a49b595cc3e4d9cf6dff7303}{kron} (int m, int n, double $\ast$A, int p, int q, double $\ast$B, double $\ast$C)
+\item 
+void \hyperlink{_c_a_r_m_a_8cpp_ad5f1fe67cce97ae78b89def2e0f76da7}{expm} (double xi, double $\ast$out)
 \end{DoxyCompactItemize}
 
 
@@ -87,7 +88,18 @@ Definition at line 8 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_a9dd80aa78622e42e58063971be13e31d}
 
 
-Definition at line 43 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 44 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_c_a_r_m_a_8cpp_a9dd80aa78622e42e58063971be13e31d_cgraph}
+\end{center}
+\end{figure}
+
 
 \hypertarget{_c_a_r_m_a_8cpp_ac36b5c2337263314018956fe8ba6e576}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!calc\-C\-A\-R\-M\-A\-Ln\-Like@{calc\-C\-A\-R\-M\-A\-Ln\-Like}}
 \index{calc\-C\-A\-R\-M\-A\-Ln\-Like@{calc\-C\-A\-R\-M\-A\-Ln\-Like}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -99,7 +111,18 @@ Definition at line 43 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_ac36b5c2337263314018956fe8ba6e576}
 
 
-Definition at line 100 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 101 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_c_a_r_m_a_8cpp_ac36b5c2337263314018956fe8ba6e576_cgraph}
+\end{center}
+\end{figure}
+
 
 \hypertarget{_c_a_r_m_a_8cpp_ac6c51cd6959e4a7a5ec0557af951daaa}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!calc\-Ln\-Like@{calc\-Ln\-Like}}
 \index{calc\-Ln\-Like@{calc\-Ln\-Like}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -113,6 +136,17 @@ Definition at line 100 of file C\-A\-R\-M\-A.\-cpp.
 
 
 Definition at line 151 of file C\-A\-R\-M\-A.\-cpp.
+
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_c_a_r_m_a_8cpp_ac6c51cd6959e4a7a5ec0557af951daaa_cgraph}
+\end{center}
+\end{figure}
+
 
 
 
@@ -137,6 +171,17 @@ Here is the caller graph for this function\-:\nopagebreak
 
 Definition at line 208 of file C\-A\-R\-M\-A.\-cpp.
 
+
+
+Here is the call graph for this function\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_c_a_r_m_a_8cpp_af9281261b466e28c15b702652226c5ed_cgraph}
+\end{center}
+\end{figure}
+
+
 \hypertarget{_c_a_r_m_a_8cpp_a7a7718261954382ab26f32dae64bf3f4}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!dtime@{dtime}}
 \index{dtime@{dtime}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
 \subsubsection[{dtime}]{\setlength{\rightskip}{0pt plus 5cm}double dtime (
@@ -146,7 +191,7 @@ Definition at line 208 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_a7a7718261954382ab26f32dae64bf3f4}
 
 
-Definition at line 318 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 309 of file C\-A\-R\-M\-A.\-cpp.
 
 
 
@@ -158,6 +203,18 @@ Here is the caller graph for this function\-:\nopagebreak
 \end{center}
 \end{figure}
 
+
+\hypertarget{_c_a_r_m_a_8cpp_ad5f1fe67cce97ae78b89def2e0f76da7}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!expm@{expm}}
+\index{expm@{expm}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
+\subsubsection[{expm}]{\setlength{\rightskip}{0pt plus 5cm}void expm (
+\begin{DoxyParamCaption}
+\item[{double}]{xi, }
+\item[{double $\ast$}]{out}
+\end{DoxyParamCaption}
+)}}\label{_c_a_r_m_a_8cpp_ad5f1fe67cce97ae78b89def2e0f76da7}
+
+
+Definition at line 336 of file C\-A\-R\-M\-A.\-cpp.
 
 \hypertarget{_c_a_r_m_a_8cpp_a0644b006a49b595cc3e4d9cf6dff7303}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!kron@{kron}}
 \index{kron@{kron}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -174,7 +231,7 @@ Here is the caller graph for this function\-:\nopagebreak
 )}}\label{_c_a_r_m_a_8cpp_a0644b006a49b595cc3e4d9cf6dff7303}
 
 
-Definition at line 326 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 317 of file C\-A\-R\-M\-A.\-cpp.
 
 
 
@@ -198,7 +255,7 @@ Here is the caller graph for this function\-:\nopagebreak
 )}}\label{_c_a_r_m_a_8cpp_adaf529b8047fb0aa639f2aa494b9cfaf}
 
 
-Definition at line 300 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 291 of file C\-A\-R\-M\-A.\-cpp.
 
 
 
@@ -206,7 +263,7 @@ Here is the caller graph for this function\-:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=336pt]{_c_a_r_m_a_8cpp_adaf529b8047fb0aa639f2aa494b9cfaf_icgraph}
+\includegraphics[width=350pt]{_c_a_r_m_a_8cpp_adaf529b8047fb0aa639f2aa494b9cfaf_icgraph}
 \end{center}
 \end{figure}
 
@@ -222,7 +279,7 @@ Here is the caller graph for this function\-:\nopagebreak
 )}}\label{_c_a_r_m_a_8cpp_ab43c14961907b75c90cee7b7fd28a3cc}
 
 
-Definition at line 309 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 300 of file C\-A\-R\-M\-A.\-cpp.
 
 \hypertarget{_c_a_r_m_a_8cpp_a52e65b8de02410a2382d1c0858c43b25}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!zero\-Matrix@{zero\-Matrix}}
 \index{zero\-Matrix@{zero\-Matrix}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -235,20 +292,7 @@ Definition at line 309 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_a52e65b8de02410a2382d1c0858c43b25}
 
 
-Definition at line 268 of file C\-A\-R\-M\-A.\-cpp.
-
-\hypertarget{_c_a_r_m_a_8cpp_ad06e01d494041ea73f3fb05d5208765f}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!zero\-Matrix@{zero\-Matrix}}
-\index{zero\-Matrix@{zero\-Matrix}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
-\subsubsection[{zero\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void zero\-Matrix (
-\begin{DoxyParamCaption}
-\item[{int}]{n\-Rows, }
-\item[{int}]{n\-Cols, }
-\item[{lapack\-\_\-int $\ast$}]{mat}
-\end{DoxyParamCaption}
-)}}\label{_c_a_r_m_a_8cpp_ad06e01d494041ea73f3fb05d5208765f}
-
-
-Definition at line 276 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 267 of file C\-A\-R\-M\-A.\-cpp.
 
 \hypertarget{_c_a_r_m_a_8cpp_acbdde1f5b60f8f09a2561e877f8279e5}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!zero\-Matrix@{zero\-Matrix}}
 \index{zero\-Matrix@{zero\-Matrix}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -261,7 +305,7 @@ Definition at line 276 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_acbdde1f5b60f8f09a2561e877f8279e5}
 
 
-Definition at line 284 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 275 of file C\-A\-R\-M\-A.\-cpp.
 
 \hypertarget{_c_a_r_m_a_8cpp_aff867598dfd07c509cec6da77c33fb98}{\index{C\-A\-R\-M\-A.\-cpp@{C\-A\-R\-M\-A.\-cpp}!zero\-Matrix@{zero\-Matrix}}
 \index{zero\-Matrix@{zero\-Matrix}!CARMA.cpp@{C\-A\-R\-M\-A.\-cpp}}
@@ -274,5 +318,5 @@ Definition at line 284 of file C\-A\-R\-M\-A.\-cpp.
 )}}\label{_c_a_r_m_a_8cpp_aff867598dfd07c509cec6da77c33fb98}
 
 
-Definition at line 292 of file C\-A\-R\-M\-A.\-cpp.
+Definition at line 283 of file C\-A\-R\-M\-A.\-cpp.
 

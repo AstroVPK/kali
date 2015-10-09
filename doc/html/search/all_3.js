@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['d',['D',['../class_c_a_r_m_a.html#a95cd26896bd2a97497be37295e039dc8',1,'CARMA']]],
   ['d2r',['d2r',['../_spherical_8hpp.html#a155fee045125ba7dfcfa586bc274fbf0',1,'Spherical.hpp']]],
   ['data',['Data',['../struct_ln_like_args.html#aa9a0a2c4945292f8429e4f0738db611b',1,'LnLikeArgs']]],
   ['datafolder',['dataFolder',['../namespace_get_all_data.html#a8ff73cf768ddd833d026b762528dc864',1,'GetAllData']]],

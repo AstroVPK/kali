@@ -10,6 +10,12 @@
 <area shape="rect" id="node10" href="$class_kepler_obj.html#ad2c733e73ddd622f8c2b74b070ba9f51" title="KeplerObj::getLastCadence" alt="" coords="113,411,295,437"/>
 <area shape="rect" id="node11" href="$_c_a_r_m_a_8hpp.html#a7a7718261954382ab26f32dae64bf3f4" title="dtime" alt="" coords="177,461,231,488"/>
 <area shape="rect" id="node12" href="$_c_a_r_m_a_8hpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="162,512,246,539"/>
-<area shape="rect" id="node13" href="$class_ensemble_sampler.html#a7673dd0aeca4848f3c4b3591192b606a" title="EnsembleSampler::runMCMC" alt="" coords="106,563,302,589"/>
-<area shape="rect" id="node14" href="$class_ensemble_sampler.html#a653fe4e94639dd1f09883bb5701d9809" title="EnsembleSampler::writeChain" alt="" coords="105,613,303,640"/>
+<area shape="rect" id="node19" href="$class_ensemble_sampler.html#a7673dd0aeca4848f3c4b3591192b606a" title="EnsembleSampler::runMCMC" alt="" coords="106,563,302,589"/>
+<area shape="rect" id="node20" href="$class_ensemble_sampler.html#a653fe4e94639dd1f09883bb5701d9809" title="EnsembleSampler::writeChain" alt="" coords="105,613,303,640"/>
+<area shape="rect" id="node13" href="$class_c_a_r_m_a.html#af758356c8aec7ea57d4edbd4c430c780" title="CARMA::get_p" alt="" coords="381,411,491,437"/>
+<area shape="rect" id="node14" href="$class_c_a_r_m_a.html#aca44011b5238545f728d61d1cbbb72c2" title="CARMA::get_q" alt="" coords="381,461,491,488"/>
+<area shape="rect" id="node15" href="$class_c_a_r_m_a.html#a70e6ec6090f629d43e9ed810346c766e" title="CARMA::setCARMA" alt="" coords="363,512,509,539"/>
+<area shape="rect" id="node17" href="$class_c_a_r_m_a.html#a8748732c23bc65486b9df8f25a905cf9" title="CARMA::resetState" alt="" coords="367,563,505,589"/>
+<area shape="rect" id="node18" href="$class_c_a_r_m_a.html#acd0e0de5df0e6f26b87df72d0d5988e9" title="CARMA::computeLnLike" alt="" coords="353,613,519,640"/>
+<area shape="rect" id="node16" href="$_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="568,563,653,589"/>
 </map>

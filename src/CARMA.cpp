@@ -914,8 +914,15 @@ double CARMA::get_t() {
 	return t;
 	}
 
-int CARMA::checkCARMAParams(double *CAR, double *CMA) {
-
+/*!
+ * Checks the validity of the supplied C-ARMA parameters.
+ * @param[in]  Theta  \f$\Theta\f$ contains \f$p\f$ CAR parameters followed by \f$q+1\f$ CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19
+ */
+int CARMA::checkCARMAParams(double *Theta /**< [in]  */) {
+	/*!< \brief Function to check the validity of the CARMA parameters.
+	
+	
+	*/
 	isStable = 1;
 	isInvertible = 1;
 	isNotRedundant = 1;
@@ -928,10 +935,10 @@ int CARMA::checkCARMAParams(double *CAR, double *CMA) {
 			}
 		}
 
-	CARMatrix[p*(p-1)] = -1.0*CAR[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		CARMatrix[rowCtr+(p-1)*p] = -1.0*CAR[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
 		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
@@ -1000,10 +1007,10 @@ int CARMA::checkCARMAParams(double *CAR, double *CMA) {
 			CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
 			}
 		}
-	CMAMatrix[(q-1)*q] = -1.0*CMA[q-1]/CMA[0]; // MAMatrix has -beta_q/-beta_0 at top right!
+	CMAMatrix[(q-1)*q] = -1.0*Theta[p + q - 1]/Theta[p]; // MAMatrix has -beta_q/-beta_0 at top right!
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*CMA[q - 1 - rowCtr]/CMA[0]; // Rightmost column of MAMatrix has -MA coeffs.
+		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*Theta[p + q - 1 - rowCtr]/Theta[p]; // Rightmost column of MAMatrix has -MA coeffs.
 		CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
@@ -1073,7 +1080,7 @@ int CARMA::checkCARMAParams(double *CAR, double *CMA) {
 	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
 	}
 
-void CARMA::setCARMA(double *CARList, double *CMAList) {
+void CARMA::setCARMA(double *Theta) {
 
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		CAR[rowCtr] = CARList[rowCtr];

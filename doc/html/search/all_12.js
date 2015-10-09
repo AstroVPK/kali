@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['t',['t',['../class_c_a_r_m_a.html#a47e298ceac5c77b96f70f520119d0eb7',1,'CARMA::t()'],['../namespace_final_analysis.html#a90758b7deb047594ad04ead892b7627e',1,'FinalAnalysis.t()'],['../namespace_initial_analysis.html#abd32e1c44917e64e9d72ff4a89b0134d',1,'InitialAnalysis.t()']]],
+  ['t',['t',['../namespace_final_analysis.html#a90758b7deb047594ad04ead892b7627e',1,'FinalAnalysis.t()'],['../namespace_initial_analysis.html#abd32e1c44917e64e9d72ff4a89b0134d',1,'InitialAnalysis.t()']]],
   ['target',['target',['../namespace_get_all_data.html#ae7c93a35b37e6a7e1f63026786f921e3',1,'GetAllData']]],
   ['target_5fpixel_5ffilespath',['target_pixel_filesPath',['../namespace_get_all_data.html#a45b4d0dc9728eff931ef547819c19225',1,'GetAllData']]],
   ['targetlistfile',['targetListFile',['../namespace_get_all_data.html#a651d69300ed082b3426d3910b6c6a5f7',1,'GetAllData']]],
@@ -10,7 +10,6 @@ var searchData=
   ['testkalmancpp_2ecpp',['testKalmanCPP.cpp',['../test_kalman_c_p_p_8cpp.html',1,'']]],
   ['testmethod_2ecpp',['testMethod.cpp',['../test_method_8cpp.html',1,'']]],
   ['testpoint_2ecpp',['testPoint.cpp',['../test_point_8cpp.html',1,'']]],
-  ['theta',['Theta',['../class_c_a_r_m_a.html#a5717e11c4a42a0d3c932a69e6493d22b',1,'CARMA']]],
   ['thetabest',['thetaBest',['../namespace_final_analysis.html#ae73eb98f29c137ecea3dc1021ba665b5',1,'FinalAnalysis']]],
   ['time_5facf',['TIME_ACF',['../compute_c_fs_8cpp.html#ab872824cf150e190f8548f6df6cb2541',1,'computeCFs.cpp']]],
   ['time_5facvf',['TIME_ACVF',['../compute_c_fs_8cpp.html#a0acac96c1124718e6c622f3c015c5a9e',1,'computeCFs.cpp']]],

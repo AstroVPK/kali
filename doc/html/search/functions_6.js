@@ -2,8 +2,11 @@ var searchData=
 [
   ['galactic',['Galactic',['../class_galactic.html#adb8910a11762d017934147c1105a2f25',1,'Galactic::Galactic()=default'],['../class_galactic.html#ae554ae637bdabd965c41ce5ce05b8b8b',1,'Galactic::Galactic(array&lt; double, 3 &gt; pos)']]],
   ['gcd',['gcd',['../_utilities_8hpp.html#af23d9d3b957105f099417c29e1404852',1,'gcd(int a, int b):&#160;Utilities.cpp'],['../_utilities_8cpp.html#af23d9d3b957105f099417c29e1404852',1,'gcd(int a, int b):&#160;Utilities.cpp']]],
-  ['getcarroots',['getCARRoots',['../class_c_a_r_m_a.html#afad6e999f5171c8dbe5618f39ac49433',1,'CARMA']]],
-  ['getcmaroots',['getCMARoots',['../class_c_a_r_m_a.html#a1d572ff7e85465abc3efb6ca1ac0cafc',1,'CARMA']]],
+  ['get_5fp',['get_p',['../class_c_a_r_m_a.html#af758356c8aec7ea57d4edbd4c430c780',1,'CARMA']]],
+  ['get_5fq',['get_q',['../class_c_a_r_m_a.html#aca44011b5238545f728d61d1cbbb72c2',1,'CARMA']]],
+  ['get_5ft',['get_t',['../class_c_a_r_m_a.html#a96b654c437e7d9528d44c7dbc4bc9657',1,'CARMA']]],
+  ['getcarroots',['getCARRoots',['../class_c_a_r_m_a.html#a98f282f6809e1e2c19ed10b362048fdc',1,'CARMA']]],
+  ['getcmaroots',['getCMARoots',['../class_c_a_r_m_a.html#aead4fd2cb0a4f1670e866435a09e0d50',1,'CARMA']]],
   ['getdata',['getData',['../class_kepler_obj.html#a9162e912a70706492323c4a7b84e25a7',1,'KeplerObj::getData()'],['../class_kepler_obj.html#ac372c45b9df44b41192324c50629dd92',1,'KeplerObj::getData(int stitchMethod)'],['../class_kepler_obj.html#acb2e980082a9a943dbecb40cf4dcd0bb',1,'KeplerObj::getData(bool forceCalibrate, int stitchMethod)'],['../class_kepler_obj.html#a3f09ad774ae8ffad8936ff1c2f91bcbb',1,'KeplerObj::getData(string &amp;fileName, bool cbvORpdc)'],['../class_kepler_obj.html#af0c74aa514da769c45ddd1b5d6fa09d8',1,'KeplerObj::getData(string &amp;filename, bool cbvORpdc, int stitchMethod)'],['../class_kepler_obj.html#a4f90cf9b7aa47fdaca37001c9032fea1',1,'KeplerObj::getData(string &amp;fileName, bool cbvORpdc, bool forceCalibrate, int stitchMethod)']]],
   ['getfirstcadence',['getFirstCadence',['../class_kepler_obj.html#a8f53290957f8902ddb5668a21527e4ba',1,'KeplerObj']]],
   ['getfrachost',['getFracHOST',['../class_kepler_obj.html#a230eab3c510a51b2197cf6ec7e30fd75',1,'KeplerObj']]],

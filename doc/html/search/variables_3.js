@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['d',['D',['../class_c_a_r_m_a.html#a95cd26896bd2a97497be37295e039dc8',1,'CARMA']]],
   ['data',['Data',['../struct_ln_like_args.html#aa9a0a2c4945292f8429e4f0738db611b',1,'LnLikeArgs']]],
   ['datafolder',['dataFolder',['../namespace_get_all_data.html#a8ff73cf768ddd833d026b762528dc864',1,'GetAllData']]],
   ['deltat',['deltat',['../namespace_final_analysis.html#aa27dc5884cf09a2ac3f1fb3489bb359b',1,'FinalAnalysis.deltat()'],['../namespace_initial_analysis.html#a8c65b78c4fc5b3f333cebee5997e6fce',1,'InitialAnalysis.deltat()'],['../namespace_plot_a_r_m_a_regions.html#a7b437af6d1c5ce7f40b5f27233d5f4b1',1,'PlotARMARegions.deltat()']]],

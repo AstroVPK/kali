@@ -14,6 +14,5 @@ var searchData=
   ['mkl_5fcomplex8',['MKL_Complex8',['../_c_a_r_m_a_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3',1,'MKL_Complex8():&#160;CARMA.hpp'],['../_c_a_r_m_a_8cpp.html#a0b45f62ef34311fdb79b8de82d75c0d3',1,'MKL_Complex8():&#160;CARMA.cpp']]],
   ['mpl_5fsettings',['mpl_settings',['../namespacempl__settings.html',1,'']]],
   ['mpl_5fsettings_2epy',['mpl_settings.py',['../mpl__settings_8py.html',1,'']]],
-  ['mscratch',['MScratch',['../class_c_a_r_m_a.html#a17050731a928b7e2a024fd8c1b5acd6d',1,'CARMA']]],
   ['mu',['mu',['../struct_gauss_m_v.html#ae45dad7a24aec8e56e0d2d9814a3f267',1,'GaussMV']]]
 ];

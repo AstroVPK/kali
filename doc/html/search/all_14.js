@@ -5,8 +5,5 @@ var searchData=
   ['var',['var',['../struct_gauss_m_v.html#a4578d70691b74556849669fae207ff64',1,'GaussMV']]],
   ['viewmatrix',['viewMatrix',['../_c_a_r_m_a_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp'],['../_correlation_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp']]],
   ['vmax',['vMax',['../namespace_final_analysis.html#a1876ad5867611d2150568c7311e8badb',1,'FinalAnalysis']]],
-  ['vmin',['vMin',['../namespace_final_analysis.html#a5dff2737a91aa5a7c56b78a13ebf95ec',1,'FinalAnalysis']]],
-  ['vr',['vr',['../class_c_a_r_m_a.html#a7ef9e8afd4bd3adcf2931bad09c831af',1,'CARMA']]],
-  ['vrinv',['vrInv',['../class_c_a_r_m_a.html#a1128984d1bb62a18c9046730fdc9b234',1,'CARMA']]],
-  ['vscratch',['VScratch',['../class_c_a_r_m_a.html#ad9d4a76333d0b578ce167d43801f9347',1,'CARMA']]]
+  ['vmin',['vMin',['../namespace_final_analysis.html#a5dff2737a91aa5a7c56b78a13ebf95ec',1,'FinalAnalysis']]]
 ];

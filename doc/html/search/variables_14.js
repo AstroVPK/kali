@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['w',['w',['../class_c_a_r_m_a.html#a34484d60e14f53e2e2bb378a4e9e7344',1,'CARMA']]],
-  ['walkers',['walkers',['../namespace_final_analysis.html#abcbb56dee8740482b79123ed446a959e',1,'FinalAnalysis.walkers()'],['../namespace_plot_a_r_m_a_regions.html#a3c04a644963d85e8e23169a93ce616be',1,'PlotARMARegions.walkers()']]]
+  ['x',['x',['../namespace_final_analysis.html#a53f403035b6d6abe6c7e2d7c07601b1d',1,'FinalAnalysis.x()'],['../namespace_initial_analysis.html#ad5a55c453ab03e26be3a8bcb07df82a2',1,'InitialAnalysis.x()']]],
+  ['xxxx',['XXXX',['../namespace_get_all_data.html#a0ad0a5c98585457adf46115ebccbba6d',1,'GetAllData']]]
 ];
