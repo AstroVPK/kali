@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include "Acquire.hpp"
-#include "Kalman.hpp"
+#include "CARMA.hpp"
 #include "MCMC.hpp"
 
 #define TIME_LNLIKE
@@ -19,7 +19,7 @@ int main() {
 	cout.clear();
 	cout << endl;
 	cout << "Program: testPoint" << endl;
-	cout << "Purpose: Program to test individual oints in C-ARMA parameter space." << endl;
+	cout << "Purpose: Program to test individual points in C-ARMA parameter space." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
 	cout << "Institution: Drexel university, Department of Physics" << endl;
 	cout << "Email: vpk24@drexel.edu" << endl;
@@ -55,7 +55,7 @@ int main() {
 
 	cout << "y has been read in" << endl;
 
-	cout << "Check the parameter values on an ARMA light curve with p AR and q MA co-efficients." << endl;
+	cout << "Check the parameter values of an C-ARMA light curve with p C-AR and q C-MA co-efficients." << endl;
 	int pMaster = 0, qMaster = 0;
 	AcquireInput(cout,cin,"Number of AR coefficients p: ","Invalid value.\n",pMaster);
 	qMaster = pMaster;
@@ -64,10 +64,10 @@ int main() {
 		cout << "Please select q < " << pMaster << endl;
 		AcquireInput(cout,cin,"Number of MA coefficients q: ","Invalid value.\n",qMaster);
 		}
-	cout << "Creating DLM with " << pMaster << " AR components and " << qMaster << " MA components." << endl;
-	DLM SystemMaster = DLM();
-	SystemMaster.allocDLM(pMaster, qMaster);
-	cout << "Allocated " << SystemMaster.allocated << " bytes for the DLM!" << endl;
+	cout << "Creating C-ARMA model with " << pMaster << " AR components and " << qMaster << " MA components." << endl;
+	CARMA SystemMaster = CARMA();
+	SystemMaster.allocCARMA(pMaster, qMaster);
+	cout << "Allocated " << SystemMaster.get_allocated() << " bytes for the C-ARMA model!" << endl;
 
 	double* ThetaMaster = static_cast<double*>(_mm_malloc((pMaster+qMaster+1)*sizeof(double),64));
 	#pragma omp parallel for simd default(none) shared(pMaster,qMaster,ThetaMaster)
@@ -84,7 +84,7 @@ int main() {
 		cout << endl;
 		cout << endl;
 
-		cout << "Values of the DLM parameters to be tested: ";
+		cout << "Values of the C-ARMA parameters to be tested: ";
 		/*getline(cin,inputString,'\n');
 		cin.ignore();
 		istringstream inputRecord(inputString);
@@ -92,35 +92,35 @@ int main() {
 			inputRecord >> ThetaMaster[dimNum];
 			}*/
 
-		cout << "Set the standard deviation of the disturbances (sigma_dist) such that sigma_dist > 0.0" << endl;
-		AcquireInput(cout,cin,"Set the value of sigma_dist: ","Invalid value.\n",ThetaMaster[0]);
+		double t_incr = 0.0;
+		cout << "Set the sampling length t_incr such that t_incr > 0.0" << endl;
+		AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
 
-		for (int i = 1; i < 1+pMaster; i++) {
-			cout << "Set the value of phi_" << i;
+		for (int i = 0; i < pMaster; i++) {
+			cout << "Set the value of a_" << i+1;
 			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
 			}
 
+		AcquireInput(cout,cin,"Set the value of b_0: ","Invalid value.\n",ThetaMaster[pMaster]);
+
 		for (int i = 1+pMaster; i < 1+pMaster+qMaster; i++) {
-			cout << "Set the value of theta_" << i-pMaster;
+			cout << "Set the value of b_" << i-pMaster;
 			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
 			}
 
 		cout << "System is set to use the following parameters..." << endl;
-		cout << "sigma_dist: " << ThetaMaster[0] << endl;
-		for (int i = 1; i < 1+pMaster; i++) {
-			cout << "phi_" << i << ": " << ThetaMaster[i] << endl;
+		for (int i = 0; i < pMaster; i++) {
+			cout << "a_" << i+1 << ": " << ThetaMaster[i] << endl;
 			}
-		for (int i = 1+pMaster; i < 1+pMaster+qMaster; i++) {
-			cout << "theta_" << i << ": " << ThetaMaster[i] << endl;
+		cout << "b_0: " << ThetaMaster[pMaster] << endl;
+		for (int i = 1 + pMaster; i < 1 + pMaster + qMaster; i++) {
+			cout << "b_" << i - pMaster << ": " << ThetaMaster[i] << endl;
 			}
 		cout << endl;
 
-		SystemMaster.setDLM(ThetaMaster);
-		SystemMaster.resetState();
-
 		cout << endl;
-		cout << "Checking to see if the system is stable, invertible, not-redundant, and reasonable, & computing LnLike" << endl;
-		goodYN = SystemMaster.checkARMAParams(ThetaMaster);
+		cout << "Checking to see if the C-ARMA parameters are good, & computing LnLike" << endl;
+		goodYN = SystemMaster.checkCARMAParams(ThetaMaster);
 		cout << "System parameters are ";
 		if (goodYN == 0) {
 			cout << "bad!" << endl;
@@ -128,19 +128,22 @@ int main() {
 			cout << endl;
 			} else {
 			cout << "good!" << endl;
-			LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
+			//SystemMaster.setCARMA(ThetaMaster);
+			//SystemMaster.set_t(t_incr);
+			//SystemMaster.resetState();
+			//LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
 			cout << endl;
 			}
 
 		cout.precision(16);
-		cout << "LnLike: " << fixed << noshowpos << LnLike << endl;
+		//cout << "LnLike: " << fixed << noshowpos << LnLike << endl;
 		cout << endl;
 		cout << endl;
 
 		AcquireInput(cout,cin,"Done? (1/0): ","Input not parsed!\n",doneYN);
 		}
 
-	SystemMaster.deallocDLM();
+	SystemMaster.deallocCARMA();
 	_mm_free(ThetaMaster);
 	_mm_free(y);
 	_mm_free(yerr);

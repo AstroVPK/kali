@@ -20,7 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/io/detail/quoted_manip.hpp>
 #include "Acquire.hpp"
-#include "Kalman.hpp"
+#include "CARMA.hpp"
 #include "Universe.hpp"
 #include "Kepler.hpp"
 #include "MCMC.hpp"
@@ -36,11 +36,11 @@ using namespace nlopt;
 int main() {
 	cout.clear();
 	cout << endl;
-	cout << "Program: testMethod" << endl;
-	cout << "Purpose: Program to create and write a mock LC with a given set of ARMA parameters." << endl;
+	cout << "Program: writeMockLC" << endl;
+	cout << "Purpose: Program to create and write a mock LC with a given set of C-ARMA parameters." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: Drexel university, Department of Physics" << endl;
-	cout << "Email: vpk24@drexel.edu" << endl;
+	cout << "Institution: University of Pennsylvania, Department of Physics & Astronomy" << endl;
+	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
 	string basePath;
