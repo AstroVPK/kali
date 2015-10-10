@@ -20,7 +20,8 @@ OFFLOAD_FLAGS =
 #OFFLOAD_FLAGS = -offload=optional
 
 #MKL Flags.
-MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include
+#MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include
+MKLFLAGS = -DMKL_ILP64 -qopenmp -I${MKLROOT}/include
 #-mkl=sequential
 #-offload-attribute-target=mic
 #MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include -offload-option,mic,compiler,"$(MKLROOT)/lib/mic/libmkl_intel_ilp64.a $(MKLROOT)/lib/mic/libmkl_intel_thread.a $(MKLROOT)/lib/mic/libmkl_core.a" -offload-attribute-target=mic
@@ -28,8 +29,9 @@ MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include
 #MKL link line. 
 #MKLLINKLINE = -lpthread -lm
 #MKLLINKLINE = -Wl,--start-group  $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm
-MKL_LIBS=-L$(MKLROOT)/lib/intel64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lpthread -lm
-MKL_MIC_LIBS=-L$(MKLROOT)/lib/mic -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core
+#MKL_LIBS=-L$(MKLROOT)/lib/intel64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lpthread -lm
+MKL_LIBS = -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+#MKL_MIC_LIBS=-L$(MKLROOT)/lib/mic -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core
 
 NLOPTLIBS = -lnlopt
 OMPFLAGS = -openmp -openmp-simd
@@ -88,13 +90,13 @@ $(EXEC7): $(OBJECTS) $(patsub %,$(EXEC7)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC7)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
 
 $(ODIR)/Universe.o: $(SRCDIR)/Universe.cpp $(IDIR)/Universe.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OFFLOAD_FLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OFFLOAD_FLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(MKL_LIBS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@

@@ -124,6 +124,8 @@ void zeroMatrix(int nRows, int nCols, double* mat);
 
 void zeroMatrix(int nRows, int nCols, complex<double>* mat);
 
+void viewMatrix(int nRows, int nCols, int* mat);
+
 void viewMatrix(int nRows, int nCols, double* mat);
 
 void viewMatrix(int nRows, int nCols, complex<double>* mat);

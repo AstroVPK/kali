@@ -24,6 +24,7 @@
 //#define WRITE
 //#define DEBUG_FUNC
 #define DEBUG_SETCARMA
+#define DEBUG_SOLVECARMA
 //#define DEBUG_SETDLM_DEEP
 #define DEBUG_CHECKARMAPARAMS
 //#define DEBUG_BURNSYSTEM
@@ -289,6 +290,15 @@ void zeroMatrix(int nRows, int nCols, complex<double>* mat) {
 		}
 	}
 
+void viewMatrix(int nRows, int nCols, int* mat) {
+	for (int i = 0; i < nRows; i++) {
+		for (int j = 0; j < nCols; j++) {
+			printf("%+d ",mat[j*nCols + i]);
+			}
+		printf("\n");
+		}
+	}
+
 void viewMatrix(int nRows, int nCols, double* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
@@ -507,11 +517,12 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	ihi = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
 	allocated += 2*sizeof(lapack_int);
 
+	ilo[0] = 0;
+	ihi[0] = 0;
+
 	abnrm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
 	allocated += sizeof(double);
 
-	ilo[0] = 0;
-	ihi[0] = 0;
 	abnrm[0] = 0.0;
 
 	ipiv = static_cast<lapack_int*>(_mm_malloc(p*sizeof(lapack_int),64));
@@ -521,6 +532,14 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	rconde = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	rcondv = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	allocated += 3*p*sizeof(double);
+
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		ipiv[rowCtr] = 0;
+		scale[rowCtr] = 0.0;
+		rconde[rowCtr] = 0.0;
+		rcondv[rowCtr] = 0.0;
+		}
 
 	w = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	CARw = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
@@ -549,10 +568,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		}
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		ipiv[colCtr] = 0;
-		scale[colCtr] = 0.0;
-		rconde[colCtr] = 0.0;
-		rcondv[colCtr] = 0.0;
 		w[colCtr] = 0.0+0.0i;
 		CARw[colCtr] = 0.0+0.0i;
 		B[colCtr] = 0.0;
@@ -924,22 +939,22 @@ int CARMA::checkCARMAParams(double *Theta /**< [in]  */) {
 	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
 		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; colCtr++) {
-			CARMatrix[rowCtr + p*colCtr] = 0.0; // Reset matrix.
+			CARMatrix[rowCtr + p*colCtr] = 0.0 + 0.0i; // Reset matrix.
 			}
 		}
 
-	CARMatrix[p*(p-1)] = -1.0*Theta[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*Theta[p-1] + 0.0i; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		CARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p-1-rowCtr]; // Rightmost column of ARMatrix equals -alpha_k where 1 < k < p.
-		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // ARMatrix has Identity matrix in bottom left.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*Theta[p - 1 - rowCtr] + 0.0i; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // CARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
 	ihi[0] = 0;
 	abnrm[0] = 0.0;
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		CARw[rowCtr] = 0.0;
+		CARw[rowCtr] = 0.0 + 0.0i;
 		scale[rowCtr] = 0.0;
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
@@ -954,12 +969,29 @@ int CARMA::checkCARMAParams(double *Theta /**< [in]  */) {
 	viewMatrix(p,p,CARMatrix);
 	#endif
 
-	//mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	lapack_int YesNo;
-
-	printf("Reached here! 00\n");
-	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, CARMatrix, p, CARw, nullptr, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv);
-	printf("Reached here! 01\n");
+	/*printf("checkCARMAParams - threadNum: %d; CARw\n",threadNum);
+	viewMatrix(p,1,CARw);
+	printf("checkCARMAParams - threadNum: %d; vr\n",threadNum);
+	viewMatrix(p,p,vr);
+	printf("checkCARMAParams - threadNum: %d; ilo\n",threadNum);
+	viewMatrix(1,1,ilo);
+	printf("checkCARMAParams - threadNum: %d; ihi\n",threadNum);
+	viewMatrix(1,1,ihi);
+	printf("checkCARMAParams - threadNum: %d; scale\n",threadNum);
+	viewMatrix(p,1,scale);
+	printf("checkCARMAParams - threadNum: %d; abnrm\n",threadNum);
+	viewMatrix(1,1,abnrm);
+	printf("checkCARMAParams - threadNum: %d; rconde\n",threadNum);
+	viewMatrix(p,1,rconde);
+	printf("checkCARMAParams - threadNum: %d; rcondv\n",threadNum);
+	viewMatrix(p,1,rcondv);
+	printf("p: %d\n",p);*/
+	//printf("Reached here! 00\n");
+	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', p, CARMatrix, p, CARw, vrInv, p, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv);
+	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', p, CARMatrix, p, CARw, vrInv, p, vr, p);
+	//printf("Reached here! 01\n");
 
 	for (int i = 0; i < p; i++) {
 
@@ -1002,10 +1034,10 @@ int CARMA::checkCARMAParams(double *Theta /**< [in]  */) {
 			CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
 			}
 		}
-	CMAMatrix[(q-1)*q] = -1.0*Theta[p + q - 1]/Theta[p]; // MAMatrix has -beta_q/-beta_0 at top right!
+	CMAMatrix[(q-1)*q] = -1.0*Theta[p]/Theta[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*Theta[p + q - 1 - rowCtr]/Theta[p]; // Rightmost column of MAMatrix has -MA coeffs.
+		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*Theta[p + rowCtr]/Theta[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
 		CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
@@ -1021,10 +1053,20 @@ int CARMA::checkCARMAParams(double *Theta /**< [in]  */) {
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
 		}
+	#ifdef DEBUG_CHECKARMAPARAMS
+	printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("checkCARMAParams - threadNum: %d; CMAMatrix\n",threadNum);
+	viewMatrix(q,q,CMAMatrix);
+	#endif
 
-	printf("Reached here! 02\n");
-	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', q, CMAMatrix, q, CMAw, nullptr, 1, vr, q, ilo, ihi, scale, abnrm, rconde, rcondv);
-	printf("Reached here! 03\n");
+	//printf("Reached here! 02\n");
+	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', q, CMAMatrix, q, CMAw, nullptr, 1, vr, q, ilo, ihi, scale, abnrm, rconde, rcondv);
+	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', q, CMAMatrix, q, CMAw, vrInv, q, vr, q);
+	//printf("Reached here! 03\n");
 
 	for (int i = 0; i < q; i++) {
 
@@ -1125,11 +1167,33 @@ void CARMA::setCARMA(double *Theta) {
 		}
 
 	lapack_int YesNo;
-	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, A, p, w, nullptr, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv);
+	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, A, p, w, nullptr, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv);
+	printf("Reached here! 00\n");
+	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'V', p, A, p, w, vrInv, p, vr, p);
+	printf("Reached here! 01\n");
 
 	YesNo = LAPACKE_zlacpy(LAPACK_COL_MAJOR, 'B', p, p, vr, p, vrInv, p);
+	printf("Reached here! 02\n");
+
 	YesNo = LAPACKE_zgetrf(LAPACK_COL_MAJOR, p, p, vrInv, p, ipiv);
+	printf("Reached here! 03\n");
+
 	YesNo = LAPACKE_zgetri(LAPACK_COL_MAJOR, p, vrInv, p, ipiv);
+	printf("Reached here! 04\n");
+
+	#ifdef DEBUG_SETCARMA
+	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("setDLM - threadNum: %d; w\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("setDLM - threadNum: %d; vr\n",threadNum);
+	viewMatrix(p,p,vr);
+	printf("\n");
+	#endif
 
 	#ifdef DEBUG_SETCARMA
 	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1138,8 +1202,8 @@ void CARMA::setCARMA(double *Theta) {
 	#endif
 
 	#pragma omp simd
-	for (int rowCtr = 0; rowCtr < q; rowCtr++) {
-		B[p - q + rowCtr] = Theta[p + rowCtr];
+	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
+		B[p - 1 - rowCtr] = Theta[p + rowCtr];
 		}
 
 	#ifdef DEBUG_SETCARMA
@@ -1220,6 +1284,11 @@ void CARMA::set_t(double t_incr) {
 
 void CARMA::solveCARMA() {
 
+	#ifdef DEBUG_SOLVECARMA
+	int threadNum = omp_get_thread_num();
+	printf("solveCARMA - threadNum: %d; Address of System: %p\n",threadNum,this);
+	#endif
+
 	// First compute expm(A*t)
 	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
@@ -1237,6 +1306,17 @@ void CARMA::solveCARMA() {
 			}
 		}
 
+	#ifdef DEBUG_SOLVECARMA
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveDLM - threadNum: %d; F\n",threadNum);
+	viewMatrix(p,p,F);
+	printf("\n");
+	#endif
+
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
 	//size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t); // JohnS suggests that I try "this" 
@@ -1248,6 +1328,17 @@ void CARMA::solveCARMA() {
 
 	// Finally compute Q
 	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, BScratch, 1, &beta, Q, p);
+
+	#ifdef DEBUG_SOLVECARMA
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveDLM - threadNum: %d; Q\n",threadNum);
+	viewMatrix(p,p,Q);
+	printf("\n");
+	#endif
 	}
 
 void CARMA::resetState(double InitUncertainty) {

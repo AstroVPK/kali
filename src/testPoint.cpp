@@ -128,9 +128,15 @@ int main() {
 			cout << endl;
 			} else {
 			cout << "good!" << endl;
-			//SystemMaster.setCARMA(ThetaMaster);
-			//SystemMaster.set_t(t_incr);
-			//SystemMaster.resetState();
+			SystemMaster.setCARMA(ThetaMaster);
+			SystemMaster.set_t(t_incr);
+			SystemMaster.solveCARMA();
+			vector<double> x(pMaster);
+			vector<double> dxdt(pMaster);
+			SystemMaster(x,dxdt,0.02);
+			printf("testPoint - ()\n");
+			viewMatrix(pMaster,1,&dxdt[0]);
+			SystemMaster.resetState();
 			//LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
 			cout << endl;
 			}
