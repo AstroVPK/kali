@@ -6,8 +6,7 @@ ODIR = src/obj
 BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
 BOOSTLIB = ~/code/boost_1_59_0/
 
-VERFLAGS = -gxx-name=g++-4.8 -std=c++11
-# -g -Wall
+VERFLAGS = -gxx-name=g++-4.8 -std=c++11 -g -Wall
 
 #CPPFLAGS = -std=c++11 -O3 -xHost -ip -parallel -funroll-loops -fno-alias -fno-fnalias -fargument-noalias
 
