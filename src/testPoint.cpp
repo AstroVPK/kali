@@ -21,14 +21,14 @@ int main() {
 	cout << "Program: testPoint" << endl;
 	cout << "Purpose: Program to test individual points in C-ARMA parameter space." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: Drexel university, Department of Physics" << endl;
-	cout << "Email: vpk24@drexel.edu" << endl;
+	cout << "Institution: University of Pennsylvania, Department of Physics & Astronomy" << endl;
+	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
 	string basePath;
-	AcquireDirectory(cout,cin,"Full path to output directory: ","Invalid path!\n",basePath);
+	AcquireDirectory(cout,cin,"Full path to CARMA directory: ","Invalid path!\n",basePath);
 	basePath += "/";
-	cout << "Output directory: " << basePath << endl;
+	cout << "CARMA directory: " << basePath << endl;
 
 	string yFilePath = basePath+"y.dat";
 	ifstream yFile;
@@ -38,8 +38,10 @@ int main() {
 	istringstream yRecord(yLine);
 	string throwAway;
 	yRecord >> throwAway;
+	cout << "throwAway: " << throwAway << endl;
 	int numPts;
 	yRecord >> numPts;
+	cout << "numPts: " << numPts << endl;
 	double* y = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
 	double* yerr = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
 	double* mask = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
@@ -50,7 +52,13 @@ int main() {
 		yRecord >> yerr[lineCtr];
 		if (y[lineCtr] != 0.0) {
 			mask[lineCtr] = 1.0;
+			} else {
+			mask[lineCtr] = 0.0;
 			}
+		}
+
+	for (int lineCtr = 0; lineCtr < numPts; ++lineCtr) {
+		cout << "Cad: " << lineCtr << "; y[" << lineCtr << "]: " << y[lineCtr] << "; yerr[" << lineCtr << "]: " << yerr[lineCtr] << "; mask[" << lineCtr << "]: " << mask[lineCtr] << endl;
 		}
 
 	cout << "y has been read in" << endl;
@@ -131,18 +139,13 @@ int main() {
 			SystemMaster.setCARMA(ThetaMaster);
 			SystemMaster.set_t(t_incr);
 			SystemMaster.solveCARMA();
-			/*vector<double> x(pMaster);
-			vector<double> dxdt(pMaster);
-			SystemMaster(x,dxdt,0.02);
-			printf("testPoint - ()\n");
-			viewMatrix(pMaster,1,&dxdt[0]);*/
 			SystemMaster.resetState();
-			//LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
+			LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
 			cout << endl;
 			}
 
 		cout.precision(16);
-		//cout << "LnLike: " << fixed << noshowpos << LnLike << endl;
+		cout << "LnLike: " << fixed << noshowpos << LnLike << endl;
 		cout << endl;
 		cout << endl;
 

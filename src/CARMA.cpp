@@ -25,7 +25,7 @@
 //#define DEBUG_FUNC
 //#define DEBUG_CHECKARMAPARAMS
 //#define DEBUG_SETCARMA
-#define DEBUG_SOLVECARMA
+//#define DEBUG_SOLVECARMA
 //#define DEBUG_FUNCTOR
 //#define DEBUG_SETCARMA_DEEP
 //#define DEBUG_BURNSYSTEM
@@ -34,7 +34,7 @@
 //#define DEBUG_ALLOCATECARMA
 //#define DEBUG_DEALLOCATECARMA
 //#define DEBUG_DEALLOCATECARMA_DEEP
-#define DEBUG_RESETSTATE
+//#define DEBUG_RESETSTATE
 //#define DEBUG_CALCLNLIKE
 
 #ifdef WRITE
@@ -1740,6 +1740,12 @@ void CARMA::resetState(double InitUncertainty) {
 
 void CARMA::resetState() {
 
+	#ifdef DEBUG_RESETSTATE
+	int threadNum = omp_get_thread_num();
+	printf("resetState - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		X[colCtr] = 0.0;
 		XMinus[colCtr] = 0.0;
@@ -1752,6 +1758,20 @@ void CARMA::resetState() {
 			}
 		}
 
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; F (Before)\n",threadNum);
+	viewMatrix(p,p,F);
+	printf("\n");
+	printf("resetState - threadNum: %d; FKron (Before)\n",threadNum);
+	viewMatrix(pSq,pSq,FKron);
+	printf("\n");
+	#endif
+
 	kron(p,p,F,p,p,F,FKron);
 	for (int i = 0; i < pSq; i++) {
 		//#pragma omp simd
@@ -1761,10 +1781,89 @@ void CARMA::resetState() {
 		FKron[i*pSq + i] += 1.0;
 		}
 
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; F\n",threadNum);
+	viewMatrix(p,p,F);
+	printf("\n");
+	printf("resetState - threadNum: %d; FKron\n",threadNum);
+	viewMatrix(pSq,pSq,FKron);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; Q (Before)\n",threadNum);
+	viewMatrix(p,p,Q);
+	printf("\n");
+	printf("resetState - threadNum: %d; P (Before)\n",threadNum);
+	viewMatrix(p,p,P);
+	printf("\n");
+	#endif
+
 	lapack_int YesNo;
 	char equed = 'N';
 	cblas_dcopy(pSq, Q, 1, P, 1);
-	YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, &equed, FKron_r, FKron_c, Q, pSq, P, pSq, FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr);
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; Q\n",threadNum);
+	viewMatrix(p,p,Q);
+	printf("\n");
+	printf("resetState - threadNum: %d; P\n",threadNum);
+	viewMatrix(p,p,P);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; FKron (Before)\n",threadNum);
+	viewMatrix(pSq,pSq,FKron);
+	printf("\n");
+	printf("resetState - threadNum: %d; Q (Before)\n",threadNum);
+	viewMatrix(p,p,Q);
+	printf("\n");
+	printf("resetState - threadNum: %d; P (Before)\n",threadNum);
+	viewMatrix(p,p,P);
+	printf("\n");
+	#endif
+
+	//YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, &equed, FKron_r, FKron_c, Q, pSq, P, pSq, FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr); // Not Working!!!!
+	YesNo = LAPACKE_dgesv(LAPACK_COL_MAJOR, pSq, 1, FKron, pSq, FKron_ipiv , P, pSq);
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("resetState - threadNum: %d; FKron\n",threadNum);
+	viewMatrix(pSq,pSq,FKron);
+	printf("\n");
+	printf("resetState - threadNum: %d; Q\n",threadNum);
+	viewMatrix(p,p,Q);
+	printf("\n");
+	printf("resetState - threadNum: %d; P\n",threadNum);
+	viewMatrix(p,p,P);
+	printf("\n");
+	#endif
+
 	}
 
 void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
