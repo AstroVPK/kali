@@ -1,4 +1,5 @@
 #include <mathimf.h>
+#include <complex>
 #include <mkl.h>
 #include <mkl_types.h>
 #include <omp.h>
@@ -44,9 +45,9 @@ int main() {
 	cout << endl;
 
 	string basePath;
-	AcquireDirectory(cout,cin,"Path to output directory: ","Invalid path!\n",basePath);
+	AcquireDirectory(cout,cin,"Path to CARMA directory: ","Invalid path!\n",basePath);
 	basePath += "/";
-	cout << "Output directory: " << basePath << endl;
+	cout << "CARMA directory: " << basePath << endl;
 
 	string keplerPath, keplerID, keplerObjPath, keplerObjCalibratedFile;
 	cout << "Use a given Kepler AGN to create the mask of missing values for the mock light curve" << endl;
@@ -111,36 +112,55 @@ int main() {
 	omp_set_num_threads(nthreads);
 	int threadNum = omp_get_thread_num();*/
 
-	cout << "Create a test light curve with known parameters - make an ARMA light curve with p AR and q MA co-efficients." << endl;
+	cout << "Create a test light curve with known parameters - make an ARMA light curve with p C-AR and q C-MA co-efficients." << endl;
 	int pMaster = 0, qMaster = 0;
 	while (pMaster < 1) {
-		AcquireInput(cout,cin,"Number of AR coefficients p: ","Invalid value.\n",pMaster);
+		AcquireInput(cout,cin,"Number of C-AR coefficients p: ","Invalid value.\n",pMaster);
 	}
 	if (pMaster > 1) {
 		qMaster = pMaster;
 		while ((qMaster >= pMaster) or (qMaster < 0)) {
-			cout << "The number of MA coefficients (q) must be less than the number of AR coefficients (p) if the system is to \n correspond to a C-ARMA process." << endl;
+			cout << "The number of C-MA coefficients (q) must be less than the number of C-AR coefficients (p) if the system is to \n correspond to a C-ARMA process." << endl;
 			cout << "Please select q < " << pMaster << endl;
-			AcquireInput(cout,cin,"Number of MA coefficients q: ","Invalid value.\n",qMaster);
+			AcquireInput(cout,cin,"Number of C-MA coefficients q: ","Invalid value.\n",qMaster);
 			}
 		} else {
 		qMaster = 0;
 		}
-	cout << "Creating ARMA model with " << pMaster << " AR components and " << qMaster << " MA components." << endl;
-	DLM SystemMaster = DLM();
-	SystemMaster.allocDLM(pMaster, qMaster);
-	cout << "Allocated " << SystemMaster.allocated << " bytes for the model!" << endl;
+	cout << "Creating C-ARMA model with " << pMaster << " C-AR components and " << qMaster << " C-MA components." << endl;
+	CARMA SystemMaster = CARMA();
+	SystemMaster.allocCARMA(pMaster, qMaster);
+	cout << "Allocated " << SystemMaster.get_allocated() << " bytes for the model!" << endl;
 
 	double* ThetaMaster = static_cast<double*>(_mm_malloc((pMaster+qMaster+1)*sizeof(double),64));
 	#pragma omp parallel for simd default(none) shared(pMaster,qMaster,ThetaMaster)
 	for (int i = 0; i < pMaster+qMaster+1; i++) {
 		ThetaMaster[i] = 0.0;
 		}
-	cout << "Set the values of the ARMA model parameters." << endl;
+
+	double t_incr = 0.0;
+	cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
+	AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
+	SystemMaster.set_t(t_incr);
+
+	cout << "Set the values of the C-ARMA model parameters." << endl;
 
 	int goodYN = 0;
 	while (goodYN == 0) {
-		while (ThetaMaster[0] <= 0.0) {
+
+		for (int i = 0; i < pMaster; i++) {
+			cout << "Set the value of a_" << i+1;
+			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
+			}
+
+		AcquireInput(cout,cin,"Set the value of b_0: ","Invalid value.\n",ThetaMaster[pMaster]);
+
+		for (int i = 1+pMaster; i < 1+pMaster+qMaster; i++) {
+			cout << "Set the value of b_" << i-pMaster;
+			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
+			}
+
+		/*while (ThetaMaster[0] <= 0.0) {
 			cout << "Set the standard deviation of the disturbances (sigma_dist) such that sigma_dist > 0.0" << endl;
 			AcquireInput(cout,cin,"Set the value of sigma_dist: ","Invalid value.\n",ThetaMaster[0]);
 			}
@@ -156,40 +176,30 @@ int main() {
 			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
 			}
 
-		SystemMaster.setDLM(ThetaMaster);
+		SystemMaster.setDLM(ThetaMaster);*/
 		cout << endl;
 		cout << "Checking to see if the system is stable, invertible, not-redundant, and reasonable..." << endl;
-		goodYN = SystemMaster.checkARMAParams(ThetaMaster);
+		goodYN = SystemMaster.checkCARMAParams(ThetaMaster);
 
-		double *RealAR, *ImagAR, *RealMA, *ImagMA;
+		complex<double> *CARRoots, *CMARoots;
 
-		cout << "AR Polynomial Roots" << endl;
+		cout << "C-AR Polynomial Roots" << endl;
 		cout.precision(4);
-		if (pMaster == 1) {
-			cout << noshowpos << fixed << "Root1: " << showpos << 1.0/ThetaMaster[1] << 0.0 << "i; Magnitude: " << abs(1.0/ThetaMaster[1]) << endl;
-			} else {
-			SystemMaster.getARRoots(RealAR, ImagAR);
-			for (int pCtr = 0; pCtr < pMaster; ++pCtr) {
-				cout << showpos << fixed << "Root" << pCtr << ": " << showpos << RealAR[pCtr] << ImagAR[pCtr] << "i; Magnitude: " << sqrt(pow(RealAR[pCtr],2.0) + pow(ImagAR[pCtr],2.0)) << endl;
-				}
+		SystemMaster.getCARRoots(CARRoots);
+		for (int pCtr = 0; pCtr < pMaster; ++pCtr) {
+			cout << showpos << fixed << "Root" << pCtr << ": " << showpos << CARRoots[pCtr] << "; Magnitude: " << abs(CARRoots[pCtr]) << endl;
 			}
+		cout << endl;
+		cout << "C-AR Polynomial Roots" << endl;
 		cout.precision(4);
-		if (qMaster > 0) {
-			cout << endl;
-			cout << "MA Polynomial Roots" << endl;
-			if (qMaster == 1) {
-				cout << showpos << fixed << "Root1: " << showpos << -1.0/ThetaMaster[pMaster+1] << 0.0 << "i; Magnitude: " << abs(-1.0/ThetaMaster[pMaster+1]) << endl;
-				} else {
-				SystemMaster.getMARoots(RealMA, ImagMA);
-				for (int qCtr = 0; qCtr < qMaster; ++qCtr) {
-					cout << showpos << fixed << "Root" << qCtr << ": " << showpos << RealMA[qCtr] << ImagMA[qCtr] << "i; Magnitude: " << sqrt(pow(RealMA[qCtr],2.0) + pow(ImagMA[qCtr],2.0)) << endl;
-					}
-				}
+		SystemMaster.getCMARoots(CMARoots);
+		for (int qCtr = 0; qCtr < qMaster; ++qCtr) {
+			cout << showpos << fixed << "Root" << qCtr << ": " << showpos << CMARoots[qCtr] << "; Magnitude: " << abs(CMARoots[qCtr]) << endl;
 			}
 
 		cout << noshowpos << endl;
 
-		cout << "ARMA model parameters are ";
+		cout << "C-ARMA model parameters are ";
 		if (goodYN == 0) {
 			cout << "bad!" << endl;
 			cout << "Redo!" << endl;
@@ -199,15 +209,22 @@ int main() {
 			cout << endl;
 			}
 		}
-	cout << "Model is set to use the following parameters..." << endl;
-	cout << "sigma_dist: " << ThetaMaster[0] << endl;
-	for (int i = 1; i < 1+pMaster; i++) {
-		cout << "phi_" << i << ": " << ThetaMaster[i] << endl;
+
+	cout << "System is set to use the following parameters..." << endl;
+	cout.precision(4);
+	for (int i = 0; i < pMaster; i++) {
+		cout << noshowpos << scientific << "a_" << i+1 << ": " << ThetaMaster[i] << endl;
 		}
-	for (int i = 1+pMaster; i < 1+pMaster+qMaster; i++) {
-		cout << "theta_" << i-pMaster << ": " << ThetaMaster[i] << endl;
+	cout << "b_0: " << ThetaMaster[pMaster] << endl;
+	for (int i = 1 + pMaster; i < 1 + pMaster + qMaster; i++) {
+		cout << noshowpos << scientific << "b_" << i - pMaster << ": " << ThetaMaster[i] << endl;
 		}
 	cout << endl;
+
+	SystemMaster.setCARMA(ThetaMaster);
+	SystemMaster.set_t(t_incr);
+	SystemMaster.solveCARMA();
+	SystemMaster.resetState();
 
 	bool setSeedsYN = 0;
 	unsigned int burnSeed = 1311890535, distSeed = 2603023340, noiseSeed = 2410288857;
@@ -347,10 +364,10 @@ int main() {
 
 	cout << "LnLike: " << LnLike << endl;
 	cout << endl;
-	SystemMaster.deallocDLM();
+	SystemMaster.deallocCARMA();
 
 	cout << endl;
-	cout << "Deleting ARMA model..." << endl;
+	cout << "Deleting C-ARMA model..." << endl;
 	cout << "Program exiting...Have a nice day!" << endl; 
 
 	_mm_free(y);

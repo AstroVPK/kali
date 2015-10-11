@@ -29,6 +29,7 @@
 //#define DEBUG_FUNCTOR
 //#define DEBUG_SETCARMA_DEEP
 //#define DEBUG_BURNSYSTEM
+//#define DEBUG_OBSSYSTEM
 //#define DEBUG_CTORCARMA
 //#define DEBUG_DTORCARMA
 //#define DEBUG_ALLOCATECARMA
@@ -1876,7 +1877,7 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream;
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, Theta[p]); // Check
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, 1.0); // Check
 	vslDeleteStream(&burnStream);
 
 	#ifdef WRITE
@@ -1977,7 +1978,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, Theta[p]); // Check Theta[p] == old distSigma
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, 1.0); // Check Theta[p] == old distSigma
 	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, numObs, noiseRand, 0.0, noiseSigma);
 
 	#ifdef WRITE
@@ -2000,7 +2001,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 
 	for (int i = 0; i < numObs; i++) {
 
-		#ifdef DEBUG_OBS
+		#ifdef DEBUG_OBSSYSTEM
 		cout << endl;
 		cout << "i: " << i << endl;
 		cout << "Disturbance: " << distRand[i] << endl;
@@ -2012,7 +2013,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 		cblas_dcopy(p, VScratch, 1, X, 1);
 		cblas_daxpy(p, distRand[i], D, 1, X, 1);
 
-		#ifdef DEBUG_OBS
+		#ifdef DEBUG_OBSSYSTEM
 		cout << "X_+" << endl;
 		viewMatrix(p, 1, X);
 		cout << "Noise: " << noiseRand[i] << endl;
@@ -2021,7 +2022,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 		//y[i] = cblas_ddot(p, H, 1, X, 1) + noiseRand[i];
 		y[i] = X[0] + noiseRand[i];
 
-		#ifdef DEBUG_OBS
+		#ifdef DEBUG_OBSSYSTEM
 		cout << "y" << endl;
 		cout << y[i] << endl;
 		cout << endl;

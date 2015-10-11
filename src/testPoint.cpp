@@ -101,7 +101,7 @@ int main() {
 			}*/
 
 		double t_incr = 0.0;
-		cout << "Set the sampling length t_incr such that t_incr > 0.0" << endl;
+		cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
 		AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
 
 		for (int i = 0; i < pMaster; i++) {
