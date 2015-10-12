@@ -356,6 +356,14 @@ int main() {
 	cout << "Starting MCMC Phase." << endl;
 	cout << endl;
 
+	int numHost = sysconf(_SC_NPROCESSORS_ONLN);
+	cout << numHost << " hardware thread contexts detected." << endl;
+	int nthreads = 0;
+	AcquireInput(cout,cin,"Number of OmpenMP threads to use: ","Invalid value!\n",nthreads);
+
+	omp_set_num_threads(nthreads);
+	int threadNum = omp_get_thread_num();
+
 	int pMax = 0, qMax = 0;
 	do {
 		AcquireInput(cout,cin,"Maximum number of AR coefficients to test: ","Invalid value.\n",pMax);
@@ -445,7 +453,7 @@ int main() {
 				//printf("testMethod - threadNum: %d; Address of Systems[%d]: %p\n",threadNum,tNum,&Systems[tNum]);
 				//Systems[tNum] = DLM();
 				Systems[tNum].allocCARMA(p,q);
-				cout << "Allocated " << Systems[tNum].allocated << " bytes for Systems[" << tNum << "]!" << endl;
+				cout << "Allocated " << Systems[tNum].get_allocated() << " bytes for Systems[" << tNum << "]!" << endl;
 				}
 
 			Args.Systems = Systems;
@@ -458,7 +466,7 @@ int main() {
 			bool goodPoint = false;
 			do {
 				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-3);
-				if (Systems[threadNum].checkARMAParams(xTemp) == 1) {
+				if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
 					Systems[threadNum].setCARMA(xTemp);
 					Systems[threadNum].set_t(t_incr);
 					Systems[threadNum].solveCARMA();
