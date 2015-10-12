@@ -57,7 +57,7 @@ _OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler
 OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 
 EXEC1 = testPoint
-#EXEC2 = testMethod
+EXEC2 = endToEndTest
 EXEC3 = plotCARMARegions
 #EXEC4 = fitCARMA
 EXEC5 = writeKeplerLC

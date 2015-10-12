@@ -29,7 +29,7 @@
 
 # Specific Executables
 testPoint
-testMethod
+endToEndTest
 plotCARMARegions
 fitCARMA
 writeKeplerLC
