@@ -8,7 +8,7 @@ import operator
 from mpl_settings import *
 import scipy.linalg as la
 import numpy.linalg as npla 
-import triangleVPK as VPK
+import triangle as VPK
 import sys as s
 import pdb
 
@@ -43,7 +43,7 @@ resultFilePath=basePath+'result.dat'
 resultFile=open(resultFilePath,'w')
 
 for pNum in range(1,pMax+1,1):
-	for qNum in range(0,pNum,1):
+	for qNum in range(1,pNum,1):
 		TriFilePath=basePath+'mcmcOut_%d_%d.dat'%(pNum,qNum)
 		TriFile=open(TriFilePath)
 		line=TriFile.readline()

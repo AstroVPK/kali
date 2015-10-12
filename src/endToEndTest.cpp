@@ -436,22 +436,14 @@ int main() {
 
 	for (int p = pMax; p > 0; --p) {
 		for (int q = p-1; q >= 0; --q) {
-
-	//for (int p = pMax; p > 1; --p) {
-		//for (int q = p-1; q > 0; --q) {
-
 			cout << endl;
 
 			cout << "Running MCMC for p = " << p << " and q = " << q << endl;
 			threadNum = omp_get_thread_num();
-			//printf("testMethod - threadNum: %d\n",threadNum);
 
 			ndims = p+q+1;
 
-			//DLM Systems[nthreads];
 			for (int tNum = 0; tNum < nthreads; tNum++) {
-				//printf("testMethod - threadNum: %d; Address of Systems[%d]: %p\n",threadNum,tNum,&Systems[tNum]);
-				//Systems[tNum] = DLM();
 				Systems[tNum].allocCARMA(p,q);
 				cout << "Allocated " << Systems[tNum].get_allocated() << " bytes for Systems[" << tNum << "]!" << endl;
 				}
@@ -465,7 +457,8 @@ int main() {
 			vslNewStream(&xStream, VSL_BRNG_SFMT19937, xSeed);
 			bool goodPoint = false;
 			do {
-				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-3);
+				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-1);
+				//xTemp[p-1] += 1.0;
 				if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
 					Systems[threadNum].setCARMA(xTemp);
 					Systems[threadNum].set_t(t_incr);

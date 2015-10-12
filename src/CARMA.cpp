@@ -1004,6 +1004,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	lapack_int YesNo;
 	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'N', 'N', p, CARMatrix, p, CARw, vrInv, p, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv); // NOT WORKING!!!
 	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', p, CARMatrix, p, CARw, vrInv, p, vr, p);
+	//YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', p, CARMatrix, p, CARw, vrInv, p, vr, p);
 
 	for (int i = 0; i < p; i++) {
 
@@ -1014,7 +1015,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 			printf("%f ",Theta[dimNum]);
 			}
 		printf("\n");
-		printf("checkCARMAParams - threadNum: %d; Root: %+f+%+fi; Len: %f\n",threadNum, CARw[i].real(), CARw[i].imag(), abs(CARw[i]));
+		printf("checkCARMAParams - threadNum: %d; Root: %+f%+fi; Len: %f\n",threadNum, CARw[i].real(), CARw[i].imag(), abs(CARw[i]));
 		#endif
 
 		if (CARw[i].real() >= 0.0) {
@@ -1026,7 +1027,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 				printf("%f ",Theta[dimNum]);
 				}
 			printf("\n");
-			printf("checkCARMAParams - threadNum: %d; badRoot!!!: %+f+%+fi; Len: %f\n",threadNum,CARw[i].real(), CARw[i].imag(),abs(CARw[i]));
+			printf("checkCARMAParams - threadNum: %d; badRoot!!!: %+f%+fi; Len: %f\n",threadNum,CARw[i].real(), CARw[i].imag(),abs(CARw[i]));
 			#endif
 
 			isStable = 0;
@@ -1037,60 +1038,49 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 				hasUniqueEigenValues = 0;
 				}
 			}
-			
 		}
 
-	for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-		//#pragma omp simd
-		for (int colCtr = 0; colCtr < q; colCtr++) {
-			CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
+	if (q > 0) {
+		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
+			//#pragma omp simd
+			for (int colCtr = 0; colCtr < q; colCtr++) {
+				CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
+				}
 			}
-		}
-	CMAMatrix[(q-1)*q] = -1.0*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
-	//#pragma omp simd
-	for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-		CMAMatrix[rowCtr + (q - 1)*q] = -1.0*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
-		CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
-		}
-	ilo[0] = 0;
-	ihi[0] = 0;
-	abnrm[0] = 0.0;
-	//#pragma omp simd
-	for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-		CMAw[rowCtr] = 0.0+0.0i;
-		}
-	//#pragma omp simd
-	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		scale[rowCtr] = 0.0;
-		rconde[rowCtr] = 0.0;
-		rcondv[rowCtr] = 0.0;
-		}
-	#ifdef DEBUG_CHECKARMAPARAMS
-	printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("checkCARMAParams - threadNum: %d; CMAMatrix\n",threadNum);
-	viewMatrix(q,q,CMAMatrix);
-	#endif
-
-	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', q, CMAMatrix, q, CMAw, nullptr, 1, vr, q, ilo, ihi, scale, abnrm, rconde, rcondv); // NOT WORKING!!!!
-	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', q, CMAMatrix, q, CMAw, vrInv, q, vr, q);
-
-	for (int i = 0; i < q; i++) {
-
+		CMAMatrix[(q-1)*q] = -1.0*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
+		//#pragma omp simd
+		for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
+			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
+			CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
+			}
+		ilo[0] = 0;
+		ihi[0] = 0;
+		abnrm[0] = 0.0;
+		//#pragma omp simd
+		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
+			CMAw[rowCtr] = 0.0+0.0i;
+			}
+		//#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			scale[rowCtr] = 0.0;
+			rconde[rowCtr] = 0.0;
+			rcondv[rowCtr] = 0.0;
+			}
 		#ifdef DEBUG_CHECKARMAPARAMS
-		// printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 		printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 			printf("%f ",Theta[dimNum]);
 			}
 		printf("\n");
-		printf("checkCARMAParams - threadNum: %d; Root: %+f+%+fi; Len: %f\n",threadNum, CMAw[i].real(), CMAw[i].imag(), abs(CMAw[i]));
+		printf("checkCARMAParams - threadNum: %d; CMAMatrix\n",threadNum);
+		viewMatrix(q,q,CMAMatrix);
 		#endif
 
-		if (CMAw[i].real() > 0.0) {
+		//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', q, CMAMatrix, q, CMAw, nullptr, 1, vr, q, ilo, ihi, scale, abnrm, rconde, rcondv); // NOT WORKING!!!!
+		YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', q, CMAMatrix, q, CMAw, vrInv, q, vr, q);
+		//YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'N', q, CMAMatrix, q, CMAw, vrInv, p, vr, p);
+
+		for (int i = 0; i < q; i++) {
 
 			#ifdef DEBUG_CHECKARMAPARAMS
 			// printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
@@ -1099,19 +1089,39 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 				printf("%f ",Theta[dimNum]);
 				}
 			printf("\n");
-			printf("checkCARMAParams - threadNum: %d; badRoot!!!: %+f+%+fi; Len: %f\n",threadNum,CMAw[i].real(), CMAw[i].imag(),abs(CMAw[i]));
+			printf("checkCARMAParams - threadNum: %d; Root: %+f%+fi; Len: %f\n",threadNum, CMAw[i].real(), CMAw[i].imag(), abs(CMAw[i]));
 			#endif
 
-			isInvertible = 0;
-			}
-		}
+			if (CMAw[i].real() > 0.0) {
 
-	for (int i = 1; i < p; i++) {
-		for (int j = 1; j < q; j++) {
-			if (CARw[i] == CMAw[j]) {
-				isNotRedundant = 0;
+				#ifdef DEBUG_CHECKARMAPARAMS
+				// printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
+				printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
+				for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+					printf("%f ",Theta[dimNum]);
+					}
+				printf("\n");
+				printf("checkCARMAParams - threadNum: %d; badRoot!!!: %+f%+fi; Len: %f\n",threadNum,CMAw[i].real(), CMAw[i].imag(),abs(CMAw[i]));
+				#endif
+
+				isInvertible = 0;
 				}
 			}
+
+		for (int i = 1; i < p; i++) {
+			for (int j = 1; j < q; j++) {
+				if (CARw[i] == CMAw[j]) {
+					isNotRedundant = 0;
+					}
+				}
+			}
+		} else if (q == 0) {
+		if (Theta[p] < 0) {
+			isInvertible = 0;
+			}
+		} else {
+		printf("FATAL LOGIC ERROR: numP MUST BE > numQ >= 0!\n");
+		exit(1);
 		}
 
 	#ifdef DEBUG_CHECKARMAPARAMS
@@ -1124,6 +1134,8 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	printf("checkCARMAParams - threadNum: %d; isInvertible: %d\n",threadNum,isInvertible);
 	printf("checkCARMAParams - threadNum: %d; isNotRedundant: %d\n",threadNum,isNotRedundant);
 	printf("checkCARMAParams - threadNum: %d; hasUniqueEigenValues: %d\n",threadNum,hasUniqueEigenValues);
+	printf("\n");
+	printf("\n");
 	#endif
 
 	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
