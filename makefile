@@ -56,13 +56,13 @@ _OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler
 #PRH.o
 OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 
-EXEC1 = testPoint.out
-#EXEC2 = testMethod.out
-#EXEC3 = plotCARMARegions.out
-#EXEC4 = fitCARMA.out
-EXEC5 = writeKeplerLC.out
-EXEC6 = writeMockLC.out
-EXEC7 = computeCFs.out
+EXEC1 = testPoint
+#EXEC2 = testMethod
+#EXEC3 = plotCARMARegions
+#EXEC4 = fitCARMA
+EXEC5 = writeKeplerLC
+EXEC6 = writeMockLC
+EXEC7 = computeCFs
 EXT = .cpp
 
 all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7)
