@@ -40,7 +40,7 @@ int main() {
 	cout << "Program: writeMockLC" << endl;
 	cout << "Purpose: Program to create and write a mock LC with a given set of C-ARMA parameters." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: University of Pennsylvania, Department of Physics & Astronomy" << endl;
+	cout << "Institutions: University of Pennsylvania (Department of Physics & Astronomy) & Princeton University (Department of Astrophysical Sciences)" << endl;
 	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
@@ -160,23 +160,6 @@ int main() {
 			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
 			}
 
-		/*while (ThetaMaster[0] <= 0.0) {
-			cout << "Set the standard deviation of the disturbances (sigma_dist) such that sigma_dist > 0.0" << endl;
-			AcquireInput(cout,cin,"Set the value of sigma_dist: ","Invalid value.\n",ThetaMaster[0]);
-			}
-
-		string inStr;
-		for (int i = 1; i < 1+pMaster; i++) {
-			cout << "Set the value of phi_" << i;
-			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
-			}
-
-		for (int i = 1+pMaster; i < 1+pMaster+qMaster; i++) {
-			cout << "Set the value of theta_" << i-pMaster;
-			AcquireInput(cout,cin,": ","Invalid value.\n",ThetaMaster[i]);
-			}
-
-		SystemMaster.setDLM(ThetaMaster);*/
 		cout << endl;
 		cout << "Checking to see if the system is stable, invertible, not-redundant, and reasonable..." << endl;
 		goodYN = SystemMaster.checkCARMAParams(ThetaMaster);

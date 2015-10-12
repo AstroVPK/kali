@@ -38,10 +38,10 @@ int main() {
 	cout.clear();
 	cout << endl;
 	cout << "Program: testMethod" << endl;
-	cout << "Purpose: Program to test Kalman filtering method (end-to-end test)." << endl;
+	cout << "Purpose: Program to test C-ARMA modelling (end-to-end test)." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: Drexel university, Department of Physics" << endl;
-	cout << "Email: vpk24@drexel.edu" << endl;
+	cout << "Institutions: University of Pennsylvania (Department of Physics & Astronomy) & Princeton University (Department of Astrophysical Sciences)" << endl;
+	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
 	string basePath;

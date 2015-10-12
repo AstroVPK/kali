@@ -35,11 +35,11 @@ using namespace std;
 int main() {
 	cout.clear();
 	cout << endl;
-	cout << "Program: fitARMA" << endl;
+	cout << "Program: writeKeplerLC" << endl;
 	cout << "Purpose: Program to to read Kepler LCs into y.dat format" << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: Drexel university, Department of Physics" << endl;
-	cout << "Email: vpk24@drexel.edu" << endl;
+	cout << "Institutions: University of Pennsylvania (Department of Physics & Astronomy) & Princeton University (Department of Astrophysical Sciences)" << endl;
+	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
 	double maxDouble = numeric_limits<double>::max();

@@ -35,11 +35,11 @@ using namespace nlopt;
 int main() {
 	cout.clear();
 	cout << endl;
-	cout << "Program: fitARMA" << endl;
-	cout << "Purpose: Program to fit ARMA model to light curves" << endl;
+	cout << "Program: fitCARMA" << endl;
+	cout << "Purpose: Program to fit C-ARMA model to light curves" << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: Drexel university, Department of Physics" << endl;
-	cout << "Email: vpk24@drexel.edu" << endl;
+	cout << "Institutions: University of Pennsylvania (Department of Physics & Astronomy) & Princeton University (Department of Astrophysical Sciences)" << endl;
+	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
 	double maxDouble = numeric_limits<double>::max();

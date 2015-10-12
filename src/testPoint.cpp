@@ -22,7 +22,7 @@ int main() {
 	cout << "Program: testPoint" << endl;
 	cout << "Purpose: Program to test individual points in C-ARMA parameter space." << endl;
 	cout << "Author: Vishal Kasliwal" << endl;
-	cout << "Institution: University of Pennsylvania, Department of Physics & Astronomy" << endl;
+	cout << "Institutions: University of Pennsylvania (Department of Physics & Astronomy) & Princeton University (Department of Astrophysical Sciences)" << endl;
 	cout << "Email: vishal.kasliwal@gmail.com" << endl;
 	cout << endl;
 
