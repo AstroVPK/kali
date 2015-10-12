@@ -26,3 +26,12 @@
 *.exe
 *.out
 *.app
+
+# Specific Executables
+testPoint
+testMethod
+plotCARMARegions
+fitCARMA
+writeKeplerLC
+writeMockLC
+computeCFs

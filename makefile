@@ -58,7 +58,7 @@ OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 
 EXEC1 = testPoint
 #EXEC2 = testMethod
-#EXEC3 = plotCARMARegions
+EXEC3 = plotCARMARegions
 #EXEC4 = fitCARMA
 EXEC5 = writeKeplerLC
 EXEC6 = writeMockLC

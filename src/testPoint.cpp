@@ -119,12 +119,6 @@ int main() {
 		cout << endl;
 
 		cout << "Values of the C-ARMA parameters to be tested: ";
-		/*getline(cin,inputString,'\n');
-		cin.ignore();
-		istringstream inputRecord(inputString);
-		for (int dimNum = 0; dimNum < pMaster+qMaster+1; ++dimNum) {
-			inputRecord >> ThetaMaster[dimNum];
-			}*/
 
 		double t_incr = 0.0;
 		cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;

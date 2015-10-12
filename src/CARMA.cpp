@@ -87,8 +87,10 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Ar
 	#endif*/
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
-		// Systems[threadNum].setCARMA(x);
-		// Systems[threadNum].resetState();
+		//Systems[threadNum].setCARMA(x);
+		//Systems[threadNum].set_t(t_incr);
+		//Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
 		LnLike = 0.0;
 		} else {
 		LnLike = -HUGE_VAL;
@@ -133,8 +135,10 @@ double calcCARMALnLike(double* walkerPos, void* func_args) {
 		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
 		#endif
 
-		// Systems[threadNum].setCARMA(walkerPos);
-		// Systems[threadNum].resetState();
+		//Systems[threadNum].setCARMA(walkerPos);
+		//Systems[threadNum].set_t(t_incr);
+		//Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
 		LnLike = 0.0;
 		} else {
 
