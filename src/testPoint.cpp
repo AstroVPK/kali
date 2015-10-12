@@ -4,6 +4,7 @@
 #include <omp.h>
 #include <string>
 #include <sstream>
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include "Acquire.hpp"
@@ -26,38 +27,63 @@ int main() {
 	cout << endl;
 
 	string basePath;
+	vector<string> word(2);
 	AcquireDirectory(cout,cin,"Full path to CARMA directory: ","Invalid path!\n",basePath);
 	basePath += "/";
 	cout << "CARMA directory: " << basePath << endl;
 
-	string yFilePath = basePath+"y.dat";
+	string line, yFilePath = basePath+"y.dat";
 	ifstream yFile;
 	yFile.open(yFilePath);
-	string yLine;
-	getline(yFile,yLine);
-	istringstream yRecord(yLine);
-	string throwAway;
-	yRecord >> throwAway;
-	cout << "throwAway: " << throwAway << endl;
-	int numPts;
-	yRecord >> numPts;
-	cout << "numPts: " << numPts << endl;
-	double* y = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
-	double* yerr = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
-	double* mask = static_cast<double*>(_mm_malloc(numPts*sizeof(double),64));
-	for (int lineCtr = 0; lineCtr < numPts; ++lineCtr) {
-		getline(yFile,yLine);
-		istringstream yRecord(yLine);
-		yRecord >> y[lineCtr];
-		yRecord >> yerr[lineCtr];
-		if (y[lineCtr] != 0.0) {
-			mask[lineCtr] = 1.0;
-			} else {
-			mask[lineCtr] = 0.0;
+
+	getline(yFile,line);
+	istringstream record1(line);
+	for (int i = 0; i < 2; ++i) {
+		record1 >> word[i];
+		}
+	int numCadences = stoi(word[1]);
+	cout << "numCadences: " << numCadences << endl;
+
+	getline(yFile,line);
+	istringstream record2(line);
+	for (int i = 0; i < 2; ++i) {
+		record2 >> word[i];
+		}
+	int numObservations = stoi(word[1]);
+	cout << "numObservations: " << numObservations << endl;
+
+	getline(yFile,line);
+	istringstream record3(line);
+	for (int i = 0; i < 2; ++i) {
+		record3 >> word[i];
+		}
+	double meanFlux = stod(word[1]);
+	cout << "meanFlux: " << meanFlux << endl;
+
+	int* cadence = static_cast<int*>(_mm_malloc(numCadences*sizeof(double),64));
+	double* mask = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	double* y = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	double* yerr = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+
+	vector<string> wordNew(4);
+	string lineNew;
+	istringstream recordNew;
+	cout.precision(16);
+	int i = 0;
+	while (!yFile.eof()) {
+		getline(yFile,lineNew); 
+		istringstream record(lineNew);
+		for (int j = 0; j < 4; ++j) {
+			record >> wordNew[j];
 			}
+		cadence[i] = stoi(wordNew[0]);
+		mask[i] = stod(wordNew[1]);
+		y[i] = stod(wordNew[2]);
+		yerr[i] = stod(wordNew[3]);
+		i += 1;
 		}
 
-	for (int lineCtr = 0; lineCtr < numPts; ++lineCtr) {
+	for (int lineCtr = 0; lineCtr < numCadences; ++lineCtr) {
 		cout << "Cad: " << lineCtr << "; y[" << lineCtr << "]: " << y[lineCtr] << "; yerr[" << lineCtr << "]: " << yerr[lineCtr] << "; mask[" << lineCtr << "]: " << mask[lineCtr] << endl;
 		}
 
@@ -140,7 +166,7 @@ int main() {
 			SystemMaster.set_t(t_incr);
 			SystemMaster.solveCARMA();
 			SystemMaster.resetState();
-			LnLike = SystemMaster.computeLnLike(numPts, y, yerr, mask);
+			LnLike = SystemMaster.computeLnLike(numCadences, y, yerr, mask);
 			cout << endl;
 			}
 

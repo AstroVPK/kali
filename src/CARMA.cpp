@@ -10,18 +10,18 @@
 #include <mkl.h>
 #include <iostream>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fstream>
 #include "boost/numeric/odeint.hpp"
 #include "Constants.hpp"
 #include "CARMA.hpp"
-#include <stdio.h>
-#include <stdlib.h>
 
 //#define TIMEALL
 //#define TIMEPER
 //#define TIMEFINE
 //#define DEBUG
 //#define DEBUG_LNLIKE
-//#define WRITE
 //#define DEBUG_FUNC
 //#define DEBUG_CHECKARMAPARAMS
 //#define DEBUG_SETCARMA
@@ -29,6 +29,7 @@
 //#define DEBUG_FUNCTOR
 //#define DEBUG_SETCARMA_DEEP
 //#define DEBUG_BURNSYSTEM
+//#define WRITE_BURNSYSTEM
 //#define DEBUG_OBSSYSTEM
 //#define DEBUG_CTORCARMA
 //#define DEBUG_DTORCARMA
@@ -932,6 +933,14 @@ void CARMA::getCARRoots(complex<double>*& CARRoots) {
 
 void CARMA::getCMARoots(complex<double>*& CMARoots) {
 	CMARoots = CMAw;
+	}
+
+void CARMA::printX() {
+	viewMatrix(p,1,X);
+	}
+
+void CARMA::printP() {
+	viewMatrix(p,p,P);
 	}
 
 /*!
@@ -1880,8 +1889,8 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, 1.0); // Check
 	vslDeleteStream(&burnStream);
 
-	#ifdef WRITE
-	string burnPath = "/home/exarkun/Desktop/burn.dat";
+	#ifdef WRITE_BURNSYSTEM
+	string burnPath = "/home/vish/Desktop/burn.dat";
 	ofstream burnFile;
 	burnFile.open(burnPath);
 	burnFile.precision(16);
@@ -1892,60 +1901,79 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	burnFile.close();
 	#endif
 
-	for (MKL_INT64 i = 0; i < numBurn; i++) {
+	for (int i = 0; i < numBurn; ++i) {
 
 		#ifdef DEBUG_BURNSYSTEM
-		cout << endl;
-		cout << "i: " << i << endl;
-		cout << "Disturbance: " << burnRand[i] << endl;
-		cout << "X_-" << endl;
-		viewMatrix(p, 1, X);
-		cout << "F" << endl;
+		printf("\n");
+		printf("burnSystem - threadNum: %d; i: %d\n",threadNum,i);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; F (Before)\n",threadNum);
 		viewMatrix(p, p, F);
-		cout << "VScratch" << endl;
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X (Before)\n",threadNum);
+		viewMatrix(p, 1, X);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; F*X (Before)\n",threadNum);
 		viewMatrix(p, 1, VScratch);
+		printf("\n");
 		#endif
 
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*X
 
 		#ifdef DEBUG_BURNSYSTEM
-		cout << endl;
-		cout << "i: " << i << endl;
-		cout << "Disturbance: " << burnRand[i] << endl;
-		cout << "X_-" << endl;
-		viewMatrix(p, 1, X);
-		cout << "F" << endl;
+		printf("burnSystem - threadNum: %d; F\n",threadNum);
 		viewMatrix(p, p, F);
-		cout << "VScratch" << endl;
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X\n",threadNum);
+		viewMatrix(p, 1, X);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; F*X\n",threadNum);
 		viewMatrix(p, 1, VScratch);
+		printf("\n");
+		#endif
+
+		#ifdef DEBUG_BURNSYSTEM
+		printf("burnSystem - threadNum: %d; F*X (Before)\n",threadNum);
+		viewMatrix(p, 1, VScratch);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X (Before)\n",threadNum);
+		viewMatrix(p, 1, X);
+		printf("\n");
 		#endif
 
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 
 		#ifdef DEBUG_BURNSYSTEM
-		cout << endl;
-		cout << "i: " << i << endl;
-		cout << "Disturbance: " << burnRand[i] << endl;
-		cout << "X_-" << endl;
-		viewMatrix(p, 1, X);
-		cout << "F" << endl;
-		viewMatrix(p, p, F);
-		cout << "VScratch" << endl;
+		printf("burnSystem - threadNum: %d; F*X\n",threadNum);
 		viewMatrix(p, 1, VScratch);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X\n",threadNum);
+		viewMatrix(p, 1, X);
+		printf("\n");
+		#endif
+
+		#ifdef DEBUG_BURNSYSTEM
+		printf("burnSystem - threadNum: %d; D (Before)\n",threadNum);
+		viewMatrix(p,1,D);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; w: %+f\n",threadNum,burnRand[i]);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X (Before)\n",threadNum);
+		viewMatrix(p, 1, X);
+		printf("\n");
 		#endif
 
 		cblas_daxpy(p, burnRand[i], D, 1, X, 1); // X = w*D + X
 
 		#ifdef DEBUG_BURNSYSTEM
-		cout << endl;
-		cout << "i: " << i << endl;
-		cout << "Disturbance: " << burnRand[i] << endl;
-		cout << "X_-" << endl;
+		printf("burnSystem - threadNum: %d; D\n",threadNum);
+		viewMatrix(p,1,D);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; w: %+f\n",threadNum,burnRand[i]);
+		printf("\n");
+		printf("burnSystem - threadNum: %d; X\n",threadNum);
 		viewMatrix(p, 1, X);
-		cout << "F" << endl;
-		viewMatrix(p, p, F);
-		cout << "VScratch" << endl;
-		viewMatrix(p, 1, VScratch);
+		printf("\n");
 		#endif
 
 		}
@@ -2040,7 +2068,7 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, Theta[p]); // Check Theta[p] = distSigma
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numObs, distRand, 0.0, 1.0); // Check Theta[p] = distSigma
 	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, numObs, noiseRand, 0.0, noiseSigma);
 
 	#ifdef WRITE

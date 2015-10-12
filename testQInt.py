@@ -3,8 +3,12 @@ import numpy.linalg as la
 import scipy.linalg as sla
 import scipy.integrate as sint
 import math as m
+import matplotlib.pyplot as plt
 import pdb
 
+
+def vec(A):
+   reshape(transpose(A), (-1,1))
 
 def Qint(dchi,A,B,i,j):
 	#ans = ((sla.expm(A*dchi))*B*(B.T)*(sla.expm((A.T)*dchi)))[i,j]
@@ -48,6 +52,8 @@ print "F"
 print F
 print
 
+I = np.matrix(np.identity(2))
+
 B[0,0] = 1.2*m.pow(10.0,-9.0)
 B[1,0] = 7.0*m.pow(10.0,-9.0)
 
@@ -67,5 +73,63 @@ print
 print "Q"
 print Q
 print
+
+P = np.matrix(np.reshape(la.solve(np.kron(I,I)-np.kron(F,F),np.reshape(Q,(2*2,1))),(2,2)))
+
+print "P"
+print P
+print
+
+X = np.matrix(np.zeros((2,1)))
+H = np.matrix(np.zeros((1,2)))
+
+H[0,0] = 1.0
+
+numBurn = 1
+
+burnDist = np.random.normal(0.0, 1.0, numBurn)
+
+for i in xrange(numBurn):
+	'''print "X"
+	print X
+	print
+	print "F"
+	print F
+	print
+	print "F*X"
+	print F*X
+	print
+	print "D"
+	print D
+	print
+	print "w[%d]"%(i)
+	print burnDist[i]
+	print
+	print "w[%d]*D"%(i)
+	print burnDist[i]*D
+	print
+	print "F*X + w[%d]*D"%(i)
+	print F*X + burnDist[i]*D
+	print
+	print'''
+	X = F*X + burnDist[i]*D
+
+print X
+print
+
+numObs = 4000
+
+t = np.zeros((numObs))
+y = np.zeros((numObs))
+
+obsDist = np.random.normal(0.0, 1.0, numObs)
+for i in xrange(numObs):
+	X = F*X + obsDist[i]*D
+	t[i] = dt*i
+	y[i] = (H*X)[0,0]
+
+plt.ion()
+plt.figure(1)
+plt.plot(t,y)
 
 pdb.set_trace()
