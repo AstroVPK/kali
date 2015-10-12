@@ -20,7 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/io/detail/quoted_manip.hpp>
 #include "Acquire.hpp"
-#include "Kalman.hpp"
+#include "CARMA.hpp"
 #include "Universe.hpp"
 #include "Kepler.hpp"
 #include "MCMC.hpp"
