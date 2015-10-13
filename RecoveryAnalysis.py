@@ -226,10 +226,10 @@ for i in range(numPts):
 	y[i,0]=float(values[2])
 	y[i,1]=float(values[3])
 
-(n,p,q,F,I,D,Q,H,R,K)=KF.makeSystem(pBest,qBest)
-(X,P,XMinus,PMinus,F,I,D,Q)=KF.setSystem(p,q,n,phiBest,thetaBest,sigmaBest,F,I,D,Q)
-LnLike=KF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
-r,x=KF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
+(m,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest,qBest)
+(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,m,aMaster,bMaster,A,B,F,I,D,Q)
+LnLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
+r,x=CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 
 plt.figure(2,figsize=(fwid,2*fhgt))
 

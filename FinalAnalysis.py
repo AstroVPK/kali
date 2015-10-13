@@ -230,7 +230,7 @@ for i in range(numPts):
 	y[i,1]=float(values[3])
 
 (m,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest,qBest)
-(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,aMaster,bMaster,A,B,F,I,D,Q)
+(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,m,aMaster,bMaster,A,B,F,I,D,Q)
 LnLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 r,x=CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 
