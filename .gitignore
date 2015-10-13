@@ -27,6 +27,9 @@
 *.out
 *.app
 
+# Python
+*.pyc
+
 # Specific Executables
 testPoint
 endToEndTest
