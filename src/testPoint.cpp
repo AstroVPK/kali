@@ -83,9 +83,9 @@ int main() {
 		i += 1;
 		}
 
-	for (int lineCtr = 0; lineCtr < numCadences; ++lineCtr) {
+	/*for (int lineCtr = 0; lineCtr < numCadences; ++lineCtr) {
 		cout << "Cad: " << lineCtr << "; y[" << lineCtr << "]: " << y[lineCtr] << "; yerr[" << lineCtr << "]: " << yerr[lineCtr] << "; mask[" << lineCtr << "]: " << mask[lineCtr] << endl;
-		}
+		}*/
 
 	cout << "y has been read in" << endl;
 

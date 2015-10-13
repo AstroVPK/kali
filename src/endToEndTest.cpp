@@ -105,14 +105,12 @@ int main() {
 		}
 	#endif
 
-	/*int numHost = sysconf(_SC_NPROCESSORS_ONLN);
-	cout << numHost << " hardware thread contexts detected." << endl;
-	int nthreads = 0;
-	AcquireInput(cout,cin,"Number of OmpenMP threads to use: ","Invalid value!\n",nthreads);
-	omp_set_num_threads(nthreads);
-	int threadNum = omp_get_thread_num();*/
-
 	cout << "Create a test light curve with known parameters - make an ARMA light curve with p C-AR and q C-MA co-efficients." << endl;
+
+	double t_incr = 0.0;
+	cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
+	AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
+
 	int pMaster = 0, qMaster = 0;
 	while (pMaster < 1) {
 		AcquireInput(cout,cin,"Number of C-AR coefficients p: ","Invalid value.\n",pMaster);
@@ -130,6 +128,7 @@ int main() {
 	cout << "Creating C-ARMA model with " << pMaster << " C-AR components and " << qMaster << " C-MA components." << endl;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(pMaster, qMaster);
+	SystemMaster.set_t(t_incr);
 	cout << "Allocated " << SystemMaster.get_allocated() << " bytes for the model!" << endl;
 
 	double* ThetaMaster = static_cast<double*>(_mm_malloc((pMaster+qMaster+1)*sizeof(double),64));
@@ -137,11 +136,6 @@ int main() {
 	for (int i = 0; i < pMaster+qMaster+1; i++) {
 		ThetaMaster[i] = 0.0;
 		}
-
-	double t_incr = 0.0;
-	cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
-	AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
-	SystemMaster.set_t(t_incr);
 
 	cout << "Set the values of the C-ARMA model parameters." << endl;
 
@@ -415,8 +409,6 @@ int main() {
 	Data.yerr = yerr;
 	Data.mask = mask;
 
-	//DLM* Systems = static_cast<DLM*>(_mm_malloc(nthreads*sizeof(DLM),64));
-
 	LnLikeArgs Args;
 	Args.numThreads = nthreads;
 	Args.Data = Data;
@@ -424,8 +416,7 @@ int main() {
 
 	void* p2Args = nullptr;
 
-	double* initPos = nullptr;
-	double* xTemp = nullptr;
+	double *initPos = nullptr, offsetArr = nullptr, *xTemp = nullptr;
 	vector<double> x;
 	VSLStreamStatePtr xStream, initStream;
 	string myPath;
@@ -445,6 +436,7 @@ int main() {
 
 			for (int tNum = 0; tNum < nthreads; tNum++) {
 				Systems[tNum].allocCARMA(p,q);
+				Systems[tNum].set_t(t_incr);
 				cout << "Allocated " << Systems[tNum].get_allocated() << " bytes for Systems[" << tNum << "]!" << endl;
 				}
 
@@ -458,7 +450,6 @@ int main() {
 			bool goodPoint = false;
 			do {
 				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-1);
-				//xTemp[p-1] += 1.0;
 				if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
 					Systems[threadNum].setCARMA(xTemp);
 					Systems[threadNum].set_t(t_incr);
@@ -487,9 +478,10 @@ int main() {
 			result yesno = opt.optimize(x, max_LnLike);
 
 			cout << "NLOpt minimization done!" << endl;
-			cout << "Best ARMA parameter values: ";
+			cout << "Best C-ARMA parameter values: ";
+			cout.precision(4);
 			for (int i = 0; i < (p+q+1); ++i) {
-				cout << x[i] << " ";
+				cout << noshowpos << scientific << x[i] << " ";
 				}
 			cout << endl;
 			cout << "Best LnLike: " << max_LnLike << endl;
@@ -497,13 +489,18 @@ int main() {
 			EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
 
 			initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
-			vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
-			//vslSkipAheadStream(initStream, nwalkers*(pMax+qMax+1)*(p*qMax+q));
-			vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers*ndims, initPos, 0.0, 1e-6);
+			offsetArr = static_cast<double*>(_mm_malloc(nwalkers*sizeof(double),64));
 			for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
-				#pragma omp simd
+				offsetArr[walkerNum] = 0.0;
 				for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-					initPos[walkerNum*ndims + dimNum] += x[dimNum];
+					initPos[walkerNum*ndims + dimNum] = 0.0;
+					}
+				}
+			vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
+			for (int dimNum = 0; dimNum < ndims; ++dimNum) {
+				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers, offsetArr, 0.0, x[dimNum]*1.0e-3);
+				for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
+					initPos[walkerNum*ndims + dimNum] = x[dimNum] + offsetArr[walkerNum];
 					}
 				}
 			vslDeleteStream(&initStream);
@@ -538,16 +535,11 @@ int main() {
 			printf("Result written!\n");
 			fflush(0);
 
-			//cout << "Deallocating " << allocated << " bytes from Systems..." << endl;
 			for (int tNum = 0; tNum < nthreads; tNum++) {
-				//printf("testMethod - threadNum: %d; Address of Systems[%d]: %p\n",threadNum,tNum,&Systems[tNum]);
 				Systems[tNum].deallocCARMA();
 				}
-			//allocated = 0;
-			//Args.Systems = nullptr;
-			//p2Args = nullptr;
 			_mm_free(initPos);
-			//cout << endl;
+			_mm_free(offsetArr);
 			}
 		}
 
@@ -555,7 +547,6 @@ int main() {
 	cout << "Deleting Systems..." << endl;
 	cout << "Program exiting...Have a nice day!" << endl; 
 
-	//_mm_free(Systems);
 	_mm_free(y);
 	_mm_free(yerr);
 	_mm_free(ThetaMaster);

@@ -485,9 +485,9 @@ void EnsembleSampler::writeChain(string filePath, int mode = 0) {
 			for (int walkerNum = 0; walkerNum < numWalkers; walkerNum++) {
 				outFile << noshowpos << scientific << "stepNum: " << stepNum << "; walkerNum: " << walkerNum << "; ";
 				for (int dimNum = 0; dimNum < numDims; dimNum++) {
-					outFile << noshowpos << scientific << Chain[dimNum + walkerNum*numDims + stepNum*numWalkers*numDims] << " ";
+					outFile << showpos << scientific << Chain[dimNum + walkerNum*numDims + stepNum*numWalkers*numDims] << " ";
 					}
-				outFile << noshowpos << scientific << LnLike[walkerNum + stepNum*numWalkers];
+				outFile << showpos << scientific << LnLike[walkerNum + stepNum*numWalkers];
 				outFile << endl;
 				}
 			}

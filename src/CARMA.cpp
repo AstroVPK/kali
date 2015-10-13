@@ -68,35 +68,17 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Ar
 	double* yerr = Data.yerr;
 	double* mask = Data.mask;
 
-	#ifdef DEBUG_CALCLNLIKE
+	#ifdef DEBUG_CALCLNLIKE2
 	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
 	#endif
 
-	/*for (int i = 0; i < (Systems[threadNum].p+Systems[threadNum].q+1); ++i) { // Should no longer be required!!!
-		Systems[threadNum].Theta[i] = x[i];
-
-		#ifdef DEBUG_CALCLNLIKE
-		printf("%f ",Systems[threadNum].Theta[i]);
-		#endif
-
-		}
-
-	#ifdef DEBUG_CALCLNLIKE
-	printf("\n");
-	fflush(0);
-	#endif*/
-
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
-		//Systems[threadNum].setCARMA(x);
-		//Systems[threadNum].set_t(t_incr);
-		//Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
 		LnLike = 0.0;
 		} else {
 		LnLike = -HUGE_VAL;
 		}
 
-	#ifdef DEBUG_CALCLNLIKE
+	#ifdef DEBUG_CALCLNLIKE2
 	printf("LnLike: %f\n",LnLike);
 	fflush(0);
 	#endif
@@ -126,25 +108,21 @@ double calcCARMALnLike(double* walkerPos, void* func_args) {
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
-		#ifdef DEBUG_FUNC
+		#ifdef DEBUG_FUNC2
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].p+Systems[threadNum].q+1; dimNum++) {
+		for (int dimNum = 0; Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
 		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
 		#endif
 
-		//Systems[threadNum].setCARMA(walkerPos);
-		//Systems[threadNum].set_t(t_incr);
-		//Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
 		LnLike = 0.0;
 		} else {
 
-		#ifdef DEBUG_FUNC
+		#ifdef DEBUG_FUNC2
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].p+Systems[threadNum].q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
@@ -180,22 +158,8 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	double* mask = Data.mask;
 
 	#ifdef DEBUG_CALCLNLIKE
-	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
+	printf("calcLnLike - threadNum: %d",threadNum);
 	#endif
-
-	/*for (int i = 0; i < (Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1); ++i) { // No longer required!
-		Systems[threadNum].Theta[i] = x[i];
-
-		#ifdef DEBUG_CALCLNLIKE
-		printf("%f ",Systems[threadNum].get_Theta(i));
-		#endif
-
-		}
-
-	#ifdef DEBUG_CALCLNLIKE
-	printf("\n");
-	fflush(0);
-	#endif*/
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
 		Systems[threadNum].setCARMA(const_cast<double*>(&x[0]));
@@ -207,8 +171,22 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 		}
 
 	#ifdef DEBUG_CALCLNLIKE
-	printf("LnLike: %f\n",LnLike);
+	#pragma omp critical
+	{
+	printf("calcLnLike - threadNum: %d; t: %f\n",threadNum,Systems[threadNum].get_t());
+	printf("calcLnLike - threadNum: %d; F\n",threadNum);
+	Systems[threadNum].printF();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; D\n",threadNum);
+	Systems[threadNum].printD();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; Q\n",threadNum);
+	Systems[threadNum].printQ();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
+	printf("\n");
 	fflush(0);
+	}
 	#endif
 
 	return LnLike;
@@ -236,13 +214,17 @@ double calcLnLike(double* walkerPos, void* func_args) {
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
 		#ifdef DEBUG_FUNC
+		#pragma omp critical
+		{
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].p+Systems[threadNum].q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
 		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
+		}
 		#endif
+
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
@@ -250,24 +232,42 @@ double calcLnLike(double* walkerPos, void* func_args) {
 		} else {
 
 		#ifdef DEBUG_FUNC
+		#pragma omp critical
+		{
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].p+Systems[threadNum].q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
+		}
 		#endif
 
 		LnLike = -HUGE_VAL;
 		}
 
 	#ifdef DEBUG_FUNC
+	#pragma omp critical
+	{
 	printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < Systems[threadNum].p+Systems[threadNum].q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 		printf("%f ",walkerPos[dimNum]);
 		}
 	printf("\n");
-	printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum, LnLike);
+	printf("calcLnLike - threadNum: %d; t: %f\n",threadNum,Systems[threadNum].get_t());
+	printf("calcLnLike - threadNum: %d; F\n",threadNum);
+	Systems[threadNum].printF();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; D\n",threadNum);
+	Systems[threadNum].printD();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; Q\n",threadNum);
+	Systems[threadNum].printQ();
+	printf("\n");
+	printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
+	printf("\n");
+	fflush(0);
+	}
 	#endif
 
 	return LnLike;
@@ -377,10 +377,11 @@ CARMA::CARMA() {
 	#endif
 
 	allocated = 0;
-	isStable = 0;
-	isInvertible = 0;
-	isNotRedundant = 0;
-	hasUniqueEigenValues = 0;
+	isStable = 1;
+	isInvertible = 1;
+	isNotRedundant = 1;
+	hasUniqueEigenValues = 1;
+	hasPosSigma = 1;
 	p = 0;
 	q = 0;
 	pSq = 0;
@@ -445,10 +446,11 @@ CARMA::~CARMA() {
 	#endif
 
 	allocated = 0;
-	isStable = 0;
-	isInvertible = 0;
-	isNotRedundant = 0;
-	hasUniqueEigenValues = 0;
+	isStable = 1;
+	isInvertible = 1;
+	isNotRedundant = 1;
+	hasUniqueEigenValues = 1;
+	hasPosSigma = 1;
 	p = 0;
 	q = 0;
 	pSq = 0;
@@ -550,29 +552,32 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 	w = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	CARw = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
-	CMAw = static_cast<complex<double>*>(_mm_malloc(q*sizeof(complex<double>),64));
 	B = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	BScratch = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	allocated += 4*p*sizeof(complex<double>);
-	allocated += q*sizeof(complex<double>);
+
+	if (q > 0) {
+		CMAw = static_cast<complex<double>*>(_mm_malloc(q*sizeof(complex<double>),64));
+		CMAMatrix = static_cast<complex<double>*>(_mm_malloc(qSq*sizeof(complex<double>),64));
+		allocated += q*sizeof(complex<double>);
+		allocated += qSq*sizeof(complex<double>);
+
+		for (int colCtr = 0; colCtr < q; ++colCtr) {
+			CMAw[colCtr] = 0.0+0.0i;
+			//#pragma omp simd
+			for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
+				CMAMatrix[rowCtr + colCtr*q] = 0.0+0.0i;
+				}
+			}
+		}
 
 	CARMatrix = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
-	CMAMatrix = static_cast<complex<double>*>(_mm_malloc(qSq*sizeof(complex<double>),64));
 	expw = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	vr = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	vrInv = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	allocated += 6*pSq*sizeof(double);
-	allocated += qSq*sizeof(complex<double>);
-
-	for (int colCtr = 0; colCtr < q; ++colCtr) {
-		CMAw[colCtr] = 0.0+0.0i;
-		//#pragma omp simd
-		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-			CMAMatrix[rowCtr + colCtr*q] = 0.0+0.0i;
-			}
-		}
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		w[colCtr] = 0.0+0.0i;
@@ -947,6 +952,18 @@ void CARMA::printP() {
 	viewMatrix(p,p,P);
 	}
 
+void CARMA::printD() {
+	viewMatrix(p,1,D);
+	}
+
+void CARMA::printF() {
+	viewMatrix(p,p,F);
+	}
+
+void CARMA::printQ() {
+	viewMatrix(p,p,Q);
+	}
+
 /*!
  * Checks the validity of the supplied C-ARMA parameters.
  * @param[in]  Theta  \f$\Theta\f$ contains \f$p\f$ CAR parameters followed by \f$q+1\f$ CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19
@@ -966,6 +983,11 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	isInvertible = 1;
 	isNotRedundant = 1;
 	hasUniqueEigenValues = 1;
+	hasPosSigma = 1;
+
+	if (ThetaIn[p] <= 0.0) {
+		hasPosSigma = 0;
+		}
 
 	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
 		//#pragma omp simd
@@ -1134,11 +1156,12 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	printf("checkCARMAParams - threadNum: %d; isInvertible: %d\n",threadNum,isInvertible);
 	printf("checkCARMAParams - threadNum: %d; isNotRedundant: %d\n",threadNum,isNotRedundant);
 	printf("checkCARMAParams - threadNum: %d; hasUniqueEigenValues: %d\n",threadNum,hasUniqueEigenValues);
+	printf("checkCARMAParams - threadNum: %d; hasPosSigma: %d\n",threadNum,hasPosSigma);
 	printf("\n");
 	printf("\n");
 	#endif
 
-	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues;
+	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma;
 	}
 
 void CARMA::setCARMA(double *ThetaIn) {

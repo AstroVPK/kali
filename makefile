@@ -19,18 +19,12 @@ OFFLOAD_FLAGS =
 #OFFLOAD_FLAGS = -offload=optional
 
 #MKL Flags.
-#MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include
-MKLFLAGS = -DMKL_ILP64 -qopenmp -I${MKLROOT}/include
-#-mkl=sequential
-#-offload-attribute-target=mic
-#MKLFLAGS = -DMKL_ILP64 -I$(MKLROOT)/include -offload-option,mic,compiler,"$(MKLROOT)/lib/mic/libmkl_intel_ilp64.a $(MKLROOT)/lib/mic/libmkl_intel_thread.a $(MKLROOT)/lib/mic/libmkl_core.a" -offload-attribute-target=mic
+#MKLFLAGS = -DMKL_ILP64 -qopenmp -I$(MKLROOT)/include
+MKLFLAGS = -qopenmp -I$(MKLROOT)/include
 
-#MKL link line. 
-#MKLLINKLINE = -lpthread -lm
-#MKLLINKLINE = -Wl,--start-group  $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm
-#MKL_LIBS=-L$(MKLROOT)/lib/intel64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lpthread -lm
-MKL_LIBS = -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
-#MKL_MIC_LIBS=-L$(MKLROOT)/lib/mic -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core
+#MKL link line.
+#MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
 
 NLOPTLIBS = -lnlopt
 OMPFLAGS = -openmp -openmp-simd
@@ -63,9 +57,10 @@ EXEC3 = plotCARMARegions
 EXEC5 = writeKeplerLC
 EXEC6 = writeMockLC
 EXEC7 = computeCFs
+EXEC8 = recoveryTest
 EXT = .cpp
 
-all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7)
+all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8)
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
@@ -87,6 +82,9 @@ $(EXEC6): $(OBJECTS) $(patsub %,$(EXEC6)%,$(EXT))
 
 $(EXEC7): $(OBJECTS) $(patsub %,$(EXEC7)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC7)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
+
+$(EXEC8): $(OBJECTS) $(patsub %,$(EXEC8)%,$(EXT))
+	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC8)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
 
 $(ODIR)/Universe.o: $(SRCDIR)/Universe.cpp $(IDIR)/Universe.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
@@ -115,10 +113,15 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 .PHONY: clean
 .PHONY: cleanExec
 clean:
-	rm -f $(ODIR)/*.o *~ $(EXEC) $(SRCDIR)/*~ $(IDIR)*~
+	rm -f $(ODIR)/*.o *~ $(SRCDIR)/*~ $(IDIR)*~
 	rm $(EXEC1)
 	rm $(EXEC2)
 	rm $(EXEC3)
+	rm $(EXEC4)
+	rm $(EXEC5)
+	rm $(EXEC6)
+	rm $(EXEC7)
+	rm $(EXEC8)
 
 clean$(EXEC1):
 	rm $(EXEC1)
@@ -128,3 +131,18 @@ clean$(EXEC2):
 
 clean$(EXEC3):
 	rm $(EXEC3)
+
+clean$(EXEC4):
+	rm $(EXEC4)
+
+clean$(EXEC5):
+	rm $(EXEC5)
+
+clean$(EXEC6):
+	rm $(EXEC6)
+
+clean$(EXEC7):
+	rm $(EXEC7)
+
+clean$(EXEC8):
+	rm $(EXEC8)
