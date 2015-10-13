@@ -212,6 +212,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 q = [0.5 - 0.5*extents[i], 0.5 + 0.5*extents[i]]
                 extents[i] = quantile(xs[i], q, weights=weights)
 
+    allqvalues = list()
     for i, x in enumerate(xs):
         if np.shape(xs)[0] == 1:
             ax = axes
@@ -227,6 +228,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
+            allqvalues.append(qvalues)
             for q in qvalues:
                 ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
 
@@ -323,7 +325,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                     ax.set_ylabel(labels[i])
                     ax.yaxis.set_label_coords(-0.3, 0.5)
 
-    return fig
+    return fig,quantiles,allqvalues
 
 
 def quantile(x, q, weights=None):

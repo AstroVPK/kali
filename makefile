@@ -111,9 +111,8 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@
 
 .PHONY: clean
-.PHONY: cleanExec
 clean:
-	rm -f $(ODIR)/*.o *~ $(SRCDIR)/*~ $(IDIR)*~
+	rm $(ODIR)/*.o *~ $(SRCDIR)/*~ $(IDIR)*~
 	rm $(EXEC1)
 	rm $(EXEC2)
 	rm $(EXEC3)
@@ -123,26 +122,26 @@ clean:
 	rm $(EXEC7)
 	rm $(EXEC8)
 
-clean$(EXEC1):
-	rm $(EXEC1)
+#clean$(EXEC1):
+#	rm $(EXEC1)
 
-clean$(EXEC2):
-	rm $(EXEC2)
+#clean$(EXEC2):
+#	rm $(EXEC2)
 
-clean$(EXEC3):
-	rm $(EXEC3)
+#clean$(EXEC3):
+#	rm $(EXEC3)
 
-clean$(EXEC4):
-	rm $(EXEC4)
+#clean$(EXEC4):
+#	rm $(EXEC4)
 
-clean$(EXEC5):
-	rm $(EXEC5)
+#clean$(EXEC5):
+#	rm $(EXEC5)
 
-clean$(EXEC6):
-	rm $(EXEC6)
+#clean$(EXEC6):
+#	rm $(EXEC6)
 
-clean$(EXEC7):
-	rm $(EXEC7)
+#clean$(EXEC7):
+#	rm $(EXEC7)
 
-clean$(EXEC8):
-	rm $(EXEC8)
+#clean$(EXEC8):
+#	rm $(EXEC8)

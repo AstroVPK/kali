@@ -416,7 +416,7 @@ int main() {
 
 	void* p2Args = nullptr;
 
-	double *initPos = nullptr, offsetArr = nullptr, *xTemp = nullptr;
+	double *initPos = nullptr, *offsetArr = nullptr, *xTemp = nullptr;
 	vector<double> x;
 	VSLStreamStatePtr xStream, initStream;
 	string myPath;

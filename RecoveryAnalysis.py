@@ -87,13 +87,11 @@ for k in range(ndim):
 		plt.plot(walkers[:,j,k],c='#000000',alpha=0.05,zorder=-5)
 	plt.fill_between(stepArr[:],medianWalker[:,k]+medianDevWalker[:,k],medianWalker[:,k]-medianDevWalker[:,k],color='#ff0000',edgecolor='#ff0000',alpha=0.5,zorder=5)
 	plt.plot(stepArr[:],medianWalker[:,k],c='#dc143c',linewidth=1,zorder=10)
-	plt.xlabel('$step$')
-	if (0<k<pNum+1):
-		plt.ylabel("$\phi_{%d}$"%(k))
-	elif ((k>=pNum+1) and (k<pNum+qNum+1)):
-		plt.ylabel("$\\theta_{%d}$"%(k-pNum))
-	else:
-		plt.ylabel("$\sigma_{w}$")
+	plt.xlabel('stepNum')
+	if (0 < k < pNum + 1):
+		plt.ylabel("$a_{%d}$"%(k+1))
+	elif (k >= pNum):
+		plt.ylabel("$b_{%d}$"%(k-pNum))
 
 plt.tight_layout()
 plt.savefig(basePath+"mcmcWalkers_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
@@ -104,11 +102,10 @@ sampleDeviances=deviances[chop:,:].reshape((-1))
 DIC=0.5*m.pow(np.std(sampleDeviances),2.0) + np.mean(sampleDeviances)
 dictDIC["%d %d"%(pNum,qNum)]=DIC
 lbls=list()
-lbls.append("$\sigma_{w}$")
 for i in range(pNum):
-	lbls.append("$\phi_{%d}$"%(i+1))
-for i in range(qNum):
-	lbls.append("$\\theta_{%d}$"%(i+1))
+	lbls.append("$a_{%d}$"%(i+1))
+for i in range(qNum+1):
+	lbls.append("$b_{%d}$"%(i))
 figVPK,quantiles,qvalues=VPK.corner(samples,labels=lbls,fig_title="DIC: %f"%(dictDIC["%d %d"%(pNum,qNum)]),show_titles=True,title_args={"fontsize": 12},quantiles=[0.16, 0.5, 0.84],verbose=False,plot_contours=True,plot_datapoints=True,plot_contour_lines=False,pcolor_cmap=cm.gist_earth)
 
 figVPK.savefig(basePath+"mcmcVPKTriangles_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
@@ -120,11 +117,9 @@ line="DIC: %f\n"%(DIC)
 resultFile.write(line)
 for k in range(ndim):
 	if (0<k<pNum+1):
-		line="phi_%d\n"%(k)
+		line="a_%d\n"%(k)
 	elif ((k>=pNum+1) and (k<pNum+qNum+1)):
-		line="theta_%d\n"%(k-pNum)
-	else:
-		line="sigma_w\n"
+		line="b_%d\n"%(k-pNum)
 	resultFile.write(line)
 	fiftiethQ["%d %d %s"%(pNum,qNum,line.rstrip("\n"))]=float(qvalues[k][1])
 	for i in range(len(quantiles)):
