@@ -87,6 +87,8 @@ public:
 	int get_allocated();
 	void printX();
 	void printP();
+	void printA();
+	void printB();
 	void printF();
 	void printD();
 	void printQ();

@@ -1,7 +1,7 @@
 import numpy as np
 import math as m
 import random as r
-import KalmanFast as KF
+import CARMAFast as CF
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import operator
@@ -175,9 +175,8 @@ bestFile.close()
 randStep=r.randint(chop,nsteps-1)
 randWalker=r.randint(0,nwalkers-1)
 
-phiBest=[dim for dim in walkers[randStep,randWalker,1:pBest+1].tolist()]
-thetaBest=[dim for dim in walkers[randStep,randWalker,pBest+1:pBest+qBest+1]]
-sigmaBest=walkers[randStep,randWalker,0].tolist()
+aBest=[dim for dim in walkers[randStep,randWalker,0:pBest].tolist()]
+bBest=[dim for dim in walkers[randStep,randWalker,pBest:pBest+qBest+1].tolist()]
 
 line="\n"
 resultFile.write(line);
@@ -185,13 +184,11 @@ line="Randomly chosen values from posterior distribution\n"
 resultFile.write(line);
 line="--------------------------------------------------\n"
 resultFile.write(line);
-line = "sigma: %f\n"%(sigmaBest)
-resultFile.write(line);
 for i in xrange(pBest):
-	line="phi_%d: %f\n"%(i,phiBest[i])
+	line="a_%d: %+e\n"%(i+1,aBest[i])
 	resultFile.write(line);
-for i in xrange(qBest):
-	line="theta_%d: %f\n"%(i,thetaBest[i])
+for i in xrange(qBest+1):
+	line="b_%d: %+e\n"%(i,bBest[i])
 	resultFile.write(line);
 resultFile.close()
 
@@ -226,25 +223,13 @@ for i in range(numPts):
 	y[i,0]=float(values[2])
 	y[i,1]=float(values[3])
 
-(m,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest,qBest)
-(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,m,aMaster,bMaster,A,B,F,I,D,Q)
+(p,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest)
+(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,p,aBest,bBest,A,B,F,I,D,Q)
 LnLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 r,x=CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 
 plt.figure(2,figsize=(fwid,2*fhgt))
 
-'''plt.subplot(311)
-yMax=np.max(y[np.nonzero(y[:,0]),0])
-yMin=np.min(y[np.nonzero(y[:,0]),0])
-plt.ylabel('$F$ (arb units)')
-plt.xlabel('$t$ (d)')
-for i in range(numPts):
-	if (mask[i]==1.0):
-		plt.errorbar(t[i,1],y[i,0],yerr=y[i,1],c='#e66101',fmt='.',marker=".",capsize=0,zorder=5)
-plt.xlim(t[0,1],t[-1,1])
-plt.ylim(yMin,yMax)'''
-
-#plt.subplot(312)
 plt.subplot(211)
 yMax=np.max(y[np.nonzero(y[:,0]),0])
 yMin=np.min(y[np.nonzero(y[:,0]),0])
@@ -258,10 +243,7 @@ plt.fill_between(t[:,1],x[:,0]+x[:,1],x[:,0]-x[:,1],facecolor='#b2abd2',edgecolo
 plt.xlim(t[0,1],t[-1,1])
 plt.ylim(yMin,yMax)
 
-#plt.subplot(313)
 plt.subplot(212)
-#vMax=np.max(v[np.nonzero(v[:,0]),0])
-#vMin=np.min(v[np.nonzero(v[:,0]),0])
 vMax=np.std(v[np.nonzero(v[:,0]),0])
 vMin=-np.std(v[np.nonzero(v[:,0]),0])
 

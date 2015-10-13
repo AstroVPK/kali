@@ -20,8 +20,8 @@ dt=Deltat/secPerSiderealDay
 def makeSystem(m):
 
 	A=zeros((m,m))
-	for i in xrange(m-1):
-		A[i,i+1]=1.0
+	for i in xrange(m):
+		A[i-1,i]=1.0
 	B=zeros((m,1))
 
 	F=zeros((m,m))
@@ -104,24 +104,16 @@ def Qint(dchi,A,B,i,j):
 	return ans
 
 def setSystem(dt,m,aList,bList,A,B,F,I,D,Q):
+	for i in xrange(len(aList)):
+		A[i,0]=-1.0*aList[i]
 
-	for i in xrange(m):
-		A[i,0]=-aList[i]
-		B[i,0]=bList[i]
+	for i in xrange(len(bList)):
+		B[m-1-i,0] = bList[i];
 
 	F=expm(A*dt)
 
-	'''for i in xrange(m):
-		for j in xrange(i+1):
-			Q[i,j]=quad(Qint,0,dt,args=(A,B,i,j),epsrel=0.0001)[0]
-			Q[j,i]=Q[i,j]
-		D[i,0]=sqrt(Q[i,i])
-
-	DPrime = zeros((m,1))
-	QPrime = zeros((m,m))'''
 	for i in xrange(m):
-		D[i,0]=sqrt(quad(Qint,0,dt,args=(A,B,i,i),epsrel=0.0001)[0]) # Tested
-		'''D[i,0]=quad(Qint,0,dt,args=(A,B,i,i),epsrel=0.0001)[0]''' # Untested
+		D[i,0]=sqrt(quad(Qint,0,dt,args=(A,B,i,i),epsrel=0.0001)[0])
 	Q = D*(D.T)
 
 	X=zeros((m,1))

@@ -952,12 +952,20 @@ void CARMA::printP() {
 	viewMatrix(p,p,P);
 	}
 
-void CARMA::printD() {
-	viewMatrix(p,1,D);
+void CARMA::printA() {
+	viewMatrix(p,p,A);
+	}
+
+void CARMA::printB() {
+	viewMatrix(p,1,B);
 	}
 
 void CARMA::printF() {
 	viewMatrix(p,p,F);
+	}
+
+void CARMA::printD() {
+	viewMatrix(p,1,D);
 	}
 
 void CARMA::printQ() {

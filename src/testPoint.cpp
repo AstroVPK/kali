@@ -83,10 +83,6 @@ int main() {
 		i += 1;
 		}
 
-	/*for (int lineCtr = 0; lineCtr < numCadences; ++lineCtr) {
-		cout << "Cad: " << lineCtr << "; y[" << lineCtr << "]: " << y[lineCtr] << "; yerr[" << lineCtr << "]: " << yerr[lineCtr] << "; mask[" << lineCtr << "]: " << mask[lineCtr] << endl;
-		}*/
-
 	cout << "y has been read in" << endl;
 
 	cout << "Check the parameter values of an C-ARMA light curve with p C-AR and q C-MA co-efficients." << endl;
@@ -167,7 +163,22 @@ int main() {
 		cout.precision(16);
 		cout << "LnLike: " << fixed << noshowpos << LnLike << endl;
 		cout << endl;
-		cout << endl;
+
+		printf("A\n");
+		SystemMaster.printA();
+		printf("\n");
+		printf("B\n");
+		SystemMaster.printB();
+		printf("\n");
+		printf("F\n");
+		SystemMaster.printF();
+		printf("\n");
+		printf("D\n");
+		SystemMaster.printD();
+		printf("\n");
+		printf("Q\n");
+		SystemMaster.printQ();
+		printf("\n");
 
 		AcquireInput(cout,cin,"Done? (1/0): ","Input not parsed!\n",doneYN);
 		}
