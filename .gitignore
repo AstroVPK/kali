@@ -38,3 +38,4 @@ fitCARMA
 writeKeplerLC
 writeMockLC
 computeCFs
+recoveryTest
