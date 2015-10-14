@@ -353,6 +353,8 @@ int main() {
 	cout << "Deleting C-ARMA model..." << endl;
 	cout << "Program exiting...Have a nice day!" << endl; 
 
+	_mm_free(cadence);
+	_mm_free(mask);
 	_mm_free(y);
 	_mm_free(yerr);
 	_mm_free(ThetaMaster);

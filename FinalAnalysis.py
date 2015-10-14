@@ -42,8 +42,8 @@ fiftiethQ=dict()
 resultFilePath=basePath+'result.dat'
 resultFile=open(resultFilePath,'w')
 
-for pNum in range(1,pMax+1,1):
-	for qNum in range(1,pNum,1):
+for pNum in range(0,pMax+1,1):
+	for qNum in range(0,pNum,1):
 		TriFilePath=basePath+'mcmcOut_%d_%d.dat'%(pNum,qNum)
 		TriFile=open(TriFilePath)
 		line=TriFile.readline()
@@ -66,10 +66,7 @@ for pNum in range(1,pMax+1,1):
 				line.rstrip("\n")
 				values=line.split()
 				for k in range(ndim):
-					#try:
 					walkers[i,j,k]=float(values[k+4])
-					#except IndexError:
-					#	pdb.set_trace()
 				deviances[i,j]=-2.0*float(values[-1])
 		TriFile.close()
 
@@ -88,15 +85,13 @@ for pNum in range(1,pMax+1,1):
 				plt.plot(walkers[:,j,k],c='#000000',alpha=0.05,zorder=-5)
 			plt.fill_between(stepArr[:],medianWalker[:,k]+medianDevWalker[:,k],medianWalker[:,k]-medianDevWalker[:,k],color='#ff0000',edgecolor='#ff0000',alpha=0.5,zorder=5)
 			plt.plot(stepArr[:],medianWalker[:,k],c='#dc143c',linewidth=1,zorder=10)
-			plt.xlabel('$step$')
-			if (0<k<pNum+1):
-				plt.ylabel("$\phi_{%d}$"%(k))
-			elif ((k>=pNum+1) and (k<pNum+qNum+1)):
-				plt.ylabel("$\\theta_{%d}$"%(k-pNum))
-			else:
-				plt.ylabel("$\sigma_{w}$")
+			plt.xlabel('stepNum')
+			if (0 <= k < pNum):
+				plt.ylabel("$a_{%d}$"%(k+1))
+			elif ((k >= pNum) and (k < pNum + qNum + 1)):
+				plt.ylabel("$b_{%d}$"%(k-pNum))
 
-		plt.tight_layout()
+		#plt.tight_layout()
 		plt.savefig(basePath+"mcmcWalkers_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
 		plt.clf()
 
@@ -105,34 +100,31 @@ for pNum in range(1,pMax+1,1):
 		DIC=0.5*m.pow(np.std(sampleDeviances),2.0) + np.mean(sampleDeviances)
 		dictDIC["%d %d"%(pNum,qNum)]=DIC
 		lbls=list()
-		lbls.append("$\sigma_{w}$")
 		for i in range(pNum):
-			lbls.append("$\phi_{%d}$"%(i+1))
-		for i in range(qNum):
-			lbls.append("$\\theta_{%d}$"%(i+1))
+			lbls.append("$a_{%d}$"%(i+1))
+		for i in range(qNum+1):
+			lbls.append("$b_{%d}$"%(i))
 		figVPK,quantiles,qvalues=VPK.corner(samples,labels=lbls,fig_title="DIC: %f"%(dictDIC["%d %d"%(pNum,qNum)]),show_titles=True,title_args={"fontsize": 12},quantiles=[0.16, 0.5, 0.84],verbose=False,plot_contours=True,plot_datapoints=True,plot_contour_lines=False,pcolor_cmap=cm.gist_earth)
 
 		figVPK.savefig(basePath+"mcmcVPKTriangles_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
 		figVPK.clf()
 
-		line="p: %d; q: %d\n"%(pNum,qNum)
-		resultFile.write(line)
-		line="DIC: %f\n"%(DIC)
-		resultFile.write(line)
+		line1="p: %d; q: %d\n"%(pNum,qNum)
+		resultFile.write(line1)
+		line2="DIC: %e\n"%(DIC)
+		resultFile.write(line2)
 		for k in range(ndim):
-			if (0<k<pNum+1):
-				line="phi_%d\n"%(k)
-			elif ((k>=pNum+1) and (k<pNum+qNum+1)):
-				line="theta_%d\n"%(k-pNum)
-			else:
-				line="sigma_w\n"
-			resultFile.write(line)
+			if (0 <= k < pNum):
+				line3="a_%d\n"%(k)
+			elif ((k >= pNum) and (k < pNum + qNum + 1)):
+				line3="b_%d\n"%(k-pNum)
+			resultFile.write(line3)
 			fiftiethQ["%d %d %s"%(pNum,qNum,line.rstrip("\n"))]=float(qvalues[k][1])
 			for i in range(len(quantiles)):
-				line="Quantile: %f; Value: %f\n"%(quantiles[i],qvalues[k][i])
-				resultFile.write(line)
-		line="\n"
-		resultFile.write(line)
+				line4="Quantile: %.2f; Value: %e\n"%(quantiles[i],qvalues[k][i])
+				resultFile.write(line4)
+		line5="\n"
+		resultFile.write(line5)
 
 		del walkers
 		del deviances
@@ -182,7 +174,7 @@ randStep=r.randint(chop,nsteps-1)
 randWalker=r.randint(0,nwalkers-1)
 
 aBest=[dim for dim in walkers[randStep,randWalker,0:pBest].tolist()]
-bBest=[dim for dim in walkers[randStep,randWalker,pBest:pBest+qBest+1]]
+bBest=[dim for dim in walkers[randStep,randWalker,pBest:pBest+qBest+1].tolist()]
 
 line="\n"
 resultFile.write(line);
@@ -191,10 +183,10 @@ resultFile.write(line);
 line="--------------------------------------------------\n"
 resultFile.write(line);
 for i in xrange(pBest):
-	line="a_%d: %f\n"%(i+1,aBest[i])
+	line="a_%d: %e\n"%(i+1,aBest[i])
 	resultFile.write(line);
 for i in xrange(qBest+1):
-	line="b_%d: %f\n"%(i,bBest[i])
+	line="b_%d: %e\n"%(i,bBest[i])
 	resultFile.write(line);
 resultFile.close()
 
@@ -229,8 +221,8 @@ for i in range(numPts):
 	y[i,0]=float(values[2])
 	y[i,1]=float(values[3])
 
-(m,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest)
-(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,m,aBest,bBest,A,B,F,I,D,Q)
+(p,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest)
+(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,p,aBest,bBest,A,B,F,I,D,Q)
 LnLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 r,x=CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 

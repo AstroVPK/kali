@@ -6,13 +6,10 @@ ODIR = src/obj
 BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
 BOOSTLIB = ~/code/boost_1_59_0/
 
-VERFLAGS = -gxx-name=g++-4.8 -std=c++11 -g -Wall
+VERFLAGS = -gxx-name=g++-4.8 -std=c++11
 
-#CPPFLAGS = -std=c++11 -O3 -xHost -ip -parallel -funroll-loops -fno-alias -fno-fnalias -fargument-noalias
-
-#CPPFLAGS = -std=c++11 -O3 -xHost -ip -parallel -funroll-loops -fno-alias -fno-fnalias -fargument-noalias -no-ansi-alias
-
-CPPFLAGS = -O3 -ip -parallel -funroll-loops -fno-alias -fno-fnalias -fargument-noalias -fstrict-aliasing -ansi-alias -fno-stack-protector-all
+CPPFLAGS = -O3 -ip -parallel -funroll-loops -fno-alias -fno-fnalias -fargument-noalias -fstrict-aliasing -ansi-alias -fno-stack-protector-all -Wall
+#-g
 #-opt-streaming-stores always
 
 OFFLOAD_FLAGS =
@@ -53,7 +50,7 @@ OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 EXEC1 = testPoint
 EXEC2 = endToEndTest
 EXEC3 = plotCARMARegions
-#EXEC4 = fitCARMA
+EXEC4 = fitCARMA
 EXEC5 = writeKeplerLC
 EXEC6 = writeMockLC
 EXEC7 = computeCFs
@@ -87,28 +84,28 @@ $(EXEC8): $(OBJECTS) $(patsub %,$(EXEC8)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC8)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
 
 $(ODIR)/Universe.o: $(SRCDIR)/Universe.cpp $(IDIR)/Universe.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(MKL_LIBS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS)  $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/DLAPACKE.o: $(SRCDIR)/DLAPACKE.cpp $(IDIR)/DLAPACKE.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/Correlation.o: $(SRCDIR)/Correlation.cpp $(IDIR)/Correlation.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/Constants.o: $(SRCDIR)/Constants.cpp $(IDIR)/Constants.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@
+	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@
 
 .PHONY: clean
 clean:

@@ -19,7 +19,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/io/detail/quoted_manip.hpp>
 #include "Acquire.hpp"
-#include "Kalman.hpp"
+#include "CARMA.hpp"
 #include "Universe.hpp"
 #include "Kepler.hpp"
 #include "MCMC.hpp"
@@ -80,6 +80,10 @@ int main() {
 	double meanFlux = stod(word[1]);
 	cout << "meanFlux: " << meanFlux << endl;
 
+	double t_incr = 0.0;
+	cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
+	AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
+
 	int* cadence = static_cast<int*>(_mm_malloc(numCadences*sizeof(double),64));
 	double* mask = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
 	double* y = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
@@ -103,7 +107,9 @@ int main() {
 		i += 1;
 		} 
 
-	cout << "Starting MCMC..." << endl;
+	/*################################################################################################################################################*/
+
+	cout << "Starting MCMC Phase." << endl;
 	cout << endl;
 
 	int numHost = sysconf(_SC_NPROCESSORS_ONLN);
@@ -129,7 +135,7 @@ int main() {
 		AcquireInput(cout,cin,"Number of steps to take: ","Invalid value.\n",nsteps);
 		} while (nsteps <= 0);
 
-	int setSeedsYN = 0;
+	bool setSeedsYN = 0;
 	unsigned int zSSeed = 2229588325, walkerSeed = 3767076656, moveSeed = 2867335446, xSeed = 1413995162,initSeed = 3684614774;
 	AcquireInput(cout,cin,"Supply seeds for MCMC? 1/0: ","Invalid value.\n",setSeedsYN);
 	if (setSeedsYN) {
@@ -172,21 +178,19 @@ int main() {
 
 	void* p2Args = nullptr;
 
-	double* initPos = nullptr;
-	double* xTemp = nullptr;
+	double *initPos = nullptr, *offsetArr = nullptr, *xTemp = nullptr;
 	vector<double> x;
 	VSLStreamStatePtr xStream, initStream;
 	string myPath;
 	ostringstream convertP, convertQ;
 	int maxEvals = 1000;
 	double xTol = 0.005;
-	DLM Systems[nthreads];
+	CARMA Systems[nthreads];
 
 	double LnLike = 0.0;
 
 	for (int p = pMax; p > 0; --p) {
-		for (int q = p-1; q > -1; --q) {
-
+		for (int q = p-1; q >= 0; --q) {
 			cout << endl;
 
 			cout << "Running MCMC for p = " << p << " and q = " << q << endl;
@@ -195,8 +199,9 @@ int main() {
 			ndims = p+q+1;
 
 			for (int tNum = 0; tNum < nthreads; tNum++) {
-				Systems[tNum].allocDLM(p,q);
-				cout << "Allocated " << Systems[tNum].allocated << " bytes for Systems[" << tNum << "]!" << endl;
+				Systems[tNum].allocCARMA(p,q);
+				Systems[tNum].set_t(t_incr);
+				cout << "Allocated " << Systems[tNum].get_allocated() << " bytes for Systems[" << tNum << "]!" << endl;
 				}
 
 			Args.Systems = Systems;
@@ -208,10 +213,12 @@ int main() {
 			vslNewStream(&xStream, VSL_BRNG_SFMT19937, xSeed);
 			bool goodPoint = false;
 			do {
-				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-3);
-				Systems[threadNum].setDLM(xTemp);
-				Systems[threadNum].resetState();
-				if (Systems[threadNum].checkARMAParams(Systems[threadNum].Theta) == 1) {
+				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-1);
+				if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
+					Systems[threadNum].setCARMA(xTemp);
+					Systems[threadNum].set_t(t_incr);
+					Systems[threadNum].solveCARMA();
+					Systems[threadNum].resetState();
 					LnLike = Systems[threadNum].computeLnLike(numCadences, y, yerr, mask);
 					goodPoint = true;
 					} else {
@@ -235,9 +242,10 @@ int main() {
 			result yesno = opt.optimize(x, max_LnLike);
 
 			cout << "NLOpt minimization done!" << endl;
-			cout << "Best ARMA parameter values: ";
+			cout << "Best C-ARMA parameter values: ";
+			cout.precision(4);
 			for (int i = 0; i < (p+q+1); ++i) {
-				cout << x[i] << " ";
+				cout << noshowpos << scientific << x[i] << " ";
 				}
 			cout << endl;
 			cout << "Best LnLike: " << max_LnLike << endl;
@@ -245,12 +253,18 @@ int main() {
 			EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
 
 			initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
-			vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
-			vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers*ndims, initPos, 0.0, 1e-6);
+			offsetArr = static_cast<double*>(_mm_malloc(nwalkers*sizeof(double),64));
 			for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
-				#pragma omp simd
+				offsetArr[walkerNum] = 0.0;
 				for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-					initPos[walkerNum*ndims + dimNum] += x[dimNum];
+					initPos[walkerNum*ndims + dimNum] = 0.0;
+					}
+				}
+			vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
+			for (int dimNum = 0; dimNum < ndims; ++dimNum) {
+				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers, offsetArr, 0.0, x[dimNum]*1.0e-3);
+				for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
+					initPos[walkerNum*ndims + dimNum] = x[dimNum] + offsetArr[walkerNum];
 					}
 				}
 			vslDeleteStream(&initStream);
@@ -286,15 +300,16 @@ int main() {
 			fflush(0);
 
 			for (int tNum = 0; tNum < nthreads; tNum++) {
-				Systems[tNum].deallocDLM();
+				Systems[tNum].deallocCARMA();
 				}
 			_mm_free(initPos);
+			_mm_free(offsetArr);
 			}
 		}
 
 	cout << endl;
 	cout << "Deleting Systems..." << endl;
-	cout << "Program exiting...Have a nice day!" << endl;
+	cout << "Program exiting...Have a nice day!" << endl; 
 
 	_mm_free(cadence);
 	_mm_free(mask);

@@ -88,12 +88,12 @@ for k in range(ndim):
 	plt.fill_between(stepArr[:],medianWalker[:,k]+medianDevWalker[:,k],medianWalker[:,k]-medianDevWalker[:,k],color='#ff0000',edgecolor='#ff0000',alpha=0.5,zorder=5)
 	plt.plot(stepArr[:],medianWalker[:,k],c='#dc143c',linewidth=1,zorder=10)
 	plt.xlabel('stepNum')
-	if (0 < k < pNum + 1):
+	if (0 <= k < pNum):
 		plt.ylabel("$a_{%d}$"%(k+1))
-	elif (k >= pNum):
+	elif ((k >= pNum) and (k < pNum + qNum + 1)):
 		plt.ylabel("$b_{%d}$"%(k-pNum))
 
-plt.tight_layout()
+#plt.tight_layout()
 plt.savefig(basePath+"mcmcWalkers_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
 plt.clf()
 
@@ -111,22 +111,22 @@ figVPK,quantiles,qvalues=VPK.corner(samples,labels=lbls,fig_title="DIC: %f"%(dic
 figVPK.savefig(basePath+"mcmcVPKTriangles_%d_%d.jpg"%(pNum,qNum),dpi=dotsPerInch)
 figVPK.clf()
 
-line="p: %d; q: %d\n"%(pNum,qNum)
-resultFile.write(line)
-line="DIC: %f\n"%(DIC)
-resultFile.write(line)
+line1="p: %d; q: %d\n"%(pNum,qNum)
+resultFile.write(line1)
+line2="DIC: %e\n"%(DIC)
+resultFile.write(line2)
 for k in range(ndim):
-	if (0<k<pNum+1):
-		line="a_%d\n"%(k)
-	elif ((k>=pNum+1) and (k<pNum+qNum+1)):
-		line="b_%d\n"%(k-pNum)
-	resultFile.write(line)
+	if (0 <= k < pNum):
+		line3="a_%d\n"%(k)
+	elif ((k >= pNum) and (k < pNum + qNum + 1)):
+		line3="b_%d\n"%(k-pNum)
+	resultFile.write(line3)
 	fiftiethQ["%d %d %s"%(pNum,qNum,line.rstrip("\n"))]=float(qvalues[k][1])
 	for i in range(len(quantiles)):
-		line="Quantile: %f; Value: %f\n"%(quantiles[i],qvalues[k][i])
-		resultFile.write(line)
-line="\n"
-resultFile.write(line)
+		line4="Quantile: %.2f; Value: %e\n"%(quantiles[i],qvalues[k][i])
+		resultFile.write(line4)
+line5="\n"
+resultFile.write(line5)
 
 del walkers
 del deviances
