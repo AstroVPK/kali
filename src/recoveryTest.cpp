@@ -361,7 +361,7 @@ int main() {
 	#pragma omp barrier
 	timeEndLnLike = dtime();
 	timeTotLnLike = timeEndLnLike - timeBegLnLike;
-	cout << "Time taken: " << timeTotLnLike << endl;
+	cout << "Time taken: " << timeTotLnLike << " (sec)" << endl;
 	#endif
 
 	cout << "LnLike: " << LnLike << endl;
@@ -536,7 +536,7 @@ int main() {
 	#pragma omp barrier
 	timeEndMCMC = dtime();
 	timeTotMCMC = timeEndMCMC - timeBegMCMC;
-	cout << "Time taken: " << timeTotMCMC/(60.0) << " (min)"<< endl;
+	cout << noshowpos << fixed << "Time taken: " << timeTotMCMC/(60.0) << " (min)"<< endl;
 	#endif
 
 	printf("MCMC done. Writing result to ");

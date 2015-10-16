@@ -48,6 +48,7 @@ using namespace std;
 double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	/*! Used for computing good regions */
 	if (!grad.empty()) {
+		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
 			grad[i] = 0.0;
 			}
@@ -137,6 +138,7 @@ double calcCARMALnLike(double* walkerPos, void* func_args) {
 
 double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	if (!grad.empty()) {
+		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
 			grad[i] = 0.0;
 			}
@@ -275,6 +277,7 @@ double calcLnLike(double* walkerPos, void* func_args) {
 
 void zeroMatrix(int nRows, int nCols, int* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
+		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
 			mat[rowNum + nRows*colNum] = 0;
 			}
@@ -283,6 +286,7 @@ void zeroMatrix(int nRows, int nCols, int* mat) {
 
 void zeroMatrix(int nRows, int nCols, double* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
+		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
 			mat[rowNum + nRows*colNum] = 0.0;
 			}
@@ -291,6 +295,7 @@ void zeroMatrix(int nRows, int nCols, double* mat) {
 
 void zeroMatrix(int nRows, int nCols, complex<double>* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
+		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
 			mat[rowNum + nRows*colNum] = 0.0;
 			}
@@ -542,7 +547,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	rcondv = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	allocated += 3*p*sizeof(double);
 
-	//#pragma omp simd
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		ipiv[rowCtr] = 0;
 		scale[rowCtr] = 0.0;
@@ -564,7 +569,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 		for (int colCtr = 0; colCtr < q; ++colCtr) {
 			CMAw[colCtr] = 0.0+0.0i;
-			//#pragma omp simd
+			#pragma omp simd
 			for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
 				CMAMatrix[rowCtr + colCtr*q] = 0.0+0.0i;
 				}
@@ -584,7 +589,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		CARw[colCtr] = 0.0+0.0i;
 		B[colCtr] = 0.0;
 		BScratch[colCtr] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			CARMatrix[rowCtr + colCtr*p] = 0.0+0.0i;
 			expw[rowCtr + colCtr*p] = 0.0+0.0i;
@@ -622,7 +627,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	for (int colCtr = 0; colCtr < pSq; ++colCtr) {
 		FKron_r[colCtr] = 0.0;
 		FKron_c[colCtr] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < pSq; ++rowCtr) {
 			FKron_ipiv[rowCtr + colCtr*pSq] = 0;
 			FKron[rowCtr + colCtr*pSq] = 0.0;
@@ -660,7 +665,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		X[colCtr] = 0.0;
 		XMinus[colCtr] = 0.0;
 		VScratch[colCtr] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			I[rowCtr + colCtr*p] = 0.0;
 			F[rowCtr + colCtr*p] = 0.0;
@@ -676,7 +681,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 	R[0] = 0.0;
 
-	//#pragma omp simd
+	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
 		A[i*p + (i - 1)] = 1.0;
 		I[(i - 1)*p + (i - 1)] = 1.0;
@@ -998,14 +1003,14 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 		}
 
 	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
-		//#pragma omp simd
+		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; colCtr++) {
 			CARMatrix[rowCtr + p*colCtr] = 0.0 + 0.0i; // Reset matrix.
 			}
 		}
 
 	CARMatrix[p*(p-1)] = -1.0*ThetaIn[p-1] + 0.0i; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
-	//#pragma omp simd
+	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
 		CARMatrix[rowCtr+(p-1)*p] = -1.0*ThetaIn[p - 1 - rowCtr] + 0.0i; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
 		CARMatrix[rowCtr+(rowCtr-1)*p] = 1.0; // CARMatrix has Identity matrix in bottom left.
@@ -1013,7 +1018,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	ilo[0] = 0;
 	ihi[0] = 0;
 	abnrm[0] = 0.0;
-	//#pragma omp simd
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		CARw[rowCtr] = 0.0 + 0.0i;
 		scale[rowCtr] = 0.0;
@@ -1039,7 +1044,6 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	for (int i = 0; i < p; i++) {
 
 		#ifdef DEBUG_CHECKARMAPARAMS
-		//printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 		printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 			printf("%f ",Theta[dimNum]);
@@ -1051,7 +1055,6 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 		if (CARw[i].real() >= 0.0) {
 
 			#ifdef DEBUG_CHECKARMAPARAMS
-			//printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 			printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 				printf("%f ",Theta[dimNum]);
@@ -1072,13 +1075,13 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 
 	if (q > 0) {
 		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-			//#pragma omp simd
+			#pragma omp simd
 			for (int colCtr = 0; colCtr < q; colCtr++) {
 				CMAMatrix[rowCtr + q*colCtr] = 0.0; // Initialize matrix.
 				}
 			}
 		CMAMatrix[(q-1)*q] = -1.0*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
 			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
 			CMAMatrix[rowCtr + (rowCtr - 1)*q] = 1.0; // MAMatrix has Identity matrix in bottom left.
@@ -1086,11 +1089,11 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 		ilo[0] = 0;
 		ihi[0] = 0;
 		abnrm[0] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
 			CMAw[rowCtr] = 0.0+0.0i;
 			}
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			scale[rowCtr] = 0.0;
 			rconde[rowCtr] = 0.0;
@@ -1113,7 +1116,6 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 		for (int i = 0; i < q; i++) {
 
 			#ifdef DEBUG_CHECKARMAPARAMS
-			// printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 			printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 				printf("%f ",Theta[dimNum]);
@@ -1125,7 +1127,6 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 			if (CMAw[i].real() > 0.0) {
 
 				#ifdef DEBUG_CHECKARMAPARAMS
-				// printf("checkCARMAParams - threadNum: %d; Address of System: %p\n",threadNum,(void*)&System);
 				printf("checkCARMAParams - threadNum: %d; walkerPos: ",threadNum);
 				for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
 					printf("%f ",Theta[dimNum]);
@@ -1180,6 +1181,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	printf("\n");
 	#endif
 
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p + q + 1; ++rowCtr) {
 		Theta[rowCtr] = ThetaIn[rowCtr];
 		}
@@ -1192,7 +1194,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 		}
 
 	A[0] = -1.0*Theta[0];
-	//#pragma omp simd
+	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
 		A[i] = -1.0*Theta[i];
 		A[i*p + (i - 1)] = 1.0;
@@ -1217,7 +1219,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 		scale[rowCtr] = 0.0;
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; ++colCtr) {
 			vr[rowCtr + colCtr*p] = 0.0+0.0i;
 			vrInv[rowCtr + colCtr*p] = 0.0+0.0i;
@@ -1333,11 +1335,11 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
+	/*for (int colCtr = 0; colCtr < p; ++colCtr) {
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			A[rowCtr + colCtr*p] = 0.0+0.0i;
 			}
-		}
+		}*/
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1655,7 +1657,7 @@ void CARMA::solveCARMA() {
 	#endif
 
 	// First compute expm(A*t)
-	//#pragma omp simd
+	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
 		expw[i + i*p] = exp(t*w[i]);
 		}
@@ -1733,7 +1735,7 @@ void CARMA::solveCARMA() {
 	#endif
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			F[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
 			}
@@ -1752,9 +1754,8 @@ void CARMA::solveCARMA() {
 
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
-	//size_t steps = integrate((*this)(), initX, 0.0, t, 1.0e-6*t); // JohnS suggests that I try "this" 
 	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, t, 1.0e-6*t);
-	//#pragma omp simd
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		D[rowCtr] = sqrt(initX[rowCtr]);
 		}
@@ -1785,7 +1786,7 @@ void CARMA::resetState(double InitUncertainty) {
 		X[i] = 0.0;
 		XMinus[i] = 0.0;
 		VScratch[i] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int j = 0; j < p; j++) {
 			P[i*p+j] = 0.0;
 			PMinus[i*p+j] = 0.0;
@@ -1807,7 +1808,7 @@ void CARMA::resetState() {
 		X[colCtr] = 0.0;
 		XMinus[colCtr] = 0.0;
 		VScratch[colCtr] = 0.0;
-		//#pragma omp simd
+		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			P[rowCtr + colCtr*p] = 0.0;
 			PMinus[rowCtr + colCtr*p] = 0.0;
@@ -1831,7 +1832,7 @@ void CARMA::resetState() {
 
 	kron(p,p,F,p,p,F,FKron);
 	for (int i = 0; i < pSq; i++) {
-		//#pragma omp simd
+		#pragma omp simd
 		for (int j = 0; j < pSq; j++) {
 			FKron[i*pSq + j] *= -1.0;
 			}
