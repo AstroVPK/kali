@@ -342,7 +342,7 @@ int main() {
 	#pragma omp barrier
 	timeEndLnLike = dtime();
 	timeTotLnLike = timeEndLnLike - timeBegLnLike;
-	cout << "Time taken: " << timeTotLnLike << endl;
+	cout << "Time taken: " << timeTotLnLike << " (sec)" << endl;
 	#endif
 
 	cout << "LnLike: " << LnLike << endl;
