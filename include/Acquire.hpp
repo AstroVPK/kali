@@ -10,7 +10,7 @@
 #include <boost/system/system_error.hpp>
 #include <boost/system/linux_error.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/io/detail/quoted_manip.hpp>
+//#include <boost/io/detail/quoted_manip.hpp>
 
 using namespace std;
 using namespace boost::filesystem;
