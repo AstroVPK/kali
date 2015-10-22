@@ -415,7 +415,7 @@ CARMA::CARMA() {
 	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
-	FKron = nullptr;
+	/*FKron = nullptr;
 	FKron_af = nullptr;
 	FKron_r = nullptr;
 	FKron_c = nullptr;
@@ -424,7 +424,8 @@ CARMA::CARMA() {
 	FKron_rpvgrw = nullptr;
 	FKron_berr = nullptr;
 	FKron_err_bnds_norm = nullptr;
-	FKron_err_bnds_comp = nullptr;
+	FKron_err_bnds_comp = nullptr;*/
+	Sigma = nullptr;
 	D = nullptr;
 	Q = nullptr;
 	H = nullptr;
