@@ -415,7 +415,7 @@ CARMA::CARMA() {
 	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
-	FKron = nullptr;
+	/*FKron = nullptr;
 	FKron_af = nullptr;
 	FKron_r = nullptr;
 	FKron_c = nullptr;
@@ -424,7 +424,8 @@ CARMA::CARMA() {
 	FKron_rpvgrw = nullptr;
 	FKron_berr = nullptr;
 	FKron_err_bnds_norm = nullptr;
-	FKron_err_bnds_comp = nullptr;
+	FKron_err_bnds_comp = nullptr;*/
+	Sigma = nullptr;
 	D = nullptr;
 	Q = nullptr;
 	H = nullptr;
@@ -477,12 +478,13 @@ CARMA::~CARMA() {
 
 	Theta = nullptr;
 	A = nullptr;
+	ACopy = nullptr;
 	AScratch = nullptr;
 	B = nullptr;
 	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
-	FKron = nullptr;
+	/*FKron = nullptr;
 	FKron_af = nullptr;
 	FKron_r = nullptr;
 	FKron_c = nullptr;
@@ -491,8 +493,9 @@ CARMA::~CARMA() {
 	FKron_rpvgrw = nullptr;
 	FKron_berr = nullptr;
 	FKron_err_bnds_norm = nullptr;
-	FKron_err_bnds_comp = nullptr;
+	FKron_err_bnds_comp = nullptr;*/
 	D = nullptr;
+	Sigma = nullptr;
 	Q = nullptr;
 	H = nullptr;
 	R = nullptr;
@@ -581,8 +584,9 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	vr = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	vrInv = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	ACopy = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
-	allocated += 6*pSq*sizeof(double);
+	allocated += 7*pSq*sizeof(double);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		w[colCtr] = 0.0+0.0i;
@@ -596,11 +600,12 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			vr[rowCtr + colCtr*p] = 0.0+0.0i;
 			vrInv[rowCtr + colCtr*p] = 0.0+0.0i;
 			A[rowCtr + colCtr*p] = 0.0+0.0i;
+			ACopy[rowCtr + colCtr*p] = 0.0+0.0i;
 			AScratch[rowCtr + colCtr*p] = 0.0+0.0i;
 			}
 		}
 
-	FKron_rcond = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	/*FKron_rcond = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
 	FKron_rpvgrw = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
 	FKron_berr = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
 	FKron_err_bnds_norm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
@@ -633,7 +638,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			FKron[rowCtr + colCtr*pSq] = 0.0;
 			FKron_af[rowCtr + colCtr*pSq] = 0.0;
 			}
-		}
+		}*/
 
 	Theta = static_cast<double*>(_mm_malloc((p + q + 1)*sizeof(double),64));
 	allocated += (p+q+1)*sizeof(double);
@@ -652,11 +657,12 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 	I = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	Sigma = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	Q = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	P = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	PMinus = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	MScratch = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
-	allocated += 6*pSq*sizeof(double);
+	allocated += 7*pSq*sizeof(double);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		D[colCtr] = 0.0;
@@ -669,6 +675,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			I[rowCtr + colCtr*p] = 0.0;
 			F[rowCtr + colCtr*p] = 0.0;
+			Sigma[rowCtr + colCtr*p] = 0.0;
 			Q[rowCtr + colCtr*p] = 0.0;
 			P[rowCtr + colCtr*p] = 0.0;
 			PMinus[rowCtr + colCtr*p] = 0.0;
@@ -781,6 +788,11 @@ void CARMA::deallocCARMA() {
 		A = nullptr;
 		}
 
+	if (ACopy) {
+		_mm_free(ACopy);
+		ACopy = nullptr;
+		}
+
 	if (AScratch) {
 		_mm_free(AScratch);
 		AScratch = nullptr;
@@ -806,7 +818,7 @@ void CARMA::deallocCARMA() {
 		F = nullptr;
 		}
 
-	if (FKron) {
+/*	if (FKron) {
 		_mm_free(FKron);
 		FKron = nullptr;
 		}
@@ -854,11 +866,16 @@ void CARMA::deallocCARMA() {
 	if (FKron_err_bnds_comp) {
 		_mm_free(FKron_err_bnds_comp);
 		FKron_err_bnds_comp = nullptr;
-		}
+		}*/
 
 	if (Theta) {
 		_mm_free(Theta);
 		Theta = nullptr;
+		}
+
+	if (Sigma) {
+		_mm_free(Sigma);
+		Sigma = nullptr;
 		}
 
 	if (D) {
@@ -975,6 +992,10 @@ void CARMA::printD() {
 
 void CARMA::printQ() {
 	viewMatrix(p,p,Q);
+	}
+
+void CARMA::printSigma() {
+	viewMatrix(p,p,Sigma);
 	}
 
 /*!
@@ -1200,6 +1221,8 @@ void CARMA::setCARMA(double *ThetaIn) {
 		A[i*p + (i - 1)] = 1.0;
 		}
 
+	cblas_zcopy(pSq, A, 1, ACopy, 1); // Copy A into ACopy so that we can keep a clean working version of it.
+
 	#ifdef DEBUG_SETCARMA
 	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
 	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -1208,6 +1231,9 @@ void CARMA::setCARMA(double *ThetaIn) {
 	printf("\n");
 	printf("setCARMA - threadNum: %d; A\n",threadNum);
 	viewMatrix(p,p,A);
+	printf("\n");
+	printf("setCARMA - threadNum: %d; ACopy\n",threadNum);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1228,7 +1254,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 
 	lapack_int YesNo;
 	//YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, A, p, w, nullptr, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv); // NOT WORKING!!!!
-	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'V', p, A, p, w, vrInv, p, vr, p);
+	YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'V', p, ACopy, p, w, vrInv, p, vr, p);
 
 	YesNo = LAPACKE_zlacpy(LAPACK_COL_MAJOR, 'B', p, p, vr, p, vrInv, p);
 
@@ -1268,7 +1294,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 
 	H[0] = 1.0;
 
-	FKron_rcond[0] = 0.0;
+	/*FKron_rcond[0] = 0.0;
 	FKron_rpvgrw[0] = 0.0;
 	FKron_berr[0] = 0.0;
 	FKron_err_bnds_norm[0] = 0.0;
@@ -1282,7 +1308,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 			FKron[rowCtr + colCtr*pSq] = 0.0;
 			FKron_af[rowCtr + colCtr*pSq] = 0.0;
 			}
-		}
+		}*/
 
 	}
 
@@ -1354,12 +1380,12 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,vr);
 	printf("\n");
 	printf("() - threadNum: %d; vr*expw (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
 	// Begin by computing vr*expw. This is a pXp matrix. Store it in A.
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, ACopy, p);
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1374,7 +1400,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,vr);
 	printf("\n");
 	printf("() - threadNum: %d; vr*expw\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1385,7 +1411,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; vr*expw (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vrInv (Before)\n",threadNum);
 	viewMatrix(p,p,vrInv);
@@ -1396,7 +1422,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	#endif
 
 	// Next compute expm(A*t) = (vr*expw)*vrInv. This is a pXp matrix. Store it in AScratch.
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1405,7 +1431,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; vr*expw\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vrInv\n",threadNum);
 	viewMatrix(p,p,vrInv);
@@ -1465,7 +1491,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,1,B);
 	printf("\n");
 	printf("() - threadNum: %d; (((vr*expw)*vrInv)*B)*trans(B) (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1473,7 +1499,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	//cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, B, 1, &beta, A, p);
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			A[rowCtr + colCtr*p] = BScratch[rowCtr]*B[colCtr];
+			ACopy[rowCtr + colCtr*p] = BScratch[rowCtr]*B[colCtr];
 			}
 		}
 
@@ -1490,7 +1516,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,1,B);
 	printf("\n");
 	printf("() - threadNum: %d; (((vr*expw)*vrInv)*B)*trans(B)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1501,7 +1527,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; (((vr*expw)*vrInv)*B)*trans(B) (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vrInv (Before)\n",threadNum);
 	viewMatrix(p,p,vrInv);
@@ -1512,7 +1538,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	#endif
 
 	// Next compute expm(A*t)*B*trans(B)*vrInv = ((((vr*expw)*vrInv)*B)*trans(B))*vrInv.  This is a pXp matrix. Store it in AScratch.
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1521,7 +1547,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; (((vr*expw)*vrInv)*B)*trans(B)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vrInv\n",threadNum);
 	viewMatrix(p,p,vrInv);
@@ -1544,12 +1570,12 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,expw);
 	printf("\n");
 	printf("() - threadNum: %d; (((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
 	// Next compute  expm(A*t)*B*trans(B)*trans(vrInv)*expw = (((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw.  This is a pXp matrix. Store it in A.
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, AScratch, p, expw, p, &beta, A, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, AScratch, p, expw, p, &beta, ACopy, p);
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1564,7 +1590,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,expw);
 	printf("\n");
 	printf("() - threadNum: %d; (((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1575,7 +1601,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; ((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv) (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vr (Before)\n",threadNum);
 	viewMatrix(p,p,vr);
@@ -1586,7 +1612,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	#endif
 
 	// Finally compute  expm(A*t)*B*trans(B)*expm(trans(A)*t) = ((((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv))*expw)*trans(A).  This is a pXp matrix. Store it in AScratch.
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, A, p, vr, p, &beta, AScratch, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, ACopy, p, vr, p, &beta, AScratch, p);
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1595,7 +1621,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 		}
 	printf("\n");
 	printf("() - threadNum: %d; ((((vr*expw)*vrInv)*B)*trans(B))*trans(vrInv)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	printf("() - threadNum: %d; vr\n",threadNum);
 	viewMatrix(p,p,vr);
@@ -1682,11 +1708,11 @@ void CARMA::solveCARMA() {
 		}
 	printf("\n");
 	printf("solveCARMA - threadNum: %d; vr*expw (Before)\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, ACopy, p);
 
 	#ifdef DEBUG_SOLVECARMA
 	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1695,7 +1721,7 @@ void CARMA::solveCARMA() {
 		}
 	printf("\n");
 	printf("solveCARMA - threadNum: %d; vr*expw\n",threadNum);
-	viewMatrix(p,p,A);
+	viewMatrix(p,p,ACopy);
 	printf("\n");
 	#endif
 
@@ -1710,7 +1736,7 @@ void CARMA::solveCARMA() {
 	printf("\n");
 	#endif
 
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
 
 	#ifdef DEBUG_SOLVECARMA
 	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1782,6 +1808,12 @@ void CARMA::solveCARMA() {
 
 void CARMA::resetState(double InitUncertainty) {
 
+	#ifdef DEBUG_RESETSTATE
+	int threadNum = omp_get_thread_num();
+	printf("resetState - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
 	for (int i = 0; i < p; i++) {
 		X[i] = 0.0;
 		XMinus[i] = 0.0;
@@ -1797,6 +1829,38 @@ void CARMA::resetState(double InitUncertainty) {
 	}
 
 void CARMA::resetState() {
+
+	#ifdef DEBUG_RESETSTATE
+	int threadNum = omp_get_thread_num();
+	printf("resetState - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
+	// Compute P by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to infinity.
+	vector<double> initX(p);
+
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, 1.79769e+308, 1.0e-6);
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; steps: %lu\n",threadNum,steps);
+	#endif
+
+	// Finally compute P and in the process, reset the others.
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		X[colCtr] = 0.0;
+		XMinus[colCtr] = 0.0;
+		VScratch[colCtr] = 0.0;
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			PMinus[rowCtr + colCtr*p] = 0.0;
+			MScratch[rowCtr + colCtr*p] = 0.0;
+			P[rowCtr + colCtr*p] = sqrt(initX[rowCtr])*sqrt(initX[colCtr]);
+			}
+		}
+
+	}
+
+/*void CARMA::resetState_old() {
 
 	#ifdef DEBUG_RESETSTATE
 	int threadNum = omp_get_thread_num();
@@ -1922,7 +1986,7 @@ void CARMA::resetState() {
 	printf("\n");
 	#endif
 
-	}
+	}*/
 
 void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 

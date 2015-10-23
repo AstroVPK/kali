@@ -54,9 +54,10 @@ private:
 	complex<double> *B;
 	double *I;
 	double *F;
+	complex<double> *ACopy;
 	complex<double> *AScratch;
 	complex<double> *BScratch;
-	double *FKron;
+	/*double *FKron;
 	double *FKron_af;
 	double *FKron_r;
 	double *FKron_c;
@@ -65,7 +66,8 @@ private:
 	double *FKron_rpvgrw;
 	double *FKron_berr;
 	double *FKron_err_bnds_norm;
-	double *FKron_err_bnds_comp;
+	double *FKron_err_bnds_comp;*/
+	double *Sigma;
 	double *D;
 	double *Q;
 	double *H;
@@ -90,6 +92,7 @@ public:
 	void printA();
 	void printB();
 	void printF();
+	void printSigma();
 	void printD();
 	void printQ();
 	void allocCARMA(int numP, int numQ);
@@ -100,6 +103,7 @@ public:
 	void solveCARMA();
 	void resetState(double InitUncertainty);
 	void resetState();
+	/*void resetState_old();*/
 	void getCARRoots(complex<double>*& CARoots);
 	void getCMARoots(complex<double>*& CMARoots);
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
