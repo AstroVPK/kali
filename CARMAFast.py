@@ -62,7 +62,7 @@ def checkParams(aList=None,bList=None):
 
 	isInvertible=1
 	CMAPoly=list()
-	for i in xrange(q):
+	for i in xrange(q + 1):
 		CMAPoly.append(bList[i])
 	CMAPoly.reverse()
 	CMARoots=roots(CMAPoly)
