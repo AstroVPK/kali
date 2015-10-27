@@ -173,6 +173,9 @@ int main() {
 		printf("F\n");
 		SystemMaster.printF();
 		printf("\n");
+		printf("Sigma\n");
+		SystemMaster.printSigma();
+		printf("\n");
 		printf("D\n");
 		SystemMaster.printD();
 		printf("\n");

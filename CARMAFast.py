@@ -700,10 +700,10 @@ def fixedIntervalSmoother(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 		smoothXArr[i,:,:]=matrix(XArr[i,:,:])+K*(matrix(smoothXArr[i+1,:,:])-matrix(XMinusArr[i+1,:,:]))
 	for i in range(numPts):
 		x[i,0]=smoothXArr[i,0,0]
-		#try:
-		x[i,1]=sqrt(smoothPArr[i,0,0])
-		#except ValueError:
-		#	pdb.set_trace()
+		try:
+			x[i,1]=sqrt(smoothPArr[i,0,0])
+		except ValueError:
+			pdb.set_trace()
 	return (r,x)
 
 '''def fixedIntervalSmootherMissing(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
