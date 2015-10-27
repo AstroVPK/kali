@@ -223,12 +223,26 @@ for i in range(numPts):
 	y[i,0]=float(values[2])
 	y[i,1]=float(values[3])
 
+plt.figure(2,figsize=(fwid,2*fhgt))
+yMax=np.max(y[np.nonzero(y[:,0]),0])
+yMin=np.min(y[np.nonzero(y[:,0]),0])
+plt.ylabel('$F$ (arb units)')
+plt.xlabel('$t$ (d)')
+for i in range(numPts):
+	if (mask[i]==1.0):
+		plt.errorbar(t[i,1],y[i,0],yerr=y[i,1],c='#e66101',fmt='.',marker=".",capsize=0,zorder=-5)
+plt.xlim(t[0,1],t[-1,1])
+plt.ylim(yMin,yMax)
+plt.tight_layout()
+plt.savefig(basePath+"lc.jpg",dpi=dotsPerInch)
+plt.clf()
+
 (p,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(pBest)
 (X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(deltat,p,aBest,bBest,A,B,F,I,D,Q)
 LnLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 r,x=CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
 
-plt.figure(2,figsize=(fwid,2*fhgt))
+plt.figure(3,figsize=(fwid,2*fhgt))
 
 plt.subplot(211)
 yMax=np.max(y[np.nonzero(y[:,0]),0])

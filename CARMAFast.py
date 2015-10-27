@@ -5,7 +5,7 @@ from numpy.matlib import matrix,zeros,identity
 from numpy.linalg import inv,solve,det
 from scipy.linalg import expm
 from scipy.integrate import quad
-from random import gauss, seed
+from random import gauss,seed
 from sys import float_info
 import numpy as np
 import pdb
@@ -41,31 +41,35 @@ def checkParams(aList=None,bList=None):
 
 	if bList is None:
 		raise ValueError('#CMA > 0')
-	if (len(bList)!=len(aList)):
-		raise ValueError('#CMA == #CAR (pad with 0s in front!)')
+	q = len(bList) - 1
 
-	uniqueRoots=1
+	hasUniqueEigenValues=1
 	isStable=1
+	isInvertible=1
+	isNotRedundant=1
+	hasPosSigma=1
+
 	CARPoly=list()
 	CARPoly.append(1.0)
 	for i in xrange(p):
 		CARPoly.append(aList[i])
 	CARRoots=roots(CARPoly)
 	if (len(CARRoots)!=len(set(CARRoots))):
-		uniqueRoots=0
+		hasUniqueEigenValues=0
 	for CARRoot in CARRoots:
 		if (CARRoot.real>=0.0):
 			isStable=0
 
 	isInvertible=1
 	CMAPoly=list()
-	for i in xrange(p):
+	for i in xrange(q + 1):
 		CMAPoly.append(bList[i])
+	CMAPoly.reverse()
 	CMARoots=roots(CMAPoly)
 	if (len(CMARoots)!=len(set(CMARoots))):
 		uniqueRoots=0
 	for CMARoot in CMARoots:
-		if (CMARoot>=0.0):
+		if (CMARoot>0.0):
 			isInvertible=0
 
 	isNotRedundant=1
@@ -74,7 +78,7 @@ def checkParams(aList=None,bList=None):
 			if (CARRoot==CMARoot):
 				isNotRedundant=0
 
-	return isStable*isInvertible*isNotRedundant*uniqueRoots
+	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma
 
 def getRoots(aList=None,bList=None):
 	if aList is None:
@@ -696,10 +700,10 @@ def fixedIntervalSmoother(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 		smoothXArr[i,:,:]=matrix(XArr[i,:,:])+K*(matrix(smoothXArr[i+1,:,:])-matrix(XMinusArr[i+1,:,:]))
 	for i in range(numPts):
 		x[i,0]=smoothXArr[i,0,0]
-		#try:
-		x[i,1]=sqrt(smoothPArr[i,0,0])
-		#except ValueError:
-		#	pdb.set_trace()
+		try:
+			x[i,1]=sqrt(smoothPArr[i,0,0])
+		except ValueError:
+			pdb.set_trace()
 	return (r,x)
 
 '''def fixedIntervalSmootherMissing(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
@@ -748,3 +752,44 @@ def fixedIntervalSmoother(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 		x[i,0]=smoothXArr[i,0,0]
 		x[i,1]=sqrt(smoothPArr[i,0,0])
 	return (r,x)'''
+
+def getPSDDenominator(freqs, aList, order):
+	pVal = len(aList)
+	numFreqs = freqs.shape[0]
+	aList.insert(0, 1.0)
+	PSDVals = npzeros(numFreqs)
+	if ((order % 2 == 1) or (order <= -1) or (order > 2*pVal)):
+		aList.pop(0)
+		return PSDVals
+	else:
+		for freq in xrange(freqs.shape[0]):
+			val = 0.0
+			for i in xrange(pVal + 1):
+				j = 2*pVal - i - order
+				if ((j >= 0) and (j < pVal + 1)):
+					val += (aList[i]*aList[j]*((2.0*pi*1j*freqs[freq])**(2*pVal - (i + j)))*pow(-1.0, pVal - j)).real
+				PSDVals[freq] = val
+		aList.pop(0)
+		return PSDVals
+
+def getPSDNumerator(freqs, bList, order):
+	qVal = len(bList) - 1
+	numFreqs = freqs.shape[0]
+	PSDVals = npzeros(numFreqs)
+	if ((order % 2 == 1) or (order <= -1) or (order > 2*qVal)):
+		return PSDVals
+	else:
+		for freq in xrange(freqs.shape[0]):
+			val = 0.0
+			for i in xrange(qVal + 1):
+				j = 2*qVal - i - order
+				if ((j >= 0) and (j < qVal + 1)):
+					val += (bList[i]*bList[j]*((2.0*pi*1j*freqs[freq])**(2*qVal - (i + j)))*pow(-1.0, qVal - j)).real
+				PSDVals[freq] = val
+		return PSDVals
+
+def getACF(times, A, Sigma, H):
+	ACF = npzeros(numtimes)
+	for time in xrange(times.shape[0]):
+		ACF[time] = (transpose(H)*expm(A*times[time])*Sigma*H)[0,0]
+	return ACF

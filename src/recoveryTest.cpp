@@ -174,7 +174,7 @@ int main() {
 			cout << showpos << fixed << "Root" << pCtr << ": " << showpos << CARRoots[pCtr] << "; Magnitude: " << abs(CARRoots[pCtr]) << endl;
 			}
 		cout << endl;
-		cout << "C-AR Polynomial Roots" << endl;
+		cout << "C-MA Polynomial Roots" << endl;
 		cout.precision(4);
 		SystemMaster.getCMARoots(CMARoots);
 		for (int qCtr = 0; qCtr < qMaster; ++qCtr) {
