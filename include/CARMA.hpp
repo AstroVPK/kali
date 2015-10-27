@@ -123,8 +123,8 @@ public:
 	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask);
 	double computeLnLike(int numPts, double* y, double* yerr);
 	double computeLnLike(int numPts, double* y, double* yerr, double* mask);
-	void getPSD(int numFreqs, double *freqVals, double *PSDVals);
-	void getACF(int numTimes, double *timeVals, double *ACFVals);
+	//void getPSD(int numFreqs, double *freqVals, double *PSDVals);
+	//void getACF(int numTimes, double *timeVals, double *ACFVals);
 	//void getResiduals(int numPts, double* y, double* r);
 	//void fixedIntervalSmoother(int numPts, double* y, double* r, double* x);
 	};

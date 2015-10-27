@@ -2613,8 +2613,8 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 	return LnLike;
 	}
 
-void getPSD(int numFreqs, double *freqVals, double *PSDVals) {
+/*void getPSD(int numFreqs, double *freqVals, double *PSDVals) {
 	}
 
 void getACF(int numTimes, double *timeVals, double *ACFVals) {
-	}
+	}*/
