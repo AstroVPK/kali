@@ -787,3 +787,9 @@ def getPSDNumerator(freqs, bList, order):
 					val += (bList[i]*bList[j]*((2.0*pi*1j*freqs[freq])**(2*qVal - (i + j)))*pow(-1.0, qVal - j)).real
 				PSDVals[freq] = val
 		return PSDVals
+
+def getACF(times, A, Sigma, H):
+	ACF = npzeros(numtimes)
+	for time in xrange(times.shape[0]):
+		ACF[time] = (transpose(H)*expm(A*times[time])*Sigma*H)[0,0]
+	return ACF

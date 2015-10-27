@@ -16,7 +16,8 @@ colormapping = {'0': '#a6cee3', '2': '#b2df8a', '4': '#fb9a99', '6': '#fdbf6f', 
 
 freqs = np.logspace(m.log10(1./T),m.log10(1./T_incr),numFreqs)
 
-aListRoots = [-0.73642081+0j, -0.01357919+0j, -0.025-0.75j, -0.025+0.75j]
+#aListRoots = [-0.73642081+0j, -0.01357919+0j, -0.025-0.75j, -0.025+0.75j]
+aListRoots = [-0.73642081+0j, -0.01357919+0j]
 aPoly = nppoly.polyfromroots(aListRoots)
 aPoly = aPoly.tolist()
 aPoly.reverse()
@@ -28,8 +29,8 @@ print aPoly
 
 #aList = [0.75,0.01]
 aList = aPoly
-#aList = [1.971778e-01,6.035457e-01,1.270629e-02,3.417244e-02]
-bList = [7.0e-9,1.2e-9]
+
+bList = [1.16e-9,6.8e-9]
 
 if (CF.checkParams(aList,bList) == 1):
 	maxDenomOrder = 2*len(aList)

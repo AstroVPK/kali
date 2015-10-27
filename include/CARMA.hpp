@@ -87,14 +87,24 @@ public:
 	double get_t();
 	void set_t(double t_incr);
 	int get_allocated();
+
 	void printX();
+	const double* getX() const;
 	void printP();
+	const double* getP() const;
 	void printA();
+	const complex<double>* getA() const;
 	void printB();
+	const complex<double>* getB() const;
 	void printF();
+	const double* getF() const;
 	void printSigma();
+	const double* getSigma() const;
 	void printD();
+	const double* getD() const;
 	void printQ();
+	const double* getQ() const;
+
 	void allocCARMA(int numP, int numQ);
 	void deallocCARMA();
 	int checkCARMAParams(double* ThetaIn); /*!< Function to check the validity of the CARMA parameters. Theta contains \f$p\f$ CAR parameters followed by \f$q+1\f$ CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.*/

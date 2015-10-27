@@ -970,32 +970,64 @@ void CARMA::printX() {
 	viewMatrix(p,1,X);
 	}
 
+const double* CARMA::getX() const {
+	return X;
+	}
+
 void CARMA::printP() {
 	viewMatrix(p,p,P);
+	}
+
+const double* CARMA::getP() const {
+	return P;
 	}
 
 void CARMA::printA() {
 	viewMatrix(p,p,A);
 	}
 
+const complex<double>* CARMA::getA() const {
+	return A;
+	}
+
 void CARMA::printB() {
 	viewMatrix(p,1,B);
+	}
+
+const complex<double>* CARMA::getB() const {
+	return B;
 	}
 
 void CARMA::printF() {
 	viewMatrix(p,p,F);
 	}
 
+const double* CARMA::getF() const {
+	return F;
+	}
+
 void CARMA::printD() {
 	viewMatrix(p,1,D);
+	}
+
+const double* CARMA::getD() const {
+	return D;
 	}
 
 void CARMA::printQ() {
 	viewMatrix(p,p,Q);
 	}
 
+const double* CARMA::getQ() const {
+	return Q;
+	}
+
 void CARMA::printSigma() {
 	viewMatrix(p,p,Sigma);
+	}
+
+const double* CARMA::getSigma() const {
+	return Sigma;
 	}
 
 /*!
