@@ -256,7 +256,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                         plusPart = q_p/math.pow(10.0,numberLog10)
                         title = r"%s$ = %3.2f^{+%.2f}_{-%.2f} \times 10^{%d}$"%(labels[i],remainingPart,plusPart,minusPart,numberLog10)
                     else:
-                        title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i],q_50,q_p,q-m)
+                        title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i],q_50,q_p,q_m)
 
                 # Add in the column name if it's given.
                 #if labels is not None:
