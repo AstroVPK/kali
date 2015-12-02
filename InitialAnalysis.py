@@ -1,7 +1,10 @@
 import numpy as np
 import math as m
-import matplotlib
-matplotlib.use('Agg')
+import socket
+HOST = socket.gethostname()
+if HOST != 'Zw229-15':
+	import matplotlib
+	matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_settings import *
 import sys as s
@@ -13,7 +16,7 @@ fwid=13
 fhgt=13
 dotsPerInch=600
 nbins=100
-set_plot_params(fontsize=12)
+set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontweight='normal',fontstretch='normal',fontsize=20,useTex='True')
 
 secPerSiderealDay = 86164.0905 
 intTime = 6.019802903
@@ -89,19 +92,19 @@ plt.figure(1,figsize=(fwid,fhgt))
 plt.subplot(311)
 yMax=np.max(y[np.nonzero(y[:,0]),0])
 yMin=np.min(y[np.nonzero(y[:,0]),0])
-plt.ylabel('$F$ (arb units)')
-plt.xlabel('$t$ (d)')
+plt.ylabel(r'$F$ (arb units)')
+plt.xlabel(r'$t$ (d)')
 for i in xrange(0,numPts,step):
 	if (y[i,0]!=0.0):
-		plt.scatter(t[i,1],y[i,0],c='#e66101',marker=".",edgecolors='none',zorder=-5)
+		plt.errorbar(t[i,1],y[i,0],y[i,1],fmt='.',capsize=0,color='#d95f02',markeredgecolor='none',zorder=10)
 plt.xlim(t[0,1],t[-1,1])
 plt.ylim(yMin,yMax)
 
 plt.subplot(312)
 #plt.subplot(211)
 #plt.vlines(x=0,ymin=0.0,ymax=1.0,colors='#000000')
-plt.ylabel('$\\rho(\Delta t)$')
-plt.xlabel('$\Delta t$ (d)')
+plt.ylabel('r$\rho(\Delta t)$')
+plt.xlabel('r$\Delta t$ (d)')
 plt.plot(acf[:,0],acf[:,1],color='#1a1a1a')
 #plt.fill_between(acf[:,0],0,acf[:,1],color='#999999',zorder=-20)
 plt.hlines(y=[1.96/m.sqrt(numPts),-1.96/m.sqrt(numPts)],xmin=0,xmax=numPts-1,linewidth=1, color='#ef8a62',linestyle='dashed')
@@ -112,8 +115,8 @@ plt.xlim(0,acf[-1,0])
 plt.subplot(313)
 #plt.subplot(212)
 #plt.vlines(x=0,ymin=0.0,ymax=1.0,colors='#000000')
-plt.ylabel('$\\alpha(\Delta t)$')
-plt.xlabel('$\Delta t$ (d)')
+plt.ylabel(r'$\alpha(\Delta t)$')
+plt.xlabel(r'$\Delta t$ (d)')
 plt.plot(pacf[:,0],pacf[:,1],color='#1a1a1a')
 #plt.fill_between(acf[:,0],0,acf[:,1],color='#999999',zorder=-20)
 plt.hlines(y=[1.96/m.sqrt(maxLag),-1.96/m.sqrt(maxLag)],xmin=0,xmax=numPts-1,linewidth=1, color='#ef8a62',linestyle='dashed')
