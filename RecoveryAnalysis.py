@@ -2,8 +2,10 @@ import numpy as np
 import math as m
 import random as r
 import CARMAFast as CF
-import matplotlib
-matplotlib.use('Agg')
+HOST = socket.gethostname()
+if HOST in ['dirac.physics.drexel.edu','sun.physics.drexel.edu']:
+	import matplotlib
+	matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import operator

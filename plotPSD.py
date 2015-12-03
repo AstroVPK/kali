@@ -1,6 +1,10 @@
-import numpy as np		
+import numpy as np
 import math as m
 import CARMAFast as CF
+HOST = socket.gethostname()
+if HOST in ['dirac.physics.drexel.edu','sun.physics.drexel.edu']:
+	import matplotlib
+	matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap
