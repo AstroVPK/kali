@@ -38,6 +38,7 @@ import carmcmc as cmcmc
 goldenRatio=1.61803398875
 fhgt=10.0
 fwid=fhgt*goldenRatio
+dpi = 300
 
 AnnotateXXLarge = 72
 AnnotateXLarge = 48
@@ -207,6 +208,36 @@ class KellyCARMATask:
 			self.nsteps = 100
 			print Err + " Using default nsteps = %d."%(nsteps)
 
+		try:
+			self.plotLC = parser.getboolean('MISC', 'plotLC')
+		except CP.NoOptionError as Err:
+			self.plotLC = False
+			print Err + " Using default plotLC = %s."%(str(self.plotLC))
+
+		try:
+			self.JPG = parser.getboolean('MISC', 'JPG')
+		except CP.NoOptionError as Err:
+			self.JPG = False
+			print Err + " Using default JPG = %s."%(str(self.JPG))
+
+		try:
+			self.PDF = parser.getboolean('MISC', 'PDF')
+		except CP.NoOptionError as Err:
+			self.PDF = False
+			print Err + " Using default PDF = %s."%(str(self.PDF))
+
+		try:
+			self.EPS = parser.getboolean('MISC', 'EPS')
+		except CP.NoOptionError as Err:
+			self.EPS = False
+			print Err + " Using default EPS = %s."%(str(self.EPS))
+
+		try:
+			self.showFig = parser.getboolean('MISC', 'showFig')
+		except CP.NoOptionError as Err:
+			self.showFig = False
+			print Err + " Using default showFig = %s."%(str(self.showFig))
+
 	def writeLC(self, Mask = None, Cadences = None):
 		"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 		"""
@@ -260,6 +291,7 @@ class KellyCARMATask:
 			line = "%d %17.16e %17.16e %17.16e"%(self.Cadences[self.Cadences.shape[0]-1], self.Mask[self.Cadences.shape[0]-1], self.y[self.Cadences.shape[0]-1], self.yerr[self.Cadences.shape[0]-1])
 			outFile.write(line)
 			outFile.close()
+
 		else:
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			inFile = open(self.LCFile, 'rb')
@@ -281,6 +313,22 @@ class KellyCARMATask:
 				self.Mask[i] = float(words[1])
 				self.y[i] = float(words[2])
 				self.yerr[i] = float(words[3])
+
+		if self.plotLC == True:
+			fig1 = plt.figure(1, figsize=(fwid, fhgt))
+			ax1 = fig1.add_subplot(gs[:,:])
+			ax1.ticklabel_format(useOffset = False)
+			ax1.plot(self.t, self.y)
+			ax1.set_xlabel(r'$t$ (d)')
+			ax1.set_ylabel(r'Flux')
+			if self.JPG == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = dpi)
+			if self.PDF == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.pdf" , dpi = dpi)
+			if self.EPS == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = dpi)
+			if self.showFig == True:
+				plt.show()
 		return 0
 
 	def writeMCMCSamples(self, p, q):
@@ -340,12 +388,3 @@ if __name__ == "__main__":
 	else:
 		newTask = KellyCARMATask(args.pwd, args.cf)
 	newTask.run()
-
-	fig1 = plt.figure(1, figsize=(fwid, fhgt))
-	ax1 = fig1.add_subplot(gs[:,:])
-	ax1.ticklabel_format(useOffset = False)
-	ax1.plot(newTask.t, newTask.y)
-	ax1.set_xlabel(r'$t$ (d)')
-	ax1.set_ylabel(r'Flux')
-
-plt.show()

@@ -30,6 +30,12 @@
 # Python
 *.pyc
 
+# Data, Images, and Documents
+*.dat
+*.jpg
+*.pdf
+*.eps
+
 # Specific Executables
 testPoint
 endToEndTest
