@@ -1,5 +1,14 @@
 #!/usr/bin/env python
-"""	Fucking awesome!!!
+"""	Module to test Brandon kelly's C-ARMA code described in "Flexible and Scalable Methods for Quantifying 
+	Stochastic Variability in the Era of Massive Time-Domain Astronomical Data Sets" Kelly, Brandon C.; 
+	Becker, Andrew C.; Sobolewska, Malgosia; Siemiginowska, Aneta; Uttley, Phil The Astrophysical Journal, 
+	Volume 788, Issue 1, article id. 33, 18 pp. (2014) (10.1088/0004-637X/788/1/33) availble at 
+	https://github.com/brandonckelly/carma_pack
+
+	For a demonstration of the module, please run the module as a command line program using 
+	myPrompt$ python KellyAnalysis.py --help
+	and
+	myPrompt$ python KellyAnalysis.py $LIBCARMA/Examples/kellyTest kellyTest01.ini
 """
 import math as math
 import cmath as cmath
@@ -74,6 +83,33 @@ gs = gridspec.GridSpec(1000, 1000)
 set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontweight='normal',fontstretch='normal',fontsize=AxisMedium,useTex='True')
 
 class KellyCARMATask:
+	"""	Class to perform end-to-end analysis of Kelly C-ARMA code.
+
+		This class is designed to have all the components required to perform end-to-end tests of Brandon 
+		Kelly's C-ARMA code as presented in "Flexible and Scalable Methods for Quantifying Stochastic 
+		Variability in the Era of Massive Time-Domain Astronomical Data Sets" Kelly, Brandon C.; Becker, 
+		Andrew C.; Sobolewska, Malgosia; Siemiginowska, Aneta; Uttley, Phil The Astrophysical Journal, Volume 
+		788, Issue 1, article id. 33, 18 pp. (2014) (10.1088/0004-637X/788/1/33) avialble at 
+		https://github.com/brandonckelly/carma_pack.
+
+		The class is initialized by passing it a WorkingDirectory (where all the processing occurs and 
+		outputs are written to), a ConfigFile (formatted like an old-fashioned MS Windows .ini file), and 
+		optionally a DateTime stamp that can be used to request the class to load a previously computed 
+		lightcurve and/or MCMC samples i.e. all products are tagged with a DateTime stamp generated when a 
+		class member is instantiated. Using this stamp enables the class to re-use a given ConfigFile 
+		multiple times by generating and tracking multiple realizations of a given C-ARMA model. 
+
+		If a class object is instantiated without the optional DateTime stamp, the class automatically 
+		generates a brand new instance of a C-ARMA model with the parameters supplied in the ConfigFile.
+
+		If a class object is instantiated with a valid DateTime stamp (i.e. at the very least, 
+		WorkingDirectory has a light curve file tagged with the DateTime stamp), the light curve and 
+		requested MCMCSamples will be loaded from disk.
+
+		If a class object is instantiated with an invalid DateTime stamp (i.e. WorkingDirectory has no light 
+		curve file tagged with the DateTime stamp), the light curve and requested MCMCSamples will be 
+		generated afresh and the supplied DateTime stamp will be discarded.
+	"""
 	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
 		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 		self.WorkingDirectory = WorkingDirectory
@@ -172,7 +208,7 @@ class KellyCARMATask:
 			print Err + " Using default nsteps = %d."%(nsteps)
 
 	def writeLC(self, Mask = None, Cadences = None):
-		"""	Create a C-ARMA light curve given a list of AR polynomial roots and a list of MA polynomial co-efficients. 
+		"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 		"""
 		self.t = None
 		self.y = None
@@ -248,21 +284,7 @@ class KellyCARMATask:
 		return 0
 
 	def writeMCMCSamples(self, p, q):
-		"""Read in a given pickled 'sample' file
-	
-		pickledSamplePath: Full path to pickled sample file output using Kelly's C-ARMA code.
-	
-		Assuming that using Kelly's C-ARMA code, we have executed
-		>>> CARMA_Model = carmcmc.CarmaModel(t, y, yerr)
-		>>> MLE, pqlist, AICc_list = CARMA_Model.choose_order(pmax, njobs=16)
-		>>> sample = CARMA_Model.run_mcmc(nwalkers)
-		where (t, y, yerr) is the lightcurve of the object that we are interested in. 'sample' is the MCMC chain 
-		produced by Kelly's C-ARMA code. To save time and not re-run the Kelly C-ARMA code, we can save 'sample' 
-		by pickling it using something like
-		>>> Sample = open(pickledSamplePath, 'wb')
-		>>> cPickle.dump(sample, Sample, -1)
-		>>> Sample.close()
-		This code requires the 'pickledSamplePath' that 'sample' is dumped to.
+		"""	Create a MCMCSamples chain of draws from the posterior distribution of model parameters.
 		"""
 		SamplesFilePath = self.WorkingDirectory + self.prefix + "_MCMCSamples_%d_%d.pkl"%(p,q)
 		try:
@@ -290,18 +312,28 @@ class KellyCARMATask:
 		MAPoly = ma_coefs*sigma
 		return (LCMean, LCVar, ARPoly, MAPoly, LogLikelihood)
 
-	def run(self):
-		"""	
+	def run(self, p = None, q = None):
+		"""	Run the KellyAnalysisTask
 		"""
 		self.writeLC()
-		self.writeMCMCSamples(self.p, self.q)
+		if not p and not q:
+			self.writeMCMCSamples(self.p, self.q)
+		elif not p and q < self.p:
+			self.writeMCMCSamples(self.p, q)
+		elif p > self.q and not q:
+			self.writeMCMCSamples(p, self.q)
+		elif p and q < p:
+			self.writeMCMCSamples(p, q)
+		else:
+			print "Invalid C-ARMA model order!"
+			sys.exit()
 		return 1
 
 if __name__ == "__main__":
 	parser = AP.ArgumentParser()
-	parser.add_argument("pwd", help="Path to Working Directory")
-	parser.add_argument("cf", help="Configuration File")
-	parser.add_argument("--oldMCMC", help="DateTime of old LC and MCMC Chains to be used")
+	parser.add_argument("pwd", help = "Path to Working Directory")
+	parser.add_argument("cf", help = "Configuration File")
+	parser.add_argument("--oldMCMC", help = "DateTime of old LC and MCMC Chains to be used")
 	args = parser.parse_args()
 	if args.oldMCMC:
 		newTask = KellyCARMATask(args.pwd, args.cf, args.oldMCMC)
