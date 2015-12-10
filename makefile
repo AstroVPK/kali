@@ -16,11 +16,13 @@ OFFLOAD_FLAGS =
 #OFFLOAD_FLAGS = -offload=optional
 
 #MKL Flags.
-#MKLFLAGS = -DMKL_ILP64 -qopenmp -I$(MKLROOT)/include
-MKLFLAGS = -qopenmp -I$(MKLROOT)/include
+MKLFLAGS = -qopenmp -I${MKLROOT}/include
 
 #MKL link line.
-#MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+#MKL_LIBS = -L$(MKLROOT)/lib/intel64  -lmkl_rt -lpthread -lm
+# Dynamic Linking
+#MKL_LIBS = -L$(MKLROOT)/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread -lm
+# Static linking
 MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
 
 NLOPTLIBS = -lnlopt
@@ -43,7 +45,7 @@ _DEPENDENCIES = Constants.hpp Utilities.hpp Acquire.hpp Universe.hpp Spherical.h
 #PRH.hpp
 DEPENDENCIES = $(patsubst %,$(IDIR)/%,$(_DEPENDENCIES))
 
-_OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler.o CARMA.o MCMC.o  DLAPACKE.o Correlation.o
+_OBJECTS = Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler.o CARMA.o MCMC.o  DLAPACKE.o Correlation.o Functions.o
 #PRH.o
 OBJECTS = $(patsubst %,$(ODIR)/%,$(_OBJECTS))
 
@@ -56,8 +58,15 @@ EXEC6 = writeMockLC
 EXEC7 = computeCFs
 EXEC8 = recoveryTest
 EXT = .cpp
+EXTOBJ = .o
+EXTLIB = .so
+FUNCTIONS = Functions
+LIBCARMA = libcarma
 
-all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8)
+all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
+
+$(LIBCARMA): $(OBJECTS)
+	$(CXX) -shared -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS)
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
@@ -90,10 +99,10 @@ $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS)  $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS)  $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/DLAPACKE.o: $(SRCDIR)/DLAPACKE.cpp $(IDIR)/DLAPACKE.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
@@ -102,7 +111,10 @@ $(ODIR)/Correlation.o: $(SRCDIR)/Correlation.cpp $(IDIR)/Correlation.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/Constants.o: $(SRCDIR)/Constants.cpp $(IDIR)/Constants.hpp
-	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+
+$(ODIR)/Functions.o: $(SRCDIR)/Functions.cpp
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@ 
 
 $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@

@@ -48,3 +48,5 @@ writeKeplerLC
 writeMockLC
 computeCFs
 recoveryTest
+_libcarma.py
+libcarma.so
