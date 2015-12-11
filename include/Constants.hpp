@@ -7,6 +7,8 @@ extern double pi;
 
 extern double e;
 
+extern double infiniteVal;
+
 extern double integrationTime;
 extern double readTime;
 extern int numIntegrationsSC; 

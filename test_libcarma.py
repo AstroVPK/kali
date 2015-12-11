@@ -9,6 +9,7 @@ import matplotlib.patches as mpatches
 from matplotlib import gridspec, cm
 import matplotlib.cm as colormap
 import matplotlib.mlab as mlab
+import time
 import pdb
 
 from _libcarma import ffi
@@ -108,7 +109,23 @@ for i in xrange(numCadences):
 	y_cffi[i] = 0.0
 	yerr_cffi[i] = 0.0
 
+makeLCStart = time.time()
+
 YesOrNo = C.cffi_makeMockLC(dt_cffi, p_cffi, q_cffi, Theta_cffi, numBurn_cffi, numCadences_cffi, noiseSigma_cffi, startCadence_cffi, burnSeed_cffi, distSeed_cffi, noiseSeed_cffi, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+
+makeLCStop = time.time()
+
+print "Time to make LC: %f (s)"%(makeLCStop - makeLCStart)
+
+computeLnLikeStart = time.time()
+
+LnLike = C.cffi_computeLnLike(dt_cffi, p_cffi, q_cffi, Theta_cffi, numCadences_cffi,cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+
+computeLnLikeStop = time.time()
+
+print "LnLike: %+16.17e"%(LnLike)
+
+print "Time to compute LnLike: %f (s)"%(computeLnLikeStop - computeLnLikeStart)
 
 for i in xrange(numCadences):
 	cadence[i] = cadence_cffi[i]
