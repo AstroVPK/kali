@@ -36,6 +36,9 @@
 *.pdf
 *.eps
 
+# Python Extensions
+_*.py
+
 # Specific Executables
 testPoint
 endToEndTest
