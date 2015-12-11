@@ -84,8 +84,8 @@ t = np.array(numCadences*[0.0])
 y = np.array(numCadences*[0.0])
 yerr = np.array(numCadences*[0.0])
 nthreads = 8
-nwalkers = 16
-nsteps = 10
+nwalkers = 100
+nsteps = 1000
 maxEvals = 1000
 xTol = 0.005
 zSSeed = 2229588325
@@ -164,6 +164,21 @@ plt.ylabel(r'$F$ (arb units)')
 plt.xlabel(r'$t$ (d)')
 plt.xlim(t[0],t[-1])
 plt.ylim(yMin,yMax)
+
+plt.figure(2,figsize=(fwid,fhgt))
+plt.scatter(Chain[int(nsteps/2.0):,:,0], Chain[int(nsteps/2.0):,:,1], c = np.max(LnLike[int(nsteps/2.0):,:]) - LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
+plt.xlim(np.min(Chain[int(nsteps/2.0):,:,0]),np.max(Chain[int(nsteps/2.0):,:,0]))
+plt.xlim(np.min(Chain[int(nsteps/2.0):,:,1]),np.max(Chain[int(nsteps/2.0):,:,1]))
+plt.xlabel(r'$a_{1}$')
+plt.ylabel(r'$a_{2}$')
+
+plt.figure(3,figsize=(fwid,fhgt))
+plt.scatter(Chain[int(nsteps/2.0):,:,2], Chain[int(nsteps/2.0):,:,3], c = np.max(LnLike[int(nsteps/2.0):,:]) - LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
+plt.xlim(np.min(Chain[int(nsteps/2.0):,:,2]),np.max(Chain[int(nsteps/2.0):,:,2]))
+plt.xlim(np.min(Chain[int(nsteps/2.0):,:,3]),np.max(Chain[int(nsteps/2.0):,:,3]))
+plt.xlabel(r'$b_{0}$')
+plt.ylabel(r'$b_{1}$')
+
 plt.show()
 
 pdb.set_trace()
