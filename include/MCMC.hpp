@@ -22,6 +22,8 @@ public:
 	EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthreads, double a, double (*func)(double* x, void* funcArgs), void* funcArgs, unsigned int zSeed, unsigned int bernoulliSeed, unsigned int walkerSeed);
 	~EnsembleSampler();
 	void runMCMC(double* initPos);
+	void getChain(double *ChainPtr);
+	void getLnLike(double *LnLikePtr);
 	void writeChain(string filePath, int mode);
 	};
 

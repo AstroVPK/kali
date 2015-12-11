@@ -345,7 +345,8 @@ int main() {
 	cout << "Time taken: " << timeTotLnLike << " (sec)" << endl;
 	#endif
 
-	cout << "LnLike: " << LnLike << endl;
+	cout.precision(16);
+	cout  << noshowpos << scientific << "LnLike: " << LnLike << endl;
 	cout << endl;
 	SystemMaster.deallocCARMA();
 

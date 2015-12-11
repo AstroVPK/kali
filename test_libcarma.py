@@ -66,9 +66,10 @@ set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontw
 ffiObj = cffi.FFI()
 C = ffi.dlopen("./libcarma.so")
 
-dt = 0.01
+dt = 0.02
 p = 2
 q = 1
+ndims = p + q + 1
 Theta = [0.75, 0.01, 7.0e-9, 1.2e-9]
 numBurn = 1000000
 numCadences = 60000
@@ -82,48 +83,55 @@ mask = np.array(numCadences*[0.0])
 t = np.array(numCadences*[0.0])
 y = np.array(numCadences*[0.0])
 yerr = np.array(numCadences*[0.0])
+nthreads = 8
+nwalkers = 16
+nsteps = 10
+maxEvals = 1000
+xTol = 0.005
+zSSeed = 2229588325
+walkerSeed = 3767076656
+moveSeed = 2867335446
+xSeed = 1413995162
+initSeed = 3684614774
+Chain = np.zeros((nsteps,nwalkers,ndims))
+LnLike = np.zeros((nsteps,nwalkers))
 
-dt_cffi = dt
-p_cffi = p
-q_cffi = q
 Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
-numBurn_cffi = numBurn
-numCadences_cffi = numCadences
-noiseSigma_cffi = noiseSigma
-startCadence_cffi = startCadence
-burnSeed_cffi = burnSeed
-distSeed_cffi = distSeed
-noiseSeed_cffi = noiseSeed
 cadence_cffi = ffiObj.new("int[%d]"%(numCadences))
 mask_cffi = ffiObj.new("double[%d]"%(numCadences))
 t_cffi = ffiObj.new("double[%d]"%(numCadences))
 y_cffi = ffiObj.new("double[%d]"%(numCadences))
 yerr_cffi = ffiObj.new("double[%d]"%(numCadences))
-
 for i in xrange(numCadences):
 	cadence_cffi[i] = i
 	mask_cffi[i] = 1.0
-	t_cffi[i] = dt_cffi*i
+	t_cffi[i] = dt*i
 	y_cffi[i] = 0.0
 	yerr_cffi[i] = 0.0
+Chain_cffi = ffiObj.new("double[%d]"%(ndims*nwalkers*nsteps))
+for i in xrange(ndims*nwalkers*nsteps):
+	Chain_cffi[i] = 0.0
+LnLike_cffi = ffiObj.new("double[%d]"%(nwalkers*nsteps))
+for i in xrange(nwalkers*nsteps):
+	LnLike_cffi[i] = 0.0
 
 makeLCStart = time.time()
 
-YesOrNo = C.cffi_makeMockLC(dt_cffi, p_cffi, q_cffi, Theta_cffi, numBurn_cffi, numCadences_cffi, noiseSigma_cffi, startCadence_cffi, burnSeed_cffi, distSeed_cffi, noiseSeed_cffi, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+LnLikeVal = C._makeMockLC(dt, p, q, Theta_cffi, numBurn, numCadences, noiseSigma, startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 
 makeLCStop = time.time()
 
-print "Time to make LC: %f (s)"%(makeLCStop - makeLCStart)
+print "Time to make LC & compute LnLike: %f (s)"%(makeLCStop - makeLCStart)
 
 computeLnLikeStart = time.time()
 
-LnLike = C.cffi_computeLnLike(dt_cffi, p_cffi, q_cffi, Theta_cffi, numCadences_cffi,cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+LnLikeValOther = C._computeLnLike(dt, p, q, Theta_cffi, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 
 computeLnLikeStop = time.time()
 
-print "LnLike: %+16.17e"%(LnLike)
+print "LnLike: %+16.17e"%(LnLikeVal)
 
 print "Time to compute LnLike: %f (s)"%(computeLnLikeStop - computeLnLikeStart)
 
@@ -133,6 +141,20 @@ for i in xrange(numCadences):
 	t[i] = t_cffi[i]
 	y[i] = y_cffi[i]
 	yerr[i] = yerr_cffi[i]
+
+fitCARMAStart = time.time()
+
+C._fitCARMA(dt, p, q, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
+
+fitCARMAStop = time.time()
+
+print "Time to fit C-ARMA model: %f (s)"%(fitCARMAStop - fitCARMAStart)
+
+for stepNum in xrange(nsteps):
+	for walkerNum in xrange(nwalkers):
+		LnLike[stepNum, walkerNum] = LnLike_cffi[walkerNum + stepNum*nwalkers]
+		for dimNum in xrange(ndims):
+			Chain[stepNum, walkerNum, dimNum] = Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers]
 
 plt.figure(1,figsize=(fwid,fhgt))
 plt.errorbar(t,y,yerr,fmt='.',capsize=0,color='#d95f02',markeredgecolor='none',zorder=10)

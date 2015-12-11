@@ -467,6 +467,30 @@ void EnsembleSampler::runMCMC(double* initPos) {
 	_mm_free(BernoulliStream);
 	}
 
+void EnsembleSampler::getChain(double *ChainPtr) {
+	int nsteps = numSteps;
+	int nwalkers = numWalkers;
+	int ndims = numDims;
+	int sizeChain = numDims*numWalkers*numSteps;
+	double* Ptr2Chain = &Chain[0];
+	#pragma omp parallel for simd default(none) shared(sizeChain, ChainPtr, Ptr2Chain)
+	for (int i = 0; i < sizeChain; ++i) {
+		ChainPtr[i] = Ptr2Chain[i];
+		}
+	}
+
+void EnsembleSampler::getLnLike(double *LnLikePtr) {
+	int nsteps = numSteps;
+	int nwalkers = numWalkers;
+	int ndims = numDims;
+	int sizeLnLike = numWalkers*numSteps;
+	double* Ptr2LnLike = &LnLike[0];
+	#pragma omp parallel for simd default(none) shared(sizeLnLike, LnLikePtr, Ptr2LnLike)
+	for (int i = 0; i < sizeLnLike; ++i) {
+		LnLikePtr[i] = Ptr2LnLike[i];
+		}
+	}
+
 void EnsembleSampler::writeChain(string filePath, int mode = 0) {
 	ofstream outFile;
 	if (mode == 0) {

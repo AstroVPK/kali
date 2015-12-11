@@ -66,10 +66,10 @@ LIBCARMA = libcarma
 all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
 
 $(LIBCARMA): $(OBJECTS)
-	$(CXX) -shared -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS)
+	$(CXX) -shared -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
-	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
+	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
 
 $(EXEC2): $(OBJECTS) $(patsub %,$(EXEC2)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC2)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
@@ -87,7 +87,7 @@ $(EXEC6): $(OBJECTS) $(patsub %,$(EXEC6)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC6)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
 
 $(EXEC7): $(OBJECTS) $(patsub %,$(EXEC7)%,$(EXT))
-	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC7)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) -o $@
+	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC7)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
 
 $(EXEC8): $(OBJECTS) $(patsub %,$(EXEC8)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC8)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
@@ -114,7 +114,7 @@ $(ODIR)/Constants.o: $(SRCDIR)/Constants.cpp $(IDIR)/Constants.hpp
 	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/Functions.o: $(SRCDIR)/Functions.cpp
-	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@ 
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) $(REPORTFLAG) -I $(IDIR) $(NLOPTLIBS) $< -o $@ 
 
 $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR) $< -o $@
@@ -130,27 +130,3 @@ clean:
 	rm $(EXEC6)
 	rm $(EXEC7)
 	rm $(EXEC8)
-
-#clean$(EXEC1):
-#	rm $(EXEC1)
-
-#clean$(EXEC2):
-#	rm $(EXEC2)
-
-#clean$(EXEC3):
-#	rm $(EXEC3)
-
-#clean$(EXEC4):
-#	rm $(EXEC4)
-
-#clean$(EXEC5):
-#	rm $(EXEC5)
-
-#clean$(EXEC6):
-#	rm $(EXEC6)
-
-#clean$(EXEC7):
-#	rm $(EXEC7)
-
-#clean$(EXEC8):
-#	rm $(EXEC8)
