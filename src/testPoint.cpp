@@ -155,6 +155,7 @@ int main() {
 			SystemMaster.setCARMA(ThetaMaster);
 			SystemMaster.set_t(t_incr);
 			SystemMaster.solveCARMA();
+			SystemMaster.computeSigma();
 			SystemMaster.resetState();
 			LnLike = SystemMaster.computeLnLike(numCadences, y, yerr, mask);
 			cout << endl;

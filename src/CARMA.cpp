@@ -166,6 +166,7 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
 		Systems[threadNum].setCARMA(const_cast<double*>(&x[0]));
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].computeSigma();
 		Systems[threadNum].resetState();
 		LnLike = Systems[threadNum].computeLnLike(numPts, y, yerr, mask);
 		} else {
@@ -229,6 +230,7 @@ double calcLnLike(double* walkerPos, void* func_args) {
 
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].computeSigma();
 		Systems[threadNum].resetState();
 		LnLike = Systems[threadNum].computeLnLike(numPts, y, yerr, mask);
 		} else {
@@ -320,6 +322,15 @@ void viewMatrix(int nRows, int nCols, double* mat) {
 		}
 	}
 
+void viewMatrix(int nRows, int nCols, vector<double> mat) {
+	for (int i = 0; i < nRows; i++) {
+		for (int j = 0; j < nCols; j++) {
+			printf("%+E ",mat[j*nCols + i]);
+			}
+		printf("\n");
+		}
+	}
+
 void viewMatrix(int nRows, int nCols, complex<double>* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
@@ -391,6 +402,8 @@ CARMA::CARMA() {
 	q = 0;
 	pSq = 0;
 	t = 0.0;
+	maxT = 1.0e300;
+	InitStepSize = 1.0e-12;
 
 	ilo = nullptr; // len 1
 	ihi = nullptr; // len 1
@@ -1812,7 +1825,7 @@ void CARMA::solveCARMA() {
 
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
-	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, t, 1.0e-6*t);
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, t, InitStepSize);
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		D[rowCtr] = sqrt(initX[rowCtr]);
@@ -1834,6 +1847,31 @@ void CARMA::solveCARMA() {
 	printf("\n");
 	printf("solveDLM - threadNum: %d; Q\n",threadNum);
 	viewMatrix(p,p,Q);
+	printf("\n");
+	#endif
+	}
+
+void CARMA::computeSigma() {
+	// Compute Sigma by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to infinity
+	vector<double> initX(p); 
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, maxT, InitStepSize);
+
+	// Finally compute Sigma
+	//cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasTrans, p, 1, 1, &alpha, BScratch, p, BScratch, 1, &beta, Q, p);
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			Sigma[rowCtr + colCtr*p] = sqrt(initX[rowCtr])*sqrt(initX[colCtr]);
+			}
+		}
+
+	#ifdef DEBUG_SOLVECARMA
+	printf("computeSigma - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%f ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("computeSigma - threadNum: %d; Sigma\n",threadNum);
+	viewMatrix(p,p,Sigma);
 	printf("\n");
 	#endif
 	}
@@ -1871,10 +1909,13 @@ void CARMA::resetState() {
 	// Compute P by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to infinity.
 	vector<double> initX(p);
 
-	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, 1.79769e+308, 1.0e-6);
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, maxT, InitStepSize);
 
 	#ifdef DEBUG_RESETSTATE
 	printf("resetState - threadNum: %d; steps: %lu\n",threadNum,steps);
+	printf("resetState - threadNum: %d; initX\n",threadNum);
+	viewMatrix(p,1,initX);
+	printf("\n");
 	#endif
 
 	// Finally compute P and in the process, reset the others.
@@ -1889,6 +1930,12 @@ void CARMA::resetState() {
 			P[rowCtr + colCtr*p] = sqrt(initX[rowCtr])*sqrt(initX[colCtr]);
 			}
 		}
+
+	#ifdef DEBUG_RESETSTATE
+	printf("resetState - threadNum: %d; P\n",threadNum);
+	viewMatrix(p,p,P);
+	printf("\n");
+	#endif
 
 	}
 
