@@ -64,7 +64,7 @@ for i in range(numPts):
 
 acfFilePath=basePath+'acf.dat'
 try:
-	acfFile=open(acfFilePath)
+	acfFile = open(acfFilePath)
 except IOError:
 	acfFile = False
 if acfFile:
@@ -82,9 +82,9 @@ if acfFile:
 
 pacfFilePath=basePath+'pacf.dat'
 try:
-	pacfFile=open(pacfFilePath)
+	pacfFile = open(pacfFilePath)
 except IOError:
-	pacfFile = True
+	pacfFile = False
 if pacfFile:
 	line=pacfFile.readline()
 	line=pacfFile.readline()

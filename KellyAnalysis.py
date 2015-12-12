@@ -83,6 +83,17 @@ gs = gridspec.GridSpec(1000, 1000)
 
 set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontweight='normal',fontstretch='normal',fontsize=AxisMedium,useTex='True')
 
+class KellyCARAMSample(cmcmc.carma_pack.CarmaSample):
+	"""	Class to store Kelly C-ARMA MCMC Samples and a hansh value.
+	"""
+	self.ConfigFileHash = None
+
+	def getHash(WorkingDirectory, ConfigFile):
+		hashFile = open(WorkingDirectory + ConfigFile, 'r')
+		hashData = hashFile.read().replace('\n', '').replace(' ', '')
+		hashObject = hashlib.sha512(hashData.encode())
+		return hashObject.hexdigest()
+
 class KellyCARMATask:
 	"""	Class to perform end-to-end analysis of Kelly C-ARMA code.
 
@@ -108,23 +119,32 @@ class KellyCARMATask:
 		requested MCMCSamples will be loaded from disk.
 
 		If a class object is instantiated with an invalid DateTime stamp (i.e. WorkingDirectory has no light 
-		curve file tagged with the DateTime stamp), the light curve and requested MCMCSamples will be 
-		generated afresh and the supplied DateTime stamp will be discarded.
+		curve file tagged with the DateTime stamp), or the hash recorded in the light curve file no longer 
+		matches that generated afresh from the existing ConfigFile, the program will exit with an error 
+		message.
 	"""
 	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
 		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
+		try:
+			hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
+			hashData = hashFile.read().replace('\n', '').replace(' ', '')
+			hashObject = hashlib.sha512(hashData.encode())
+			self.ConfigFileHash = hashObject.hexdigest()
+		except IOError as Err:
+			print str(Err) + ". Exiting..."
+			sys.exit(1)
 
 		if DateTime:
 			try:
-				TestFile = open(WorkingDirectory + self.preprefix + '_' + DateTime + '_LC.dat', 'rb')
+				TestFile = open(WorkingDirectory + self.preprefix + '_' + DateTime + '_LC.dat', 'r')
 				self.DateTime = DateTime
 				self.prefix = ConfigFile.split(".")[0] + "_" + self.DateTime
-			except IOError:
-				self.DateTime = None
-				self.prefix = ConfigFile.split(".")[0] + "_" + self.RunTime
+			except IOError as Err:
+				print str(Err) + ". Exiting..."
+				sys.exit(1)
 		else:
 			self.DateTime = None
 			self.prefix = ConfigFile.split(".")[0] + "_" + self.RunTime
@@ -134,21 +154,21 @@ class KellyCARMATask:
 
 		try:
 			self.dt = float(parser.get('C-ARMA', 'dt'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.dt = 1.0
-			print Err + " Using default dt = %f (d)."%(self.dt)
+			print str(Err) + ". Using default dt = %f (d)."%(self.dt)
 
 		try:
 			self.T = float(parser.get('C-ARMA', 'T'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.T = 100.0
-			print Err + " Using default T = %f (d)."%(self.T)
+			print str(Err) + ". Using default T = %f (d)."%(self.T)
 
 		try:
 			self.baseFlux = float(parser.get('C-ARMA', 'baseFlux'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.baseFlux = 0.0
-			print str(Err) + " Using default baseFlux = %f (arb. units)."%(self.baseFlux)
+			print str(Err) + ". Using default baseFlux = %f (arb. units)."%(self.baseFlux)
 
 		ARRoots = list()
 		MAPoly = list()
@@ -184,7 +204,7 @@ class KellyCARMATask:
 			print "Using MAPoly = " + str(self.MAPoly)
 
 		if self.p <= self.q:
-			print "Too many C-MA co-efficients!"
+			print "Too many C-MA co-efficients! Exiting..."
 			sys.exit(1)
 
 		self.ARRoots = np.array(ARRoots)
@@ -192,51 +212,57 @@ class KellyCARMATask:
 
 		try:
 			self.noiseLvl = float(parser.get('C-ARMA', 'noiseLvl'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.noiseLvl = self.MACoefs[0]/1.0e-9
-			print Err + " Using noiseLvl = %4.3e corresponding to default S/N = 1e9."%(self.nLvl)
+			print str(Err) + ". Using noiseLvl = %4.3e corresponding to default S/N = 1e9."%(self.nLvl)
 
 		try:
 			self.nwalkers = int(parser.get('MCMC', 'nwalkers'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.nwalkers = 100
-			print Err + " Using default nwalkers = %d."%(nwalkers)
+			print str(Err) + ". Using default nwalkers = %d."%(nwalkers)
 
 		try:
 			self.nsteps = int(parser.get('MCMC', 'nsteps'))
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.nsteps = 100
-			print Err + " Using default nsteps = %d."%(nsteps)
+			print str(Err) + ". Using default nsteps = %d."%(nsteps)
 
 		try:
 			self.plotLC = parser.getboolean('MISC', 'plotLC')
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.plotLC = False
-			print Err + " Using default plotLC = %s."%(str(self.plotLC))
+			print str(Err) + ". Using default plotLC = %s."%(str(self.plotLC))
 
 		try:
 			self.JPG = parser.getboolean('MISC', 'JPG')
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.JPG = False
-			print Err + " Using default JPG = %s."%(str(self.JPG))
+			print str(Err) + ". Using default JPG = %s."%(str(self.JPG))
 
 		try:
 			self.PDF = parser.getboolean('MISC', 'PDF')
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.PDF = False
-			print Err + " Using default PDF = %s."%(str(self.PDF))
+			print str(Err) + ". Using default PDF = %s."%(str(self.PDF))
 
 		try:
 			self.EPS = parser.getboolean('MISC', 'EPS')
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.EPS = False
-			print Err + " Using default EPS = %s."%(str(self.EPS))
+			print str(Err) + ". Using default EPS = %s."%(str(self.EPS))
 
 		try:
 			self.showFig = parser.getboolean('MISC', 'showFig')
-		except CP.NoOptionError as Err:
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showFig = False
-			print Err + " Using default showFig = %s."%(str(self.showFig))
+			print str(Err) + ". Using default showFig = %s."%(str(self.showFig))
+
+	def getHash():
+		hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
+		hashData = hashFile.read().replace('\n', '').replace(' ', '')
+		hashObject = hashlib.sha512(hashData.encode())
+		return hashObject.hexdigest()
 
 	def writeLC(self, Mask = None, Cadences = None):
 		"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
@@ -279,40 +305,49 @@ class KellyCARMATask:
 
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			outFile = open(self.LCFile, 'w')
+			line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
+			outFile.write(line)
 			line = "numCadences: %d\n"%(self.t.shape[0])
 			outFile.write(line)
 			line = "numObservations: %d\n"%(self.t.shape[0] - numMasked)
 			outFile.write(line)
 			line = "meanFlux: %+17.16e\n"%(np.mean(self.y))
 			outFile.write(line)
+			line = "CadenceNum Mask t y yerr\n"
+			outFile.write(line) 
 			for i in xrange(self.Cadences.shape[0]-1):
-				line = "%d %17.16e %17.16e %17.16e\n"%(self.Cadences[i], self.Mask[i], self.y[i], self.yerr[i])
+				line = "%d %1.0f %+17.16e %+17.16e %+17.16e\n"%(self.Cadences[i], self.Mask[i], self.t[i], self.y[i], self.yerr[i])
 				outFile.write(line)
-			line = "%d %17.16e %17.16e %17.16e"%(self.Cadences[self.Cadences.shape[0]-1], self.Mask[self.Cadences.shape[0]-1], self.y[self.Cadences.shape[0]-1], self.yerr[self.Cadences.shape[0]-1])
+			line = "%d %1.0f %+17.16e %+17.16e %+17.16e"%(self.Cadences[self.Cadences.shape[0]-1], self.Mask[self.Cadences.shape[0]-1], self.t[self.Cadences.shape[0]-1], self.y[self.Cadences.shape[0]-1], self.yerr[self.Cadences.shape[0]-1])
 			outFile.write(line)
 			outFile.close()
 
 		else:
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			inFile = open(self.LCFile, 'rb')
-			line = inFile.readline()
-			line = line.rstrip('\n')
-			words = line.split()
-			numCadences = int(words[1])
-			self.t = np.array(numCadences*[0.0])
-			self.y = np.array(numCadences*[0.0])
-			self.yerr = np.array(numCadences*[0.0])
-			self.Cadences = np.array(numCadences*[0.0])
-			self.Mask = np.array(numCadences*[0.0])
-			line = inFile.readline()
-			line = inFile.readline()
-			for i in xrange(numCadences):
-				words = inFile.readline().rstrip('\n').split()
-				self.t[i] = i*self.dt
-				self.Cadences[i] = int(words[0])
-				self.Mask[i] = float(words[1])
-				self.y[i] = float(words[2])
-				self.yerr[i] = float(words[3])
+			words = inFile.readline().rstrip('\n').split()
+			LCHash = words[0]
+			if (LCHash == self.ConfigFileHash):
+				line = inFile.readline()
+				line = line.rstrip('\n')
+				words = line.split()
+				numCadences = int(words[1])
+				self.t = np.array(numCadences*[0.0])
+				self.y = np.array(numCadences*[0.0])
+				self.yerr = np.array(numCadences*[0.0])
+				self.Cadences = np.array(numCadences*[0.0])
+				self.Mask = np.array(numCadences*[0.0])
+				line = inFile.readline()
+				line = inFile.readline()
+				for i in xrange(numCadences):
+					words = inFile.readline().rstrip('\n').split()
+					self.t[i] = i*self.dt
+					self.Cadences[i] = int(words[0])
+					self.Mask[i] = float(words[1])
+					self.y[i] = float(words[2])
+					self.yerr[i] = float(words[3])
+			else:
+				print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
 
 		if self.plotLC == True:
 			fig1 = plt.figure(1, figsize=(fwid, fhgt))
@@ -331,22 +366,28 @@ class KellyCARMATask:
 				plt.show()
 		return 0
 
-	def writeMCMCSamples(self, p, q):
-		"""	Create a MCMCSamples chain of draws from the posterior distribution of model parameters.
+	def getMCMCSamples(self, p, q):
+		"""	Get the MCMCSamples chain of draws from the posterior distribution of model parameters.
 		"""
 		SamplesFilePath = self.WorkingDirectory + self.prefix + "_MCMCSamples_%d_%d.pkl"%(p,q)
 		try:
 			SamplesFile = open(SamplesFilePath,'rb')
-			self.MCMCSamples = cPickle.load(SamplesFile)
+			MCMCSamples = cPickle.load(SamplesFile)
 			SamplesFile.close()
+			if (MCMCSamples.ConfigFileHash == self.ConfigFileHash):
+				self.MCMCSamples = MCMCSamples
+			else:
+				print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to generate the MCMC Samples. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
 		except IOError:
 			CARMA_Model = cmcmc.CarmaModel(self.t, self.y, self.yerr, p = p, q = q)
 			self.MCMCSamples = CARMA_Model.run_mcmc(self.nwalkers*self.nsteps)
+			self.MCMCSamples.__class__ = KellyCARMASample
+			self.MCMCSamples.ConfigFileHash = self.ConfigFileHash
 
 			SamplesFile = open(SamplesFilePath, 'wb')
 			cPickle.dump(self.MCMCSamples, SamplesFile, -1)
 			SamplesFile.close()
-		return 1
+		return 0
 
 	def getCARMAParams(self):
 		"""	Get the interesting parameters from a given MCMC Chains sample file.
@@ -365,17 +406,17 @@ class KellyCARMATask:
 		"""
 		self.writeLC()
 		if not p and not q:
-			self.writeMCMCSamples(self.p, self.q)
+			self.getMCMCSamples(self.p, self.q)
 		elif not p and q < self.p:
-			self.writeMCMCSamples(self.p, q)
+			self.getMCMCSamples(self.p, q)
 		elif p > self.q and not q:
-			self.writeMCMCSamples(p, self.q)
+			self.getMCMCSamples(p, self.q)
 		elif p and q < p:
-			self.writeMCMCSamples(p, q)
+			self.getMCMCSamples(p, q)
 		else:
 			print "Invalid C-ARMA model order!"
-			sys.exit()
-		return 1
+			sys.exit(1)
+		return 0
 
 if __name__ == "__main__":
 	parser = AP.ArgumentParser()
