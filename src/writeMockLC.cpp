@@ -263,12 +263,14 @@ int main() {
 
 	int* cadence = static_cast<int*>(_mm_malloc(numObs*sizeof(int),64));
 	double* mask = static_cast<double*>(_mm_malloc(numObs*sizeof(double),64));
+	double* t = static_cast<double*>(_mm_malloc(numObs*sizeof(double),64));
 	double* y = static_cast<double*>(_mm_malloc(numObs*sizeof(double),64));
 	double* yerr = static_cast<double*>(_mm_malloc(numObs*sizeof(double),64));
 
 	for (int obsCounter = 0; obsCounter < numObs; ++obsCounter) {
 		cadence[obsCounter] = get<0>(dataArray)[obsCounter+offSet][0];
 		mask[obsCounter] = keplerMask[obsCounter+offSet];
+		t[obsCounter] = t_incr*obsCounter;
 		}
 	_mm_free(keplerMask);
 
@@ -336,7 +338,7 @@ int main() {
 	timeBegLnLike = dtime();
 	#endif
 
-	double LnLike = SystemMaster.computeLnLike(numObs, y, yerr, mask);
+	double LnLike = SystemMaster.computeLnLikeR(numObs, t, y, yerr, mask);
 
 	#ifdef TIME_LNLIKE
 	#pragma omp barrier
@@ -356,6 +358,7 @@ int main() {
 
 	_mm_free(cadence);
 	_mm_free(mask);
+	_mm_free(t);
 	_mm_free(y);
 	_mm_free(yerr);
 	_mm_free(ThetaMaster);

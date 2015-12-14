@@ -86,9 +86,9 @@ set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontw
 class KellyCARAMSample(cmcmc.carma_pack.CarmaSample):
 	"""	Class to store Kelly C-ARMA MCMC Samples and a hansh value.
 	"""
-	self.ConfigFileHash = None
+	ConfigFileHash = None
 
-	def getHash(WorkingDirectory, ConfigFile):
+	def getHash(self, WorkingDirectory, ConfigFile):
 		hashFile = open(WorkingDirectory + ConfigFile, 'r')
 		hashData = hashFile.read().replace('\n', '').replace(' ', '')
 		hashObject = hashlib.sha512(hashData.encode())

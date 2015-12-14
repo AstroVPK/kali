@@ -31,6 +31,7 @@
 //#define DEBUG_BURNSYSTEM
 //#define WRITE_BURNSYSTEM
 //#define DEBUG_OBSSYSTEM
+#define DEBUG_OBS
 //#define DEBUG_CTORCARMA
 //#define DEBUG_DTORCARMA
 //#define DEBUG_ALLOCATECARMA
@@ -45,7 +46,7 @@
 
 using namespace std;
 
-double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
+double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	/*! Used for computing good regions */
 	if (!grad.empty()) {
 		#pragma omp simd
@@ -56,18 +57,10 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Ar
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs* ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
-
-	int numThreads = Args.numThreads;
-	LnLikeData Data = Args.Data;
-	CARMA* Systems = Args.Systems;
-
-	int numPts = Data.numPts;
+	CARMA *Systems = Args.Systems;
 	double LnLike = 0;
-	double* y = Data.y;
-	double* yerr = Data.yerr;
-	double* mask = Data.mask;
 
 	#ifdef DEBUG_CALCLNLIKE2
 	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
@@ -88,24 +81,15 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Ar
 
 	}
 
-double calcCARMALnLike(double* walkerPos, void* func_args) {
+double calcCARMALnLike(double *walkerPos, void *func_args) {
 	/*! Used for computing good regions */
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs* ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
-
-	int numThreads = Args.numThreads;
-	LnLikeData Data = Args.Data;
 	CARMA* Systems = Args.Systems;
-
-	int numPts = Data.numPts;
-	double* y = Data.y;
-	double* yerr = Data.yerr;
-	double* mask = Data.mask;
-
-	double LnLike = 0.0;
+	double LnLike = 0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
@@ -136,7 +120,7 @@ double calcCARMALnLike(double* walkerPos, void* func_args) {
 
 	}
 
-double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
+double calcLnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	if (!grad.empty()) {
 		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
@@ -146,18 +130,11 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs* ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
-
-	int numThreads = Args.numThreads;
-	LnLikeData Data = Args.Data;
-	CARMA* Systems = Args.Systems;
-
-	int numPts = Data.numPts;
+	LnLikeData *ptr2Data = Args.Data;
+	CARMA *Systems = Args.Systems;
 	double LnLike = 0;
-	double* y = Data.y;
-	double* yerr = Data.yerr;
-	double* mask = Data.mask;
 
 	#ifdef DEBUG_CALCLNLIKE
 	printf("calcLnLike - threadNum: %d",threadNum);
@@ -168,7 +145,7 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].computeSigma();
 		Systems[threadNum].resetState();
-		LnLike = Systems[threadNum].computeLnLike(numPts, y, yerr, mask);
+		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
 		} else {
 		LnLike = -HUGE_VAL;
 		}
@@ -196,23 +173,17 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args) {
 
 	}
 
-double calcLnLike(double* walkerPos, void* func_args) {
+double calcLnLike(double *walkerPos, void *func_args) {
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs* ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
 
-	int numThreads = Args.numThreads;
-	LnLikeData Data = Args.Data;
-	CARMA* Systems = Args.Systems;
-
-	int numPts = Data.numPts;
-	double* y = Data.y;
-	double* yerr = Data.yerr;
-	double* mask = Data.mask;
-
-	double LnLike = 0.0;
+	LnLikeData *Data = Args.Data;
+	CARMA *Systems = Args.Systems;
+	LnLikeData *ptr2Data = Data;
+	double LnLike = 0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
@@ -232,7 +203,7 @@ double calcLnLike(double* walkerPos, void* func_args) {
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].computeSigma();
 		Systems[threadNum].resetState();
-		LnLike = Systems[threadNum].computeLnLike(numPts, y, yerr, mask);
+		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
 		} else {
 
 		#ifdef DEBUG_FUNC
@@ -401,7 +372,7 @@ CARMA::CARMA() {
 	p = 0;
 	q = 0;
 	pSq = 0;
-	t = 0.0;
+	dt = 0.0;
 	maxT = 1.0e300;
 	InitStepSize = 1.0e-12;
 
@@ -428,16 +399,6 @@ CARMA::CARMA() {
 	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
-	/*FKron = nullptr;
-	FKron_af = nullptr;
-	FKron_r = nullptr;
-	FKron_c = nullptr;
-	FKron_ipiv = nullptr;
-	FKron_rcond = nullptr;
-	FKron_rpvgrw = nullptr;
-	FKron_berr = nullptr;
-	FKron_err_bnds_norm = nullptr;
-	FKron_err_bnds_comp = nullptr;*/
 	Sigma = nullptr;
 	D = nullptr;
 	Q = nullptr;
@@ -473,7 +434,7 @@ CARMA::~CARMA() {
 	p = 0;
 	q = 0;
 	pSq = 0;
-	t = 0.0;
+	dt = 0.0;
 
 	ilo = nullptr;
 	ihi = nullptr;
@@ -497,16 +458,6 @@ CARMA::~CARMA() {
 	BScratch = nullptr;
 	I = nullptr;
 	F = nullptr;
-	/*FKron = nullptr;
-	FKron_af = nullptr;
-	FKron_r = nullptr;
-	FKron_c = nullptr;
-	FKron_ipiv = nullptr;
-	FKron_rcond = nullptr;
-	FKron_rpvgrw = nullptr;
-	FKron_berr = nullptr;
-	FKron_err_bnds_norm = nullptr;
-	FKron_err_bnds_comp = nullptr;*/
 	D = nullptr;
 	Sigma = nullptr;
 	Q = nullptr;
@@ -617,41 +568,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			AScratch[rowCtr + colCtr*p] = 0.0+0.0i;
 			}
 		}
-
-	/*FKron_rcond = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	FKron_rpvgrw = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	FKron_berr = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	FKron_err_bnds_norm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	FKron_err_bnds_comp = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
-	allocated += 5*sizeof(double);
-
-	FKron_r = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
-	FKron_c = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
-	allocated += pSq*sizeof(double);
-
-	FKron_ipiv = static_cast<lapack_int*>(_mm_malloc(pSq*pSq*sizeof(lapack_int),64));
-	allocated += pSq*pSq*sizeof(lapack_int);
-
-	FKron = static_cast<double*>(_mm_malloc(pSq*pSq*sizeof(double),64));
-	FKron_af = static_cast<double*>(_mm_malloc(pSq*pSq*sizeof(double),64));
-	allocated += pSq*pSq*sizeof(double);
-
-	FKron_rcond[0] = 0.0;
-	FKron_rpvgrw[0] = 0.0;
-	FKron_berr[0] = 0.0;
-	FKron_err_bnds_norm[0] = 0.0;
-	FKron_err_bnds_comp[0] = 0.0;
-
-	for (int colCtr = 0; colCtr < pSq; ++colCtr) {
-		FKron_r[colCtr] = 0.0;
-		FKron_c[colCtr] = 0.0;
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < pSq; ++rowCtr) {
-			FKron_ipiv[rowCtr + colCtr*pSq] = 0;
-			FKron[rowCtr + colCtr*pSq] = 0.0;
-			FKron_af[rowCtr + colCtr*pSq] = 0.0;
-			}
-		}*/
 
 	Theta = static_cast<double*>(_mm_malloc((p + q + 1)*sizeof(double),64));
 	allocated += (p+q+1)*sizeof(double);
@@ -831,56 +747,6 @@ void CARMA::deallocCARMA() {
 		F = nullptr;
 		}
 
-/*	if (FKron) {
-		_mm_free(FKron);
-		FKron = nullptr;
-		}
-
-	if (FKron_af) {
-		_mm_free(FKron_af);
-		FKron_af = nullptr;
-		}
-
-	if (FKron_r) {
-		_mm_free(FKron_r);
-		FKron_r = nullptr;
-		}
-
-	if (FKron_c) {
-		_mm_free(FKron_c);
-		FKron_c = nullptr;
-		}
-
-	if (FKron_ipiv) {
-		_mm_free(FKron_ipiv);
-		FKron_ipiv = nullptr;
-		}
-
-	if (FKron_rcond) {
-		_mm_free(FKron_rcond);
-		FKron_rcond = nullptr;
-		}
-
-	if (FKron_rpvgrw) {
-		_mm_free(FKron_rpvgrw);
-		FKron_rpvgrw = nullptr;
-		}
-
-	if (FKron_berr) {
-		_mm_free(FKron_berr);
-		FKron_berr = nullptr;
-		}
-
-	if (FKron_err_bnds_norm) {
-		_mm_free(FKron_err_bnds_norm);
-		FKron_err_bnds_norm = nullptr;
-		}
-
-	if (FKron_err_bnds_comp) {
-		_mm_free(FKron_err_bnds_comp);
-		FKron_err_bnds_comp = nullptr;
-		}*/
-
 	if (Theta) {
 		_mm_free(Theta);
 		Theta = nullptr;
@@ -959,12 +825,20 @@ int CARMA::get_q() {
 	return q;
 	}
 
-double CARMA::get_t() {
-	return t;
+double CARMA::get_dt() {
+	return dt;
 	}
 
-void CARMA::set_t(double t_incr) {
-	t = t_incr;
+void CARMA::set_dt(double t_incr) {
+	dt = t_incr;
+	}
+
+double CARMA::get_maxT() {
+	return maxT;
+	}
+
+void CARMA::set_maxT(double maxTVal) {
+	maxT = maxTVal;
 	}
 
 int CARMA::get_allocated() {
@@ -1338,23 +1212,6 @@ void CARMA::setCARMA(double *ThetaIn) {
 	#endif
 
 	H[0] = 1.0;
-
-	/*FKron_rcond[0] = 0.0;
-	FKron_rpvgrw[0] = 0.0;
-	FKron_berr[0] = 0.0;
-	FKron_err_bnds_norm[0] = 0.0;
-	FKron_err_bnds_comp[0] = 0.0;
-	for (int colCtr = 0; colCtr < pSq; ++colCtr) {
-		FKron_r[colCtr] = 0.0;
-		FKron_c[colCtr] = 0.0;
-		//#pragma omp simd
-		for (int rowCtr = 0; rowCtr < pSq; ++rowCtr) {
-			FKron_ipiv[rowCtr + colCtr*pSq] = 0;
-			FKron[rowCtr + colCtr*pSq] = 0.0;
-			FKron_af[rowCtr + colCtr*pSq] = 0.0;
-			}
-		}*/
-
 	}
 
 void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double xi) {
@@ -1405,12 +1262,6 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	#endif
 
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
-
-	/*for (int colCtr = 0; colCtr < p; ++colCtr) {
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			A[rowCtr + colCtr*p] = 0.0+0.0i;
-			}
-		}*/
 
 	#ifdef DEBUG_FUNCTOR
 	printf("() - threadNum: %d; walkerPos: ",threadNum);
@@ -1730,7 +1581,7 @@ void CARMA::solveCARMA() {
 	// First compute expm(A*t)
 	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
-		expw[i + i*p] = exp(t*w[i]);
+		expw[i + i*p] = exp(dt*w[i]);
 		}
 
 	#ifdef DEBUG_SOLVECARMA
@@ -1825,7 +1676,7 @@ void CARMA::solveCARMA() {
 
 	// Now compute Q by integrating expm(A*t)*B*trans(B)*expm(trans(A)*t) from 0 to t
 	vector<double> initX(p); 
-	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, t, InitStepSize);
+	size_t steps = boost::numeric::odeint::integrate(*this, initX, 0.0, dt, InitStepSize);
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		D[rowCtr] = sqrt(initX[rowCtr]);
@@ -1939,134 +1790,6 @@ void CARMA::resetState() {
 
 	}
 
-/*void CARMA::resetState_old() {
-
-	#ifdef DEBUG_RESETSTATE
-	int threadNum = omp_get_thread_num();
-	printf("resetState - threadNum: %d; Address of System: %p\n",threadNum,this);
-	printf("\n");
-	#endif
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		X[colCtr] = 0.0;
-		XMinus[colCtr] = 0.0;
-		VScratch[colCtr] = 0.0;
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			P[rowCtr + colCtr*p] = 0.0;
-			PMinus[rowCtr + colCtr*p] = 0.0;
-			MScratch[rowCtr + colCtr*p] = 0.0;
-			}
-		}
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; F (Before)\n",threadNum);
-	viewMatrix(p,p,F);
-	printf("\n");
-	printf("resetState - threadNum: %d; FKron (Before)\n",threadNum);
-	viewMatrix(pSq,pSq,FKron);
-	printf("\n");
-	#endif
-
-	kron(p,p,F,p,p,F,FKron);
-	for (int i = 0; i < pSq; i++) {
-		#pragma omp simd
-		for (int j = 0; j < pSq; j++) {
-			FKron[i*pSq + j] *= -1.0;
-			}
-		FKron[i*pSq + i] += 1.0;
-		}
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; F\n",threadNum);
-	viewMatrix(p,p,F);
-	printf("\n");
-	printf("resetState - threadNum: %d; FKron\n",threadNum);
-	viewMatrix(pSq,pSq,FKron);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; Q (Before)\n",threadNum);
-	viewMatrix(p,p,Q);
-	printf("\n");
-	printf("resetState - threadNum: %d; P (Before)\n",threadNum);
-	viewMatrix(p,p,P);
-	printf("\n");
-	#endif
-
-	lapack_int YesNo;
-	char equed = 'N';
-	cblas_dcopy(pSq, Q, 1, P, 1);
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; Q\n",threadNum);
-	viewMatrix(p,p,Q);
-	printf("\n");
-	printf("resetState - threadNum: %d; P\n",threadNum);
-	viewMatrix(p,p,P);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; FKron (Before)\n",threadNum);
-	viewMatrix(pSq,pSq,FKron);
-	printf("\n");
-	printf("resetState - threadNum: %d; Q (Before)\n",threadNum);
-	viewMatrix(p,p,Q);
-	printf("\n");
-	printf("resetState - threadNum: %d; P (Before)\n",threadNum);
-	viewMatrix(p,p,P);
-	printf("\n");
-	#endif
-
-	//YesNo = LAPACKE_dgesvxx(LAPACK_COL_MAJOR, 'E', 'N', pSq, 1, FKron, pSq, FKron_af, pSq, FKron_ipiv, &equed, FKron_r, FKron_c, Q, pSq, P, pSq, FKron_rcond, FKron_rpvgrw, FKron_berr, 1, FKron_err_bnds_norm, FKron_err_bnds_comp, 0, nullptr); // Not Working!!!!
-	YesNo = LAPACKE_dgesv(LAPACK_COL_MAJOR, pSq, 1, FKron, pSq, FKron_ipiv , P, pSq);
-
-	#ifdef DEBUG_RESETSTATE
-	printf("resetState - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%f ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("resetState - threadNum: %d; FKron\n",threadNum);
-	viewMatrix(pSq,pSq,FKron);
-	printf("\n");
-	printf("resetState - threadNum: %d; Q\n",threadNum);
-	viewMatrix(p,p,Q);
-	printf("\n");
-	printf("resetState - threadNum: %d; P\n",threadNum);
-	viewMatrix(p,p,P);
-	printf("\n");
-	#endif
-
-	}*/
-
 void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 
 	#ifdef DEBUG_BURNSYSTEM
@@ -2170,7 +1893,7 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 		}
 	}
 
-double CARMA::observeSystem(double distRand, double noiseRand) {
+/*double CARMA::observeSystem(double distRand, double noiseRand) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
@@ -2312,9 +2035,94 @@ void CARMA::observeSystem(int numObs, unsigned int distSeed, unsigned int noiseS
 		}
 	vslDeleteStream(&distStream);
 	vslDeleteStream(&noiseStream);
+	}*/
+
+void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	bool IR = Data.IR;
+	double t_incr = Data.t_incr;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	VSLStreamStatePtr distStream __attribute__((aligned(64)));
+	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
+	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numCadences, distRand, 0.0, 1.0); // Check Theta[p] = distSigma
+
+	if (IR == false) {
+
+		for (int i = 0; i < numCadences; ++i) {
+
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
+			cblas_dcopy(p, VScratch, 1, X, 1);
+			cblas_daxpy(p, distRand[i], D, 1, X, 1);
+
+			y[i] = mask[i]*X[0];
+			}
+
+		} else {
+
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
+		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
+		cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
+		y[0] = mask[0]*X[0];
+
+		for (int i = 1; i < numCadences; ++i) {
+
+			t_incr = t[i] - t[i - 1];
+			if (!(t_incr == dt)) {
+				set_dt(t_incr);
+				solveCARMA();
+				}
+
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
+			cblas_dcopy(p, VScratch, 1, X, 1);
+			cblas_daxpy(p, distRand[i], D, 1, X, 1);
+
+			y[i] = X[0];
+			}
+
+		}
+
+	vslDeleteStream(&distStream);
 	}
 
-double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
+void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	bool IR = Data.IR;
+	double t_incr = Data.t_incr;
+	double fracIntrinsicVar = Data.fracIntrinsicVar;
+	double fracSignalToNoise = Data.fracSignalToNoise;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
+	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
+
+	this->computeSigma();
+	double absIntrinsicVar = sqrt((this->getSigma())[0]);
+	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
+	double absFlux = 0.0, noiseLvl = 0.0;
+	for (int i = 0; i < numCadences; ++i) {
+		absFlux = absMeanFlux + y[i];
+		noiseLvl = fracSignalToNoise*absFlux;
+		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, 1, &noiseRand[i], 0.0, noiseLvl);
+		y[i] += noiseRand[i];
+		yerr[i] = noiseLvl;
+		}
+	vslDeleteStream(&noiseStream);
+	}
+
+/*double CARMA::computeLnLikeR(int numPts, double *t, double *y, double *yerr) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnLike = 0.0;
@@ -2476,7 +2284,7 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr) {
 	return LnLike;
 	}
 
-double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
+double CARMA::computeLnLike(int numPts, double *t, double *y, double *yerr, double *mask) {
 
 	double maxDouble = numeric_limits<double>::max();
 
@@ -2658,10 +2466,131 @@ double CARMA::computeLnLike(int numPts, double* y, double* yerr, double* mask) {
 	#endif
 
 	return LnLike;
-	}
-
-/*void getPSD(int numFreqs, double *freqVals, double *PSDVals) {
-	}
-
-void getACF(int numTimes, double *timeVals, double *ACFVals) {
 	}*/
+
+double CARMA::computeLnLike(LnLikeData *ptr2Data) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	bool IR = Data.IR;
+	double t_incr = Data.t_incr;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+	double maxDouble = numeric_limits<double>::max();
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	double LnLike = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0;
+
+	if (IR == false) {
+		for (int i = 0; i < numCadences; i++) {
+			R[0] = yerr[i]*yerr[i]; // Heteroskedastic errors
+			H[0] = mask[i]; // Missing data
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+			v = y[i] - XMinus[0]; // Compute v = y - H*X
+			cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+			S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+			SInv = 1.0/S;
+			cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
+			for (int colCounter = 0; colCounter < p; colCounter++) {
+				#pragma omp simd
+				for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+					MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+					}
+				}
+			cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+			cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
+			for (int colCounter = 0; colCounter < p; colCounter++) {
+				#pragma omp simd
+				for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+					P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+					}
+				}
+			LnLike += mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+			ptCounter += mask[i];
+			}
+		LnLike += -0.5*ptCounter*log2Pi;
+		} else {
+		R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
+		//H[0] = mask[0]; // Missing data
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+		v = y[0] - XMinus[0]; // Compute v = y - H*X
+		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		SInv = 1.0/S;
+		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
+		for (int colCounter = 0; colCounter < p; colCounter++) {
+			#pragma omp simd
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+				}
+			}
+		cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[0], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+		cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
+		for (int colCounter = 0; colCounter < p; colCounter++) {
+			#pragma omp simd
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+				}
+			}
+		//LnLike += mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+		//ptCounter += mask[0];
+		LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+		ptCounter += 1;
+		for (int i = 1; i < numCadences; i++) {
+			t_incr = t[i] - t[i - 1];
+			if (!(t_incr == dt)) {
+				set_dt(t_incr);
+				solveCARMA();
+				}
+			R[0] = yerr[i]*yerr[i]; // Heteroskedastic errors
+			//H[0] = mask[i]; // Missing data
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+			v = y[i] - XMinus[0]; // Compute v = y - H*X
+			cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+			S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+			SInv = 1.0/S;
+			cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
+			for (int colCounter = 0; colCounter < p; colCounter++) {
+				#pragma omp simd
+				for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+					MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+					}
+				}
+			cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
+			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+			cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
+			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
+			for (int colCounter = 0; colCounter < p; colCounter++) {
+				#pragma omp simd
+				for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+					P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+					}
+				}
+			//LnLike += mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+			//ptCounter += mask[i];
+			LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+			ptCounter += 1;
+			}
+		LnLike += -0.5*ptCounter*log2Pi;
+		}
+
+	return LnLike;
+	}

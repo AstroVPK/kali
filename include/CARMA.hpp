@@ -17,6 +17,18 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
 
 double calcLnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
 
+struct LnLikeData {
+	int numCadences;
+	bool IR;
+	double t_incr;
+	double fracIntrinsicVar;
+	double fracSignalToNoise;
+	double *t;
+	double *y;
+	double *yerr;
+	double *mask;
+	};
+
 class CARMA {
 private:
 	int allocated;
@@ -29,7 +41,7 @@ private:
 	int q;
 	int pSq;
 	int qSq;
-	double t; // This is the last used step time to compute F and Q.
+	double dt; // This is the last used step time to compute F and Q.
 	double maxT; // This is what we integrate to when finding P and Sigma.
 	double InitStepSize; // Initial step size to be used by integrator.
 	// ilo, ihi and abnrm are arrays of size 1 so they can be re-used by everything. No need to make multiple copies for A, CAR and CMA
@@ -59,16 +71,6 @@ private:
 	complex<double> *ACopy;
 	complex<double> *AScratch;
 	complex<double> *BScratch;
-	/*double *FKron;
-	double *FKron_af;
-	double *FKron_r;
-	double *FKron_c;
-	lapack_int *FKron_ipiv;
-	double *FKron_rcond;
-	double *FKron_rpvgrw;
-	double *FKron_berr;
-	double *FKron_err_bnds_norm;
-	double *FKron_err_bnds_comp;*/
 	double *Sigma;
 	double *D;
 	double *Q;
@@ -86,9 +88,11 @@ public:
 	~CARMA();
 	int get_p();
 	int get_q();
-	double get_t();
-	void set_t(double t_incr);
+	double get_dt();
+	void set_dt(double t_incr);
 	int get_allocated();
+	double get_maxT();
+	void set_maxT(double maxTVal);
 
 	void printX();
 	const double* getX() const;
@@ -116,34 +120,31 @@ public:
 	void resetState(double InitUncertainty);
 	void resetState();
 	void computeSigma();
-	/*void resetState_old();*/
 	void getCARRoots(complex<double>*& CARoots);
 	void getCMARoots(complex<double>*& CMARoots);
+
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
-	double observeSystem(double distRand, double noiseRand);
+
+	/*double observeSystem(double distRand, double noiseRand);
 	double observeSystem(double distRand, double noiseRand, double mask);
 	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y);
-	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask);
-	double computeLnLike(int numPts, double* y, double* yerr);
-	double computeLnLike(int numPts, double* y, double* yerr, double* mask);
-	//void getPSD(int numFreqs, double *freqVals, double *PSDVals);
-	//void getACF(int numTimes, double *timeVals, double *ACFVals);
-	//void getResiduals(int numPts, double* y, double* r);
-	//void fixedIntervalSmoother(int numPts, double* y, double* r, double* x);
-	};
+	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask);*/
 
-struct LnLikeData {
-	int numPts;
-	double* y;
-	double* yerr;
-	double* mask;
+	void observeSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
+	void addNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
+	double computeLnLike(LnLikeData *ptr2LnLikeData);
+
+	/*double computeLnLikeR(int numPts, double *t, double *y, double *yerr);
+	double computeLnLikeR(int numPts, double *t, double *y, double *yerr, double *mask);
+	double computeLnLikeIR(int numPts, double *t, double *y, double *yerr);
+	double computeLnLikeIR(int numPts, double *t, double *y, double *yerr, double *mask);*/
 	};
 
 struct LnLikeArgs {
 	int numThreads;
-	CARMA* Systems;
-	LnLikeData Data;
-	}; 
+	CARMA *Systems;
+	LnLikeData *Data;
+	};
 
 void zeroMatrix(int nRows, int nCols, int* mat);
 

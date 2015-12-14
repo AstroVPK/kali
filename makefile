@@ -28,6 +28,9 @@ MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROO
 NLOPTLIBS = -lnlopt
 OMPFLAGS = -openmp -openmp-simd
 
+ALIGN_FLAGS = -falign-functions 
+#-falign-jumps  -falign-loops -falign-labels  -freorder-blocks  -freorder-blocks-and-partition -fprefetch-loop-arrays
+
 REPORTFLAG = -qopt-report-phase=vec -qopt-report-file=stdout -openmp-report=0
 #-guide
 # -opt-report-phase=offload
@@ -63,10 +66,11 @@ EXTLIB = .so
 FUNCTIONS = Functions
 LIBCARMA = libcarma
 
-all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
+#all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
+all: $(LIBCARMA)
 
 $(LIBCARMA): $(OBJECTS)
-	$(CXX) -shared -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
+	$(CXX) -shared -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
@@ -99,10 +103,10 @@ $(ODIR)/Spherical.o: $(SRCDIR)/Spherical.cpp $(IDIR)/Spherical.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAGS) $(MKLFLAGS) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/CARMA.o: $(SRCDIR)/CARMA.cpp $(IDIR)/CARMA.hpp
-	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) -I $(BOOSTLIB) $< -o $@
 
 $(ODIR)/MCMC.o: $(SRCDIR)/MCMC.cpp $(IDIR)/MCMC.hpp
-	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS)  $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS)  $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
 
 $(ODIR)/DLAPACKE.o: $(SRCDIR)/DLAPACKE.cpp $(IDIR)/DLAPACKE.hpp
 	$(CPPC) -c $(VERFLAGS) -xHost $(CPPFLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@

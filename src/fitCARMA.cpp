@@ -84,10 +84,11 @@ int main() {
 	cout << "Set the sampling interval t_incr such that t_incr > 0.0" << endl;
 	AcquireInput(cout,cin,"Set the value of t_incr: ","Invalid value.\n",t_incr);
 
-	int* cadence = static_cast<int*>(_mm_malloc(numCadences*sizeof(double),64));
-	double* mask = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
-	double* y = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
-	double* yerr = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	int *cadence = static_cast<int*>(_mm_malloc(numCadences*sizeof(double),64));
+	double *mask = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	double *t = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	double *y = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+	double *yerr = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
 
 	vector<string> wordNew(4);
 	string lineNew;
@@ -102,6 +103,7 @@ int main() {
 			}
 		cadence[i] = stoi(wordNew[0]);
 		mask[i] = stod(wordNew[1]);
+		t[i] = i*t_incr;
 		y[i] = stod(wordNew[2]);
 		yerr[i] = stod(wordNew[3]);
 		i += 1;
@@ -167,6 +169,8 @@ int main() {
 
 	LnLikeData Data;
 	Data.numPts = numCadences;
+	Data.IR = IR;
+	Data.t = t;
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
