@@ -20,6 +20,7 @@ double calcLnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
 struct LnLikeData {
 	int numCadences;
 	bool IR;
+	double tolIR;
 	double t_incr;
 	double fracIntrinsicVar;
 	double fracSignalToNoise;
