@@ -67,6 +67,7 @@ private:
 	double *Theta; /*!< Theta contains p CAR parameters followed by q+1 CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.*/
 	complex<double> *A;
 	complex<double> *B;
+	complex<double> *C;
 	double *I;
 	double *F;
 	complex<double> *ACopy;
@@ -92,6 +93,9 @@ public:
 	double get_dt();
 	void set_dt(double t_incr);
 	int get_allocated();
+
+	double get_InitStepSize();
+	void set_InitStepSize(double InitStepSizeVal);
 	double get_maxT();
 	void set_maxT(double maxTVal);
 
@@ -103,6 +107,8 @@ public:
 	const complex<double>* getA() const;
 	void printB();
 	const complex<double>* getB() const;
+	void printC();
+	const complex<double>* getC() const;
 	void printF();
 	const double* getF() const;
 	void printSigma();

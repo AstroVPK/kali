@@ -18,6 +18,7 @@ ffi.cdef("""
     void _free_int(int *mem);
     double* _malloc_double(int length);
     void _free_double(double *mem);
+    int _testSystem(double dt, int p, int q, double *Theta, double InitStepSize, double maxT);
     int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double maxT, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr);
     int _makeObservedLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double maxT, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr);
     double _computeLnlike(double dt, int p, int q, double *Theta, int IR, double tolIR, double maxT, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr);
