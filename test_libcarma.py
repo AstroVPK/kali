@@ -91,12 +91,13 @@ fracSignalToNoiseSDSS = 1.0e-2
 fracSignalToNoise = fracSignalToNoiseKepler
 nthreads = 4
 nwalkers = 100
-nsteps = 10
+nsteps = 500
 maxEvals = 1000
 xTol = 0.005
 tolIR = 1.0e-3
 InitStepSize = 1.0e-12
 maxT = 1.0e300
+scatterFactor = 1.0e-6
 zSSeed = 2229588325
 walkerSeed = 3767076656
 moveSeed = 2867335446
@@ -105,8 +106,9 @@ initSeed = 3684614774
 
 ##############################################################################################################
 
+
 yORn = C._testSystem(dt, p, q, Theta, InitStepSize, maxT)
-pdb.set_trace()
+
 
 ##############################################################################################################
 
@@ -190,7 +192,7 @@ print "Time taken to compute LnLike of LC: %f (min)"%((LnLikeStop - LnLikeStart)
 
 if doFitCARMA:
 	fitStart = time.time()
-	C._fitCARMA(dt, p, q, IR, tolIR, maxT, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
+	C._fitCARMA(dt, p, q, IR, tolIR, maxT, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
 	fitStop = time.time()
 	print "Time taken to estimate C-ARMA params of LC: %f (min)"%((fitStop - fitStart)/60.0)
 
@@ -223,8 +225,8 @@ if doFitCARMA:
 
 
 IR = 1
-makeIRR = False
-irr_doFitCARMA = False
+makeIRR = True
+irr_doFitCARMA = True
 
 irr_cadence = np.array([index for index in xrange(numCadences)])
 numCadences = irr_cadence.shape[0]
@@ -248,6 +250,9 @@ irr_x_cffi = ffiObj.new("double[%d]"%(numCadences))
 irr_y_cffi = ffiObj.new("double[%d]"%(numCadences))
 irr_xerr_cffi = ffiObj.new("double[%d]"%(numCadences))
 irr_yerr_cffi = ffiObj.new("double[%d]"%(numCadences))
+if irr_doFitCARMA:
+	irr_Chain_cffi = ffiObj.new("double[%d]"%(ndims*nwalkers*nsteps))
+	irr_LnLike_cffi = ffiObj.new("double[%d]"%(nwalkers*nsteps))
 
 for i in xrange(numCadences):
 	irr_cadence_cffi[i] = irr_cadence[i]
@@ -303,7 +308,7 @@ print "Time taken to compute LnLike of irregular LC: %f (min)"%((irr_LnLikeStop 
 
 if irr_doFitCARMA:
 	irr_fitStart = time.time()
-	C._fitCARMA(dt, p, q, IR, tolIR, maxT, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, irr_Chain_cffi, irr_LnLike_cffi)
+	C._fitCARMA(dt, p, q, IR, tolIR, maxT, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, irr_Chain_cffi, irr_LnLike_cffi)
 	irr_fitStop = time.time()
 	print "Time taken to estimate C-ARMA params of irregular LC: %f (min)"%((irr_fitStop - irr_fitStart)/60.0)
 
@@ -332,3 +337,4 @@ if irr_doFitCARMA:
 	ax2.set_ylabel(r'$b_{1}$')
 
 plt.show()
+pdb.set_trace()

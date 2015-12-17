@@ -16,7 +16,7 @@ OFFLOAD_FLAGS =
 #OFFLOAD_FLAGS = -offload=optional
 
 #MKL Flags.
-MKLFLAGS = -qopenmp -I${MKLROOT}/include
+MKLFLAGS = -qopenmp -I$(MKLROOT)/include -limf
 
 #MKL link line.
 #MKL_LIBS = -L$(MKLROOT)/lib/intel64  -lmkl_rt -lpthread -lm
@@ -35,7 +35,7 @@ REPORTFLAG = -qopt-report-phase=vec -qopt-report-file=stdout -openmp-report=0
 #-guide
 # -opt-report-phase=offload
 
-#FPFLAGS = -fp-model strict -fp-model extended -fimf-arch-consistency=true -fimf-precision=high -no-fma 
+FPFLAGS = -fp-model strict -fp-model extended -fimf-arch-consistency=true -fimf-precision=high -no-fma 
 # enable <name> floating point model variation
 #     except[-]  - enable/disable floating point semantics
 #     extended   - enables intermediates in 80-bit precision

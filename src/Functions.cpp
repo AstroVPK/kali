@@ -203,7 +203,7 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 	return LnLike;
 	}
 
-int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize, double maxT, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
+int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize, double maxT, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
 	omp_set_num_threads(nthreads);
 	int threadNum = omp_get_thread_num();
 
@@ -225,6 +225,8 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize
 	for (int tNum = 0; tNum < nthreads; tNum++) {
 		Systems[tNum].allocCARMA(p,q);
 		Systems[tNum].set_dt(dt);
+		Systems[tNum].set_InitStepSize(InitStepSize);
+		Systems[tNum].set_maxT(maxT);
 		}
 	Args.Systems = Systems;
 	p2Args = &Args;
@@ -238,7 +240,7 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize
 	vslNewStream(&xStream, VSL_BRNG_SFMT19937, xSeed);
 	bool goodPoint = false;
 	do {
-		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1e-1);
+		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1.0e-1);
 		if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
 			Systems[threadNum].set_dt(dt);
 			Systems[threadNum].set_InitStepSize(InitStepSize);
@@ -277,7 +279,7 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize
 		}
 	vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
 	for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers, offsetArr, 0.0, x[dimNum]*1.0e-3);
+		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers, offsetArr, 0.0, x[dimNum]*scatterFactor);
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			initPos[walkerNum*ndims + dimNum] = x[dimNum] + offsetArr[walkerNum];
 			}
@@ -356,13 +358,13 @@ extern "C" {
 		return computeLnlike(dt, p, q, Theta, boolIR, tolIR, InitStepSize, maxT, numCadences, cadence, mask, t, y, yerr);
 		}
 
-	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double InitStepSize, double maxT, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
+	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double InitStepSize, double maxT, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return fitCARMA(dt, p, q, IR, tolIR, InitStepSize, maxT, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain, LnLike);
+		return fitCARMA(dt, p, q, IR, tolIR, InitStepSize, maxT, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain, LnLike);
 		}
 	}

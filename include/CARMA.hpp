@@ -105,6 +105,14 @@ public:
 	const double* getP() const;
 	void printA();
 	const complex<double>* getA() const;
+	void printvr();
+	const complex<double>* getvr() const;
+	void printvrInv();
+	const complex<double>* getvrInv() const;
+	void printw();
+	const complex<double>* getw() const;
+	void printexpw();
+	const complex<double>* getexpw() const;
 	void printB();
 	const complex<double>* getB() const;
 	void printC();
