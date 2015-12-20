@@ -4,7 +4,7 @@ IDIR = include
 SRCDIR = src
 ODIR = src/obj
 BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
-BOOSTLIB = ~/code/boost_1_59_0/
+BOOSTLIB = /usr/local/include/boost
 
 VERFLAGS = -gxx-name=g++-4.8 -std=c++11
 
@@ -70,7 +70,7 @@ LIBCARMA = libcarma
 all: $(LIBCARMA)
 
 $(LIBCARMA): $(OBJECTS)
-	$(CXX) -shared -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
+	$(CPPC) -shared -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@

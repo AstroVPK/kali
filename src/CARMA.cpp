@@ -244,70 +244,84 @@ double calcLnLike(double *walkerPos, void *func_args) {
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
-		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
 
-		#ifdef DEBUG_FUNC
+		#ifdef DEBUG_CALCLNLIKE
 		#pragma omp critical
 		{
-		printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
-			printf("%+17.16e ", walkerPos[dimNum]);
-			}
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
-		printf("calcLnLike - threadNum: %d; dt\n",threadNum);
-		printf("%+8.7e\n",Systems[threadNum].get_dt());
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; A\n",threadNum);
-		Systems[threadNum].printA();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; w\n",threadNum);
-		Systems[threadNum].printw();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; expw\n",threadNum);
-		Systems[threadNum].printexpw();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; vr\n",threadNum);
-		Systems[threadNum].printvr();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; vrInv\n",threadNum);
-		Systems[threadNum].printvrInv();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; B\n",threadNum);
-		Systems[threadNum].printB();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; C\n",threadNum);
-		Systems[threadNum].printC();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; F\n",threadNum);
-		Systems[threadNum].printF();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; D\n",threadNum);
-		Systems[threadNum].printD();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; Q\n",threadNum);
-		Systems[threadNum].printQ();
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
-		printf("\n");
-		fflush(0);
+			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+				printf("%+17.16e ", x[dimNum]);
+				}
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
+			printf("calcLnLike - threadNum: %d; dt\n",threadNum);
+			printf("%+8.7e\n",Systems[threadNum].get_dt());
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; A\n",threadNum);
+			Systems[threadNum].printA();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; w\n",threadNum);
+			Systems[threadNum].printw();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; expw\n",threadNum);
+			Systems[threadNum].printexpw();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; vr\n",threadNum);
+			Systems[threadNum].printvr();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; vrInv\n",threadNum);
+			Systems[threadNum].printvrInv();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; B\n",threadNum);
+			Systems[threadNum].printB();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; C\n",threadNum);
+			Systems[threadNum].printC();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; F\n",threadNum);
+			Systems[threadNum].printF();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; D\n",threadNum);
+			Systems[threadNum].printD();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; Q\n",threadNum);
+			Systems[threadNum].printQ();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; Sigma\n",threadNum);
+			Systems[threadNum].printSigma();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			Systems[threadNum].printX();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			Systems[threadNum].printP();
+			printf("\n");
+			fflush(0);
+		}
+		#endif
+
+		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
+
+		#ifdef DEBUG_CALCLNLIKE
+		#pragma omp critical
+		{
+			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+				printf("%+17.16e ", x[dimNum]);
+				}
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			Systems[threadNum].printX();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			Systems[threadNum].printP();
+			printf("\n");
+			printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
+			printf("\n");
 		}
 		#endif
 
 		} else {
-
-		#ifdef DEBUG_FUNC
-		#pragma omp critical
-		{
-		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
-			printf("%+7.6e ",walkerPos[dimNum]);
-			}
-		printf("\n");
-		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
-		}
-		#endif
-
 		LnLike = -HUGE_VAL;
 		}
 
@@ -1493,12 +1507,11 @@ void CARMA::setCARMA(double *ThetaIn) {
 	H[0] = 1.0;
 	}
 
-void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double xi) {
+void CARMA::oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi) {
 	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
 
 	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\textbf{\textsf{Q}}\f$ is symmetric positive definate and only the first column needfs to be computed.
 	*/
-
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 
 	#ifdef DEBUG_FUNCTOR
@@ -1655,6 +1668,105 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,&dxdt[0]);
 	printf("\n");
 	printf("() - threadNum: %d; dxdt.imag() = ACopy (After)\n",threadNum);
+	viewMatrix(p,p,&dxdt[pSq]);
+	printf("\n");
+	#endif
+
+	}
+
+void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double xi) {
+	#ifdef DEBUG_FUNCTOR
+	int threadNum = omp_get_thread_num();
+	printf("() - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_FUNCTOR
+	printf("() - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+7.6e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("() - threadNum: %d; xi: %+7.6e\n",threadNum,xi);
+	printf("() - threadNum: %d; w (Before)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("() - threadNum: %d; expw (Before)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	#endif
+
+	// We wish to compute expw*C*expw. Ordinarily, this requires 4 loops to compute . But since expw is diagonal, we can reduce the multiplication to 2 loops.
+	// result_{ij} = \Sum_{l}(\Sum_{k} expw_{ik}C_{kl})exp_{lj}
+	// expw_{ik} = 0 unless k = i
+	// expw_{lj} = 0 unless l = j
+	// Hence result_{ij} = expw_{ii}C_{ij}expw_{jj} which can be computed quickly by just looping over i & j
+
+	// Start by computing expw = exp(w*t) where w is an e-value of A i.e. the diagonal of expw consists of the exponents of the e-values of A times t
+	#pragma omp simd
+	for (int i = 0; i < p; ++i) {
+		expw[i + i*p] = exp(xi*w[i]);
+		}
+
+	#ifdef DEBUG_FUNCTOR
+	printf("() - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+7.6e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("() - threadNum: %d; w (After)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("() - threadNum: %d; expw = exp(w) (After)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_FUNCTOR
+	printf("() - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+7.6e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("() - threadNum: %d; expw (Before)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("() - threadNum: %d; C (Before)\n",threadNum);
+	viewMatrix(p,p,C);
+	printf("\n");
+	printf("() - threadNum: %d; dxdt.real() (Before)\n",threadNum);
+	viewMatrix(p,p,&dxdt[0]);
+	printf("\n");
+	printf("() - threadNum: %d; dxdt.imag() (Before)\n",threadNum);
+	viewMatrix(p,p,&dxdt[pSq]);
+	printf("\n");
+	#endif
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			ACopy[rowCtr + colCtr*p] = expw[rowCtr + rowCtr*p]*C[rowCtr + colCtr*p]*expw[colCtr + colCtr*p];
+			dxdt[rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].real();
+			dxdt[pSq + rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].imag();
+			}
+		}
+
+	#ifdef DEBUG_FUNCTOR
+	printf("() - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+7.6e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("() - threadNum: %d; expw (After)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("() - threadNum: %d; C (After)\n",threadNum);
+	viewMatrix(p,p,C);
+	printf("\n");
+	printf("() - threadNum: %d; dxdt.real() (After)\n",threadNum);
+	viewMatrix(p,p,&dxdt[0]);
+	printf("\n");
+	printf("() - threadNum: %d; dxdt.imag() (After)\n",threadNum);
 	viewMatrix(p,p,&dxdt[pSq]);
 	printf("\n");
 	#endif
@@ -2152,6 +2264,8 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 
 		} else {
 
+		double fracChange = 0.0;
+
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 		cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
@@ -2160,7 +2274,9 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 		for (int i = 1; i < numCadences; ++i) {
 
 			t_incr = t[i] - t[i - 1];
-			if (((t_incr - dt)/dt)/tolIR > dt) {
+			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+
+			if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}
@@ -2259,8 +2375,8 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 			}
 		LnLike += -0.5*ptCounter*log2Pi;
 		} else {
+		double fracChange = 0.0;
 		R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
-		//H[0] = mask[0]; // Missing data
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
@@ -2287,18 +2403,16 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		//LnLike += mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-		//ptCounter += mask[0];
 		LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter += 1;
 		for (int i = 1; i < numCadences; i++) {
 			t_incr = t[i] - t[i - 1];
-			if (((t_incr - dt)/dt)/tolIR > dt) {
+			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+			if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}
 			R[0] = yerr[i]*yerr[i]; // Heteroskedastic errors
-			//H[0] = mask[i]; // Missing data
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 			cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
@@ -2325,8 +2439,6 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 					P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 					}
 				}
-			//LnLike += mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-			//ptCounter += mask[i];
 			LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 			ptCounter += 1;
 			}

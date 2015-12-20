@@ -73,7 +73,22 @@ dt = 0.02
 p = 2
 q = 1
 ndims = p + q + 1
-Theta = [0.75, 0.01, 7.0e-9, 1.2e-9]
+
+#aListRoots = [-0.73642081+0j, -0.01357919+0j]
+aListRoots = [-0.73642081+0.0j, -0.01357919-0.0j]
+aPoly = np.polynomial.polynomial.polyfromroots(aListRoots)
+aPoly = aPoly.tolist()
+aPoly.reverse()
+aPoly.pop(0)
+aPoly = [coeff.real for coeff in aPoly]
+
+bPoly = [7.0e-9, 1.2e-9]
+
+Theta = aPoly + bPoly
+ThetaLine = "Theta: "
+for param in Theta:
+	ThetaLine += " %8.7e"%(param)
+print ThetaLine
 Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
@@ -85,13 +100,14 @@ burnSeed = 1311890535
 distSeed = 2603023340
 noiseSeed = 2410288857
 fracInstrinsicVar = 1.0e-1
+fracSignalToNoiseNone = 1.0e-15
 fracSignalToNoiseKepler = 35.0e-6
 fracSignalToNoiseLSST = 1.0e-3
 fracSignalToNoiseSDSS = 1.0e-2
-fracSignalToNoise = fracSignalToNoiseKepler
+fracSignalToNoise = fracSignalToNoiseNone
 nthreads = 4
 nwalkers = 100
-nsteps = 500
+nsteps = 200
 maxEvals = 1000
 xTol = 0.005
 tolIR = 1.0e-3
@@ -114,7 +130,7 @@ yORn = C._testSystem(dt, p, q, Theta, InitStepSize, maxT)
 
 
 IR = 0
-doFitCARMA = False
+doFitCARMA = True
 
 cadence = np.array(numCadences*[0])
 mask = np.array(numCadences*[0.0])
@@ -235,6 +251,7 @@ irr_t = np.array([index*dt for index in xrange(numCadences)])
 if makeIRR:
 	for i in xrange(numCadences):
 		irr_t[i] += random.uniform(-dt/2.0, dt/2.0)
+	dt = np.median(irr_t[1:] - irr_t[:-1])
 irr_x = np.array(numCadences*[0.0])
 irr_y = np.array(numCadences*[0.0])
 irr_xerr = np.array(numCadences*[0.0])
