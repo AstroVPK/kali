@@ -2269,7 +2269,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 		cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
-		y[0] = mask[0]*X[0];
+		y[0] = X[0];
 
 		for (int i = 1; i < numCadences; ++i) {
 
@@ -2284,7 +2284,6 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
 			cblas_daxpy(p, distRand[i], D, 1, X, 1);
-
 			y[i] = X[0];
 			}
 
@@ -2338,7 +2337,7 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	double LnLike = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0;
+	double LnLike = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0;
 
 	if (IR == false) {
 		for (int i = 0; i < numCadences; i++) {
@@ -2375,7 +2374,7 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 			}
 		LnLike += -0.5*ptCounter*log2Pi;
 		} else {
-		double fracChange = 0.0;
+		H[0] = 1.0;
 		R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P

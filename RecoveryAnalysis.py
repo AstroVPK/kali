@@ -69,10 +69,7 @@ for i in range(nsteps):
 		line.rstrip("\n")
 		values=line.split()
 		for k in range(ndim):
-			#try:
 			walkers[i,j,k]=float(values[k+4])
-			#except IndexError:
-			#	pdb.set_trace()
 		deviances[i,j]=-2.0*float(values[-1])
 TriFile.close()
 

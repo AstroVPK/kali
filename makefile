@@ -65,12 +65,16 @@ EXTOBJ = .o
 EXTLIB = .so
 FUNCTIONS = Functions
 LIBCARMA = libcarma
+PYTHON_BINDING = _libcarma.py
 
 #all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
-all: $(LIBCARMA)
+all: $(LIBCARMA) $(PYTHON_BINDING)
 
 $(LIBCARMA): $(OBJECTS)
 	$(CPPC) -shared -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o libcarma.so src/obj/Functions.o src/obj/CARMA.o src/obj/MCMC.o src/obj/Constants.o $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS)
+
+$(PYTHON_BINDING): libcarma.so
+	python python/libcarma_build.py
 
 $(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
@@ -126,11 +130,13 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPENDENCIES)
 .PHONY: clean
 clean:
 	rm $(ODIR)/*.o *~ $(SRCDIR)/*~ $(IDIR)*~
-	rm $(EXEC1)
-	rm $(EXEC2)
-	rm $(EXEC3)
-	rm $(EXEC4)
-	rm $(EXEC5)
-	rm $(EXEC6)
-	rm $(EXEC7)
-	rm $(EXEC8)
+	rm *.so
+	rm _*.py
+	#rm $(EXEC1)
+	#rm $(EXEC2)
+	#rm $(EXEC3)
+	#rm $(EXEC4)
+	#rm $(EXEC5)
+	#rm $(EXEC6)
+	#rm $(EXEC7)
+	#rm $(EXEC8)
