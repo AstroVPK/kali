@@ -76,7 +76,7 @@ def MAD(a):
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-dt = 0.01
+dt = 0.02
 p = 2
 q = 1
 ndims = p + q + 1
@@ -99,7 +99,7 @@ Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
 numBurn = 1000000
-numCadences = 400000
+numCadences = 60000
 noiseSigma = 1.0e-18
 startCadence = 0
 burnSeed = 1311890535
@@ -113,7 +113,7 @@ fracSignalToNoiseSDSS = 1.0e-2
 fracSignalToNoise = fracSignalToNoiseNone
 nthreads = 4
 nwalkers = 100
-nsteps = 500
+nsteps = 250
 maxEvals = 1000
 xTol = 0.005
 tolIR = 1.0e-3
@@ -126,9 +126,12 @@ moveSeed = 2867335446
 xSeed = 1413995162
 initSeed = 3684614774
 
-doTest = False
-doR = True
-doIR = False
+doTest = True
+doR = False
+doFitCARMA = True
+doIR = True
+makeIRR = True
+irr_doFitCARMA = True
 
 ##############################################################################################################
 
@@ -140,7 +143,6 @@ if doTest:
 
 if doR:
 	IR = 0
-	doFitCARMA = True
 
 	cadence = np.array(numCadences*[0])
 	mask = np.array(numCadences*[0.0])
@@ -279,8 +281,6 @@ if doR:
 
 if doIR:
 	IR = 1
-	makeIRR = True
-	irr_doFitCARMA = False
 
 	irr_cadence = np.array([index for index in xrange(numCadences)])
 	numCadences = irr_cadence.shape[0]
@@ -356,12 +356,12 @@ if doIR:
 	ax1.ticklabel_format(useOffset = False)
 	ax1.plot(irr_t, irr_x, color = '#7570b3', zorder = 5)
 	ax1.errorbar(irr_t, irr_y, irr_yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
-	yMax=np.max(irr_x[np.nonzero(irr_x[:])])
-	yMin=np.min(irr_x[np.nonzero(irr_x[:])])
+	irr_yMax=np.max(irr_x[np.nonzero(irr_x[:])])
+	irr_yMin=np.min(irr_x[np.nonzero(irr_x[:])])
 	ax1.set_ylabel(r'$F$ (arb units)')
 	ax1.set_xlabel(r'$t$ (d)')
-	ax1.set_xlim(t[0],t[-1])
-	ax1.set_ylim(yMin,yMax)
+	ax1.set_xlim(irr_t[0],irr_t[-1])
+	ax1.set_ylim(irr_yMin,irr_yMax)
 
 	irr_LnLikeStart = time.time()
 	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, maxT, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
