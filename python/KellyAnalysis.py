@@ -6,9 +6,9 @@
 	https://github.com/brandonckelly/carma_pack
 
 	For a demonstration of the module, please run the module as a command line program using 
-	myPrompt$ python KellyAnalysis.py --help
+	bash-prompt$ python KellyAnalysis.py --help
 	and
-	myPrompt$ python KellyAnalysis.py $LIBCARMA/Examples/kellyTest kellyTest01.ini
+	bash-prompt$ python KellyAnalysis.py $PWD/examples/kellyTest kellyTest01.ini
 """
 import math as math
 import cmath as cmath
