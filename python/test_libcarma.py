@@ -12,8 +12,11 @@ import matplotlib.mlab as mlab
 import time
 import pdb
 
-from _libcarma import ffi
-from mpl_settings import *
+from lib._libcarma import ffi
+import python.util.triangle as triangle
+from python.util.mpl_settings import *
+ffiObj = cffi.FFI()
+C = ffi.dlopen("./lib/libcarma.so.1.0.0")
 
 goldenRatio=1.61803398875
 fhgt=10.0
@@ -63,9 +66,6 @@ gs = gridspec.GridSpec(1000, 2250)
 
 set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontweight='normal',fontstretch='normal',fontsize=AxisMedium,useTex='True')
 
-ffiObj = cffi.FFI()
-C = ffi.dlopen("./libcarma.so")
-
 def MAD(a):
 	medianVal=np.median(a)
 	b=np.copy(a)
@@ -99,7 +99,7 @@ Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
 numBurn = 1000000
-numCadences = 60000
+numCadences = 100
 noiseSigma = 1.0e-18
 startCadence = 0
 burnSeed = 1311890535
@@ -117,8 +117,6 @@ nsteps = 500
 maxEvals = 1000
 xTol = 0.005
 tolIR = 1.0e-3
-InitStepSize = 1.0e-12
-maxT = 1.0e300
 scatterFactor = 1.0e-6
 zSSeed = 2229588325
 walkerSeed = 3767076656
@@ -128,15 +126,16 @@ initSeed = 3684614774
 
 doTest = True
 doR = True
-doFitCARMA = False
+doFitCARMA = True
 doIR = True
 makeIRR = True
 irr_doFitCARMA = True
+BreakAtEnd = True
 
 ##############################################################################################################
 
 if doTest:
-	yORn = C._testSystem(dt, p, q, Theta, InitStepSize, maxT)
+	yORn = C._testSystem(dt, p, q, Theta)
 
 
 ##############################################################################################################
@@ -154,6 +153,7 @@ if doR:
 	if doFitCARMA:
 		Chain = np.zeros((nsteps,nwalkers,ndims))
 		LnLike = np.zeros((nsteps,nwalkers))
+		Deviances = np.zeros((nsteps,nwalkers))
 
 	cadence_cffi = ffiObj.new("int[%d]"%(numCadences))
 	mask_cffi = ffiObj.new("double[%d]"%(numCadences))
@@ -182,12 +182,12 @@ if doR:
 					Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers] = 0.0 
 	
 	intrinStart = time.time()
-	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, maxT, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi, xerr_cffi)
+	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi, xerr_cffi)
 	intrinStop = time.time()
 	print "Time taken to compute intrinsic LC: %f (min)"%((intrinStop - intrinStart)/60.0)
 
 	observedStart = time.time()
-	yORn = C._makeObservedLC(dt, p, q, Theta_cffi, IR, tolIR, maxT, fracInstrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+	yORn = C._makeObservedLC(dt, p, q, Theta_cffi, IR, tolIR, fracInstrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 	observedStop = time.time()
 	print "Time taken to compute observed LC: %f (min)"%((observedStop - observedStart)/60.0)
 
@@ -221,40 +221,23 @@ if doR:
 	ax1.set_ylim(yMin,yMax)
 
 	LnLikeStart = time.time()
-	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, maxT, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 	LnLikeStop = time.time()
 	print "LnLike: %+17.17e"%(LnLikeVal)
 	print "Time taken to compute LnLike of LC: %f (min)"%((LnLikeStop - LnLikeStart)/60.0)
 	
 	if doFitCARMA:
 		fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, maxT, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
 		fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of LC: %f (min)"%((fitStop - fitStart)/60.0)
 
 		for stepNum in xrange(nsteps):
 			for walkerNum in xrange(nwalkers):
-				LnLike[stepNum, walkerNum] = LnLike_cffi[walkerNum + stepNum*nwalkers]
+				LnLike[stepNum,walkerNum] = LnLike_cffi[walkerNum + stepNum*nwalkers]
+				Deviances[stepNum,walkerNum] = -2.0*LnLike_cffi[walkerNum + stepNum*nwalkers]
 				for dimNum in xrange(ndims):
-					Chain[stepNum, walkerNum, dimNum] = Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers]
-
-		fig2 = plt.figure(2,figsize=(fwid,fhgt))
-
-		ax1 = fig2.add_subplot(gs[:,0:999])
-		ax1.ticklabel_format(useOffset = False)
-		ax1.scatter(Chain[int(nsteps/2.0):,:,0], Chain[int(nsteps/2.0):,:,1], c = np.max(LnLike[int(nsteps/2.0):,:]) - LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
-		ax1.set_xlim(np.min(Chain[int(nsteps/2.0):,:,0]),np.max(Chain[int(nsteps/2.0):,:,0]))
-		ax1.set_ylim(np.min(Chain[int(nsteps/2.0):,:,1]),np.max(Chain[int(nsteps/2.0):,:,1]))
-		ax1.set_xlabel(r'$a_{1}$')
-		ax1.set_ylabel(r'$a_{2}$')
-
-		ax2 = fig2.add_subplot(gs[:,1249:2249])
-		ax1.ticklabel_format(useOffset = False)
-		ax2.scatter(Chain[int(nsteps/2.0):,:,2], Chain[int(nsteps/2.0):,:,3], c = np.max(LnLike[int(nsteps/2.0):,:]) - LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
-		ax2.set_xlim(np.min(Chain[int(nsteps/2.0):,:,2]),np.max(Chain[int(nsteps/2.0):,:,2]))
-		ax2.set_ylim(np.min(Chain[int(nsteps/2.0):,:,3]),np.max(Chain[int(nsteps/2.0):,:,3]))
-		ax2.set_xlabel(r'$b_{0}$')
-		ax2.set_ylabel(r'$b_{1}$')
+					Chain[stepNum,walkerNum,dimNum] = Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers]
 
 		medianWalker = np.zeros((nsteps,ndims))
 		medianDevWalker = np.zeros((nsteps,ndims))
@@ -264,7 +247,7 @@ if doR:
 				medianDevWalker[i,k] = MAD(Chain[i,:,k])
 		stepArr = np.arange(nsteps)
 
-		fig3 = plt.figure(3, figsize=(fwid,fhgt))
+		fig2 = plt.figure(2, figsize=(fwid,fhgt))
 		for k in range(ndims):
 			plt.subplot(ndims,1,k+1)
 			for j in range(nwalkers):
@@ -276,6 +259,19 @@ if doR:
 				plt.ylabel("$a_{%d}$"%(k + 1))
 			elif ((k >= p) and (k < ndims)):
 				plt.ylabel("$b_{%d}$"%(k - p))
+
+		dictDIC = dict()
+		samples = Chain[nsteps/2.0:,:,:].reshape((-1,ndims))
+		sampleDeviances = Deviances[nsteps/2.0:,:].reshape((-1))
+		DIC = 0.5*math.pow(np.std(sampleDeviances),2.0) + np.mean(sampleDeviances)
+		dictDIC["%d %d"%(p,q)] = DIC
+		lbls = list()
+		for i in range(p):
+			lbls.append("$a_{%d}$"%(i+1))
+		for i in range(q + 1):
+			lbls.append("$b_{%d}$"%(i))
+		fig3, quantiles, qvalues = triangle.corner(samples, labels = lbls, fig_title = "DIC: %f"%(dictDIC["%d %d"%(p,q)]), show_titles = True, title_args = {"fontsize": 12}, quantiles = [0.16, 0.5, 0.84], verbose = False, plot_contours = True, plot_datapoints = True, plot_contour_lines = False, pcolor_cmap = cm.gist_earth)
+
 
 ##############################################################################################################
 
@@ -297,6 +293,7 @@ if doIR:
 	if irr_doFitCARMA:
 		irr_Chain = np.zeros((nsteps,nwalkers,ndims))
 		irr_LnLike = np.zeros((nsteps,nwalkers))
+		irr_Deviances = np.zeros((nsteps,nwalkers))
 
 	irr_cadence_cffi = ffiObj.new("int[%d]"%(numCadences))
 	irr_mask_cffi = ffiObj.new("double[%d]"%(numCadences))
@@ -325,12 +322,12 @@ if doIR:
 					irr_Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers] = 0.0
 
 	irr_intrinStart = time.time()
-	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, maxT, numBurn, numCadences, startCadence, burnSeed, distSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_x_cffi, irr_xerr_cffi)
+	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_x_cffi, irr_xerr_cffi)
 	irr_intrinStop = time.time()
 	print "Time taken to compute irregular intrinsic LC: %f (min)"%((irr_intrinStop - irr_intrinStart)/60.0)
 
 	irr_observedStart = time.time()
-	yORn = C._makeObservedLC(dt, p, q, Theta_cffi, IR, tolIR, maxT, fracInstrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
+	yORn = C._makeObservedLC(dt, p, q, Theta_cffi, IR, tolIR, fracInstrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
 	irr_observedStop = time.time()
 	print "Time taken to compute irregular observed LC: %f (min)"%((irr_observedStop - irr_observedStart)/60.0)
 
@@ -364,40 +361,23 @@ if doIR:
 	ax1.set_ylim(irr_yMin,irr_yMax)
 
 	irr_LnLikeStart = time.time()
-	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, maxT, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
+	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
 	irr_LnLikeStop = time.time()
 	print "LnLike: %+17.17e"%(LnLikeVal)
 	print "Time taken to compute LnLike of irregular LC: %f (min)"%((irr_LnLikeStop - irr_LnLikeStart)/60.0)
 
 	if irr_doFitCARMA:
 		irr_fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, maxT, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, irr_Chain_cffi, irr_LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, irr_Chain_cffi, irr_LnLike_cffi)
 		irr_fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of irregular LC: %f (min)"%((irr_fitStop - irr_fitStart)/60.0)
 
 		for stepNum in xrange(nsteps):
 			for walkerNum in xrange(nwalkers):
 				irr_LnLike[stepNum, walkerNum] = irr_LnLike_cffi[walkerNum + stepNum*nwalkers]
+				irr_Deviances[stepNum,walkerNum] = -2.0*LnLike_cffi[walkerNum + stepNum*nwalkers]
 				for dimNum in xrange(ndims):
 					irr_Chain[stepNum, walkerNum, dimNum] = irr_Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers]
-
-		fig5 = plt.figure(5,figsize=(fwid,fhgt))
-
-		ax1 = fig5.add_subplot(gs[:,0:999])
-		ax1.ticklabel_format(useOffset = False)
-		ax1.scatter(irr_Chain[int(nsteps/2.0):,:,0], irr_Chain[int(nsteps/2.0):,:,1], c = np.max(irr_LnLike[int(nsteps/2.0):,:]) - irr_LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
-		ax1.set_xlim(np.min(irr_Chain[int(nsteps/2.0):,:,0]),np.max(irr_Chain[int(nsteps/2.0):,:,0]))
-		ax1.set_ylim(np.min(irr_Chain[int(nsteps/2.0):,:,1]),np.max(irr_Chain[int(nsteps/2.0):,:,1]))
-		ax1.set_xlabel(r'$a_{1}$')
-		ax1.set_ylabel(r'$a_{2}$')
-
-		ax2 = fig5.add_subplot(gs[:,1249:2249])
-		ax1.ticklabel_format(useOffset = False)
-		ax2.scatter(irr_Chain[int(nsteps/2.0):,:,2], irr_Chain[int(nsteps/2.0):,:,3], c = np.max(irr_LnLike[int(nsteps/2.0):,:]) - irr_LnLike[int(nsteps/2.0):,:], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
-		ax2.set_xlim(np.min(irr_Chain[int(nsteps/2.0):,:,2]),np.max(irr_Chain[int(nsteps/2.0):,:,2]))
-		ax2.set_ylim(np.min(irr_Chain[int(nsteps/2.0):,:,3]),np.max(irr_Chain[int(nsteps/2.0):,:,3]))
-		ax2.set_xlabel(r'$b_{0}$')
-		ax2.set_ylabel(r'$b_{1}$')
 
 		irr_medianWalker = np.zeros((nsteps,ndims))
 		irr_medianDevWalker = np.zeros((nsteps,ndims))
@@ -407,7 +387,7 @@ if doIR:
 				irr_medianDevWalker[i,k] = MAD(irr_Chain[i,:,k])
 		stepArr=np.arange(nsteps)
 
-		fig6 = plt.figure(6,figsize=(fwid,fhgt))
+		fig5 = plt.figure(5,figsize=(fwid,fhgt))
 		for k in range(ndims):
 			plt.subplot(ndims,1,k+1)
 			for j in range(nwalkers):
@@ -420,5 +400,19 @@ if doIR:
 			elif ((k >= p) and (k < ndims)):
 				plt.ylabel("$b_{%d}$"%(k - p))
 
+		irr_dictDIC = dict()
+		irr_samples = irr_Chain[nsteps/2.0:,:,:].reshape((-1,ndims))
+		irr_sampleDeviances = irr_Deviances[nsteps/2.0:,:].reshape((-1))
+		irr_DIC = 0.5*math.pow(np.std(irr_sampleDeviances),2.0) + np.mean(irr_sampleDeviances)
+		irr_dictDIC["%d %d"%(p,q)] = irr_DIC
+		irr_lbls = list()
+		for i in range(p):
+			irr_lbls.append("$a_{%d}$"%(i+1))
+		for i in range(q + 1):
+			irr_lbls.append("$b_{%d}$"%(i))
+		fig6, irr_quantiles, irr_qvalues = triangle.corner(irr_samples, labels = irr_lbls, fig_title = "DIC: %f"%(irr_dictDIC["%d %d"%(p,q)]), show_titles = True, title_args = {"fontsize": 12}, quantiles = [0.16, 0.5, 0.84], verbose = False, plot_contours = True, plot_datapoints = True, plot_contour_lines = False, pcolor_cmap = cm.gist_earth)
+
 plt.show()
-pdb.set_trace()
+
+if BreakAtEnd:
+	pdb.set_trace()

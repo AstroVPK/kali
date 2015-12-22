@@ -42,9 +42,7 @@ private:
 	int q;
 	int pSq;
 	int qSq;
-	double dt; // This is the last used step time to compute F and Q.
-	double maxT; // This is what we integrate to when finding P and Sigma.
-	double InitStepSize; // Initial step size to be used by integrator.
+	double dt; // This is the last used step time to compute F, D and Q.
 	// ilo, ihi and abnrm are arrays of size 1 so they can be re-used by everything. No need to make multiple copies for A, CAR and CMA
 	lapack_int *ilo; // len 1
 	lapack_int *ihi; // len 1
@@ -93,11 +91,6 @@ public:
 	double get_dt();
 	void set_dt(double t_incr);
 	int get_allocated();
-
-	double get_InitStepSize();
-	void set_InitStepSize(double InitStepSizeVal);
-	double get_maxT();
-	void set_maxT(double maxTVal);
 
 	void printX();
 	const double* getX() const;

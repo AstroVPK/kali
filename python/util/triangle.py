@@ -219,7 +219,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             ax = axes[i, i]
         # Plot the histograms.
-        n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
+        n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 100),
                           range=extents[i], histtype="step",
                           color=kwargs.get("color", "k"))
         if truths is not None:

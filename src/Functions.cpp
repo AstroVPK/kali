@@ -26,7 +26,7 @@
 
 using namespace std;
 
-int testSystem(double dt, int p, int q, double *Theta, double InitStepSize, double maxT) {
+int testSystem(double dt, int p, int q, double *Theta) {
 	int retVal = 1;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
@@ -34,8 +34,6 @@ int testSystem(double dt, int p, int q, double *Theta, double InitStepSize, doub
 	if (goodYN == 1) {
 		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 		SystemMaster.set_dt(dt);
-		SystemMaster.set_InitStepSize(InitStepSize);
-		SystemMaster.set_maxT(maxT);
 		SystemMaster.setCARMA(Theta);
 
 		printf("A\n");
@@ -91,7 +89,7 @@ int testSystem(double dt, int p, int q, double *Theta, double InitStepSize, doub
 	return retVal;
 	}
 
-int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, double InitStepSize, double maxT, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
 	int retVal = 1;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
@@ -99,8 +97,6 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 	if (goodYN == 1) {
 		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 		SystemMaster.set_dt(dt);
-		SystemMaster.set_InitStepSize(InitStepSize);
-		SystemMaster.set_maxT(maxT);
 		SystemMaster.setCARMA(Theta);
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
@@ -133,7 +129,7 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 	return retVal;
 	}
 
-int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, double InitStepSize, double maxT, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
 	int retVal = 1;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
@@ -141,8 +137,6 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 	if (goodYN == 1) {
 		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 		SystemMaster.set_dt(dt);
-		SystemMaster.set_InitStepSize(InitStepSize);
-		SystemMaster.set_maxT(maxT);
 		SystemMaster.setCARMA(Theta);
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
@@ -185,7 +179,7 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 	return retVal;
 	}
 
-double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tolIR, double InitStepSize, double maxT, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
+double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
 	double LnLike = 0.0;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
@@ -193,8 +187,6 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 	if (goodYN == 1) {
 		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 		SystemMaster.set_dt(dt);
-		SystemMaster.set_InitStepSize(InitStepSize);
-		SystemMaster.set_maxT(maxT);
 		SystemMaster.setCARMA(Theta);
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
@@ -212,7 +204,7 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 	return LnLike;
 	}
 
-int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize, double maxT, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
+int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
 	omp_set_num_threads(nthreads);
 	int threadNum = omp_get_thread_num();
 
@@ -234,8 +226,6 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize
 	for (int tNum = 0; tNum < nthreads; tNum++) {
 		Systems[tNum].allocCARMA(p,q);
 		Systems[tNum].set_dt(dt);
-		Systems[tNum].set_InitStepSize(InitStepSize);
-		Systems[tNum].set_maxT(maxT);
 		}
 	Args.Systems = Systems;
 	p2Args = &Args;
@@ -252,8 +242,6 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double InitStepSize
 		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, xTemp, 0.0, 1.0e-1);
 		if (Systems[threadNum].checkCARMAParams(xTemp) == 1) {
 			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].set_InitStepSize(InitStepSize);
-			Systems[threadNum].set_maxT(maxT);
 			Systems[threadNum].setCARMA(xTemp);
 			Systems[threadNum].solveCARMA();
 			Systems[threadNum].resetState();
@@ -333,47 +321,47 @@ extern "C" {
 		mem = nullptr;
 		}
 
-	extern int _testSystem(double dt, int p, int q, double *Theta, double InitStepSize, double maxT) {
-		return testSystem(dt, p, q, Theta, InitStepSize, maxT);
+	extern int _testSystem(double dt, int p, int q, double *Theta) {
+		return testSystem(dt, p, q, Theta);
 		}
 
-	extern int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double InitStepSize, double maxT, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	extern int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return makeIntrinsicLC(dt, p, q, Theta, boolIR, tolIR, InitStepSize, maxT, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence, mask, t, y, yerr);
+		return makeIntrinsicLC(dt, p, q, Theta, boolIR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence, mask, t, y, yerr);
 		}
 
-	extern int _makeObservedLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double InitStepSize, double maxT, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	extern int _makeObservedLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return makeObservedLC(dt, p, q, Theta, boolIR, tolIR, InitStepSize, maxT, fracIntrinsicVar,fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, cadence, mask, t, y, yerr);
+		return makeObservedLC(dt, p, q, Theta, boolIR, tolIR, fracIntrinsicVar,fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, cadence, mask, t, y, yerr);
 		}
 
-	extern double _computeLnlike(double dt, int p, int q, double *Theta, int IR, double tolIR, double InitStepSize, double maxT, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	extern double _computeLnlike(double dt, int p, int q, double *Theta, int IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return computeLnlike(dt, p, q, Theta, boolIR, tolIR, InitStepSize, maxT, numCadences, cadence, mask, t, y, yerr);
+		return computeLnlike(dt, p, q, Theta, boolIR, tolIR, numCadences, cadence, mask, t, y, yerr);
 		}
 
-	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double InitStepSize, double maxT, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
+	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double *Chain, double *LnLike) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return fitCARMA(dt, p, q, IR, tolIR, InitStepSize, maxT, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain, LnLike);
+		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain, LnLike);
 		}
 	}
