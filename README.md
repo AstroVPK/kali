@@ -1,14 +1,16 @@
 # libcarma
 A library to model a time series as a Continuous-time ARMA (C-ARMA) process.
+Version: 1.0.0
 
 Install
 -------
-Install instructions are provided for a
+Install instructions are provided for linux machines. The following OSs have been tested--
+Ubuntu 14.04 LTS Trusty Tahr
 
-You will need to have the Intel C++ compiler installed along with Intel MKL and NLOpt . At the moment, all 
+You will need to have the Intel C++ Compiler XE installed along with Intel MKL and NLOpt. At the moment, all 
 three are required though the plan is to eventually allow the use of g++ etc...
 
-1. Intel C++ Compiler
+1. Intel C++ Compiler XE
 The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
 https://software.intel.com/en-us/c-compilers/ipsxe
 https://software.intel.com/en-us/intel-parallel-studio-xe/try-buy#buynow
@@ -23,6 +25,8 @@ bash-prompt$ sudo install_GUI.sh
 to start the install.
 Add the following line to your .bashrc to setup the necessary environment variables required by the compiler.
 source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
+This software has been tested with
+Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021(icpc version 16.0.1 (gcc version 4.8.0 compatibility)
 
 2. Intel MKL Library
 The Intel MKL library is a high performance math library that is used extensively in this package. Since the 
@@ -30,6 +34,8 @@ library can be obtained free of cost by both students as well as academic resear
 replace it with an alternative. Intel MKL may be obtained from
 https://software.intel.com/en-us/qualify-for-free-software/student (Student + free Compiler & MKL)
 https://software.intel.com/en-us/qualify-for-free-software/academicresearcher (Academic Resercher + free MKL)
+This software has been tested with
+Intel® Math Kernel Library 11.3
 
 3. NLOpt
 NLOpt is a free/open-source non-liner optimization library written by the AbInitio Group at MIT.
@@ -40,6 +46,8 @@ After un-tarring the tar file, NLOpt should be installed as follows
 bash-prompt$ ./configure --enable-shared
 bash-prompt& make
 bash-prompt$ sudo make install
+This software has been tested with
+Version 2.4.2
 
 To make this library after cloning the repository, simply run
 bash-prompt$ make
