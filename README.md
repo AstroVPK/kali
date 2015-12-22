@@ -7,8 +7,10 @@ Install
 Install instructions are provided for linux machines. The following OSs have been tested--
 Ubuntu 14.04 LTS Trusty Tahr
 
-You will need to have the Intel C++ Compiler XE installed along with Intel MKL and NLOpt. At the moment, all 
-three are required though the plan is to eventually allow the use of g++ etc...
+You will need to have the Intel C++ Compiler XE installed along with Intel MKL, NLOpt & Brandon Kelly's 
+`carma_pack` (optional). At the moment, the Intel C++ Compiler XE, Intel MKL, & NLOpt are required though the 
+plan is to eventually allow the use of g++ etc... Brandon Kelly's `carma_pack` is not required but is 
+recommended
 
 1. Intel C++ Compiler XE
 The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
@@ -94,6 +96,22 @@ replace it with an alternative. Intel MKL may be obtained from
 
   This software has been tested with
   1. NLOpt Version 2.4.2
+
+4. `carma_pack`
+
+  Brandon Kelly's `carma_pack` is a C-ARMA analysis package written in C++ and Python. It may be obtained at
+
+
+  [`carma_pack`](https://github.com/brandonckelly/carma_pack)
+
+
+  Please install `carma_pack` using the instructions provided with the package. This library includes a Python
+script `python/KellyAnalysis.py` to use `carma_pack` with the same interface as the rest of this package. 
+Please read
+
+  `bash-prompt$ KellyAnalysis --help` and the python docstring for usage instructions.
+
+
 
 To make this library after cloning the repository, simply run
 
