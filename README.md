@@ -13,11 +13,11 @@ three are required though the plan is to eventually allow the use of g++ etc...
 1. Intel C++ Compiler XE
 The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
 
-[Intel® C++ Compiler Overview](https://software.intel.com/en-us/c-compilers/ipsxe)
+  [Intel® C++ Compiler Overview](https://software.intel.com/en-us/c-compilers/ipsxe)
 
-[Try & Buy](https://software.intel.com/en-us/intel-parallel-studio-xe/try-buy#buynow)
+  [Try & Buy](https://software.intel.com/en-us/intel-parallel-studio-xe/try-buy#buynow)
 
-Students are eligible for a free license. Greatly discounted pricing is available for academic users. Use of 
+  Students are eligible for a free license. Greatly discounted pricing is available for academic users. Use of 
 the Intel compiler results in the largest performance gains on Intel architectures. To install the Intel 
 compiler, download the Parallel Studio XE edition of your choice by following the instructions at 
 https://software.intel.com/en-us/qualify-for-free-software/student (Student + free Compiler & MKL)
