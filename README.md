@@ -31,7 +31,7 @@ compiler, download the Parallel Studio XE edition of your choice by following th
   [Academic Resercher + free MKL](https://software.intel.com/en-us/qualify-for-free-software/academicresearcher)
 
 
-Unpack the tarball as usual and then change to the top-level directory of the un-tarred folder. In the 
+  Unpack the tarball as usual and then change to the top-level directory of the un-tarred folder. In the 
 terminal type
 
 
