@@ -35,7 +35,7 @@ compiler, download the Parallel Studio XE edition of your choice by following th
 terminal type
 
 
-  `prompt$ sudo install_GUI.sh`
+  `bash-prompt$ sudo install_GUI.sh`
 
 
   to start the install. Add the following line to your `.bashrc` to setup the necessary environment variables 
