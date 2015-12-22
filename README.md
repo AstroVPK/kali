@@ -175,13 +175,19 @@ To make this library after cloning the repository, simply run
 `bash-prompt$ make`
 
 
-Before using the library, you should run
+You must run
 
 
 `bash-prompt$ source lib/setup.sh`
 
 
-before every use. You may consider adding it to your `.bashrc`. To clean the library, run 
+in every new terminal that you use the library in. You may consider adding 
+
+
+'source <path to library>lib/setup.sh`
+
+
+to your `.bashrc`. To clean the library, run 
 
 
 `bash-prompt$ make clean`
