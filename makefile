@@ -3,7 +3,7 @@ CPPC = icpc
 IDIR = include/
 SRCDIR = src/
 ODIR = src/obj/
-LDIR = lib/
+LDIR = bin/
 PDIR = python/
 #BOOSTLINK = -Bstatic -lboost_system -lboost_filesystem -lboost_system
 #BOOSTLIB = /usr/local/include/boost
@@ -73,9 +73,10 @@ LIBCARMA_DYN = libcarma.so.1.0.0
 LIBCARMA_STAT = libcarma.a
 LIBCARMA_LINKING = libcarma.so
 PYTHON_BINDING = _libcarma.py
+TEST = test_libcarma.py
 
 #all: $(EXEC1) $(EXEC2) $(EXEC3) $(EXEC4) $(EXEC5) $(EXEC6) $(EXEC7) $(EXEC8) $(LIBCARMA)
-all: $(LIBCARMA_STAT) $(LIBCARMA_DYN) $(LIBCARMA_LINKING) $(PYTHON_BINDING)
+all: $(LIBCARMA_STAT) $(LIBCARMA_DYN) $(LIBCARMA_LINKING) $(PYTHON_BINDING) $(TEST)
 
 $(LIBCARMA_DYN): $(OBJECTS)
 	$(CPPC) -shared -Wl,-soname,libcarma.so.1 -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o $(LDIR)/libcarma.so.1.0.0 $(ODIR)Functions.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(MKL_LIBS) $(NLOPTLIBS)
@@ -91,6 +92,9 @@ $(LIBCARMA_LINKING): $(LIBCARMA)
 
 $(PYTHON_BINDING): $(LIBCARMA_LINKING)
 	python $(PDIR)build/libcarma_build.py
+
+$(TEST): $(LIBCARMA_DYN) $(PYTHON_BINDING)
+	python python/test_libcarma.py
 
 #$(EXEC1): $(OBJECTS) $(patsub %,$(EXEC1)%,$(EXT))
 #	$(CPPC) $(VERFLAGS) -xHost $(CPPFLAGS) $(FPFLAG) $(MKLFLAGS) $(OMPFLAGS) -I $(IDIR)  $(REPORTFLAG) $^ $(SRCDIR)/$(EXEC1)$(EXT) $(OMPFLAGS) $(MKL_LIBS) $(BOOSTLINK) $(NLOPTLIBS) -o $@
@@ -145,4 +149,4 @@ $(ODIR)Functions.o: $(SRCDIR)Functions.cpp
 
 .PHONY: clean
 clean:
-	rm -rf $(ODIR)/*.o $(LDIR)*.* *~ $(SRCDIR)/*~ $(IDIR)*~ $(LDIR)*~
+	rm -rf $(ODIR)/*.o $(LDIR)*.a $(LDIR)*.so $(LDIR)*.so.* $(LDIR)_libcarma.py $(LDIR)*.pyc *~ $(SRCDIR)/*~ $(IDIR)*~ $(LDIR)*~ $(PDIR)*.pyc $(PDIR)build/*.pyc $(PDIR)util/*.pyc $(PDIR)old/*.pyc

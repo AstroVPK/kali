@@ -6,7 +6,7 @@
 from cffi import FFI
 
 ffi = FFI()
-ffi.set_source("lib/_libcarma", None)
+ffi.set_source("bin/_libcarma", None)
 ffi.cdef("""
     int* _malloc_int(int length);
     void _free_int(int *mem);

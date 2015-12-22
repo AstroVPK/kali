@@ -12,11 +12,11 @@ import matplotlib.mlab as mlab
 import time
 import pdb
 
-from lib._libcarma import ffi
+from bin._libcarma import ffi
 import python.util.triangle as triangle
 from python.util.mpl_settings import *
 ffiObj = cffi.FFI()
-C = ffi.dlopen("./lib/libcarma.so.1.0.0")
+C = ffi.dlopen("./bin/libcarma.so.1.0.0")
 
 goldenRatio=1.61803398875
 fhgt=10.0
@@ -130,7 +130,7 @@ doFitCARMA = True
 doIR = True
 makeIRR = True
 irr_doFitCARMA = True
-BreakAtEnd = True
+BreakAtEnd = False
 
 ##############################################################################################################
 
