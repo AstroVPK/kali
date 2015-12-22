@@ -25,7 +25,7 @@ most of the common Python scientific computing packages such as `numpy`, `scipy`
 Python may be obtained from
 
 
-[Download Anaconda Python](https://www.continuum.io/downloads)
+  [Download Anaconda Python](https://www.continuum.io/downloads)
 
 
   This package is written for Python2, though it may eventually get updated to Python3. Download the 64-bit 
