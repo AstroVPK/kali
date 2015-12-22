@@ -12,20 +12,33 @@ three are required though the plan is to eventually allow the use of g++ etc...
 
 1. Intel C++ Compiler XE
 The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
-https://software.intel.com/en-us/c-compilers/ipsxe
-https://software.intel.com/en-us/intel-parallel-studio-xe/try-buy#buynow
+
+[Intel® C++ Compiler Overview](https://software.intel.com/en-us/c-compilers/ipsxe)
+
+[Try & Buy](https://software.intel.com/en-us/intel-parallel-studio-xe/try-buy#buynow)
+
 Students are eligible for a free license. Greatly discounted pricing is available for academic users. Use of 
 the Intel compiler results in the largest performance gains on Intel architectures. To install the Intel 
 compiler, download the Parallel Studio XE edition of your choice by following the instructions at 
 https://software.intel.com/en-us/qualify-for-free-software/student (Student + free Compiler & MKL)
 https://software.intel.com/en-us/qualify-for-free-software/academicresearcher (Academic Resercher + free MKL)
 Unpack the tarball as usual and then change to the top-level directory of the un-tarred folder. In the 
-terminal type 
+terminal type
+
+
 bash-prompt$ sudo install_GUI.sh
-to start the install.
-Add the following line to your .bashrc to setup the necessary environment variables required by the compiler.
+
+
+to start the install. Add the following line to your .bashrc to setup the necessary environment variables 
+required by the compiler.
+
+
 source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
+
+
 This software has been tested with
+
+
 Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021(icpc version 16.0.1 (gcc version 4.8.0 compatibility)
 
 2. Intel MKL Library
