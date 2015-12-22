@@ -42,7 +42,7 @@ to date by periodically doing
 2. Intel C++ Compiler XE
 
 
-The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
+  The Intel C++ compiler is included in the Intel® Parallel Studio XE Composer Edition (and higher editions).
 
 
   [Intel® C++ Compiler Overview](https://software.intel.com/en-us/c-compilers/ipsxe)
