@@ -1769,7 +1769,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 
 	}
 
-void CARMA::solveCARMA() {
+void CARMA::solveCARMA_Old() {
 
 	#if (defined DEBUG_SOLVECARMA_F) || (defined DEBUG_SOLVECARMA_Q)
 	int threadNum = omp_get_thread_num();
@@ -2121,7 +2121,185 @@ void CARMA::solveCARMA() {
 	#endif
 	}
 
-void CARMA::computeSigma() {
+void CARMA::solveCARMA() {
+
+	#if (defined DEBUG_SOLVECARMA_F) || (defined DEBUG_SOLVECARMA_Q)
+	int threadNum = omp_get_thread_num();
+	#endif
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; w (Before)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; expw = exp(w) (Before)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	#endif
+
+	#pragma omp simd
+	for (int i = 0; i < p; ++i) {
+		expw[i + i*p] = exp(dt*w[i]);
+		}
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; w (After)\n",threadNum);
+	viewMatrix(p,1,w);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; expw = exp(w) (After)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	#endif
+
+	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; vr (Before)\n",threadNum);
+	viewMatrix(p,p,vr);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; expw (Before)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; ACopy = vr*expw (Before)\n",threadNum);
+	viewMatrix(p,p,ACopy);
+	printf("\n");
+	#endif
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, ACopy, p);
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; vr (After)\n",threadNum);
+	viewMatrix(p,p,vr);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; expw (After)\n",threadNum);
+	viewMatrix(p,p,expw);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; ACopy = vr*expw (After)\n",threadNum);
+	viewMatrix(p,p,ACopy);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; ACopy (Before)\n",threadNum);
+	viewMatrix(p,p,ACopy);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; vrInv (Before)\n",threadNum);
+	viewMatrix(p,p,vrInv);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; AScratch = ACopy*vrInv (Before)\n",threadNum);
+	viewMatrix(p,p,AScratch);
+	printf("\n");
+	#endif
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; ACopy (After)\n",threadNum);
+	viewMatrix(p,p,ACopy);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; vrInv (After)\n",threadNum);
+	viewMatrix(p,p,vrInv);
+	printf("\n");
+	printf("solveCARMA - threadNum: %d; AScratch = aCopy*vrInv (After)\n",threadNum);
+	viewMatrix(p,p,AScratch);
+	printf("\n");
+	#endif
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveDLM - threadNum: %d; AScratch (Before)\n",threadNum);
+	viewMatrix(p,p,AScratch);
+	printf("\n");
+	printf("solveDLM - threadNum: %d; F = AScratch.real() (Before)\n",threadNum);
+	viewMatrix(p,p,F);
+	printf("\n");
+	#endif
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			F[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
+			}
+		}
+
+	#ifdef DEBUG_SOLVECARMA_F
+	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
+	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		printf("%+8.7e ",Theta[dimNum]);
+		}
+	printf("\n");
+	printf("solveDLM - threadNum: %d; AScratch (After)\n",threadNum);
+	viewMatrix(p,p,AScratch);
+	printf("\n");
+	printf("solveDLM - threadNum: %d; F = AScratch.real() (After)\n",threadNum);
+	viewMatrix(p,p,F);
+	printf("\n");
+	#endif
+
+	complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
+	for (int j = 0; j < p; ++j) {
+		BScratch[j] = 0.0+0.0i;
+		for (int l = 0; l < p; ++l) {
+			#pragma omp simd
+			for (int k = 0; k < p; ++k) {
+				rootSum = w[k] + w[l];
+				rootSumInv = (1.0+0.0i)/rootSum;
+				rootSumDT = rootSum*dt;
+				expRootSumDTM1 = exp(rootSumDT) - 1.0;
+				AScratch[k + l*p] = C[k + l*p]*(exp((dt+0.0i)*rootSum) - (1.0+0.0i))*rootSumInv;
+				BScratch[j] += vr[j + k*p]*AScratch[k + l*p]*vr[j + l*p];
+				}
+			}
+		D[j] = sqrt(BScratch[j].real());
+		}
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			Q[rowCtr + colCtr*p] = D[rowCtr]*D[colCtr];
+			}
+		}
+	}
+
+void CARMA::computeSigma_Old() {
 
 	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
@@ -2175,6 +2353,34 @@ void CARMA::computeSigma() {
 	viewMatrix(p,p,Sigma);
 	printf("\n");
 	#endif
+	}
+
+void CARMA::computeSigma() {
+
+	complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
+	for (int j = 0; j < p; ++j) {
+		BScratch[j] = 0.0+0.0i;
+		for (int l = 0; l < p; ++l) {
+			#pragma omp simd
+			for (int k = 0; k < p; ++k) {
+				rootSum = w[k] + w[l];
+				rootSumInv = (1.0+0.0i)/rootSum;
+				rootSumDT = rootSum*dt;
+				expRootSumDTM1 = -1.0;
+				AScratch[k + l*p] = C[k + l*p]*expRootSumDTM1*rootSumInv;
+				BScratch[j] += vr[j + k*p]*AScratch[k + l*p]*vr[j + l*p];
+				}
+			}
+		VScratch[j] = sqrt(BScratch[j].real());
+		}
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			Sigma[rowCtr + colCtr*p] = VScratch[rowCtr]*VScratch[colCtr];
+			}
+		}
+
 	}
 
 void CARMA::resetState(double InitUncertainty) {

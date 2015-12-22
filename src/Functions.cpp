@@ -41,6 +41,15 @@ int testSystem(double dt, int p, int q, double *Theta, double InitStepSize, doub
 		printf("A\n");
 		SystemMaster.printA();
 		printf("\n");
+		printf("w\n");
+		SystemMaster.printw();
+		printf("\n");
+		printf("expw\n");
+		SystemMaster.printexpw();
+		printf("\n");
+		printf("vr\n");
+		SystemMaster.printvr();
+		printf("\n");
 		printf("B\n");
 		SystemMaster.printB();
 		printf("\n");

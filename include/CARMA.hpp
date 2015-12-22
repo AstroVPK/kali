@@ -133,9 +133,11 @@ public:
 	void oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi);
 	void newFunctor(const vector<double> &x, vector<double> &dxdt, const double xi);
 	void operator()(const vector<double> &x, vector<double> &dxdt, const double xi);
+	void solveCARMA_Old();
 	void solveCARMA();
 	void resetState(double InitUncertainty);
 	void resetState();
+	void computeSigma_Old();
 	void computeSigma();
 	void getCARRoots(complex<double>*& CARoots);
 	void getCMARoots(complex<double>*& CMARoots);
