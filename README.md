@@ -172,13 +172,16 @@ package. Please read
   `bash-prompt$ KellyAnalysis --help` and the python docstring for usage instructions.
 
 
-To make this library after cloning the repository, simply run
+To make `libcarma` after cloning the repository, simply run
+
+
+`bash-prompt$ source lib/setup.sh`
 
 
 `bash-prompt$ make`
 
 
-You must run
+You must re-run
 
 
 `bash-prompt$ source lib/setup.sh`
@@ -187,7 +190,7 @@ You must run
 in every new terminal that you use the library in. You may consider adding 
 
 
-'source <path to library>lib/setup.sh`
+`source {path to library}lib/setup.sh`
 
 
 to your `.bashrc`. To clean the library, run 
