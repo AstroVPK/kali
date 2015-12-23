@@ -139,7 +139,7 @@ replace it with an alternative. Intel MKL may be obtained from
 5. `cffi`
 
 
-  The C foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. It can 
+  The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. It can 
 be installed into Anaconda using
 
 
