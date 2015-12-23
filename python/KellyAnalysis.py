@@ -79,7 +79,7 @@ AnnotateSizeAlt = AnnotateMedium
 AnnotateSizeAltAlt = AnnotateLarge
 LegendSize = LegendMedium
 
-gs = gridspec.GridSpec(1000, 1000) 
+gs = gridspec.GridSpec(1000, 1000)
 
 set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',fontweight='normal',fontstretch='normal',fontsize=AxisMedium,useTex='True')
 
