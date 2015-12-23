@@ -1,7 +1,10 @@
 # libcarma
 A library to model a time series as a Continuous-time ARMA (C-ARMA) process. This library is written in C++ 
-and is exposed to Python using `cffi`. In the (near) future, `cffi` may be replaced by Cython.
+and is exposed to Python using `cffi`. In the (near) future, `cffi` may be replaced by `Cython`.
+
+
 Version: 1.0.0
+
 
 Install
 -------
