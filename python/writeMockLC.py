@@ -6,7 +6,15 @@
 	and
 	bash-prompt$ python makeMockLC.py $PWD/examples/taskTest taskTest01.ini
 """
+import math as math
+import cmath as cmath
+import numpy as np
 import cffi as cffi
+import os as os
+import sys as sys
+import pdb as pdb
+
+from bin._libcarma import ffi
 from python.task import Task
 
 ffiObj = cffi.FFI()
@@ -14,10 +22,65 @@ C = ffi.dlopen("./bin/libcarma.so.1.0.0")
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-class makeMockLCTask(Task):
+class writeMockLCTask(Task):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	self.t = None
+	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/', ConfigFile = 'Config.ini', DateTime = None):
+		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = None)
+		self.dt = None
+		self.T = None
+		self.numCadences = None
+		self.t = None
+		self.IR = None
+
+	def _useTFile(self):
+		try:
+			tFile = self.Config["LC " + "tFile".lower()]
+		except KeyError as Err:
+			print str(Err)
+			sys.exit(1)
+		try:
+			tFileStream = open(self.WorkingDirectory + tFile, 'r')
+		except IOError as Err:
+			print str(Err)
+			sys.exit(1)
+		for line in tFileStream:
+			if line[0] == self.escChar:
+				continue
+			self.t.append(line.rstrip("\n").split()[0])
+		self.numCadences = len(self.t)
+		self.T = self.t[-1] - self.t[0]
+		self.t = np.array(self.t)
+		self.dt = np.median(self.t)
+		return 0
+
+	def parseConfig(self):
+		try:
+			self.escChar = self.Config["Misc " + "escChar".lower()]
+		except KeyError as KeyErr:
+			self.escChar = '#'
+		try:
+			self.tStart = self.Config["LC " + "tStart".lower()]
+		except KeyError as KeyErr:
+			self.tStart = 0.0
+		try:
+			self.dt = float(self.Config["LC dt"])
+			self.IR = False
+			try:
+				self.T = float(self.Config["LC " + "T".lower()])
+				self.numCadences = int(self.T/self.dt)
+			except KeyError as Err:
+				try:
+					self.numCadences = int(self.Config["LC " + "T".lower()])
+					self.T = float(self.numCadences)*self.dt
+				except KeyError as KeyErr:
+					self._useTFile()
+		except KeyError as Err:
+			self._useTFile()
+
+		pdb.set_trace()
+
+	'''self.t = None
 	self.y = None
 	self.yerr = None
 	self.Mask = None
@@ -114,4 +177,4 @@ class makeMockLCTask(Task):
 			fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = dpi)
 		if self.showFig == True:
 			plt.show()
-	return 0
+	return 0'''

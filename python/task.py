@@ -15,6 +15,7 @@ if HOST == 'dirac.physics.drexel.edu':
 	import matplotlib
 	matplotlib.use('Agg')
 import sys as sys
+import os as os
 import time as time
 import ConfigParser as CP
 import argparse as AP
@@ -23,9 +24,9 @@ import hashlib as hashlib
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
-	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
-	"""	Initialize a Task object.
-	"""
+	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/', ConfigFile = 'Config.ini', DateTime = None):
+		"""	Initialize Task object.
+		"""
 		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
@@ -53,6 +54,13 @@ class Task:
 
 		self.parser = CP.SafeConfigParser()
 		self.parser.read(WorkingDirectory + ConfigFile)
+		self.Config = dict()
+		self.Sections = self.parser.sections()
+		self.Options = list()
+		for Section in self.Sections:
+			self.Options.append(self.parser.options(Section))
+			for Option in self.Options[-1]:
+				self.Config['%s %s'%(Section, Option)] = self.parser.get(Section, Option)
 
 	def getHash():
 		"""	Compute the hash value of HashFile
@@ -61,17 +69,6 @@ class Task:
 		hashData = hashFile.read().replace('\n', '').replace(' ', '')
 		hashObject = hashlib.sha512(hashData.encode())
 		return hashObject.hexdigest()
-
-	def readConfig():
-		"""	Read the Configfile into self.Config 
-		"""
-		self.Config = dict()
-		self.Sections = self.parser.sections()
-		self.Options = list()
-		for Section in self.Sections:
-			self.Options.append(self.parser.options(Section))
-			for Option in Options[-1]:
-				self.Config['%s %s'%(Section,Option)] = self.parser.get(Section, Option)
 
 	def run(self):
 		raise NotImplementedError
