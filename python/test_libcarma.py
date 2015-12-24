@@ -100,7 +100,6 @@ for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
 numBurn = 1000000
 numCadences = 100
-noiseSigma = 1.0e-18
 startCadence = 0
 burnSeed = 1311890535
 distSeed = 2603023340

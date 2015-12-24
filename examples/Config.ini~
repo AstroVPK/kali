@@ -1,0 +1,31 @@
+[LC]
+dt = 0.02
+T = 400.0
+TandMaskFile = t.dat
+noiseLvl = 1.2e-18
+intrinsicVar = 0.1
+tolIR = 1.0e-3
+
+[C-ARMA]
+r_1 = -0.73642081+0j
+r_2 = -0.01357919+0j
+a_1 = 0.75
+a_2 = 0.01
+b_0 = 1.2e-9
+b_1 = 7.0e-9
+numBurn = 1000000
+
+[MCMC]
+nwalkers = 100
+nsteps = 100
+maxEvals = 1000
+xTol = 0.005
+scatterFactor = 1.0e-6
+
+[MISC]
+escChar = #
+plotLC = True
+JPG = True
+PDF = False
+EPS = False
+showFig = False

@@ -2060,7 +2060,8 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 			t_incr = t[i] - t[i - 1];
 			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 
-			if (fracChange > tolIR*dt) {
+			if (fracChange > tolIR) {
+			//if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}
@@ -2191,7 +2192,8 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 		for (int i = 1; i < numCadences; i++) {
 			t_incr = t[i] - t[i - 1];
 			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
-			if (fracChange > tolIR*dt) {
+			if (fracChange > tolIR) {
+			//if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}

@@ -187,7 +187,7 @@ You must re-run
 `bash-prompt$ source lib/setup.sh`
 
 
-in every new terminal that you use the library in. You may consider adding 
+in every new terminal that you use `libcarma` in. You may consider adding 
 
 
 `source {path to library}lib/setup.sh`
