@@ -36,10 +36,11 @@ class Task:
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
 		try:
-			hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
-			hashData = hashFile.read().replace('\n', '').replace(' ', '')
-			hashObject = hashlib.sha512(hashData.encode())
-			self.ConfigFileHash = hashObject.hexdigest()
+			#hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
+			#hashData = hashFile.read().replace('\n', '').replace(' ', '')
+			#hashObject = hashlib.sha512(hashData.encode())
+			#self.ConfigFileHash = hashObject.hexdigest()
+			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
 			print str(Err) + ". Exiting..."
 			sys.exit(1)
@@ -61,10 +62,13 @@ class Task:
 		self.escChar = '#'
 		self.LC = lc.LC()
 
-	def getHash():
+	def strToBool(self,v):
+		return v.lower() in ('yes', 'true', 't', '1')
+
+	def getHash(self, fullPathToFile):
 		"""	Compute the hash value of HashFile
 		"""
-		hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
+		hashFile = open(fullPathToFile, 'r')
 		hashData = hashFile.read().replace('\n', '').replace(' ', '')
 		hashObject = hashlib.sha512(hashData.encode())
 		return hashObject.hexdigest()
@@ -78,6 +82,9 @@ class Task:
 			if method[0][0:6] == '_read_':
 				method[1]()
 
-
 	def run(self):
-		raise NotImplementedError
+		self.parseConfig()
+		self.methodList = inspect.getmembers(self, predicate=inspect.ismethod)
+		for method in self.methodList:
+			if method[0][0:6] == '_make_':
+				method[1]()

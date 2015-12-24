@@ -18,8 +18,23 @@ import os as os
 import sys as sys
 import pdb as pdb
 
+import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
+from matplotlib import gridspec, cm
+import matplotlib.cm as colormap
+import matplotlib.mlab as mlab
+
 from bin._libcarma import ffi
 from python.task import Task
+from python.util.mpl_settings import *
+
+LabelSize = plot_params['LabelXLarge']
+AxisSize = plot_params['AxisLarge']
+AnnotateSize = plot_params['AnnotateXLarge']
+LegendSize = plot_params['LegendMedium']
+set_plot_params(fontfamily = 'serif', fontstyle = 'normal', fontvariant = 'normal', fontweight = 'normal', fontstretch = 'normal', fontsize = AxisSize, useTex = 'True')
+gs = gridspec.GridSpec(1000, 1000)
 
 ffiObj = cffi.FFI()
 C = ffi.dlopen("./bin/libcarma.so.1.0.0")
@@ -41,37 +56,74 @@ class writeMockLCTask(Task):
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.escChar = '#'
 
+	def _read_plotOptions(self):
+		"""	Attempts to read in the plot options to be used.
+		"""
+		try:
+			self.makePlot = self.strToBool(self.parser.get('PLOT', 'makePlot'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.makePlot = False
+		try:
+			self.JPG = self.strToBool(self.parser.get('PLOT', 'JPG'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.JPG = False
+		try:
+			self.PDF = self.strToBool(self.parser.get('PLOT', 'PDF'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.PDF = False
+		try:
+			self.EPS = self.strToBool(self.parser.get('PLOT', 'EPS'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EPS = False
+		try:
+			self.PNG = self.strToBool(self.parser.get('PLOT', 'PNG'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.PNG = False
+		try:
+			self.showFig = self.strToBool(self.parser.get('PLOT', 'showFig'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showFig = False
+		try:
+			self.showDetail = self.strToBool(self.parser.get('PLOT', 'showDetail'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showDetail = True
+		try:
+			self.detailDuration = float(self.parser.get('PLOT', 'detailDuration'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.detailDuration = 1.0
+
 	def _setIR(self):
 		self.LC.IR = False
 		for incr in self.LC.t_incr:
 			if abs((incr - self.LC.dt)/((incr + self.LC.dt)/2.0)) > self.LC.tolIR:
 				self.LC.IR = True
 
-	def _useTandMaskFile(self, cadence, mask, t, x, y, yerr):
+	def _usePatternFile(self, cadence, mask, t, x, y, yerr):
 		"""	Attempts to find configuration parameter `tFile' in ConfigFile and reads in corresponding file of
 			t values
 		"""
+		PatternFile = self.ConfigFile.split(".")[0] + '.pat'
+		self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
 		try:
-			tFile = self.parser.get('LC', 'TandMaskFile')
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			print str(Err)
-			sys.exit(1)
-		try:
-			tFileStream = open(self.WorkingDirectory + tFile, 'r')
+			PatternStream = open(self.WorkingDirectory + PatternFile, 'r')
 		except IOError as Err:
 			print str(Err)
 			sys.exit(1)
 		counter = 0
-		for line in tFileStream:
+		numMasked = 0
+		for line in PatternStream:
 			if line[0] == self.escChar:
 				continue
 			cadence.append(counter)
 			mask.append(float(line.rstrip("\n").split()[0]))
+			if mask[-1] != 0.0:
+				numMasked += 1
 			t.append(float(line.rstrip("\n").split()[1]))
 			x.append(0.0)
 			y.append(0.0)
 			yerr.append(0.0)
 			counter += 1
+		PatternStream.close()
 		self.LC.numCadences = len(t)
 		self.LC.T = t[-1] - t[0]
 		self.LC.cadence = np.array(cadence)
@@ -82,6 +134,7 @@ class writeMockLCTask(Task):
 		self.LC.yerr = np.array(yerr)
 		self.LC.t_incr = self.LC.t[1:] - self.LC.t[0:-1]
 		self.LC.dt = np.median(self.LC.t_incr)
+		self.LC.numMasked = numMasked
 		self._setIR()
 		return 0
 
@@ -133,6 +186,8 @@ class writeMockLCTask(Task):
 				self.LC.cadence[i] = i
 				self.LC.mask[i] = 1.0
 				self.LC.t[i] = i*self.LC.dt
+			self.LC.numMasked = 0
+			self.PatternFileHash = ''
 		else:
 			print 'Unable to determine light curve length. Attempting to read TandMask file'
 			cadence = list()
@@ -141,7 +196,7 @@ class writeMockLCTask(Task):
 			x = list()
 			y = list()
 			yerr = list()
-			self._useTandMaskFile(cadence, mask, t, x, y, yerr)
+			self._usePatternFile(cadence, mask, t, x, y, yerr)
 
 		try:
 			self.LC.intrinsicVar = float(self.parser.get('LC', 'intrinsicVar'))
@@ -257,28 +312,29 @@ class writeMockLCTask(Task):
 
 	def _read_TaskProps(self):
 		try:
-			self.addNoise = self.parser.get('TASK', 'addNoise')
+			self.doNoiseless = self.strToBool(self.parser.get('TASK', 'doNoiseless'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.addNoise = True
-			print str(Err) + '. Using default addNoise = %r'%(self.addNoise)
-		if isinstance(self.addNoise, (int, float)):
-			if self.addNoise == 0:
-				self.addNoise = False
+			self.doNoiseless = True
+			print str(Err) + '. Using default doNoiseLess = %r'%(self.doNoiseless)
+		if isinstance(self.doNoiseless, (int, float)):
+			if self.doNoiseless == 0:
+				self.doNoiseless = False
 			else:
-				self.addnoise = True
-		elif isinstance(self.addNoise, str):
-			if self.addNoise == 'No':
-				self.addNoise = False
+				self.doNoiseless = True
+		elif isinstance(self.doNoiseless, str):
+			if self.doNoiseless == 'No':
+				self.doNoiseless = False
 			else:
-				self.addNoise = True
-		elif isinstance(self.addNoise, bool):
+				self.doNoiseless = True
+		elif isinstance(self.doNoiseless, bool):
 			pass
 		else:
-			self.addNoise = True
+			self.doNoiseless = True
 
-	def run(self):
+	def _make_01_LC(self):
 		"""	Attempts to make the LC
 		"""
+		print 'Making LC'
 		cadence_cffi = ffiObj.new("int[%d]"%(self.LC.numCadences))
 		mask_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
 		t_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
@@ -307,72 +363,83 @@ class writeMockLCTask(Task):
 			IR = 1
 		else:
 			IR = 0
-		if self.addNoise == False:
-			yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi, yerr_cffi)
-		else:
-			yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+		if self.doNoiseless == True:
+			yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi)
+		yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 		for i in xrange(self.LC.numCadences):
 			self.LC.cadence[i] = cadence_cffi[i]
 			self.LC.mask[i] = mask_cffi[i]
 			self.LC.t[i] = t_cffi[i]
+			self.LC.x[i] = x_cffi[i]
 			self.LC.y[i] = y_cffi[i]
 			self.LC.yerr[i] = yerr_cffi[i]
 
-	'''self.t = None
-	self.y = None
-	self.yerr = None
-	self.Mask = None
-	self.Cadences = None
-	if not self.DateTime:
-		##sigmay = 1.2e-9
-		SigmaY = self.MAPoly[0]
-		##ma_coefs = np.array([1.0, 5.834])
-		MACoefs = np.array([Poly/SigmaY for Poly in self.MAPoly])
-
-		SigSqr = SigmaY**2/cmcmc.carma_variance(1.0, self.ARRoots, ma_coefs = MACoefs)
-
-		self.t = np.arange(0.0, self.T, self.dt)
-		self.y = cmcmc.carma_process(self.t, SigSqr, self.ARRoots, ma_coefs = MACoefs)
-		self.y += np.array(self.t.shape[0]*[self.baseFlux])
-		if not Cadences:
-			self.Cadences = np.arange(self.t.shape[0])
-		else:
-			self.Cadences = Cadences
-		noise = np.random.normal(loc = 0.0, scale = self.noiseLvl, size = self.Cadences.shape[0])
-		self.y += noise
-		self.yerr = np.array(self.Cadences.shape[0]*[self.noiseLvl])
-
-		numMasked = 0
-		if Mask:
-			self.Mask = np.array(Mask)
-			for i in xrange(self.Mask.shape[0]):
-				if self.Mask[i] == 0.0:
-					self.t[i] = 0.0
-					self.y[i] = 0.0
-					self.yerr[i] = 1.3407807929942596e+154
-					numMasked += 1
-		else:
-			self.Mask = np.array(self.Cadences.shape[0]*[1.0])'''
-
-	def write(self):
+	def _make_02_write(self):
+		print 'Writing LC'
 		self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 		outFile = open(self.LCFile, 'w')
 		line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
 		outFile.write(line)
-		line = "numCadences: %d\n"%(self.t.shape[0])
+		line = "PatternFileHash: %s\n"%(self.PatternFileHash)
 		outFile.write(line)
-		line = "numObservations: %d\n"%(self.t.shape[0] - numMasked)
+		line = "numCadences: %d\n"%(self.LC.numCadences)
 		outFile.write(line)
-		line = "meanFlux: %+17.16e\n"%(np.mean(self.y))
+		line = "numObservations: %d\n"%(self.LC.numCadences - self.LC.numMasked)
 		outFile.write(line)
-		line = "CadenceNum Mask t y yerr\n"
+		line = "meanFlux: %+17.16e\n"%(np.mean(self.LC.y))
+		outFile.write(line)
+		line = "cadence mask t x y yerr\n"
 		outFile.write(line) 
-		for i in xrange(self.Cadences.shape[0]-1):
-			line = "%d %1.0f %+17.16e %+17.16e %+17.16e\n"%(self.Cadences[i], self.Mask[i], self.t[i], self.y[i], self.yerr[i])
+		for i in xrange(self.LC.numCadences - 1):
+			line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e\n"%(self.LC.cadence[i], self.LC.mask[i], self.LC.t[i], self.LC.x[i], self.LC.y[i], self.LC.yerr[i])
 			outFile.write(line)
-		line = "%d %1.0f %+17.16e %+17.16e %+17.16e"%(self.Cadences[self.Cadences.shape[0]-1], self.Mask[self.Cadences.shape[0]-1], self.t[self.Cadences.shape[0]-1], self.y[self.Cadences.shape[0]-1], self.yerr[self.Cadences.shape[0]-1])
+		line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e"%(self.LC.cadence[self.LC.cadence.shape[0]-1], self.LC.mask[self.LC.cadence.shape[0]-1], self.LC.t[self.LC.cadence.shape[0]-1], self.LC.x[self.LC.cadence.shape[0]-1], self.LC.y[self.LC.cadence.shape[0]-1], self.LC.yerr[self.LC.cadence.shape[0]-1])
 		outFile.write(line)
 		outFile.close()
+
+	def _make_03_plot(self):
+		if self.makePlot == True:
+			print 'Plotting LC'
+			fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
+
+			ax1 = fig1.add_subplot(gs[:,:])
+			ax1.ticklabel_format(useOffset = False)
+			if self.doNoiseless == True:
+				ax1.plot(self.LC.t, self.LC.x, color = '#7570b3', zorder = 5)
+			ax1.errorbar(self.LC.t, self.LC.y, self.LC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
+			yMax=np.max(self.LC.y[np.nonzero(self.LC.y[:])])
+			yMin=np.min(self.LC.y[np.nonzero(self.LC.y[:])])
+			ax1.set_ylabel(r'$F$ (arb units)')
+			ax1.set_xlabel(r'$t$ (d)')
+			ax1.set_xlim(self.LC.t[0],self.LC.t[-1])
+			ax1.set_ylim(yMin,yMax)
+
+			if self.showDetail == True:
+				numPts = int(self.detailDuration/self.LC.dt)
+				startLoc = random.randint(0, self.LC.numCadences - numPts)
+
+				ax2 = fig1.add_subplot(gs[50:299,700:949])
+				ax2.ticklabel_format(useOffset = False)
+				if self.doNoiseless == True:
+					ax2.plot(self.LC.t[startLoc:startLoc + numPts], self.LC.x[startLoc:startLoc + numPts], color = '#7570b3', zorder = 15)
+				ax2.errorbar(self.LC.t[startLoc:startLoc + numPts], self.LC.y[startLoc:startLoc + numPts], self.LC.yerr[startLoc:startLoc + numPts], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
+				#yMax=np.max(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
+				#yMin=np.min(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
+				ax2.set_ylabel(r'$F$ (arb units)')
+				ax2.set_xlabel(r'$t$ (d)')
+				ax2.set_xlim(self.LC.t[startLoc],self.LC.t[startLoc + numPts])
+				#ax2.set_ylim(yMin,yMax)
+
+			if self.JPG == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = plot_params['dpi'])
+			if self.PDF == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.pdf" , dpi = plot_params['dpi'])
+			if self.EPS == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = plot_params['dpi'])
+			if self.PNG == True:
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.png" , dpi = plot_params['dpi'])
+			if self.showFig == True:
+				plt.show()
 
 	'''else:
 		self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
