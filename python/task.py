@@ -28,7 +28,7 @@ import python.lc as lc
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
-	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/', ConfigFile = 'Config.ini', DateTime = None):
+	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/writeMockLCTest/', ConfigFile = 'Config.ini', DateTime = None):
 		"""	Initialize Task object.
 		"""
 		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
@@ -36,10 +36,6 @@ class Task:
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
 		try:
-			#hashFile = open(self.WorkingDirectory + self.ConfigFile, 'r')
-			#hashData = hashFile.read().replace('\n', '').replace(' ', '')
-			#hashObject = hashlib.sha512(hashData.encode())
-			#self.ConfigFileHash = hashObject.hexdigest()
 			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
 			print str(Err) + ". Exiting..."

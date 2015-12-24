@@ -44,7 +44,7 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class writeMockLCTask(Task):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/', ConfigFile = 'Config.ini', DateTime = None):
+	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/writeMockLCTest/', ConfigFile = 'Config.ini', DateTime = None):
 		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = None)
 		self.LC.IR = None
 
