@@ -38,6 +38,9 @@
 *.eps
 *.png
 
+# Backups
+*~
+
 # Python Extensions
 _*.py
 
