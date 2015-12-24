@@ -89,7 +89,7 @@ int testSystem(double dt, int p, int q, double *Theta) {
 	return retVal;
 	}
 
-int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *x) {
 	int retVal = 1;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
@@ -115,8 +115,7 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 		Data.IR = IR;
 		Data.tolIR = IR;
 		Data.t = t;
-		Data.y = y;
-		Data.yerr = yerr;
+		Data.y = x;
 		Data.mask = mask;
 		LnLikeData *ptr2Data = &Data;
 		SystemMaster.observeSystem(ptr2Data, distSeed, distRand);
@@ -325,14 +324,14 @@ extern "C" {
 		return testSystem(dt, p, q, Theta);
 		}
 
-	extern int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	extern int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *x) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return makeIntrinsicLC(dt, p, q, Theta, boolIR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence, mask, t, y, yerr);
+		return makeIntrinsicLC(dt, p, q, Theta, boolIR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence, mask, t, x);
 		}
 
 	extern int _makeObservedLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {

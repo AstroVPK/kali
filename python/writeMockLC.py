@@ -31,8 +31,7 @@ class writeMockLCTask(Task):
 	"""
 	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/', ConfigFile = 'Config.ini', DateTime = None):
 		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = None)
-		self.dt = None
-		self.IR = False
+		self.LC.IR = None
 
 	def _read_escChar(self):
 		""" Attempts to set the escape charatcter to be used.
@@ -43,12 +42,12 @@ class writeMockLCTask(Task):
 			self.escChar = '#'
 
 	def _setIR(self):
-		t_incr = self.t[1:] - self.t[0:-1]
-		for incr in t_incr:
-			if abs((incr - self.dt)/((incr + self.dt)/2.0)) > self.tolIR:
-				self.IR = True
+		self.LC.IR = False
+		for incr in self.LC.t_incr:
+			if abs((incr - self.LC.dt)/((incr + self.LC.dt)/2.0)) > self.LC.tolIR:
+				self.LC.IR = True
 
-	def _useTandMaskFile(self):
+	def _useTandMaskFile(self, cadence, mask, t, x, y, yerr):
 		"""	Attempts to find configuration parameter `tFile' in ConfigFile and reads in corresponding file of
 			t values
 		"""
@@ -66,21 +65,23 @@ class writeMockLCTask(Task):
 		for line in tFileStream:
 			if line[0] == self.escChar:
 				continue
-			self.cadence.append(counter)
-			self.mask.append(float(line.rstrip("\n").split()[0]))
-			self.t.append(float(line.rstrip("\n").split()[1]))
-			self.y.append(0.0)
-			self.yerr.append(0.0)
+			cadence.append(counter)
+			mask.append(float(line.rstrip("\n").split()[0]))
+			t.append(float(line.rstrip("\n").split()[1]))
+			x.append(0.0)
+			y.append(0.0)
+			yerr.append(0.0)
 			counter += 1
-		self.numCadences = len(self.t)
-		self.T = self.t[-1] - self.t[0]
-		self.cadence = np.array(self.cadence)
-		self.mask = np.array(self.mask)
-		self.t = np.array(self.t)
-		self.y = np.array(self.y)
-		self.yerr = np.array(self.yerr)
-		t_incr = self.t[1:] - self.t[0:-1]
-		self.dt = np.median(t_incr)
+		self.LC.numCadences = len(t)
+		self.LC.T = t[-1] - t[0]
+		self.LC.cadence = np.array(cadence)
+		self.LC.mask = np.array(mask)
+		self.LC.t = np.array(t)
+		self.LC.x = np.array(x)
+		self.LC.y = np.array(y)
+		self.LC.yerr = np.array(yerr)
+		self.LC.t_incr = self.LC.t[1:] - self.LC.t[0:-1]
+		self.LC.dt = np.median(self.LC.t_incr)
 		self._setIR()
 		return 0
 
@@ -95,66 +96,68 @@ class writeMockLCTask(Task):
 		try:
 			self.tStart = self.parser.get('LC', 'tStart')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.tStart = 0.0
-			print str(Err) + '. Using default tStart = %+7.6e (d)'%(self.tStart)
+			self.LC.tStart = 0.0
+			print str(Err) + '. Using default tStart = %+7.6e (d)'%(self.LC.tStart)
 
 		DT = True
 		try:
-			self.dt = float(self.parser.get('LC', 'dt'))
+			self.LC.dt = float(self.parser.get('LC', 'dt'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			DT = False
 		T = True
 		try:
-			self.T = float(self.parser.get('LC', 'T'))
+			self.LC.T = float(self.parser.get('LC', 'T'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			T = False
 		NUMCADENCES = True
 		try:
-			self.numCadences = int(self.parser.get('LC', 'numCadences'))
+			self.LC.numCadences = int(self.parser.get('LC', 'numCadences'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			NUMCADENCES = False
 
 		if DT:
 			if T or NUMCADENCES:
 				if T:
-					self.numCadences = int(self.T/self.dt)
+					self.LC.numCadences = int(self.LC.T/self.LC.dt)
 				elif NUMCADENCES:
-					self.T = float(self.numCadences)*self.dt
+					self.LC.T = float(self.LC.numCadences)*self.LC.dt
 			elif T and NUMCADENCES:
-				self.dt = self.T/float(self.numCadences)
-			self.cadence = np.array(self.numCadences*[0])
-			self.mask = np.array(self.numCadences*[1.0])
-			self.t = np.array(self.numCadences*[0.0])
-			self.y = np.array(self.numCadences*[0.0])
-			self.yerr = np.array(self.numCadences*[0.0])
-			for i in xrange(self.numCadences):
-				self.cadence[i] = i
-				self.mask[i] = 1.0
-				self.t[i] = i*self.dt
+				self.LC.dt = self.LC.T/float(self.LC.numCadences)
+			self.LC.cadence = np.array(self.LC.numCadences*[0])
+			self.LC.mask = np.array(self.LC.numCadences*[1.0])
+			self.LC.t = np.array(self.LC.numCadences*[0.0])
+			self.LC.x = np.array(self.LC.numCadences*[0.0])
+			self.LC.y = np.array(self.LC.numCadences*[0.0])
+			self.LC.yerr = np.array(self.LC.numCadences*[0.0])
+			for i in xrange(self.LC.numCadences):
+				self.LC.cadence[i] = i
+				self.LC.mask[i] = 1.0
+				self.LC.t[i] = i*self.LC.dt
 		else:
 			print 'Unable to determine light curve length. Attempting to read TandMask file'
-			self.cadence = list()
-			self.mask = list()
-			self.t = list()
-			self.y = list()
-			self.yerr = list()
-			self._useTandMaskFile()
+			cadence = list()
+			mask = list()
+			t = list()
+			x = list()
+			y = list()
+			yerr = list()
+			self._useTandMaskFile(cadence, mask, t, x, y, yerr)
 
 		try:
-			self.intrinsicVar = float(self.parser.get('LC', 'intrinsicVar'))
+			self.LC.intrinsicVar = float(self.parser.get('LC', 'intrinsicVar'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.intrinsicVar = 0.1
-			print str(Err) + '. Using default intrinsicVar = %+7.6e.'%(self.intrinsicVar)
+			self.LC.intrinsicVar = 0.1
+			print str(Err) + '. Using default intrinsicVar = %+7.6e.'%(self.LC.intrinsicVar)
 		try:
-			self.noiseLvl = float(self.parser.get('LC', 'noiseLvl'))
+			self.LC.noiseLvl = float(self.parser.get('LC', 'noiseLvl'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.noiseLvl = 1.0e-18
-			print str(Err) + '. Using default noiseLvl = %+7.6e.'%(self.noiseLvl)
+			self.LC.noiseLvl = 1.0e-18
+			print str(Err) + '. Using default noiseLvl = %+7.6e.'%(self.LC.noiseLvl)
 		try:
-			self.startCadence = self.parser.get('LC', 'startCadence')
+			self.LC.startCadence = self.parser.get('LC', 'startCadence')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.startCadence = 0
-			print str(Err) + '. Using default startCadence = %d'%(self.startCadence)
+			self.LC.startCadence = 0
+			print str(Err) + '. Using default startCadence = %d'%(self.LC.startCadence)
 
 	def _read_CARMAProps(self):
 		"""	Attempts to parse AR roots and MA coefficients.
@@ -252,20 +255,43 @@ class writeMockLCTask(Task):
 			self.numBurn = 1000000
 			print str(Err) + '. Using default numBurn = %d'%(self.numBurn)
 
+	def _read_TaskProps(self):
+		try:
+			self.addNoise = self.parser.get('TASK', 'addNoise')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.addNoise = True
+			print str(Err) + '. Using default addNoise = %r'%(self.addNoise)
+		if isinstance(self.addNoise, (int, float)):
+			if self.addNoise == 0:
+				self.addNoise = False
+			else:
+				self.addnoise = True
+		elif isinstance(self.addNoise, str):
+			if self.addNoise == 'No':
+				self.addNoise = False
+			else:
+				self.addNoise = True
+		elif isinstance(self.addNoise, bool):
+			pass
+		else:
+			self.addNoise = True
+
 	def run(self):
 		"""	Attempts to make the LC
 		"""
-		cadence_cffi = ffiObj.new("int[%d]"%(self.numCadences))
-		mask_cffi = ffiObj.new("double[%d]"%(self.numCadences))
-		t_cffi = ffiObj.new("double[%d]"%(self.numCadences))
-		y_cffi = ffiObj.new("double[%d]"%(self.numCadences))
-		yerr_cffi = ffiObj.new("double[%d]"%(self.numCadences))
-		for i in xrange(self.numCadences):
-			cadence_cffi[i] = self.cadence[i]
-			mask_cffi[i] = self.mask[i]
-			t_cffi[i] = self.t[i]
-			y_cffi[i] = self.y[i]
-			yerr_cffi[i] = self.yerr[i]
+		cadence_cffi = ffiObj.new("int[%d]"%(self.LC.numCadences))
+		mask_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
+		t_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
+		x_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
+		y_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
+		yerr_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
+		for i in xrange(self.LC.numCadences):
+			cadence_cffi[i] = self.LC.cadence[i]
+			mask_cffi[i] = self.LC.mask[i]
+			t_cffi[i] = self.LC.t[i]
+			x_cffi[i] = self.LC.x[i]
+			y_cffi[i] = self.LC.y[i]
+			yerr_cffi[i] = self.LC.yerr[i]
 		Theta_cffi = ffiObj.new("double[%d]"%(self.p + self.q + 1))
 		for i in xrange(self.p):
 			Theta_cffi[i] = self.ARCoefs[i]
@@ -277,17 +303,20 @@ class writeMockLCTask(Task):
 		#burnSeed = 1311890535
 		#distSeed = 2603023340
 		#noiseSeed = 2410288857
-		if self.IR == True:
+		if self.LC.IR == True:
 			IR = 1
 		else:
 			IR = 0
-		yORn = C._makeIntrinsicLC(self.dt, self.p, self.q, Theta_cffi, IR, self.tolIR, self.numBurn, self.numCadences, self.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
-		for i in xrange(self.numCadences):
-			self.cadence[i] = cadence_cffi[i]
-			self.mask[i] = mask_cffi[i]
-			self.t[i] = t_cffi[i]
-			self.y[i] = y_cffi[i]
-			self.yerr[i] = yerr_cffi[i]
+		if self.addNoise == False:
+			yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi, yerr_cffi)
+		else:
+			yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+		for i in xrange(self.LC.numCadences):
+			self.LC.cadence[i] = cadence_cffi[i]
+			self.LC.mask[i] = mask_cffi[i]
+			self.LC.t[i] = t_cffi[i]
+			self.LC.y[i] = y_cffi[i]
+			self.LC.yerr[i] = yerr_cffi[i]
 
 	'''self.t = None
 	self.y = None

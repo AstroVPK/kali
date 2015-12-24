@@ -55,3 +55,41 @@ def set_plot_params(fontfamily='serif',fontstyle='normal',fontvariant='normal',f
                        # used in regular text.
     mpl.rcParams['pdf.fonttype']=42 # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .pdf
     mpl.rcParams['ps.fonttype']=42 # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .eps
+
+plot_params = dict()
+plot_params['goldenRatio'] = 1.61803398875
+plot_params['fhgt'] = 10.0
+plot_params['fwid'] = plot_params['fhgt']*plot_params['goldenRatio']
+plot_params['dpi'] = 300
+
+plot_params['AnnotateXXLarge'] = 72
+plot_params['AnnotateXLarge'] = 48
+plot_params['AnnotateLarge'] = 32
+plot_params['AnnotateMedium'] = 28
+plot_params['AnnotateSmall'] = 24
+plot_params['AnnotateXSmall'] = 20
+plot_params['AnnotateXXSmall'] = 16
+
+plot_params['LegendLarge'] = 24
+plot_params['LegendMedium'] = 20
+plot_params['LegendSmall'] = 16
+
+plot_params['LabelXLarge'] = 32
+plot_params['LabelLarge'] = 28
+plot_params['LabelMedium'] = 24
+plot_params['LabelSmall'] = 20
+plot_params['LabelXSmall'] = 16
+
+plot_params['AxisXXLarge'] = 32
+plot_params['AxisXLarge'] = 28
+plot_params['AxisLarge'] = 24
+plot_params['AxisMedium'] = 20
+plot_params['AxisSmall'] = 16
+plot_params['AxisXSmall'] = 12
+plot_params['AxisXXSmall'] = 8
+
+plot_params['normalFontSize'] = 32
+plot_params['smallFontSize'] = 24
+plot_params['footnoteFontSize'] = 20
+plot_params['scriptFontSize'] = 16
+plot_params['tinyFontSize'] = 12

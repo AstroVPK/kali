@@ -1485,12 +1485,12 @@ void CARMA::setCARMA(double *ThetaIn) {
 	H[0] = 1.0;
 	}
 
-void CARMA::oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi) {
+//void CARMA::oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi) {
 	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
 
 	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\textbf{\textsf{Q}}\f$ is symmetric positive definate and only the first column needfs to be computed.
 	*/
-	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
+	/*complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
 
 	#ifdef DEBUG_FUNCTOR
 	int threadNum = omp_get_thread_num();
@@ -1748,7 +1748,7 @@ void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const doub
 	viewMatrix(p,p,&dxdt[pSq]);
 	printf("\n");
 	#endif
-	}
+	}*/
 
 void CARMA::solveCARMA() {
 	#if (defined DEBUG_SOLVECARMA_F) || (defined DEBUG_SOLVECARMA_Q)
@@ -2027,7 +2027,6 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *y = Data.y;
-	double *yerr = Data.yerr;
 	double *mask = Data.mask;
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);

@@ -23,6 +23,8 @@ import argparse as AP
 import hashlib as hashlib
 import pdb
 
+import python.lc as lc
+
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
@@ -57,6 +59,7 @@ class Task:
 		self.parser = CP.SafeConfigParser()
 		self.parser.read(WorkingDirectory + ConfigFile)
 		self.escChar = '#'
+		self.LC = lc.LC()
 
 	def getHash():
 		"""	Compute the hash value of HashFile

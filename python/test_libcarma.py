@@ -147,7 +147,6 @@ if doR:
 	t = np.array(numCadences*[0.0])
 	x = np.array(numCadences*[0.0])
 	y = np.array(numCadences*[0.0])
-	xerr = np.array(numCadences*[0.0])
 	yerr = np.array(numCadences*[0.0])
 	if doFitCARMA:
 		Chain = np.zeros((nsteps,nwalkers,ndims))
@@ -159,7 +158,6 @@ if doR:
 	t_cffi = ffiObj.new("double[%d]"%(numCadences))
 	x_cffi = ffiObj.new("double[%d]"%(numCadences))
 	y_cffi = ffiObj.new("double[%d]"%(numCadences))
-	xerr_cffi = ffiObj.new("double[%d]"%(numCadences))
 	yerr_cffi = ffiObj.new("double[%d]"%(numCadences))
 	if doFitCARMA:
 		Chain_cffi = ffiObj.new("double[%d]"%(ndims*nwalkers*nsteps))
@@ -171,7 +169,6 @@ if doR:
 		t_cffi[i] = dt*i
 		x_cffi[i] = 0.0
 		y_cffi[i] = 0.0
-		xerr_cffi[i] = 0.0
 		yerr_cffi[i] = 0.0
 	if doFitCARMA:
 		for stepNum in xrange(nsteps):
@@ -181,7 +178,7 @@ if doR:
 					Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers] = 0.0 
 	
 	intrinStart = time.time()
-	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi, xerr_cffi)
+	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi)
 	intrinStop = time.time()
 	print "Time taken to compute intrinsic LC: %f (min)"%((intrinStop - intrinStart)/60.0)
 
@@ -196,7 +193,6 @@ if doR:
 		t[i] = t_cffi[i]
 		x[i] = x_cffi[i]
 		y[i] = y_cffi[i]
-		xerr[i] = xerr_cffi[i]
 		yerr[i] = yerr_cffi[i]
 
 	x_mean = np.mean(x)
@@ -287,7 +283,6 @@ if doIR:
 		dt = np.median(irr_t[1:] - irr_t[:-1])
 	irr_x = np.array(numCadences*[0.0])
 	irr_y = np.array(numCadences*[0.0])
-	irr_xerr = np.array(numCadences*[0.0])
 	irr_yerr = np.array(numCadences*[0.0])
 	if irr_doFitCARMA:
 		irr_Chain = np.zeros((nsteps,nwalkers,ndims))
@@ -299,7 +294,6 @@ if doIR:
 	irr_t_cffi = ffiObj.new("double[%d]"%(numCadences))
 	irr_x_cffi = ffiObj.new("double[%d]"%(numCadences))
 	irr_y_cffi = ffiObj.new("double[%d]"%(numCadences))
-	irr_xerr_cffi = ffiObj.new("double[%d]"%(numCadences))
 	irr_yerr_cffi = ffiObj.new("double[%d]"%(numCadences))
 	if irr_doFitCARMA:
 		irr_Chain_cffi = ffiObj.new("double[%d]"%(ndims*nwalkers*nsteps))
@@ -311,8 +305,7 @@ if doIR:
 		irr_t_cffi[i] = irr_t[i]
 		irr_x_cffi[i] = irr_x[i]
 		irr_y_cffi[i] = irr_y[i]
-		irr_xerr_cffi[i] = irr_yerr[i]
-		irr_yerr_cffi[i] = irr_xerr[i]
+		irr_yerr_cffi[i] = irr_yerr[i]
 	if irr_doFitCARMA:
 		for stepNum in xrange(nsteps):
 			for walkerNum in xrange(nwalkers):
@@ -321,7 +314,7 @@ if doIR:
 					irr_Chain_cffi[dimNum + walkerNum*ndims + stepNum*ndims*nwalkers] = 0.0
 
 	irr_intrinStart = time.time()
-	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_x_cffi, irr_xerr_cffi)
+	yORn = C._makeIntrinsicLC(dt, p, q, Theta_cffi, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_x_cffi)
 	irr_intrinStop = time.time()
 	print "Time taken to compute irregular intrinsic LC: %f (min)"%((irr_intrinStop - irr_intrinStart)/60.0)
 
@@ -336,7 +329,6 @@ if doIR:
 		irr_t[i] = irr_t_cffi[i]
 		irr_x[i] = irr_x_cffi[i]
 		irr_y[i] = irr_y_cffi[i]
-		irr_xerr[i] = irr_xerr_cffi[i]
 		irr_yerr[i] = irr_yerr_cffi[i]
 
 	irr_x_mean = np.mean(irr_x)
