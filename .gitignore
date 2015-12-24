@@ -36,6 +36,7 @@
 *.jpg
 *.pdf
 *.eps
+*.png
 
 # Python Extensions
 _*.py
