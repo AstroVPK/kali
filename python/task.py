@@ -64,8 +64,15 @@ class Task:
 		self.escChar = '#'
 		self.LC = lc.LC()
 
-	def strToBool(self,v):
-		return v.lower() in ('yes', 'true', 't', '1')
+	def strToBool(self, val):
+		return val.lower() in ('yes', 'true', 't', '1')
+
+	def formatFloat(self, val, formatStr = r'+4.3'):
+		strVal = r'%' + formatStr + r'e'%(val)
+		frontVal = strVal[0:float(formatStr[1:2])]
+		expLoc = strVal.find(r'e')
+		expVal = strVal[expLoc+1:-1]
+		return r'$' + frontVal + r'\times 10^{' + expVal + r'}$'
 
 	def getHash(self, fullPathToFile):
 		"""	Compute the hash value of HashFile

@@ -88,7 +88,23 @@ class writeMockLCTask(Task):
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showDetail = True
 		try:
-			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showEqn'))
+			self.detailDuration = float(self.plotParser.get('PLOT', 'detailDuration'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.detailDuration = 1.0
+		self.numPtsDetail = int(self.detailDuration/self.LC.dt)
+		try:
+			self.detailStart = self.plotParser.get('PLOT', 'detailStart')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.detailStart = 'random'
+		if self.detailStart == 'random':
+			self.detailStart = random.randint(0, self.LC.numCadences - self.numPtsDetail)
+		else:
+			self.detailStart = int(float(self.detailStart)/self.LC.dt)
+			if self.detailStart > self.LC.numCadences - self.numPtsDetail:
+				print "detailStart too large... Try reducing it."
+				sys.exit(1)
+		try:
+			self.showEqn = self.strToBool(self.plotParser.get('PLOT', 'showEqn'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showEqn = True
 		try:
@@ -99,10 +115,6 @@ class writeMockLCTask(Task):
 			self.yLabel = self.plotParser.get('PLOT', 'yLabel')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.xLabel = r'$F$~($W m^{-2}$)'
-		try:
-			self.detailDuration = float(self.plotParser.get('PLOT', 'detailDuration'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.detailDuration = 1.0
 
 	def _setIR(self):
 		self.LC.IR = False
@@ -343,6 +355,31 @@ class writeMockLCTask(Task):
 		else:
 			self.doNoiseless = True
 
+	def _make_00_EqnString(self):
+		"""	Attempts to construct a latex string consisting of the equation of the LC
+		"""
+		self.eqnStr = r'$'
+		if self.p > 1:
+			self.eqnStr += r'\mathrm{d}^{%d}F'%(self.p)
+			for i in xrange(self.p - 2):
+				self.eqnStr += r'%+4.3e\mathrm{d}^{%d}F'%(self.ARCoefs[i], self.p - 1 - i)
+			self.eqnStr += r'%+4.3e\mathrm{d}F'%(self.ARCoefs[self.p - 2])
+			self.eqnStr += r'%+4.3eF='%(self.ARCoefs[self.p - 1])
+		elif self.p == 1:
+			self.eqnStr += r'\mathrm{d}F'
+			self.eqnStr += r'%+4.3eF='%(self.ARCoefs[0])
+		if self.q >= 2:
+			for i in xrange(self.q - 1):
+				self.eqnStr += r'%4.3e\mathrm{d}^{%d}(\mathrm{d}W)'%(self.MACoefs[i], self.q - 1 - i)
+			self.eqnStr += r'%+4.3e\mathrm{d}(\mathrm{d}W)'%(self.MACoefs[self.q - 2])
+			self.eqnStr += r'%+4.3e(\mathrm{d}W)'%(self.MACoefs[self.q - 1])
+		elif self.q == 1:
+			self.eqnStr += r'%4.3e\mathrm{d}(\mathrm{d}W)'%(self.MACoefs[0])
+			self.eqnStr += r'%+4.3e(\mathrm{d}W)'%(self.MACoefs[1])
+		else:
+			self.eqnStr += r'%4.3e(\mathrm{d}W)'%(self.MACoefs[0])
+		self.eqnStr += r'$'
+
 	def _make_01_LC(self):
 		"""	Attempts to make the LC
 		"""
@@ -461,21 +498,19 @@ class writeMockLCTask(Task):
 			ax1.set_ylabel(self.yLabel)
 			ax1.set_xlim(self.LC.t[0],self.LC.t[-1])
 			ax1.set_ylim(yMin,yMax)
+			ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = 16, zorder = 100)
 
 			if self.showDetail == True:
-				numPts = int(self.detailDuration/self.LC.dt)
-				startLoc = random.randint(0, self.LC.numCadences - numPts)
-
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
 				ax2.ticklabel_format(useOffset = False)
 				if self.doNoiseless == True:
-					ax2.plot(self.LC.t[startLoc:startLoc + numPts], self.LC.x[startLoc:startLoc + numPts], color = '#7570b3', zorder = 15)
-				ax2.errorbar(self.LC.t[startLoc:startLoc + numPts], self.LC.y[startLoc:startLoc + numPts], self.LC.yerr[startLoc:startLoc + numPts], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
-				#yMax=np.max(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
-				#yMin=np.min(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
+					ax2.plot(self.LC.t[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.x[self.detailStart:self.detailStart+self.numPtsDetail], color = '#7570b3', zorder = 15)
+				ax2.errorbar(self.LC.t[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.y[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.yerr[self.detailStart:self.detailStart+self.numPtsDetail], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
 				ax2.set_xlabel(self.xLabel)
 				ax2.set_ylabel(self.yLabel)
-				ax2.set_xlim(self.LC.t[startLoc],self.LC.t[startLoc + numPts])
+				ax2.set_xlim(self.LC.t[self.detailStart],self.LC.t[self.detailStart + self.numPtsDetail])
+				#yMax=np.max(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
+				#yMin=np.min(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
 				#ax2.set_ylim(yMin,yMax)
 
 			if self.JPG == True:
@@ -488,47 +523,3 @@ class writeMockLCTask(Task):
 				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.png" , dpi = plot_params['dpi'])
 			if self.showFig == True:
 				plt.show()
-
-	'''else:
-		self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
-		inFile = open(self.LCFile, 'rb')
-		words = inFile.readline().rstrip('\n').split()
-		LCHash = words[0]
-		if (LCHash == self.ConfigFileHash):
-			line = inFile.readline()
-			line = line.rstrip('\n')
-			words = line.split()
-			numCadences = int(words[1])
-			self.t = np.array(numCadences*[0.0])
-			self.y = np.array(numCadences*[0.0])
-			self.yerr = np.array(numCadences*[0.0])
-			self.Cadences = np.array(numCadences*[0.0])
-			self.Mask = np.array(numCadences*[0.0])
-			line = inFile.readline()
-			line = inFile.readline()
-			for i in xrange(numCadences):
-				words = inFile.readline().rstrip('\n').split()
-				self.t[i] = i*self.dt
-				self.Cadences[i] = int(words[0])
-				self.Mask[i] = float(words[1])
-				self.y[i] = float(words[2])
-				self.yerr[i] = float(words[3])
-		else:
-			print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
-
-	if self.plotLC == True:
-		fig1 = plt.figure(1, figsize=(fwid, fhgt))
-		ax1 = fig1.add_subplot(gs[:,:])
-		ax1.ticklabel_format(useOffset = False)
-		ax1.plot(self.t, self.y)
-		ax1.set_xlabel(r'$t$ (d)')
-		ax1.set_ylabel(r'Flux')
-		if self.JPG == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = dpi)
-		if self.PDF == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.pdf" , dpi = dpi)
-		if self.EPS == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = dpi)
-		if self.showFig == True:
-			plt.show()
-	return 0'''
