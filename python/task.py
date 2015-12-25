@@ -28,7 +28,7 @@ import python.lc as lc
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
-	def __init__(self, WorkingDirectory = os.getcwd() + '/examples/writeMockLCTest/', ConfigFile = 'Config.ini', DateTime = None):
+	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
 		"""	Initialize Task object.
 		"""
 		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
