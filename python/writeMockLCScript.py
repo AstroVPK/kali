@@ -2,4 +2,4 @@ import pdb
 
 from python.writeMockLC import writeMockLCTask
 
-newTask = writeMockLCTask().run()
+writeMockLCTask('/home/vish/code/trunk/cpp/libcarma/examples/writeMockLCTest/','Config.ini').run()
