@@ -45,7 +45,7 @@ class writeMockLCTask(Task):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
 	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
-		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = None)
+		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = DateTime)
 		self.LC.IR = None
 
 	def _read_escChar(self):
@@ -60,35 +60,47 @@ class writeMockLCTask(Task):
 		"""	Attempts to read in the plot options to be used.
 		"""
 		try:
-			self.makePlot = self.strToBool(self.parser.get('PLOT', 'makePlot'))
+			self.makePlot = self.strToBool(self.plotParser.get('PLOT', 'makePlot'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.makePlot = False
 		try:
-			self.JPG = self.strToBool(self.parser.get('PLOT', 'JPG'))
+			self.JPG = self.strToBool(self.plotParser.get('PLOT', 'JPG'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.JPG = False
 		try:
-			self.PDF = self.strToBool(self.parser.get('PLOT', 'PDF'))
+			self.PDF = self.strToBool(self.plotParser.get('PLOT', 'PDF'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.PDF = False
 		try:
-			self.EPS = self.strToBool(self.parser.get('PLOT', 'EPS'))
+			self.EPS = self.strToBool(self.plotParser.get('PLOT', 'EPS'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.EPS = False
 		try:
-			self.PNG = self.strToBool(self.parser.get('PLOT', 'PNG'))
+			self.PNG = self.strToBool(self.plotParser.get('PLOT', 'PNG'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.PNG = False
 		try:
-			self.showFig = self.strToBool(self.parser.get('PLOT', 'showFig'))
+			self.showFig = self.strToBool(self.plotParser.get('PLOT', 'showFig'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showFig = False
 		try:
-			self.showDetail = self.strToBool(self.parser.get('PLOT', 'showDetail'))
+			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showDetail'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showDetail = True
 		try:
-			self.detailDuration = float(self.parser.get('PLOT', 'detailDuration'))
+			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showEqn'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showEqn = True
+		try:
+			self.xLabel = self.plotParser.get('PLOT', 'xLabel')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabel = r'$t$~($d$)'
+		try:
+			self.yLabel = self.plotParser.get('PLOT', 'yLabel')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabel = r'$F$~($W m^{-2}$)'
+		try:
+			self.detailDuration = float(self.plotParser.get('PLOT', 'detailDuration'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.detailDuration = 1.0
 
@@ -105,7 +117,7 @@ class writeMockLCTask(Task):
 		PatternFile = self.ConfigFile.split(".")[0] + '.pat'
 		self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
 		try:
-			PatternStream = open(self.WorkingDirectory + PatternFile, 'r')
+			PatternStream = open(self.WorkingDirectory + self.PatternFile, 'r')
 		except IOError as Err:
 			print str(Err)
 			sys.exit(1)
@@ -334,68 +346,104 @@ class writeMockLCTask(Task):
 	def _make_01_LC(self):
 		"""	Attempts to make the LC
 		"""
-		print 'Making LC'
-		cadence_cffi = ffiObj.new("int[%d]"%(self.LC.numCadences))
-		mask_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
-		t_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
-		x_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
-		y_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
-		yerr_cffi = ffiObj.new("double[%d]"%(self.LC.numCadences))
-		for i in xrange(self.LC.numCadences):
-			cadence_cffi[i] = self.LC.cadence[i]
-			mask_cffi[i] = self.LC.mask[i]
-			t_cffi[i] = self.LC.t[i]
-			x_cffi[i] = self.LC.x[i]
-			y_cffi[i] = self.LC.y[i]
-			yerr_cffi[i] = self.LC.yerr[i]
-		Theta_cffi = ffiObj.new("double[%d]"%(self.p + self.q + 1))
-		for i in xrange(self.p):
-			Theta_cffi[i] = self.ARCoefs[i]
-		for i in xrange(self.q + 1):
-			Theta_cffi[self.p + i] = self.MACoefs[i]
-		burnSeed = random.randint(0, 4294967295)
-		distSeed = random.randint(0, 4294967295)
-		noiseSeed = random.randint(0, 4294967295)
-		#burnSeed = 1311890535
-		#distSeed = 2603023340
-		#noiseSeed = 2410288857
-		if self.LC.IR == True:
-			IR = 1
+		if self.DateTime == None:
+			print 'Making LC'
+			cadence_cffi = ffiObj.new('int[%d]'%(self.LC.numCadences))
+			mask_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
+			t_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
+			x_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
+			y_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
+			yerr_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
+			for i in xrange(self.LC.numCadences):
+				cadence_cffi[i] = self.LC.cadence[i]
+				mask_cffi[i] = self.LC.mask[i]
+				t_cffi[i] = self.LC.t[i]
+				x_cffi[i] = self.LC.x[i]
+				y_cffi[i] = self.LC.y[i]
+				yerr_cffi[i] = self.LC.yerr[i]
+			Theta_cffi = ffiObj.new("double[%d]"%(self.p + self.q + 1))
+			for i in xrange(self.p):
+				Theta_cffi[i] = self.ARCoefs[i]
+			for i in xrange(self.q + 1):
+				Theta_cffi[self.p + i] = self.MACoefs[i]
+			burnSeed = random.randint(0, 4294967295)
+			distSeed = random.randint(0, 4294967295)
+			noiseSeed = random.randint(0, 4294967295)
+			#burnSeed = 1311890535
+			#distSeed = 2603023340
+			#noiseSeed = 2410288857
+			if self.LC.IR == True:
+				IR = 1
+			else:
+				IR = 0
+			if self.doNoiseless == True:
+				yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi)
+			yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+			for i in xrange(self.LC.numCadences):
+				self.LC.cadence[i] = cadence_cffi[i]
+				self.LC.mask[i] = mask_cffi[i]
+				self.LC.t[i] = t_cffi[i]
+				self.LC.x[i] = x_cffi[i]
+				self.LC.y[i] = y_cffi[i]
+				self.LC.yerr[i] = yerr_cffi[i]
+			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 		else:
-			IR = 0
-		if self.doNoiseless == True:
-			yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi)
-		yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
-		for i in xrange(self.LC.numCadences):
-			self.LC.cadence[i] = cadence_cffi[i]
-			self.LC.mask[i] = mask_cffi[i]
-			self.LC.t[i] = t_cffi[i]
-			self.LC.x[i] = x_cffi[i]
-			self.LC.y[i] = y_cffi[i]
-			self.LC.yerr[i] = yerr_cffi[i]
+			print 'Reading in LC'
+			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
+			inFile = open(self.LCFile, 'rb')
+			words = inFile.readline().rstrip('\n').split()
+			LCHash = words[1]
+			if (LCHash == self.ConfigFileHash):
+				inFile.readline()
+				inFile.readline()
+				words = inFile.readline().rstrip('\n').split()
+				numCadences = int(words[1])
+				self.LC.cadence = np.array(numCadences*[0.0])
+				self.LC.mask = np.array(numCadences*[0.0])
+				self.LC.t = np.array(numCadences*[0.0])
+				self.LC.x = np.array(numCadences*[0.0])
+				self.LC.y = np.array(numCadences*[0.0])
+				self.LC.yerr = np.array(numCadences*[0.0])
+				line = inFile.readline()
+				line = inFile.readline()
+				for i in xrange(numCadences):
+					words = inFile.readline().rstrip('\n').split()
+					self.LC.cadence[i] = int(words[0])
+					self.LC.mask[i] = float(words[1])
+					self.LC.t[i] = float(words[2])
+					self.LC.x[i] = float(words[3])
+					self.LC.y[i] = float(words[4])
+					self.LC.yerr[i] = float(words[5])
+			else:
+				print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
+				sys.exit(1)
+
 
 	def _make_02_write(self):
-		print 'Writing LC'
-		self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
-		outFile = open(self.LCFile, 'w')
-		line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
-		outFile.write(line)
-		line = "PatternFileHash: %s\n"%(self.PatternFileHash)
-		outFile.write(line)
-		line = "numCadences: %d\n"%(self.LC.numCadences)
-		outFile.write(line)
-		line = "numObservations: %d\n"%(self.LC.numCadences - self.LC.numMasked)
-		outFile.write(line)
-		line = "meanFlux: %+17.16e\n"%(np.mean(self.LC.y))
-		outFile.write(line)
-		line = "cadence mask t x y yerr\n"
-		outFile.write(line) 
-		for i in xrange(self.LC.numCadences - 1):
-			line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e\n"%(self.LC.cadence[i], self.LC.mask[i], self.LC.t[i], self.LC.x[i], self.LC.y[i], self.LC.yerr[i])
+		if self.DateTime == None:
+			print 'Writing LC'
+			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
+			outFile = open(self.LCFile, 'w')
+			line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
 			outFile.write(line)
-		line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e"%(self.LC.cadence[self.LC.cadence.shape[0]-1], self.LC.mask[self.LC.cadence.shape[0]-1], self.LC.t[self.LC.cadence.shape[0]-1], self.LC.x[self.LC.cadence.shape[0]-1], self.LC.y[self.LC.cadence.shape[0]-1], self.LC.yerr[self.LC.cadence.shape[0]-1])
-		outFile.write(line)
-		outFile.close()
+			line = "PatternFileHash: %s\n"%(self.PatternFileHash)
+			outFile.write(line)
+			line = "numCadences: %d\n"%(self.LC.numCadences)
+			outFile.write(line)
+			line = "numObservations: %d\n"%(self.LC.numCadences - self.LC.numMasked)
+			outFile.write(line)
+			line = "meanFlux: %+17.16e\n"%(np.mean(self.LC.y))
+			outFile.write(line)
+			line = "cadence mask t x y yerr\n"
+			outFile.write(line) 
+			for i in xrange(self.LC.numCadences - 1):
+				line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e\n"%(self.LC.cadence[i], self.LC.mask[i], self.LC.t[i], self.LC.x[i], self.LC.y[i], self.LC.yerr[i])
+				outFile.write(line)
+			line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e"%(self.LC.cadence[self.LC.cadence.shape[0]-1], self.LC.mask[self.LC.cadence.shape[0]-1], self.LC.t[self.LC.cadence.shape[0]-1], self.LC.x[self.LC.cadence.shape[0]-1], self.LC.y[self.LC.cadence.shape[0]-1], self.LC.yerr[self.LC.cadence.shape[0]-1])
+			outFile.write(line)
+			outFile.close()
+		else:
+			pass
 
 	def _make_03_plot(self):
 		if self.makePlot == True:
@@ -409,8 +457,8 @@ class writeMockLCTask(Task):
 			ax1.errorbar(self.LC.t, self.LC.y, self.LC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
 			yMax=np.max(self.LC.y[np.nonzero(self.LC.y[:])])
 			yMin=np.min(self.LC.y[np.nonzero(self.LC.y[:])])
-			ax1.set_ylabel(r'$F$ (arb units)')
-			ax1.set_xlabel(r'$t$ (d)')
+			ax1.set_xlabel(self.xLabel)
+			ax1.set_ylabel(self.yLabel)
 			ax1.set_xlim(self.LC.t[0],self.LC.t[-1])
 			ax1.set_ylim(yMin,yMax)
 
@@ -425,8 +473,8 @@ class writeMockLCTask(Task):
 				ax2.errorbar(self.LC.t[startLoc:startLoc + numPts], self.LC.y[startLoc:startLoc + numPts], self.LC.yerr[startLoc:startLoc + numPts], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
 				#yMax=np.max(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
 				#yMin=np.min(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
-				ax2.set_ylabel(r'$F$ (arb units)')
-				ax2.set_xlabel(r'$t$ (d)')
+				ax2.set_xlabel(self.xLabel)
+				ax2.set_ylabel(self.yLabel)
 				ax2.set_xlim(self.LC.t[startLoc],self.LC.t[startLoc + numPts])
 				#ax2.set_ylim(yMin,yMax)
 

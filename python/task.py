@@ -35,6 +35,10 @@ class Task:
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
+		self.PlotConfigFile = self.preprefix + ".plt"
+		self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
+		self.PatternFile = self.preprefix + ".pat"
+		self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
 		try:
 			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
@@ -54,7 +58,9 @@ class Task:
 			self.prefix = ConfigFile.split(".")[0] + "_" + self.RunTime
 
 		self.parser = CP.SafeConfigParser()
-		self.parser.read(WorkingDirectory + ConfigFile)
+		self.parser.read(WorkingDirectory + self.ConfigFile)
+		self.plotParser = CP.SafeConfigParser()
+		self.plotParser.read(WorkingDirectory + self.PlotConfigFile)
 		self.escChar = '#'
 		self.LC = lc.LC()
 
