@@ -16,6 +16,7 @@ import argparse as AP
 import cffi as cffi
 import os as os
 import sys as sys
+import time as time
 import pdb as pdb
 
 import matplotlib.pyplot as plt
@@ -44,10 +45,8 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class writeMockLCTask(SuppliedParametersTask):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
-		SuppliedParametersTask.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, TimeStr = TimeStr)
-		TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'w')
-		TestFile.close()
+	#def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
+	#	SuppliedParametersTask.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, TimeStr = TimeStr)
 
 	def _read_plotOptions(self):
 		try:
@@ -71,9 +70,25 @@ class writeMockLCTask(SuppliedParametersTask):
 				print "detailStart too large... Try reducing it."
 				sys.exit(1)
 		try:
+			self.LabelLCFontsize = self.strToBool(self.plotParser.get('PLOT', 'LabelLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LabelLCFontsize = 18
+		try:
+			self.DetailLabelLCFontsize = self.strToBool(self.plotParser.get('PLOT', 'DetailLabelLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.DetailLabelLCFontsize = 10
+		try:
 			self.showEqnLC = self.strToBool(self.plotParser.get('PLOT', 'showEqnLC'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showEqnLC = True
+		try:
+			self.EqnLCLocY = float(self.plotParser.get('PLOT', 'EqnLCLocY'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnLCLocY = 0.1
+		try:
+			self.EqnLCFontsize = int(self.plotParser.get('PLOT', 'EqnLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnLCFontsize = 12
 		try:
 			self.showLegendLC = self.strToBool(self.plotParser.get('PLOT', 'showLegendLC'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -82,6 +97,10 @@ class writeMockLCTask(SuppliedParametersTask):
 			self.LegendLCLoc = int(self.plotParser.get('PLOT', 'LegendLCLoc'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.LegendLCLoc = 2
+		try:
+			self.LegendLCFontsize = int(self.plotParser.get('PLOT', 'LegendLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LegendLCFontsize = 12
 		try:
 			self.xLabelLC = self.plotParser.get('PLOT', 'xLabelLC')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -239,6 +258,10 @@ class writeMockLCTask(SuppliedParametersTask):
 		"""
 		if self.DateTime == None:
 			print 'Making LC'
+			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+			line = 'Making LC on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+			LogFile.write(line)
+			LogFile.close()
 			cadence_cffi = ffiObj.new('int[%d]'%(self.LC.numCadences))
 			mask_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
 			t_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
@@ -280,6 +303,10 @@ class writeMockLCTask(SuppliedParametersTask):
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 		else:
 			print 'Reading in LC'
+			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+			line = 'Reading in LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+			LogFile.write(line)
+			LogFile.close()
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 			inFile = open(self.LCFile, 'rb')
 			words = inFile.readline().rstrip('\n').split()
@@ -313,6 +340,10 @@ class writeMockLCTask(SuppliedParametersTask):
 	def _make_02_write(self):
 		if self.DateTime == None:
 			print 'Writing LC'
+			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+			line = 'Writing LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+			LogFile.write(line)
+			LogFile.close()
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			outFile = open(self.LCFile, 'w')
 			line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
@@ -339,15 +370,18 @@ class writeMockLCTask(SuppliedParametersTask):
 	def _make_03_plot(self):
 		if self.makePlot == True:
 			print 'Plotting LC'
+			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+			line = 'Plotting LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+			LogFile.write(line)
+			LogFile.close()
 			fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
-
 			ax1 = fig1.add_subplot(gs[:,:])
 			ax1.ticklabel_format(useOffset = False)
 			if self.doNoiseless == True:
 				ax1.plot(self.LC.t, self.LC.x, color = '#7570b3', zorder = 5, label = r'Intrinsic LC')
 			ax1.errorbar(self.LC.t, self.LC.y, self.LC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, Label = r'Observed LC')
 			if self.showLegendLC == True:
-				ax1.legend(loc = self.LegendLCLoc, ncol = 1, fancybox = True, fontsize = LegendSize)
+				ax1.legend(loc = self.LegendLCLoc, ncol = 1, fancybox = True, fontsize = self.LegendLCFontsize)
 			yMax=np.max(self.LC.y[np.nonzero(self.LC.y[:])])
 			yMin=np.min(self.LC.y[np.nonzero(self.LC.y[:])])
 			ax1.set_xlabel(self.xLabelLC)
@@ -355,7 +389,7 @@ class writeMockLCTask(SuppliedParametersTask):
 			ax1.set_xlim(self.LC.t[0],self.LC.t[-1])
 			ax1.set_ylim(yMin,yMax)
 			if self.showEqnLC == True:
-				ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = 16, zorder = 100)
+				ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnLCFontsize, zorder = 100)
 
 			if self.showDetail == True:
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
@@ -377,3 +411,4 @@ class writeMockLCTask(SuppliedParametersTask):
 				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.png" , dpi = plot_params['dpi'])
 			if self.showFig == True:
 				plt.show()
+			fig1.clf()

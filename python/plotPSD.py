@@ -16,6 +16,7 @@ import argparse as AP
 import cffi as cffi
 import os as os
 import sys as sys
+import time as time
 import pdb as pdb
 
 import matplotlib.pyplot as plt
@@ -90,6 +91,14 @@ class plotPSDTask(SuppliedParametersTask):
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showEqnPSD = True
 		try:
+			self.EqnPSDLocY = float(self.plotParser.get('PLOT', 'EqnPSDLocY'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnPSDLocY = 0.9
+		try:
+			self.EqnPSDFontsize = int(self.plotParser.get('PLOT', 'EqnPSDFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnPSDFontsize = 12
+		try:
 			self.showLegendPSD = self.strToBool(self.plotParser.get('PSD', 'showLegendPSD'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showLegendPSD = True
@@ -97,6 +106,10 @@ class plotPSDTask(SuppliedParametersTask):
 			self.LegendPSDLoc = int(self.plotParser.get('PSD', 'LegendPSDLoc'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.LegendPSDLoc = 7
+		try:
+			self.LegendPSDFontsize = int(self.plotParser.get('PLOT', 'LegendPSDFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LegendPSDFontsize = 12
 		try:
 			self.freqLine = self.plotParser.get('PSDLINESTYLES', 'freqLine')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -225,9 +238,11 @@ class plotPSDTask(SuppliedParametersTask):
 		"""	Attempts to compute the PSD.
 		"""
 		print 'Computing PSD'
-
+		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+		line = 'Computing PSD at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+		LogFile.write(line)
+		LogFile.close()
 		self.freqs = np.logspace(self.fMin, self.fMax, self.fNum)
-
 		self.aList = self.ARCoefs.tolist()
 		self.bList = self.MACoefs.tolist()
 		self.maxDenomOrder = 2*len(self.aList)
@@ -257,22 +272,22 @@ class plotPSDTask(SuppliedParametersTask):
 		"""	Attempts to plot the PSD.
 		"""
 		print 'Plotting PSD'
-
+		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+		line = 'Plotting PSD at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+		LogFile.write(line)
+		LogFile.close()
 		fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
-
 		for orderVal in xrange(0, self.maxNumerOrder + 1, 2):
-			plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, label = r'$\nu^{%d}$'%(orderVal))
-
+			plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)#, label = r'$\nu^{%d}$'%(orderVal))
 		for orderVal in xrange(0, self.maxDenomOrder + 1, 2):
-			plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, label = r'$\nu^{%d}$'%(-orderVal))
-
-		plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, label = r'$1/D(\nu)$')
-		plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, label = r'$N(\nu)$')
-		plt.loglog(self.freqs, self.PSD, linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, label = r'$PSD(\nu) = N(\nu)/D(\nu)$')
+			plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5, label = r'$\nu^\pm{%d}$'%(orderVal))
+		plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$1/D(\nu)$')
+		plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$N(\nu)$')
+		plt.loglog(self.freqs, self.PSD, linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$PSD(\nu) = N(\nu)/D(\nu)$')
 		if self.showEqnPSD == True:
-			plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = 16, zorder = 100)
+			plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 		if self.showLegendPSD == True:
-			plt.legend(loc = self.LegendPSDLoc, ncol = 1, fancybox = True, fontsize = LegendSize)
+			plt.legend(loc = self.LegendPSDLoc, ncol = 1, fancybox = True, fontsize = self.LegendPSDFontsize)
 
 		plt.xlabel(self.x1LabelPSD)
 		plt.ylabel(self.yLabelPSD)
@@ -287,3 +302,4 @@ class plotPSDTask(SuppliedParametersTask):
 			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.png" , dpi = plot_params['dpi'])
 		if self.showFig == True:
 			plt.show()
+		fig1.clf()

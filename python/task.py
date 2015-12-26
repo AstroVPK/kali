@@ -42,7 +42,7 @@ class Task:
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
-		self.PlotConfigFile = self.preprefix + ".plt"
+		self.PlotConfigFile = "Plot" + self.preprefix + ".ini"
 		self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
 		self.PatternFile = self.preprefix + ".pat"
 		self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
@@ -53,12 +53,20 @@ class Task:
 			sys.exit(1)
 
 		try:
-			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
+			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '_LC.dat', 'r')
 			TestFile.close()
 			self.DateTime = TimeStr
 			self.RunTime = None
 			self.prefix = self.preprefix + '_' + self.DateTime
 		except IOError as Err:
+			try:
+				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
+				LogFile.close()
+			except IOError:
+				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'w')
+				line = 'Starting log on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+				LogFile.write(line)
+				LogFile.close()
 			self.DateTime = None
 			self.RunTime = TimeStr
 			self.prefix = self.preprefix + '_' + self.RunTime

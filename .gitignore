@@ -37,6 +37,7 @@
 *.pdf
 *.eps
 *.png
+*.log
 
 # Backups
 *~
