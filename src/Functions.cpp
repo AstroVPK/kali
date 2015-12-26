@@ -31,6 +31,15 @@ int testSystem(double dt, int p, int q, double *Theta) {
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
 	int goodYN = SystemMaster.checkCARMAParams(Theta);
+	SystemMaster.deallocCARMA();
+	return goodYN;
+	}
+
+int printSystem(double dt, int p, int q, double *Theta) {
+	int retVal = 1;
+	CARMA SystemMaster = CARMA();
+	SystemMaster.allocCARMA(p, q);
+	int goodYN = SystemMaster.checkCARMAParams(Theta);
 	if (goodYN == 1) {
 		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 		SystemMaster.set_dt(dt);
@@ -322,6 +331,10 @@ extern "C" {
 
 	extern int _testSystem(double dt, int p, int q, double *Theta) {
 		return testSystem(dt, p, q, Theta);
+		}
+
+	extern int _printSystem(double dt, int p, int q, double *Theta) {
+		return printSystem(dt, p, q, Theta);
 		}
 
 	extern int _makeIntrinsicLC(double dt, int p, int q, double *Theta, int IR, double tolIR, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, int *cadence, double *mask, double *t, double *x) {

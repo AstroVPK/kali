@@ -26,7 +26,7 @@ import matplotlib.cm as colormap
 import matplotlib.mlab as mlab
 
 from bin._libcarma import ffi
-from python.task import Task
+from python.task import SuppliedParametersTask
 from python.util.mpl_settings import *
 
 LabelSize = plot_params['LabelXLarge']
@@ -41,47 +41,13 @@ C = ffi.dlopen("./bin/libcarma.so.1.0.0")
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-class writeMockLCTask(Task):
+class writeMockLCTask(SuppliedParametersTask):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
-		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = DateTime)
-
-	def _read_escChar(self):
-		""" Attempts to set the escape charatcter to be used.
-		"""
-		try:
-			self.escChar = self.parser.get('MISC', 'escChar')
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.escChar = '#'
+	#def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
+	#	Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = DateTime)
 
 	def _read_plotOptions(self):
-		"""	Attempts to read in the plot options to be used.
-		"""
-		try:
-			self.makePlot = self.strToBool(self.plotParser.get('PLOT', 'makePlot'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.makePlot = False
-		try:
-			self.JPG = self.strToBool(self.plotParser.get('PLOT', 'JPG'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.JPG = False
-		try:
-			self.PDF = self.strToBool(self.plotParser.get('PLOT', 'PDF'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.PDF = False
-		try:
-			self.EPS = self.strToBool(self.plotParser.get('PLOT', 'EPS'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.EPS = False
-		try:
-			self.PNG = self.strToBool(self.plotParser.get('PLOT', 'PNG'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.PNG = False
-		try:
-			self.showFig = self.strToBool(self.plotParser.get('PLOT', 'showFig'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.showFig = False
 		try:
 			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showDetail'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -237,102 +203,6 @@ class writeMockLCTask(Task):
 			self.LC.startCadence = 0
 			print str(Err) + '. Using default startCadence = %d'%(self.LC.startCadence)
 
-	def _read_CARMAProps(self):
-		"""	Attempts to parse AR roots and MA coefficients.
-		"""
-		ARRoots = list()
-		ARPoly = list()
-		MACoefs = list()
-		self.ARCoefs = list()
-		self.ARRoots = list()
-
-		doneReadingARRoots = False
-		pRoot = 0
-		while not doneReadingARRoots:
-			try:
-				ARRoots.append(complex(self.parser.get('C-ARMA', 'r_%d'%(pRoot + 1))))
-				pRoot += 1
-			except (CP.NoOptionError, CP.NoSectionError) as Err:
-				doneReadingARRoots = True
-
-		doneReadingARPoly = False
-		pPoly = 0
-		while not doneReadingARPoly:
-			try:
-				ARPoly.append(float(self.parser.get('C-ARMA', 'a_%d'%(pRoot + 1))))
-				pPoly += 1
-			except ValueError as Err:
-				print str(Err) + '. All AR polynomial coefficients must be real!'
-				sys.exit(1)
-			except (CP.NoOptionError, CP.NoSectionError) as Err:
-				doneReadingARPoly = True
-
-		if (pRoot == pPoly):
-			aPoly = np.polynomial.polynomial.polyfromroots(ARRoots)
-			aPoly = aPoly.tolist()
-			aPoly.reverse()
-			aPoly.pop(0)
-			aPoly = [coeff.real for coeff in aPoly]
-			for ARCoef, aPolyCoef in zip(ARPoly, aPoly):
-				if abs((ARCoef - aPolyCoef)/((ARCoef + aPolyCoef)/2.0)) > 1.0e-6:
-					print 'ARRoots and ARPolynomial supplied are not equivalent!'
-					sys.exit(1)
-			self.p = pRoot
-			self.ARRoots = np.array(ARRoots)
-			self.ARCoefs = np.array(ARPoly)
-		elif (pRoot == 0) and (pPoly > 0):
-			self.p = pPoly
-			self.ARCoefs = aPoly
-			ARPoly = copy.deepcopy(self.ARCoefs)
-			self.ARCoefs = np.array(self.ARCoefs)
-			ARPoly.insert(0,1.0)
-			self.ARRoots = np.roots(ARPoly)
-			self.ARRoots = np.array(self.ARRoots)
-		elif (pRoot > 0) and (pPoly == 0):
-			self.p = pRoot
-			self.ARRoots = ARRoots
-			aPoly = np.polynomial.polynomial.polyfromroots(ARRoots)
-			self.ARRoots = np.array(self.ARRoots)
-			aPoly = aPoly.tolist()
-			aPoly.reverse()
-			aPoly.pop(0)
-			aPoly = [coeff.real for coeff in aPoly]
-			self.ARCoefs = copy.deepcopy(aPoly)
-			self.ARCoefs = np.array(self.ARCoefs)
-		else:
-			print 'ARRoots and ARPolynomial supplied are not equivalent!'
-			sys.exit(1)
-
-		doneReadingMACoefs = False
-		self.q = -1
-		while not doneReadingMACoefs:
-			try:
-				MACoefs.append(float(self.parser.get('C-ARMA', 'b_%d'%(self.q + 1))))
-				self.q += 1
-			except (CP.NoOptionError, CP.NoSectionError) as Err:
-				doneReadingMACoefs = True
-		self.MACoefs = np.array(MACoefs)
-
-		if self.p < 1:
-			print 'No C-AR roots supplied!'
-			sys.exit(1)
-
-		if self.q < 0:
-			print 'No C-MA co-efficients supplied!'
-			sys.exit(1)
-
-		if self.p <= self.q:
-			print 'Too many C-MA co-efficients! Exiting...'
-			sys.exit(1)
-
-		self.ndims = self.p + self.q + 1
-
-		try:
-			self.numBurn = int(self.parser.get('C-ARMA', 'numBurn'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.numBurn = 1000000
-			print str(Err) + '. Using default numBurn = %d'%(self.numBurn)
-
 	def _read_TaskProps(self):
 		try:
 			self.doNoiseless = self.strToBool(self.parser.get('TASK', 'doNoiseless'))
@@ -353,27 +223,6 @@ class writeMockLCTask(Task):
 			pass
 		else:
 			self.doNoiseless = True
-
-	def _make_00_EqnString(self):
-		"""	Attempts to construct a latex string consisting of the equation of the LC
-		"""
-		self.eqnStr = r'$'
-		if self.p > 1:
-			self.eqnStr += r'\mathrm{d}^{%d}F'%(self.p)
-			for i in xrange(self.p - 2):
-				self.eqnStr += (self.formatFloat(self.ARCoefs[i]) + r'\mathrm{d}^{%d}F'%(self.p - 1 - i))
-			self.eqnStr += (self.formatFloat(self.ARCoefs[self.p - 2]) + r'\mathrm{d}F')
-			self.eqnStr += (self.formatFloat(self.ARCoefs[self.p - 1]) + r'F=')
-		elif self.p == 1:
-			self.eqnStr += r'\mathrm{d}F'
-			self.eqnStr += (self.formatFloat(self.ARCoefs[0]) + r'F=')
-		self.eqnStr += (self.formatFloat(self.MACoefs[0]) + r'(\mathrm{d}W)')
-		if self.q >= 1:
-			self.eqnStr += (self.formatFloat(self.MACoefs[1]) + r'\mathrm{d}(\mathrm{d}W)')
-		if self.q >= 2:
-			for i in xrange(self.q - 1):
-				self.eqnStr += (self.formatFloat(self.MACoefs[2 + i]) + r'\mathrm{d}^{%d}(\mathrm{d}W)'%(2 + i))
-		self.eqnStr += r'$'
 
 	def _make_01_LC(self):
 		"""	Attempts to make the LC

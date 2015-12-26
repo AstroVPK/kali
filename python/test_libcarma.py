@@ -123,6 +123,7 @@ moveSeed = 2867335446
 xSeed = 1413995162
 initSeed = 3684614774
 
+doPrint = True
 doTest = True
 doR = True
 doFitCARMA = True
@@ -135,9 +136,21 @@ BreakAtEnd = False
 
 if doTest:
 	yORn = C._testSystem(dt, p, q, Theta)
+	if yORn == 1:
+		print "System parameters are good!"
+	else:
+		print "System parameters are bad!"
 
 
 ##############################################################################################################
+
+
+if doPrint:
+	yORn = C._printSystem(dt, p, q, Theta)
+
+
+##############################################################################################################
+
 
 if doR:
 	IR = 0
