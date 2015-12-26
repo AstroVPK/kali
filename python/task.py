@@ -68,11 +68,16 @@ class Task:
 		return val.lower() in ('yes', 'true', 't', '1')
 
 	def formatFloat(self, val, formatStr = r'+4.3'):
-		strVal = r'%' + formatStr + r'e'%(val)
-		frontVal = strVal[0:float(formatStr[1:2])]
+		strVal = r'%' + formatStr + r'e'
+		strVal = strVal%(val)
+		frontVal = strVal[0:int(formatStr[1:2])+2]
 		expLoc = strVal.find(r'e')
-		expVal = strVal[expLoc+1:-1]
-		return r'$' + frontVal + r'\times 10^{' + expVal + r'}$'
+		expVal = strVal[expLoc+1:len(strVal)]
+		if int(expVal) == 0:
+			retVal = frontVal
+		else:
+			retVal = frontVal + r'\times 10^{' + expVal + r'}'
+		return retVal
 
 	def getHash(self, fullPathToFile):
 		"""	Compute the hash value of HashFile

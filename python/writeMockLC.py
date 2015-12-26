@@ -46,7 +46,6 @@ class writeMockLCTask(Task):
 	"""
 	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
 		Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = DateTime)
-		self.LC.IR = None
 
 	def _read_escChar(self):
 		""" Attempts to set the escape charatcter to be used.
@@ -362,22 +361,18 @@ class writeMockLCTask(Task):
 		if self.p > 1:
 			self.eqnStr += r'\mathrm{d}^{%d}F'%(self.p)
 			for i in xrange(self.p - 2):
-				self.eqnStr += r'%+4.3e\mathrm{d}^{%d}F'%(self.ARCoefs[i], self.p - 1 - i)
-			self.eqnStr += r'%+4.3e\mathrm{d}F'%(self.ARCoefs[self.p - 2])
-			self.eqnStr += r'%+4.3eF='%(self.ARCoefs[self.p - 1])
+				self.eqnStr += (self.formatFloat(self.ARCoefs[i]) + r'\mathrm{d}^{%d}F'%(self.p - 1 - i))
+			self.eqnStr += (self.formatFloat(self.ARCoefs[self.p - 2]) + r'\mathrm{d}F')
+			self.eqnStr += (self.formatFloat(self.ARCoefs[self.p - 1]) + r'F=')
 		elif self.p == 1:
 			self.eqnStr += r'\mathrm{d}F'
-			self.eqnStr += r'%+4.3eF='%(self.ARCoefs[0])
+			self.eqnStr += (self.formatFloat(self.ARCoefs[0]) + r'F=')
+		self.eqnStr += (self.formatFloat(self.MACoefs[0]) + r'(\mathrm{d}W)')
+		if self.q >= 1:
+			self.eqnStr += (self.formatFloat(self.MACoefs[1]) + r'\mathrm{d}(\mathrm{d}W)')
 		if self.q >= 2:
 			for i in xrange(self.q - 1):
-				self.eqnStr += r'%4.3e\mathrm{d}^{%d}(\mathrm{d}W)'%(self.MACoefs[i], self.q - 1 - i)
-			self.eqnStr += r'%+4.3e\mathrm{d}(\mathrm{d}W)'%(self.MACoefs[self.q - 2])
-			self.eqnStr += r'%+4.3e(\mathrm{d}W)'%(self.MACoefs[self.q - 1])
-		elif self.q == 1:
-			self.eqnStr += r'%4.3e\mathrm{d}(\mathrm{d}W)'%(self.MACoefs[0])
-			self.eqnStr += r'%+4.3e(\mathrm{d}W)'%(self.MACoefs[1])
-		else:
-			self.eqnStr += r'%4.3e(\mathrm{d}W)'%(self.MACoefs[0])
+				self.eqnStr += (self.formatFloat(self.MACoefs[2 + i]) + r'\mathrm{d}^{%d}(\mathrm{d}W)'%(2 + i))
 		self.eqnStr += r'$'
 
 	def _make_01_LC(self):
