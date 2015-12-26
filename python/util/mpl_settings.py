@@ -73,6 +73,9 @@ plot_params['AnnotateXXSmall'] = 16
 plot_params['LegendLarge'] = 24
 plot_params['LegendMedium'] = 20
 plot_params['LegendSmall'] = 16
+plot_params['LegendXSmall'] = 12
+plot_params['LegendXXSmall'] = 10
+plot_params['LegendXXXSmall'] = 8
 
 plot_params['LabelXLarge'] = 32
 plot_params['LabelLarge'] = 28

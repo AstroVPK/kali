@@ -32,7 +32,7 @@ from python.util.mpl_settings import *
 LabelSize = plot_params['LabelXLarge']
 AxisSize = plot_params['AxisLarge']
 AnnotateSize = plot_params['AnnotateXLarge']
-LegendSize = plot_params['LegendMedium']
+LegendSize = plot_params['LegendXSmall']
 set_plot_params(fontfamily = 'serif', fontstyle = 'normal', fontvariant = 'normal', fontweight = 'normal', fontstretch = 'normal', fontsize = AxisSize, useTex = 'True')
 gs = gridspec.GridSpec(1000, 1000)
 
@@ -44,8 +44,10 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class writeMockLCTask(SuppliedParametersTask):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	#def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
-	#	Task.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, DateTime = DateTime)
+	def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
+		SuppliedParametersTask.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, TimeStr = TimeStr)
+		TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'w')
+		TestFile.close()
 
 	def _read_plotOptions(self):
 		try:
@@ -69,17 +71,25 @@ class writeMockLCTask(SuppliedParametersTask):
 				print "detailStart too large... Try reducing it."
 				sys.exit(1)
 		try:
-			self.showEqn = self.strToBool(self.plotParser.get('PLOT', 'showEqn'))
+			self.showEqnLC = self.strToBool(self.plotParser.get('PLOT', 'showEqnLC'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.showEqn = True
+			self.showEqnLC = True
 		try:
-			self.xLabel = self.plotParser.get('PLOT', 'xLabel')
+			self.showLegendLC = self.strToBool(self.plotParser.get('PLOT', 'showLegendLC'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.xLabel = r'$t$~($d$)'
+			self.showLegendLC = True
 		try:
-			self.yLabel = self.plotParser.get('PLOT', 'yLabel')
+			self.LegendLCLoc = int(self.plotParser.get('PLOT', 'LegendLCLoc'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.xLabel = r'$F$~($W m^{-2}$)'
+			self.LegendLCLoc = 2
+		try:
+			self.xLabelLC = self.plotParser.get('PLOT', 'xLabelLC')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabelLC = r'$t$~($d$)'
+		try:
+			self.yLabelLC = self.plotParser.get('PLOT', 'yLabelLC')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabelLC = r'$F$~($W m^{-2}$)'
 
 	def _setIR(self):
 		self.LC.IR = False
@@ -131,10 +141,10 @@ class writeMockLCTask(SuppliedParametersTask):
 		"""	Attempts to read in the configuration parameters `dt', `T' or `numCadences', & `tStart'.
 		"""
 		try:
-			self.tolIR = float(self.parser.get('LC', 'tolIR'))
+			self.LC.tolIR = float(self.parser.get('LC', 'tolIR'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.tolIR = 0.0
-			print str(Err) + '. Using default tolIR = %+7.6e'%(self.tolIR)
+			self.LC.tolIR = 1.0e-3
+			print str(Err) + '. Using default tolIR = %+7.6e'%(self.LC.tolIR)
 		try:
 			self.tStart = self.parser.get('LC', 'tStart')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -198,7 +208,7 @@ class writeMockLCTask(SuppliedParametersTask):
 			self.LC.noiseLvl = 1.0e-18
 			print str(Err) + '. Using default noiseLvl = %+7.6e.'%(self.LC.noiseLvl)
 		try:
-			self.LC.startCadence = self.parser.get('LC', 'startCadence')
+			self.LC.startCadence = int(self.parser.get('LC', 'startCadence'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.LC.startCadence = 0
 			print str(Err) + '. Using default startCadence = %d'%(self.LC.startCadence)
@@ -334,15 +344,18 @@ class writeMockLCTask(SuppliedParametersTask):
 			ax1 = fig1.add_subplot(gs[:,:])
 			ax1.ticklabel_format(useOffset = False)
 			if self.doNoiseless == True:
-				ax1.plot(self.LC.t, self.LC.x, color = '#7570b3', zorder = 5)
-			ax1.errorbar(self.LC.t, self.LC.y, self.LC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
+				ax1.plot(self.LC.t, self.LC.x, color = '#7570b3', zorder = 5, label = r'Intrinsic LC')
+			ax1.errorbar(self.LC.t, self.LC.y, self.LC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, Label = r'Observed LC')
+			if self.showLegendLC == True:
+				ax1.legend(loc = self.LegendLCLoc, ncol = 1, fancybox = True, fontsize = LegendSize)
 			yMax=np.max(self.LC.y[np.nonzero(self.LC.y[:])])
 			yMin=np.min(self.LC.y[np.nonzero(self.LC.y[:])])
-			ax1.set_xlabel(self.xLabel)
-			ax1.set_ylabel(self.yLabel)
+			ax1.set_xlabel(self.xLabelLC)
+			ax1.set_ylabel(self.yLabelLC)
 			ax1.set_xlim(self.LC.t[0],self.LC.t[-1])
 			ax1.set_ylim(yMin,yMax)
-			ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = 16, zorder = 100)
+			if self.showEqnLC == True:
+				ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = 16, zorder = 100)
 
 			if self.showDetail == True:
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
@@ -350,12 +363,9 @@ class writeMockLCTask(SuppliedParametersTask):
 				if self.doNoiseless == True:
 					ax2.plot(self.LC.t[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.x[self.detailStart:self.detailStart+self.numPtsDetail], color = '#7570b3', zorder = 15)
 				ax2.errorbar(self.LC.t[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.y[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.yerr[self.detailStart:self.detailStart+self.numPtsDetail], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
-				ax2.set_xlabel(self.xLabel)
-				ax2.set_ylabel(self.yLabel)
+				ax2.set_xlabel(self.xLabelLC)
+				ax2.set_ylabel(self.yLabelLC)
 				ax2.set_xlim(self.LC.t[self.detailStart],self.LC.t[self.detailStart + self.numPtsDetail])
-				#yMax=np.max(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
-				#yMin=np.min(self.LC.y[np.nonzero(self.LC.y[startLoc:startLoc + numPts])])
-				#ax2.set_ylim(yMin,yMax)
 
 			if self.JPG == True:
 				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = plot_params['dpi'])

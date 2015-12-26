@@ -36,10 +36,9 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
-	def __init__(self, WorkingDirectory, ConfigFile, DateTime = None):
+	def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
 		"""	Initialize Task object.
 		"""
-		self.RunTime = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
@@ -53,17 +52,16 @@ class Task:
 			print str(Err) + ". Exiting..."
 			sys.exit(1)
 
-		if DateTime:
-			try:
-				TestFile = open(WorkingDirectory + self.preprefix + '_' + DateTime + '_LC.dat', 'r')
-				self.DateTime = DateTime
-				self.prefix = ConfigFile.split(".")[0] + "_" + self.DateTime
-			except IOError as Err:
-				print str(Err) + ". Exiting..."
-				sys.exit(1)
-		else:
+		try:
+			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
+			TestFile.close()
+			self.DateTime = TimeStr
+			self.RunTime = None
+			self.prefix = self.preprefix + '_' + self.DateTime
+		except IOError as Err:
 			self.DateTime = None
-			self.prefix = ConfigFile.split(".")[0] + "_" + self.RunTime
+			self.RunTime = TimeStr
+			self.prefix = self.preprefix + '_' + self.RunTime
 
 		self.parser = CP.SafeConfigParser()
 		self.parser.read(WorkingDirectory + self.ConfigFile)
@@ -75,7 +73,7 @@ class Task:
 	def strToBool(self, val):
 		return val.lower() in ('yes', 'true', 't', '1')
 
-	def formatFloat(self, val, formatStr = r'+4.3'):
+	def formatFloat(self, val, formatStr = r'+3.2'):
 		strVal = r'%' + formatStr + r'e'
 		strVal = strVal%(val)
 		frontVal = strVal[0:int(formatStr[1:2])+2]
