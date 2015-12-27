@@ -43,9 +43,17 @@ class Task:
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
 		self.PlotConfigFile = "Plot" + self.preprefix + ".ini"
-		self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
+		try:
+			self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
+		except IOError as Err:
+			print str(Err) + ". Exiting..."
+			sys.exit(1)
 		self.PatternFile = self.preprefix + ".pat"
-		self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
+		try:
+			self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
+		except IOError as Err:
+			print str(Err) + ". Exiting..."
+			sys.exit(1)
 		try:
 			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
@@ -55,6 +63,12 @@ class Task:
 		try:
 			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '_LC.dat', 'r')
 			TestFile.close()
+			try:
+				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
+				LogFile.close()
+			except IOError:
+				print 'LogFile not found!'
+				sys.exit(1)
 			self.DateTime = TimeStr
 			self.RunTime = None
 			self.prefix = self.preprefix + '_' + self.DateTime
@@ -62,7 +76,7 @@ class Task:
 			try:
 				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
 				LogFile.close()
-			except IOError:
+			except IOError as Err:
 				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'w')
 				line = 'Starting log on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
 				LogFile.write(line)
@@ -99,6 +113,7 @@ class Task:
 		hashFile = open(fullPathToFile, 'r')
 		hashData = hashFile.read().replace('\n', '').replace(' ', '')
 		hashObject = hashlib.sha512(hashData.encode())
+		hashFile.close()
 		return hashObject.hexdigest()
 
 	def _read_escChar(self):
