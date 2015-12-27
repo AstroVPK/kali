@@ -87,7 +87,47 @@ class plotPSDTask(SuppliedParametersTask):
 		"""	Attempts to read PSD plot options
 		"""
 		try:
-			self.showEqnPSD = self.strToBool(self.plotParser.get('PSD', 'showEqnPSD'))
+			self.fFracNumerX = float(self.plotParser.get('PLOT', 'fFracNumerX'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.fFracNumerX = 0.1
+			print str(Err) + '. Using default fFracNumerX = %d'%(self.fDivNumerX)
+		try:
+			self.fFracNumerY = float(self.plotParser.get('PLOT', 'fFracNumerY'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.fFracNumerY = 0.1
+			print str(Err) + '. Using default fFracNumerY = %d'%(self.fDivNumerY)
+		try:
+			self.fFracDenomX = float(self.plotParser.get('PLOT', 'fFracDenomX'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.fFracDenomX = 0.9
+			print str(Err) + '. Using default fFracDenomX = %d'%(self.fFracDenomX)
+		try:
+			self.fFracDenomY = float(self.plotParser.get('PLOT', 'fFracDenomY'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.fFracDenomY = 0.9
+			print str(Err) + '. Using default fFracDenomY = %d'%(self.fFracDenomY)
+		try:
+			self.xTextPSDNumer = float(self.plotParser.get('PLOT', 'xTextPSDNumer'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xTextPSDNumer = 2.5
+			print str(Err) + '. Using default xTextPSDNumer = %3.2f'%(self.xTextPSDNumer)
+		try:
+			self.yTextPSDNumer = float(self.plotParser.get('PLOT', 'yTextPSDNumer'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.yTextPSDNumer = 1.0e-2
+			print str(Err) + '. Using default yTextPSDNumer = %3.2f'%(self.yTextPSDNumer)
+		try:
+			self.xTextPSDDenom = float(self.plotParser.get('PLOT', 'xTextPSDDenom'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xTextPSDDenom = 2.5
+			print str(Err) + '. Using default xTextPSDDenom = %3.2f'%(self.xTextPSDDenom)
+		try:
+			self.yTextPSDDenom = float(self.plotParser.get('PLOT', 'yTextPSDDenom'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.yTextPSDDenom = 1.0e+2
+			print str(Err) + '. Using default yTextPSDDenom = %3.2f'%(self.yTextPSDDenom)
+		try:
+			self.showEqnPSD = self.strToBool(self.plotParser.get('PLOT', 'showEqnPSD'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showEqnPSD = True
 		try:
@@ -97,19 +137,19 @@ class plotPSDTask(SuppliedParametersTask):
 		try:
 			self.EqnPSDFontsize = int(self.plotParser.get('PLOT', 'EqnPSDFontsize'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.EqnPSDFontsize = 12
+			self.EqnPSDFontsize = 16
 		try:
-			self.showLegendPSD = self.strToBool(self.plotParser.get('PSD', 'showLegendPSD'))
+			self.showLegendPSD = self.strToBool(self.plotParser.get('PLOT', 'showLegendPSD'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showLegendPSD = True
 		try:
-			self.LegendPSDLoc = int(self.plotParser.get('PSD', 'LegendPSDLoc'))
+			self.LegendPSDLoc = int(self.plotParser.get('PLOT', 'LegendPSDLoc'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.LegendPSDLoc = 7
+			self.LegendPSDLoc = 6
 		try:
 			self.LegendPSDFontsize = int(self.plotParser.get('PLOT', 'LegendPSDFontsize'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.LegendPSDFontsize = 12
+			self.LegendPSDFontsize = 16
 		try:
 			self.freqLine = self.plotParser.get('PSDLINESTYLES', 'freqLine')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -237,11 +277,9 @@ class plotPSDTask(SuppliedParametersTask):
 	def _make_01_computePSD(self):
 		"""	Attempts to compute the PSD.
 		"""
-		print 'Computing PSD'
-		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-		line = 'Computing PSD at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-		LogFile.write(line)
-		LogFile.close()
+		logEntry = 'Computing PSD'
+		self.echo(logEntry)
+		self.log(logEntry)
 		self.freqs = np.logspace(self.fMin, self.fMax, self.fNum)
 		self.aList = self.ARCoefs.tolist()
 		self.bList = self.MACoefs.tolist()
@@ -271,19 +309,19 @@ class plotPSDTask(SuppliedParametersTask):
 	def _make_02_plotPSD(self):
 		"""	Attempts to plot the PSD.
 		"""
-		print 'Plotting PSD'
-		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-		line = 'Plotting PSD at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-		LogFile.write(line)
-		LogFile.close()
+		logEntry = 'Plotting PSD'
+		self.echo(logEntry)
+		self.log(logEntry)
 		fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
 		for orderVal in xrange(0, self.maxNumerOrder + 1, 2):
-			plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)#, label = r'$\nu^{%d}$'%(orderVal))
+			plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
+			plt.annotate(r'$\nu^{%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracNumerX)], self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDNumer*self.freqs[int(self.fNum*self.fFracNumerX)], self.yTextPSDNumer*self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 		for orderVal in xrange(0, self.maxDenomOrder + 1, 2):
-			plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5, label = r'$\nu^\pm{%d}$'%(orderVal))
-		plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$1/D(\nu)$')
-		plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$N(\nu)$')
-		plt.loglog(self.freqs, self.PSD, linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$PSD(\nu) = N(\nu)/D(\nu)$')
+			plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
+			plt.annotate(r'$\nu^{-%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracDenomX)], 1.0/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDDenom*self.freqs[int(self.fNum*self.fFracDenomX)], self.yTextPSDDenom/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$-\log_{10}D(\nu)$')
+		plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$log_{10}N(\nu)$')
+		plt.loglog(self.freqs, self.PSD, linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD(\nu) = \log_{10}N(\nu)-\log_{10}D(\nu)$')
 		if self.showEqnPSD == True:
 			plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 		if self.showLegendPSD == True:

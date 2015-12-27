@@ -92,6 +92,16 @@ class Task:
 		self.escChar = '#'
 		self.LC = lc.LC()
 
+	def log(self, val):
+		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
+		line = val + ' on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+		LogFile.write(line)
+		LogFile.close()
+
+	def echo(self, val):
+		line = val + ' on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
+		print line
+
 	def strToBool(self, val):
 		return val.lower() in ('yes', 'true', 't', '1')
 

@@ -19,6 +19,7 @@ import sys as sys
 import time as time
 import pdb as pdb
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
@@ -88,7 +89,7 @@ class writeMockLCTask(SuppliedParametersTask):
 		try:
 			self.EqnLCFontsize = int(self.plotParser.get('PLOT', 'EqnLCFontsize'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.EqnLCFontsize = 12
+			self.EqnLCFontsize = 16
 		try:
 			self.showLegendLC = self.strToBool(self.plotParser.get('PLOT', 'showLegendLC'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
@@ -257,11 +258,9 @@ class writeMockLCTask(SuppliedParametersTask):
 		"""	Attempts to make the LC
 		"""
 		if self.DateTime == None:
-			print 'Making LC'
-			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-			line = 'Making LC on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-			LogFile.write(line)
-			LogFile.close()
+			logEntry = 'Making LC'
+			self.echo(logEntry)
+			self.log(logEntry)
 			cadence_cffi = ffiObj.new('int[%d]'%(self.LC.numCadences))
 			mask_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
 			t_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
@@ -302,11 +301,9 @@ class writeMockLCTask(SuppliedParametersTask):
 				self.LC.yerr[i] = yerr_cffi[i]
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 		else:
-			print 'Reading in LC'
-			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-			line = 'Reading in LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-			LogFile.write(line)
-			LogFile.close()
+			logEntry = 'Reading in LC'
+			self.echo(logEntry)
+			self.log(logEntry)
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 			inFile = open(self.LCFile, 'rb')
 			words = inFile.readline().rstrip('\n').split()
@@ -339,11 +336,9 @@ class writeMockLCTask(SuppliedParametersTask):
 
 	def _make_02_write(self):
 		if self.DateTime == None:
-			print 'Writing LC'
-			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-			line = 'Writing LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-			LogFile.write(line)
-			LogFile.close()
+			logEntry = 'Writing LC'
+			self.echo(logEntry)
+			self.log(logEntry)
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			outFile = open(self.LCFile, 'w')
 			line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
@@ -369,11 +364,9 @@ class writeMockLCTask(SuppliedParametersTask):
 
 	def _make_03_plot(self):
 		if self.makePlot == True:
-			print 'Plotting LC'
-			LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
-			line = 'Plotting LC at ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
-			LogFile.write(line)
-			LogFile.close()
+			logEntry = 'Plotting LC'
+			self.echo(logEntry)
+			self.log(logEntry)
 			fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
 			ax1 = fig1.add_subplot(gs[:,:])
 			ax1.ticklabel_format(useOffset = False)
@@ -393,6 +386,7 @@ class writeMockLCTask(SuppliedParametersTask):
 
 			if self.showDetail == True:
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
+				ax2.locator_params(nbins = 3)
 				ax2.ticklabel_format(useOffset = False)
 				if self.doNoiseless == True:
 					ax2.plot(self.LC.t[self.detailStart:self.detailStart+self.numPtsDetail], self.LC.x[self.detailStart:self.detailStart+self.numPtsDetail], color = '#7570b3', zorder = 15)
