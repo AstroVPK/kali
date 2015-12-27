@@ -175,7 +175,7 @@ package. Please read
 To make `libcarma` after cloning the repository, simply run
 
 
-`bash-prompt$ source lib/setup.sh`
+`bash-prompt$ source ./bin/setup.sh`
 
 
 `bash-prompt$ make`
@@ -184,16 +184,25 @@ To make `libcarma` after cloning the repository, simply run
 You must re-run
 
 
-`bash-prompt$ source lib/setup.sh`
+`bash-prompt$ source ./bin/setup.sh`
 
 
 in every new terminal that you use `libcarma` in. You may consider adding 
 
 
-`source {path to library}lib/setup.sh`
+`source <path to libcarma>/bin/setup.sh`
 
 
 to your `.bashrc`. To clean the library, run 
 
 
 `bash-prompt$ make clean`
+
+
+This covers installation. While waiting for a usage guide, please feel free to try the package out by running
+
+
+`bash-prompt$ source <path to libcarma>/bin/setup.sh`
+
+
+`bash-prompt$ python python/Script_01.py <path to libcarma>/examples/writeMockLCTest/ Config.ini`

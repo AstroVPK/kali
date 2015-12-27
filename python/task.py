@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""	Module that defines base Task.
+"""	Module that defines base class Task and SuppliedParametersTask.
 
 	For a demonstration of the module, please run the module as a command line program using 
 	bash-prompt$ python task.py --help

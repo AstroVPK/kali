@@ -46,9 +46,6 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class writeMockLCTask(SuppliedParametersTask):
 	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
 	"""
-	#def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
-	#	SuppliedParametersTask.__init__(self, WorkingDirectory = WorkingDirectory, ConfigFile = ConfigFile, TimeStr = TimeStr)
-
 	def _read_plotOptions(self):
 		try:
 			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showDetail'))
@@ -332,7 +329,6 @@ class writeMockLCTask(SuppliedParametersTask):
 			else:
 				print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
 				sys.exit(1)
-
 
 	def _make_02_write(self):
 		if self.DateTime == None:
