@@ -4,5 +4,5 @@
 #
 # relative to <libcarma>/bin/
 
-PYTHONPATH=$PWD
-echo "notice: libcarma tolls have been set up."
+export PYTHONPATH=/home/vish/code/trunk/cpp/libcarma/
+echo "notice: libcarma tools have been set up."

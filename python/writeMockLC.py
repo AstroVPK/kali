@@ -80,6 +80,10 @@ class writeMockLCTask(SuppliedParametersTask):
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showEqnLC = True
 		try:
+			self.showLnLike = self.strToBool(self.plotParser.get('PLOT', 'showLnLike'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showLnLike = True
+		try:
 			self.EqnLCLocY = float(self.plotParser.get('PLOT', 'EqnLCLocY'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.EqnLCLocY = 0.1
@@ -114,7 +118,7 @@ class writeMockLCTask(SuppliedParametersTask):
 			if abs((incr - self.LC.dt)/((incr + self.LC.dt)/2.0)) > self.LC.tolIR:
 				self.LC.IR = True
 
-	def _usePatternFile(self, cadence, mask, t, x, y, yerr):
+	'''def _usePatternFile(self, cadence, mask, t, x, y, yerr):
 		"""	Attempts to find configuration parameter `tFile' in ConfigFile and reads in corresponding file of
 			t values
 		"""
@@ -152,7 +156,51 @@ class writeMockLCTask(SuppliedParametersTask):
 		self.LC.dt = np.median(self.LC.t_incr)
 		self.LC.numMasked = numMasked
 		self._setIR()
-		return 0
+		return 0'''
+
+	def _readLC(self, suppliedLC = None):
+		logEntry = 'Reading in LC'
+		self.echo(logEntry)
+		self.log(logEntry)
+		if suppliedLC == None:
+			self.SuppliedLCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
+		else:
+			self.SuppliedLCFile = self.WorkingDirectory + suppliedLC
+			self.SuppliedLCHash = self.getHash(self.SuppliedLCFile)
+		inFile = open(self.SuppliedLCFile, 'rb')
+		words = inFile.readline().rstrip('\n').split()
+		LCHash = words[1]
+		if (LCHash == self.ConfigFileHash) or (suppliedLC != None):
+			inFile.readline()
+			self.LC.numCadences = int(inFile.readline().rstrip('\n').split()[1])
+			self.LC.cadence = np.array(self.LC.numCadences*[0])
+			self.LC.mask = np.array(self.LC.numCadences*[0.0])
+			self.LC.t = np.array(self.LC.numCadences*[0.0])
+			self.LC.x = np.array(self.LC.numCadences*[0.0])
+			self.LC.y = np.array(self.LC.numCadences*[0.0])
+			self.LC.yerr = np.array(self.LC.numCadences*[0.0])
+			numObservations = int(inFile.readline().rstrip('\n').split()[1])
+			self.LC.meanFlux = float(inFile.readline().rstrip('\n').split()[1])
+			self.LC.LnLike = float(inFile.readline().rstrip('\n').split()[1])
+			line = inFile.readline()
+			for i in xrange(self.LC.numCadences):
+				words = inFile.readline().rstrip('\n').split()
+				self.LC.cadence[i] = int(words[0])
+				self.LC.mask[i] = float(words[1])
+				self.LC.t[i] = float(words[2])
+				self.LC.x[i] = float(words[3])
+				self.LC.y[i] = float(words[4])
+				self.LC.yerr[i] = float(words[5])
+			self.LC.T = self.LC.t[-1] - self.LC.t[0]
+			self.LC.t_incr = self.LC.t[1:] - self.LC.t[0:-1]
+			self.LC.dt = np.median(self.LC.t_incr)
+			self.LC.numObservations = numObservations
+			self._setIR()
+			inFile.close()
+		else:
+			print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
+			inFile.close()
+			sys.exit(1)
 
 	def _read_LCProps(self):
 		"""	Attempts to read in the configuration parameters `dt', `T' or `numCadences', & `tStart'.
@@ -190,8 +238,6 @@ class writeMockLCTask(SuppliedParametersTask):
 					self.LC.numCadences = int(self.LC.T/self.LC.dt)
 				elif NUMCADENCES:
 					self.LC.T = float(self.LC.numCadences)*self.LC.dt
-			elif T and NUMCADENCES:
-				self.LC.dt = self.LC.T/float(self.LC.numCadences)
 			self.LC.cadence = np.array(self.LC.numCadences*[0])
 			self.LC.mask = np.array(self.LC.numCadences*[1.0])
 			self.LC.t = np.array(self.LC.numCadences*[0.0])
@@ -202,17 +248,26 @@ class writeMockLCTask(SuppliedParametersTask):
 				self.LC.cadence[i] = i
 				self.LC.mask[i] = 1.0
 				self.LC.t[i] = i*self.LC.dt
-			self.LC.numMasked = 0
+			self.LC.numObservations = self.LC.numCadences
 			self.PatternFileHash = ''
 		else:
-			print 'Unable to determine light curve length. Attempting to read TandMask file'
+			print 'No dt supplied. Attempting to use suppliedLC'
+			try:
+				self.LC.SuppliedLC = self.parser.get('LC', 'suppliedLC')
+			except (CP.NoOptionError, CP.NoSectionError) as Err:
+				self.LC.suppliedLC = None
+				print str(Err)
+				sys.exit(1)
+			self._readLC(suppliedLC = self.LC.SuppliedLC)
+
+			'''print 'Unable to determine light curve length. Attempting to read TandMask file'
 			cadence = list()
 			mask = list()
 			t = list()
 			x = list()
 			y = list()
 			yerr = list()
-			self._usePatternFile(cadence, mask, t, x, y, yerr)
+			self._usePatternFile(cadence, mask, t, x, y, yerr)'''
 
 		try:
 			self.LC.intrinsicVar = float(self.parser.get('LC', 'intrinsicVar'))
@@ -289,6 +344,7 @@ class writeMockLCTask(SuppliedParametersTask):
 			if self.doNoiseless == True:
 				yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, cadence_cffi, mask_cffi, t_cffi, x_cffi)
 			yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, burnSeed, distSeed, noiseSeed, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+			self.LC.LnLike = C._computeLnlike(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 			for i in xrange(self.LC.numCadences):
 				self.LC.cadence[i] = cadence_cffi[i]
 				self.LC.mask[i] = mask_cffi[i]
@@ -298,7 +354,8 @@ class writeMockLCTask(SuppliedParametersTask):
 				self.LC.yerr[i] = yerr_cffi[i]
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
 		else:
-			logEntry = 'Reading in LC'
+			self._readLC()
+			'''logEntry = 'Reading in LC'
 			self.echo(logEntry)
 			self.log(logEntry)
 			self.LCFile = self.WorkingDirectory + self.prefix + '_LC.dat'
@@ -308,8 +365,7 @@ class writeMockLCTask(SuppliedParametersTask):
 			if (LCHash == self.ConfigFileHash):
 				inFile.readline()
 				inFile.readline()
-				words = inFile.readline().rstrip('\n').split()
-				numCadences = int(words[1])
+				numCadences = int(inFile.readline().rstrip('\n').split()[1])
 				self.LC.cadence = np.array(numCadences*[0.0])
 				self.LC.mask = np.array(numCadences*[0.0])
 				self.LC.t = np.array(numCadences*[0.0])
@@ -318,6 +374,7 @@ class writeMockLCTask(SuppliedParametersTask):
 				self.LC.yerr = np.array(numCadences*[0.0])
 				line = inFile.readline()
 				line = inFile.readline()
+				self.LC.LnLike = float(inFile.readline().rstrip('\n').split()[1])
 				for i in xrange(numCadences):
 					words = inFile.readline().rstrip('\n').split()
 					self.LC.cadence[i] = int(words[0])
@@ -328,7 +385,7 @@ class writeMockLCTask(SuppliedParametersTask):
 					self.LC.yerr[i] = float(words[5])
 			else:
 				print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
-				sys.exit(1)
+				sys.exit(1)'''
 
 	def _make_02_write(self):
 		if self.DateTime == None:
@@ -337,17 +394,19 @@ class writeMockLCTask(SuppliedParametersTask):
 			self.log(logEntry)
 			self.LCFile = self.WorkingDirectory + self.prefix + "_LC.dat"
 			outFile = open(self.LCFile, 'w')
-			line = "ConfigFileHash: %s\n"%(self.ConfigFileHash)
+			line = self.escChar + "ConfigFileHash: %s\n"%(self.ConfigFileHash)
 			outFile.write(line)
-			line = "PatternFileHash: %s\n"%(self.PatternFileHash)
+			line = self.escChar + "SuppliedLCHash: %s\n"%(self.SuppliedLCHash)
 			outFile.write(line)
-			line = "numCadences: %d\n"%(self.LC.numCadences)
+			line = self.escChar + "numCadences: %d\n"%(self.LC.numCadences)
 			outFile.write(line)
-			line = "numObservations: %d\n"%(self.LC.numCadences - self.LC.numMasked)
+			line = self.escChar + "numObservations: %d\n"%(self.LC.numObservations)
 			outFile.write(line)
-			line = "meanFlux: %+17.16e\n"%(np.mean(self.LC.y))
+			line = self.escChar + "meanFlux: %+17.16e\n"%(np.mean(self.LC.y))
 			outFile.write(line)
-			line = "cadence mask t x y yerr\n"
+			line = self.escChar + "LnLike: %+17.16e\n"%(self.LC.LnLike)
+			outFile.write(line)
+			line = self.escChar + "cadence mask t x y yerr\n"
 			outFile.write(line) 
 			for i in xrange(self.LC.numCadences - 1):
 				line = "%d %1.0f %+17.16e %+17.16e %+17.16e %+17.16e\n"%(self.LC.cadence[i], self.LC.mask[i], self.LC.t[i], self.LC.x[i], self.LC.y[i], self.LC.yerr[i])
@@ -379,6 +438,8 @@ class writeMockLCTask(SuppliedParametersTask):
 			ax1.set_ylim(yMin,yMax)
 			if self.showEqnLC == True:
 				ax1.annotate(self.eqnStr, xy = (0.5, 0.1), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnLCFontsize, zorder = 100)
+			if self.showLnLike == True:
+				ax1.annotate(r'$\ln \mathcal{L} = ' + self.formatFloat(self.LC.LnLike) + '$', xy = (0.5, 0.05), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnLCFontsize, zorder = 100)
 
 			if self.showDetail == True:
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
@@ -392,13 +453,13 @@ class writeMockLCTask(SuppliedParametersTask):
 				ax2.set_xlim(self.LC.t[self.detailStart],self.LC.t[self.detailStart + self.numPtsDetail])
 
 			if self.JPG == True:
-				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = plot_params['dpi'])
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.jpg" , dpi = self.dpi)
 			if self.PDF == True:
-				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.pdf" , dpi = plot_params['dpi'])
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.pdf" , dpi = self.dpi)
 			if self.EPS == True:
-				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = plot_params['dpi'])
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.eps" , dpi = self.dpi)
 			if self.PNG == True:
-				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.png" , dpi = plot_params['dpi'])
+				fig1.savefig(self.WorkingDirectory + self.prefix + "_LC.png" , dpi = self.dpi)
 			if self.showFig == True:
 				plt.show()
 			fig1.clf()

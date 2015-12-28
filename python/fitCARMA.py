@@ -43,6 +43,6 @@ C = ffi.dlopen("./bin/libcarma.so.1.0.0")
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-class computeLnLikeTask(SuppliedParametersTask):
-	"""	Create a C-ARMA light curve with C-ARMA configuration supplied in the ConfigFile. 
+class fitCARMATask(Task):
+	"""	Fit a C-ARMA model to the supplied LC.
 	"""

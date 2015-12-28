@@ -28,7 +28,6 @@ import matplotlib.mlab as mlab
 
 from bin._libcarma import ffi
 from python.task import SuppliedParametersTask
-from python.carma import *
 from python.util.mpl_settings import *
 
 LabelSize = plot_params['LabelXLarge']
@@ -331,13 +330,13 @@ class plotPSDTask(SuppliedParametersTask):
 		plt.ylabel(self.yLabelPSD)
 
 		if self.JPG == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.jpg" , dpi = plot_params['dpi'])
+			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.jpg" , dpi = self.dpi)
 		if self.PDF == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.pdf" , dpi = plot_params['dpi'])
+			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.pdf" , dpi = self.dpi)
 		if self.EPS == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.eps" , dpi = plot_params['dpi'])
+			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.eps" , dpi = self.dpi)
 		if self.PNG == True:
-			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.png" , dpi = plot_params['dpi'])
+			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.png" , dpi = self.dpi)
 		if self.showFig == True:
 			plt.show()
 		fig1.clf()

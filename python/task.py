@@ -42,23 +42,24 @@ class Task:
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
-		self.PlotConfigFile = "Plot" + self.preprefix + ".ini"
-		try:
-			self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
-		except IOError as Err:
-			print str(Err) + ". Exiting..."
-			sys.exit(1)
-		self.PatternFile = self.preprefix + ".pat"
-		try:
-			self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
-		except IOError as Err:
-			print str(Err) + ". Exiting..."
-			sys.exit(1)
+		self.PlotConfigFile = self.preprefix + "Plot.ini"
 		try:
 			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
 			print str(Err) + ". Exiting..."
 			sys.exit(1)
+		try:
+			self.PlotConfigFileHash = self.getHash(self.WorkingDirectory + self.PlotConfigFile)
+		except IOError as Err:
+			print str(Err) + ". Exiting..."
+			sys.exit(1)
+		self.SuppliedLCHash = ''
+		'''self.PatternFile = self.preprefix + ".pat"
+		try:
+			self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
+		except IOError as Err:
+			print str(Err) + ". Exiting..."
+			sys.exit(1)'''
 
 		try:
 			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '_LC.dat', 'r')
@@ -161,6 +162,10 @@ class Task:
 			self.showFig = self.strToBool(self.plotParser.get('PLOT', 'showFig'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.showFig = False
+		try:
+			self.dpi = int(self.plotParser.get('PLOT', 'dpi'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.dpi = 1200
 
 	def parseConfig(self):
 		"""	Subclasses define function(s) that extract parameter values from the Config dict. This function 
