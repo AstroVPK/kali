@@ -159,7 +159,10 @@ class writeMockLCTask(SuppliedParametersTask):
 		return 0'''
 
 	def _readLC(self, suppliedLC = None):
-		logEntry = 'Reading in LC'
+		if suppliedLC == None:
+			logEntry = 'Reading in LC'
+		else:
+			logEntry = 'Using suppliedLC to make mask'
 		self.echo(logEntry)
 		self.log(logEntry)
 		if suppliedLC == None:
