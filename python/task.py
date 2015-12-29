@@ -9,6 +9,7 @@
 import math as math
 import cmath as cmath
 import numpy as np
+import random as random
 import copy as copy
 import cffi as cffi
 import inspect
@@ -54,15 +55,8 @@ class Task:
 			print str(Err) + ". Exiting..."
 			sys.exit(1)
 		self.SuppliedLCHash = ''
-		'''self.PatternFile = self.preprefix + ".pat"
 		try:
-			self.PatternFileHash = self.getHash(self.WorkingDirectory + self.PatternFile)
-		except IOError as Err:
-			print str(Err) + ". Exiting..."
-			sys.exit(1)'''
-
-		try:
-			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '_LC.dat', 'r')
+			TestFile = open(WorkingDirectory + self.preprefix + '_' + TimeStr + '.lc', 'r')
 			TestFile.close()
 			try:
 				LogFile = open(self.WorkingDirectory + self.preprefix + '_' + TimeStr + '.log', 'r')
@@ -127,7 +121,7 @@ class Task:
 		hashFile.close()
 		return hashObject.hexdigest()
 
-	def _read_escChar(self):
+	def _read_00_escChar(self):
 		""" Attempts to set the escape charatcter to be used.
 		"""
 		try:
@@ -135,7 +129,7 @@ class Task:
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.escChar = '#'
 
-	def _read_basicPlotOptions(self):
+	def _read_01_basicPlotOptions(self):
 		"""	Attempts to read in the plot options to be used.
 		"""
 		try:
@@ -187,6 +181,7 @@ class SuppliedParametersTask(Task):
 	def _read_00_CARMAProps(self):
 		"""	Attempts to parse AR roots and MA coefficients.
 		"""
+
 		ARRoots = list()
 		ARPoly = list()
 		MACoefs = list()
@@ -310,3 +305,126 @@ class SuppliedParametersTask(Task):
 			for i in xrange(self.q - 1):
 				self.eqnStr += (self.formatFloat(self.MACoefs[2 + i]) + r'\mathrm{d}^{%d}(\mathrm{d}W)'%(2 + i))
 		self.eqnStr += r'$'
+
+class SuppliedLCTask(Task):
+	"""	Class for tasks where the LC is supplied externally.
+	"""
+
+	def _setIR(self):
+		self.LC.IR = False
+		for incr in self.LC.t_incr:
+			if abs((incr - self.LC.dt)/((incr + self.LC.dt)/2.0)) > self.LC.tolIR:
+				self.LC.IR = True
+
+	def _readLC(self, suppliedLC = None):
+		if suppliedLC == None:
+			logEntry = 'Reading in LC'
+		else:
+			logEntry = 'Using suppliedLC to make mask'
+		self.echo(logEntry)
+		self.log(logEntry)
+		if suppliedLC == None:
+			self.SuppliedLCFile = self.WorkingDirectory + self.prefix + '.lc'
+		else:
+			self.SuppliedLCFile = self.WorkingDirectory + suppliedLC
+			self.SuppliedLCHash = self.getHash(self.SuppliedLCFile)
+		inFile = open(self.SuppliedLCFile, 'rb')
+		words = inFile.readline().rstrip('\n').split()
+		LCHash = words[1]
+		if (LCHash == self.ConfigFileHash) or (suppliedLC != None):
+			inFile.readline()
+			self.LC.numCadences = int(inFile.readline().rstrip('\n').split()[1])
+			self.LC.cadence = np.array(self.LC.numCadences*[0])
+			self.LC.mask = np.array(self.LC.numCadences*[0.0])
+			self.LC.t = np.array(self.LC.numCadences*[0.0])
+			self.LC.x = np.array(self.LC.numCadences*[0.0])
+			self.LC.y = np.array(self.LC.numCadences*[0.0])
+			self.LC.yerr = np.array(self.LC.numCadences*[0.0])
+			numObservations = int(inFile.readline().rstrip('\n').split()[1])
+			self.LC.meanFlux = float(inFile.readline().rstrip('\n').split()[1])
+			self.LC.LnLike = float(inFile.readline().rstrip('\n').split()[1])
+			line = inFile.readline()
+			for i in xrange(self.LC.numCadences):
+				words = inFile.readline().rstrip('\n').split()
+				self.LC.cadence[i] = int(words[0])
+				self.LC.mask[i] = float(words[1])
+				self.LC.t[i] = float(words[2])
+				self.LC.x[i] = float(words[3])
+				self.LC.y[i] = float(words[4])
+				self.LC.yerr[i] = float(words[5])
+			self.LC.T = self.LC.t[-1] - self.LC.t[0]
+			self.LC.t_incr = self.LC.t[1:] - self.LC.t[0:-1]
+			self.LC.dt = np.median(self.LC.t_incr)
+			self.LC.numObservations = numObservations
+			self._setIR()
+			inFile.close()
+		else:
+			print "Hash mismatch! The ConfigFile %s in WorkingDirectory %s has changed and no longer matches that used to make the light curve. Exiting!"%(self.ConfigFile, self.WorkingDirectory)
+			inFile.close()
+			sys.exit(1)
+
+	def _read_00_plotOptions(self):
+		try:
+			self.showDetail = self.strToBool(self.plotParser.get('PLOT', 'showDetail'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showDetail = True
+		try:
+			self.detailDuration = float(self.plotParser.get('PLOT', 'detailDuration'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.detailDuration = 1.0
+		self.numPtsDetail = int(self.detailDuration/self.LC.dt)
+		try:
+			self.detailStart = self.plotParser.get('PLOT', 'detailStart')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.detailStart = 'random'
+		if self.detailStart == 'random':
+			self.detailStart = random.randint(0, self.LC.numCadences - self.numPtsDetail)
+		else:
+			self.detailStart = int(self.detailStart)
+			if self.detailStart > self.LC.numCadences:
+				print "detailStart too large... Try reducing it."
+				sys.exit(1)
+		try:
+			self.LabelLCFontsize = self.strToBool(self.plotParser.get('PLOT', 'LabelLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LabelLCFontsize = 18
+		try:
+			self.DetailLabelLCFontsize = self.strToBool(self.plotParser.get('PLOT', 'DetailLabelLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.DetailLabelLCFontsize = 10
+		try:
+			self.showEqnLC = self.strToBool(self.plotParser.get('PLOT', 'showEqnLC'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showEqnLC = True
+		try:
+			self.showLnLike = self.strToBool(self.plotParser.get('PLOT', 'showLnLike'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showLnLike = True
+		try:
+			self.EqnLCLocY = float(self.plotParser.get('PLOT', 'EqnLCLocY'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnLCLocY = 0.1
+		try:
+			self.EqnLCFontsize = int(self.plotParser.get('PLOT', 'EqnLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.EqnLCFontsize = 16
+		try:
+			self.showLegendLC = self.strToBool(self.plotParser.get('PLOT', 'showLegendLC'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.showLegendLC = True
+		try:
+			self.LegendLCLoc = int(self.plotParser.get('PLOT', 'LegendLCLoc'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LegendLCLoc = 2
+		try:
+			self.LegendLCFontsize = int(self.plotParser.get('PLOT', 'LegendLCFontsize'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.LegendLCFontsize = 12
+		try:
+			self.xLabelLC = self.plotParser.get('PLOT', 'xLabelLC')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabelLC = r'$t$~($d$)'
+		try:
+			self.yLabelLC = self.plotParser.get('PLOT', 'yLabelLC')
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.xLabelLC = r'$F$~($W m^{-2}$)'

@@ -5,9 +5,9 @@ from scipy.stats import bernoulli
 import pdb
 
 Path = '/home/vish/code/trunk/cpp/libcarma/examples/writeMockLCTest/'
-RegularFile = 'Regular.dat'
-MissingFile = 'Missing.dat'
-IrregularFile = 'Irregular.dat'
+RegularFile = 'Regular.lc'
+MissingFile = 'Missing.lc'
+IrregularFile = 'Irregular.lc'
 
 Regular = np.loadtxt(Path + RegularFile, skiprows = 7)
 numCadences_Regular = Regular.shape[0]

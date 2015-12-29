@@ -45,6 +45,7 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class plotPSDTask(SuppliedParametersTask):
 	"""	Attempts to plot the PSD of the given C-ARMA model
 	"""
+
 	@staticmethod
 	def getPSDDenominator(freqs, aList, order):
 		pVal = len(aList)

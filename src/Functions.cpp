@@ -8,6 +8,7 @@
 #include "CARMA.hpp"
 #include "MCMC.hpp"
 #include "Constants.hpp"
+#include "rdrand.hpp"
 
 //#define TIME_LNLIKE
 //#define TIME_MCMC
@@ -15,7 +16,7 @@
 //#define DEBUG_CFFI_MAKEMOCKLC
 //#define DEBUG_COMPUTELNLIKE
 //#define DEBUG_CFFI_COMPUTELNLIKE
-//#define DEBUG_FITCARMA 
+#define DEBUG_FITCARMA 
 //#define DEBUG_CFFI_FITCARMA
 
 #if defined(DEBUG_MAKEMOCKLC) || defined(DEBUG_CFFI_MAKEMOCKLC) || defined(DEBUG_COMPUTELNLIKE) || defined(DEBUG_CFFI_COMPUTELNLIKE) || defined(DEBUG_FITCARMA) || defined(DEBUG_CFFI_FITCARMA)
@@ -25,6 +26,11 @@
 //#define DEBUG_MASK
 
 using namespace std;
+
+int getRandoms(int numRequested, unsigned int *Randoms) {
+	int status = rdrand_get_n_32(numRequested, Randoms);
+	return status;
+	}
 
 int testSystem(double dt, int p, int q, double *Theta) {
 	int retVal = 1;
@@ -208,6 +214,7 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 		Data.mask = mask;
 		LnLikeData *ptr2Data = &Data;
 		LnLike = SystemMaster.computeLnLike(ptr2Data);
+		SystemMaster.deallocCARMA();
 		}
 	return LnLike;
 	}
@@ -231,13 +238,12 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	Args.Systems = nullptr;
 	void* p2Args = nullptr;
 	CARMA Systems[nthreads];
-	for (int tNum = 0; tNum < nthreads; tNum++) {
+	for (int tNum = 0; tNum < nthreads; ++tNum) {
 		Systems[tNum].allocCARMA(p,q);
 		Systems[tNum].set_dt(dt);
 		}
 	Args.Systems = Systems;
 	p2Args = &Args;
-
 	double LnLikeVal = 0.0;
 	double *initPos = nullptr, *offsetArr = nullptr, *xTemp = nullptr;
 	vector<double> x;
@@ -266,14 +272,12 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 		x.push_back(xTemp[dimCtr]);
 		}
 	_mm_free(xTemp);
-
 	nlopt::opt opt(nlopt::LN_NELDERMEAD, ndims);
 	opt.set_max_objective(calcLnLike, p2Args);
 	opt.set_maxeval(maxEvals);
 	opt.set_xtol_rel(xTol);
 	double max_LnLike = 0.0;
 	nlopt::result yesno = opt.optimize(x, max_LnLike);
-
 	initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
 	offsetArr = static_cast<double*>(_mm_malloc(nwalkers*sizeof(double),64));
 	for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
@@ -290,20 +294,35 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 			}
 		}
 	vslDeleteStream(&initStream);
-
+	_mm_free(offsetArr);
 	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
-	newEnsemble.getChain(Chain);
-	newEnsemble.getLnLike(LnLike);
-	for (int tNum = 0; tNum < nthreads; tNum++) {
+	_mm_free(initPos);
+	for (int tNum = 0; tNum < nthreads; ++tNum) {
 		Systems[tNum].deallocCARMA();
 		}
-	_mm_free(initPos);
-	_mm_free(offsetArr);
+	newEnsemble.getChain(Chain);
+	newEnsemble.getLnLike(LnLike);
 	return 0;
 	}
 
 extern "C" {
+
+	extern int _getRandoms(int numRequested, unsigned int *Randoms) {
+		return getRandoms(numRequested, Randoms);
+	}
+
+	extern unsigned int* _malloc_uint(int length) {
+		unsigned int *mem = static_cast<unsigned int*>(_mm_malloc(length*sizeof(unsigned int),64));
+		return mem;
+		}
+
+	extern void _free_uint(unsigned int *mem) {
+		if (mem) {
+			_mm_free(mem);
+			}
+		mem = nullptr;
+		}
 
 	extern int* _malloc_int(int length) {
 		int *mem = static_cast<int*>(_mm_malloc(length*sizeof(int),64));

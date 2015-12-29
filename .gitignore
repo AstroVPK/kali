@@ -33,6 +33,8 @@
 
 # Data, Images, and Documents
 *.dat
+*.lc
+*.mcmc
 *.jpg
 *.pdf
 *.eps

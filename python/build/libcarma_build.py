@@ -8,6 +8,9 @@ from cffi import FFI
 ffi = FFI()
 ffi.set_source("bin/_libcarma", None)
 ffi.cdef("""
+    int _getRandoms(int numRequested, unsigned int *Randoms);
+    unsigned int* _malloc_uint(int length);
+    void _free_uint(unsigned int *mem);
     int* _malloc_int(int length);
     void _free_int(int *mem);
     double* _malloc_double(int length);

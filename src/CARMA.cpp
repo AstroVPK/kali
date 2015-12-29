@@ -42,6 +42,7 @@
 //#define DEBUG_DEALLOCATECARMA_DEEP
 //#define DEBUG_RESETSTATE
 //#define DEBUG_CALCLNLIKE
+//#define DEBUG_CALCLNLIKE2
 
 using namespace std;
 
@@ -241,12 +242,12 @@ double calcLnLike(double *walkerPos, void *func_args) {
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
 
-		#ifdef DEBUG_CALCLNLIKE
+		#ifdef DEBUG_CALCLNLIKE2
 		#pragma omp critical
 		{
 			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
-				printf("%+17.16e ", x[dimNum]);
+				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
 			printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
@@ -298,12 +299,12 @@ double calcLnLike(double *walkerPos, void *func_args) {
 
 		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
 
-		#ifdef DEBUG_CALCLNLIKE
+		#ifdef DEBUG_CALCLNLIKE2
 		#pragma omp critical
 		{
 			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
-				printf("%+17.16e ", x[dimNum]);
+				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
 			printf("calcLnLike - threadNum: %d; X\n",threadNum);
@@ -457,6 +458,8 @@ CARMA::CARMA() {
 	// Arrays used to compute expm(A dt)
 	w = nullptr; // len p
 	expw = nullptr; // len pSq
+	CARMatrix = nullptr; // len pSq
+	CMAMatrix = nullptr; // len qSq
 	CARw = nullptr; // len p
 	CMAw = nullptr; //len p
 	scale = nullptr;
@@ -515,6 +518,8 @@ CARMA::~CARMA() {
 	abnrm = nullptr;
 	w = nullptr;
 	expw = nullptr;
+	CARMatrix = nullptr;
+	CMAMatrix = nullptr;
 	CARw = nullptr;
 	CMAw = nullptr;
 	scale = nullptr;
@@ -553,9 +558,9 @@ CARMA::~CARMA() {
 
 void CARMA::allocCARMA(int numP, int numQ) {
 
-	#ifdef DEBUG_ALLOCATEDLM
+	#ifdef DEBUG_ALLOCATECARMA
 	int threadNum = omp_get_thread_num();
-	printf("allocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("allocDLM - threadNum: %d; Starting... Address of System: %p\n",threadNum,this);
 	#endif
 
 	if ((numQ >= numP) or (numQ < 0)) {
@@ -700,17 +705,17 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		}
 	I[(p - 1)*p + (p - 1)] = 1.0;
 
-	#ifdef DEBUG_ALLOCATEDLM
-	printf("allocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Finishing... Address of System: %p\n",threadNum,this);
 	#endif
 
 	}
 
 void CARMA::deallocCARMA() {
 
-	#ifdef DEBUG_DEALLOCATEDLM
+	#ifdef DEBUG_DEALLOCATECARMA
 	int threadNum = omp_get_thread_num();
-	printf("deallocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("deallocDLM - threadNum: %d; Starting... Address of System: %p\n",threadNum,this);
 	#endif
 
 	if (ilo) {
@@ -718,183 +723,327 @@ void CARMA::deallocCARMA() {
 		ilo = nullptr;
 		}
 
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated ilo Address of System: %p\n",threadNum,this);
+	#endif
+
 	if (ihi) {
 		_mm_free(ihi);
 		ihi = nullptr;
 		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated ihi Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (abnrm) {
 		_mm_free(abnrm);
 		abnrm = nullptr;
 		}
 
-	if (w) {
-		_mm_free(w);
-		w = nullptr;
-	}
-
-	if (expw) {
-		_mm_free(expw);
-		expw = nullptr;
-		}
-
-	if (CARMatrix) {
-		_mm_free(CARMatrix);
-		CARMatrix = nullptr;
-		}
-
-	if (CMAMatrix) {
-		_mm_free(CMAMatrix);
-		CMAMatrix = nullptr;
-		}
-
-	if (CARw) {
-		_mm_free(CARw);
-		CARw = nullptr;
-		}
-
-	if (CMAw) {
-		_mm_free(CMAw);
-		CMAw = nullptr;
-		}
-
-	if (scale) {
-		_mm_free(scale);
-		scale = nullptr;
-		}
-
-	if (vr) {
-		_mm_free(vr);
-		vr = nullptr;
-		}
-
-	if (vrInv) {
-		_mm_free(vrInv);
-		vrInv = nullptr;
-		}
-
-	if (rconde) {
-		_mm_free(rconde);
-		rconde = nullptr;
-		}
-
-	if (rcondv) {
-		_mm_free(rcondv);
-		rcondv = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated abnrm Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (ipiv) {
 		_mm_free(ipiv);
 		ipiv = nullptr;
 		}
 
-	if (A) {
-		_mm_free(A);
-		A = nullptr;
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated ipiv Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (scale) {
+		_mm_free(scale);
+		scale = nullptr;
 		}
 
-	if (ACopy) {
-		_mm_free(ACopy);
-		ACopy = nullptr;
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated scale Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (rconde) {
+		_mm_free(rconde);
+		rconde = nullptr;
 		}
 
-	if (AScratch) {
-		_mm_free(AScratch);
-		AScratch = nullptr;
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated rconde Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (rcondv) {
+		_mm_free(rcondv);
+		rcondv = nullptr;
 		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated rcondv Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (w) {
+		_mm_free(w);
+		w = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated w Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (CARw) {
+		_mm_free(CARw);
+		CARw = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated CARw Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (B) {
 		_mm_free(B);
 		B = nullptr;
 		}
 
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated B Address of System: %p\n",threadNum,this);
+	#endif
+
 	if (BScratch) {
 		_mm_free(BScratch);
 		BScratch = nullptr;
 		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated BScratch Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (CMAw) {
+		_mm_free(CMAw);
+		CMAw = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated CMAw Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (CMAMatrix) {
+		_mm_free(CMAMatrix);
+		CMAMatrix = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated CMAMatrix Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (CARMatrix) {
+		_mm_free(CARMatrix);
+		CARMatrix = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated CARMatrix Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (expw) {
+		_mm_free(expw);
+		expw = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated expw Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (vr) {
+		_mm_free(vr);
+		vr = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated vr Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (vrInv) {
+		_mm_free(vrInv);
+		vrInv = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated vrInv Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (A) {
+		_mm_free(A);
+		A = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated A Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (ACopy) {
+		_mm_free(ACopy);
+		ACopy = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated ACopy Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (AScratch) {
+		_mm_free(AScratch);
+		AScratch = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated AScratch Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (C) {
 		_mm_free(C);
 		C = nullptr;
 		}
 
-	if (I) {
-		_mm_free(I);
-		I = nullptr;
-		}
-
-	if (F) {
-		_mm_free(F);
-		F = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated C Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (Theta) {
 		_mm_free(Theta);
 		Theta = nullptr;
 		}
 
-	if (Sigma) {
-		_mm_free(Sigma);
-		Sigma = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated Theta Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (D) {
 		_mm_free(D);
 		D = nullptr;
 		}
 
-	if (Q) {
-		_mm_free(Q);
-		Q = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated D Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (H) {
 		_mm_free(H);
 		H = nullptr;
 		}
 
-	if (R) {
-		_mm_free(R);
-		R = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated H Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (K) {
 		_mm_free(K);
 		K = nullptr;
 		}
 
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated K Address of System: %p\n",threadNum,this);
+	#endif
+
 	if (X) {
 		_mm_free(X);
 		X = nullptr;
 		}
 
-	if (P) {
-		_mm_free(P);
-		P = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated X Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (XMinus) {
 		_mm_free(XMinus);
 		XMinus = nullptr;
 		}
 
-	if (PMinus) {
-		_mm_free(PMinus);
-		PMinus = nullptr;
-		}
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated XMinus Address of System: %p\n",threadNum,this);
+	#endif
 
 	if (VScratch) {
 		_mm_free(VScratch);
 		VScratch = nullptr;
 		}
 
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated VScratch Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (I) {
+		_mm_free(I);
+		I = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated I Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (F) {
+		_mm_free(F);
+		F = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated F Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (Sigma) {
+		_mm_free(Sigma);
+		Sigma = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated Sigma Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (Q) {
+		_mm_free(Q);
+		Q = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated Q Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (P) {
+		_mm_free(P);
+		P = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated P Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (PMinus) {
+		_mm_free(PMinus);
+		PMinus = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated PMinus Address of System: %p\n",threadNum,this);
+	#endif
+
 	if (MScratch) {
 		_mm_free(MScratch);
 		MScratch = nullptr;
 		}
 
-	#ifdef DEBUG_DEALLOCATEDLM
-	printf("deallocDLM - threadNum: %d; Address of System: %p\n",threadNum,this);
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated MScratch Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (R) {
+		_mm_free(R);
+		R = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated R Address of System: %p\n",threadNum,this);
+	#endif
+
+	#ifdef DEBUG_DEALLOCATECARMA
+	printf("deallocDLM - threadNum: %d; Finishing... Address of System: %p\n",threadNum,this);
 	#endif
 	}
 

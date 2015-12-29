@@ -17,7 +17,7 @@ parser.add_argument("-o", "--old", help = "DateTime of run to be used")
 parser.add_argument("-v", "--verbose", help = "Verbose T/F")
 args = parser.parse_args()
 
-try:
+'''try:
 	TestFile = open(args.pwd + 'Regular_MMDDYYYYHHMMSS.log', 'r')
 	TestFile.close()
 except IOError:
@@ -48,4 +48,7 @@ if args.old:
 else:
 	TimeStr = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 	plotPSDTask(args.pwd, args.cf, TimeStr).run()
-	makeMockLCTask(args.pwd, args.cf, TimeStr).run()
+	makeMockLCTask(args.pwd, args.cf, TimeStr).run()'''
+
+TimeStr = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
+plotPSDTask(args.pwd, args.cf, TimeStr).run()
