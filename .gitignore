@@ -45,7 +45,7 @@
 *~
 
 # Python Extensions
-_*.py
+_libcarma.py
 
 # Specific Executables
 testPoint
