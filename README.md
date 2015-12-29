@@ -70,7 +70,7 @@ instructions at
 terminal type
 
 
-  `bash-prompt$ sudo install_GUI.sh`
+  `<Intel C & C++ Compiler dir>$ sudo install_GUI.sh`
 
 
   to start the install. Add the following line to your `.bashrc` to setup the necessary environment variables 
@@ -124,13 +124,13 @@ replace it with an alternative. Intel MKL may be obtained from
   After un-tarring the tar file, NLOpt should be installed as follows
 
 
-  `bash-prompt$ ./configure --enable-shared`
+  `<nlopt dir>$ ./configure --enable-shared`
 
 
-  `bash-prompt& make`
+  `<nlopt dir> make`
 
 
-  `bash-prompt$ sudo make install`
+  `<nlopt dir>$ sudo make install`
 
 
   This software has been tested with
@@ -144,6 +144,12 @@ be installed into Anaconda using
 
 
   `bash-prompt$ sudo apt-get install libffi6`
+
+
+  `bash-prompt$ sudo apt-get install libffi6:i386`
+
+
+  `bash-prompt$ sudo apt-get install libffi-dev`
 
 
   `bash-prompt$ conda update conda`

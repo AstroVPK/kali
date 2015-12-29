@@ -22,13 +22,13 @@ try:
 	TestFile.close()
 except IOError:
 	plotSuppliedLCTask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
-#fitCARMATask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
+fitCARMATask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
 try:
 	TestFile = open(args.pwd + 'Irregular_MMDDYYYYHHMMSS.log', 'r')
 	TestFile.close()
 except IOError:
 	plotSuppliedLCTask(args.pwd, 'Irregular.ini', 'MMDDYYYYHHMMSS').run()
-#fitCARMATask(args.pwd, 'Irregular.ini', 'MMDDYYYYHHMMSS').run()
+fitCARMATask(args.pwd, 'Irregular.ini', 'MMDDYYYYHHMMSS').run()
 try:
 	TestFile = open(args.pwd + 'Missing_MMDDYYYYHHMMSS.log', 'r')
 	TestFile.close()
