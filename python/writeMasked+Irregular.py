@@ -4,7 +4,7 @@ import numpy as np
 from scipy.stats import bernoulli
 import pdb
 
-Path = '/home/vish/code/trunk/cpp/libcarma/examples/writeMockLCTest/'
+Path = '/home/vish/code/trunk/cpp/libcarma/examples/Demo02/'
 RegularFile = 'Regular.lc'
 MissingFile = 'Missing.lc'
 IrregularFile = 'Irregular.lc'
@@ -12,7 +12,7 @@ IrregularFile = 'Irregular.lc'
 Regular = np.loadtxt(Path + RegularFile, skiprows = 7)
 numCadences_Regular = Regular.shape[0]
 
-Prob = 0.1
+Prob = 0.25
 ProbList = bernoulli.rvs(Prob, size = numCadences_Regular)
 numCadences_Missing = np.sum(ProbList)
 numCadences_Irregular = np.sum(ProbList)

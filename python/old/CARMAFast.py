@@ -1,8 +1,11 @@
 from math import pow,log,pi,sqrt
+from cmath import exp as cexp
 from numpy import transpose,roots,kron,reshape,isnan,nan,sum,inf
 from numpy import zeros as npzeros
+from numpy import array
 from numpy.matlib import matrix,zeros,identity
-from numpy.linalg import inv,solve,det
+from numpy.linalg import inv,solve,det,eig
+from numpy.random import multivariate_normal
 from scipy.linalg import expm
 from scipy.integrate import quad
 from random import gauss,seed
@@ -54,11 +57,13 @@ def checkParams(aList=None,bList=None):
 	for i in xrange(p):
 		CARPoly.append(aList[i])
 	CARRoots=roots(CARPoly)
+	#print 'C-AR Roots: ' + str([rootVal for rootVal in CARRoots])
 	if (len(CARRoots)!=len(set(CARRoots))):
 		hasUniqueEigenValues=0
 	for CARRoot in CARRoots:
 		if (CARRoot.real>=0.0):
 			isStable=0
+	#print 'isStable: %d'%(isStable)
 
 	isInvertible=1
 	CMAPoly=list()
@@ -66,11 +71,13 @@ def checkParams(aList=None,bList=None):
 		CMAPoly.append(bList[i])
 	CMAPoly.reverse()
 	CMARoots=roots(CMAPoly)
+	#print 'C-MA Roots: ' + str([rootVal for rootVal in CMARoots])
 	if (len(CMARoots)!=len(set(CMARoots))):
 		uniqueRoots=0
 	for CMARoot in CMARoots:
 		if (CMARoot>0.0):
 			isInvertible=0
+	#print 'isInvertible: %d'%(isInvertible)
 
 	isNotRedundant=1
 	for CARRoot in CARRoots:
@@ -78,7 +85,13 @@ def checkParams(aList=None,bList=None):
 			if (CARRoot==CMARoot):
 				isNotRedundant=0
 
-	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma
+	if (bList[0] <= 0.0):
+		hasPosSigma = 0
+
+	retVal = isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma
+	#print 'retVal: %d'%(retVal)
+
+	return retVal
 
 def getRoots(aList=None,bList=None):
 	if aList is None:
@@ -103,10 +116,6 @@ def getRoots(aList=None,bList=None):
 
 	return (CARRoots,CMARoots)
 
-def Qint(dchi,A,B,i,j):
-	ans = ((expm(A*dchi))*B*(B.T)*((expm(A*dchi)).T))[i,j]
-	return ans
-
 def setSystem(dt,m,aList,bList,A,B,F,I,D,Q):
 	for i in xrange(len(aList)):
 		A[i,0]=-1.0*aList[i]
@@ -116,21 +125,27 @@ def setSystem(dt,m,aList,bList,A,B,F,I,D,Q):
 
 	F=expm(A*dt)
 
+	lam,vr = eig(A)
+	vr = matrix(vr)
+	vrTrans = transpose(vr)
+	vrInv = inv(vr)
+
+	C = vrInv*B*transpose(B)*transpose(vrInv)
+
+	Q=zeros((m,m))
 	for i in xrange(m):
-		D[i,0]=sqrt(quad(Qint,0,dt,args=(A,B,i,i),epsrel=0.0001)[0])
-	Q = D*(D.T)
+		for j in xrange(m):
+			for k in xrange(m):
+				for l in xrange(m):
+					Q[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*((cexp((lam[k] + lam[l])*dt) - 1.0)/(lam[k] + lam[l]))
 
 	X=zeros((m,1))
-	try:
-		P=matrix(reshape(solve(kron(I,I)-kron(F,F),reshape(Q,(m*m,1))),(m,m)))
-	except np.linalg.linalg.LinAlgError:
-		print "Computation of P failed!"
-		print aList
-		print bList
-		print
-		P=zeros((m,m))
-		for i in range(m):
-			P[i,i]=10**7
+	P=zeros((m,m))
+	for i in xrange(m):
+		for j in xrange(m):
+			for k in xrange(m):
+				for l in xrange(m):
+					P[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*(-1.0/(lam[k] + lam[l]))
 	XMinus=zeros((m,1))
 	PMinus=zeros((m,m))
 	return (X,P,XMinus,PMinus,F,I,D,Q)
@@ -157,129 +172,30 @@ def setSystemDiffuse(dt,m,aList,bList,A,B,F,I,D,Q):
 	H[0,0]=1.0
 	return (X,P,XMinus,PMinus,F,I,D,Q)
 
-def burnSystemFixed(X,F,D,numBurn,burnRand):
-	for i in range(numBurn):
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(burnRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+burnRand[i]*D
-		'''print "X_+"
-		print X
-		print'''
-	return X
-
-def burnSystem(X,F,D,numBurn,burnSeed):
-	burnRand=npzeros(numBurn)
+def burnSystem(m,X,F,Q,numBurn,burnSeed):
 	seed(burnSeed)
+	burnRand = multivariate_normal(array(m*[0.0]),Q,numBurn)
 	for i in range(numBurn):
-		burnRand[i]=gauss(0.0,1.0)
-	for i in range(numBurn):
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(burnRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+burnRand[i]*D
-		'''print "X_+"
-		print X
-		print'''
+		X = F*X + transpose(matrix(burnRand[i,:]))
 	return X
 
-def obsSystemFixed(X,F,D,H,noise,y,numObs,distRand,noiseRand):
-	H[0,0]=1.0
-	for i in range(numObs):
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(distRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+distRand[i]*D
-		'''print "X_+"
-		print X
-		print "Noise: %f"%(noiseRand[i])'''
-		y[i,0]=H*X+noiseRand[i]
-		y[i,1]=noise
-		'''print "y"
-		print y[i,0]'''
-	return (X,y)
-
-def obsSystemFixedMissing(X,F,D,H,noise,y,mask,numObs,distRand,noiseRand):
-	for i in range(numObs):
-		H[0,0]=mask[i]
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(distRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+distRand[i]*D
-		'''print "X_+"
-		print X
-		print "Noise: %f"%(noiseRand[i])'''
-		y[i,0]=H*X+noiseRand[i]
-		if (mask[i]==1.0):
-			y[i,1]=noise
-		else:
-			y[i,1]=inf
-		'''print "y"
-		print y[i,0]'''
-	return (X,y)
-
-def obsSystem(X,F,D,H,noise,y,numObs,distSeed,noiseSeed):
-	H[0,0]=1.0
-	distRand=npzeros(numObs)
+def obsSystemMissing(m,X,F,Q,H,noise,y,mask,numObs,distSeed,noiseSeed):
+	veryLarge = sqrt(float_info[0])
+	#veryLarge = sqrt(1.0e300)
 	noiseRand=npzeros(numObs)
 	seed(distSeed)
-	for i in range(numObs):
-		distRand[i]=gauss(0.0,1.0)
-	seed(noiseSeed)
-	for i in range(numObs):
-		noiseRand[i]=gauss(0.0,noise)
-	for i in range(numObs):
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(distRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+distRand[i]*D
-		'''print "X_+"
-		print X
-		print "Noise: %f"%(noiseRand[i])'''
-		y[i,0]=H*X+noiseRand[i]
-		y[i,1]=noise
-		'''print "y"
-		print y[i,0]'''
-	return (X,y)
-
-def obsSystemMissing(X,F,D,H,noise,y,mask,numObs,distSeed,noiseSeed):
-	veryLarge = float_info[0]
-	distRand=npzeros(numObs)
-	noiseRand=npzeros(numObs)
-	seed(distSeed)
-	for i in range(numObs):
-		distRand[i]=gauss(0.0,1.0)
+	distRand = multivariate_normal(array(m*[0.0]),Q,numObs)
 	seed(noiseSeed)
 	for i in range(numObs):
 		noiseRand[i]=gauss(0.0,noise)
 	for i in range(numObs):
 		H[0,0]=mask[i]
-		'''print
-		print "i: %d"%(i)
-		print "Disturbance: %f"%(distRand[i])
-		print "X_-"
-		print X'''
-		X=F*X+distRand[i]*D
-		'''print "X_+"
-		print X
-		print "Noise: %f"%(noiseRand[i])'''
+		X = F*X + transpose(matrix(distRand[i,:]))
 		y[i,0]=H*X+H[0,0]*noiseRand[i]
 		if (mask[i]==1.0):
 			y[i,1]=noise
 		else:
-			y[i,1]=sqrt(veryLarge)
-		'''print "y"
-		print y[i,0]'''
+			y[i,1]=veryLarge
 	return (X,y)
 
 def gaussian(x, mu, sigma):
@@ -516,101 +432,23 @@ def plotLnLike(t,y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 def getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 	veryLarge = float_info[0]
 	numPts=y.shape[0]
+	numObs=sum(mask)
 	LnLike=0.0
 	ptCounter=0.0
-
-	'''print "X"
-	print "------"
-	print X
-	print "P"
-	print "------"
-	print P
-
-	print "XMinus"
-	print "------"
-	print XMinus
-	print "PMinus"
-	print "------"
-	print PMinus'''
-
 	for i in range(numPts):
-		'''print ""
-		print "i: %d"%(i)'''
-
 		H[0,0]=mask[i]
 		R[0,0]=y[i,1]*y[i,1]
-
-		'''print "mask[i]: %f"%(mask[i])
-		print "y[i,0]: %f"%(y[i,0])
-		print "y[i,1]: %f"%(y[i,1])
-
-		print "H[0,0]: %f"%(H[0,0])
-		print "R[0,0]: %f"%(R[0,0])'''
-		
 		XMinus=F*X
-		
-		'''print "XMinus"
-		print "------"
-		print XMinus'''
-		
 		PMinus=F*P*transpose(F)+Q
-		
-		'''print "PMinus"
-		print "------"
-		print PMinus'''
-		
-		v=y[i,0]-H*XMinus
-
-		'''print "  v   "
-		print "------"
-		print v'''
-
+		v=mask[i]*y[i,0] - H*XMinus
 		S=H*PMinus*transpose(H)+R
-	
-		'''print "  S   "
-		print "------"
-		print S'''
-
-		inverseS=inv(S)
-
-		'''print "inverseS"
-		print "--------"
-		print inverseS'''
-
+		inverseS=1.0/S[0,0]
 		K=PMinus*transpose(H)*inverseS
-		
-		'''print "  K   "
-		print "------"
-		print K'''
-
 		IMinusKH=I-K*H
-		
-		'''print "IMinusKH"
-		print "--------"
-		print IMinusKH'''
-
 		X=K*y[i,0]+IMinusKH*XMinus
-
-		'''print "   X    "
-		print "--------"
-		print X'''
-
 		P=IMinusKH*PMinus*transpose(IMinusKH)+K*R*transpose(K)
-
-		'''print "   P    "
-		print "--------"
-		print P
-		if (isnan(P[0,0])):
-			pdb.set_trace()'''
-
-		LnLike+=(-0.5*(transpose(v)*inverseS*v)-0.5*log(det(S)))[0,0]
-		#ptCounter+=mask[i]
-
-		'''print " LnLike "
-		print "--------"
-		print LnLike'''
-
-	LnLike += -0.5*numPts*log(2.0*pi)
+		LnLike+=-0.5*(v[0,0]*v[0,0]*inverseS)-0.5*log(S[0,0])
+	#LnLike += -0.5*numObs*log(2.0*pi)
 	return LnLike
 
 def getLnLikeMissing(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):

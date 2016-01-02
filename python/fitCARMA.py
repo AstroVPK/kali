@@ -17,6 +17,7 @@ import cffi as cffi
 import os as os
 import sys as sys
 import time as time
+import operator as operator
 import multiprocessing
 import pdb as pdb
 
@@ -154,6 +155,28 @@ class fitCARMATask(SuppliedLCTask):
 			plt.show()
 		fig2.clf()
 
+		try:
+			Result = open(self.ResultFile,'a')
+		except IOError as Err:
+			print str(Err) + '. Exiting...'
+		line1 = "p: %d; q: %d\n"%(self.p, self.q)
+		Result.write(line1)
+		line2 = "DIC: %e\n"%(self.dictDIC['%d %d'%(self.p, self.q)])
+		Result.write(line2)
+		for k in range(self.ndims):
+			if (0 <= k < self.p):
+				line3 = "a_%d\n"%(k)
+			elif ((k >= self.p) and (k < self.ndims)):
+				line3 = "b_%d\n"%(k - self.p)
+			Result.write(line3)
+			#self.fiftiethQ["%d %d %s"%(self.p, self.q, line.rstrip("\n"))] = float(qvalues[k][1])
+			for i in range(len(quantiles)):
+				line4 = "Quantile: %.2f; Value: %e\n"%(quantiles[i], qvalues[k][i])
+				Result.write(line4)
+		line5 = "\n"
+		Result.write(line5)
+		Result.close()
+
 	def _read_00_LCProps(self):
 		"""	Attempts to read in the configuration parameters `dt', `T' or `numCadences', & `tStart'.
 		"""
@@ -290,6 +313,12 @@ class fitCARMATask(SuppliedLCTask):
 
 	def _make_00_runMCMC(self):
 		self.dictDIC = dict()
+		self.ResultFile = self.WorkingDirectory + self.prefix + '_CARMAResult.dat'
+		try:
+			Result = open(self.ResultFile,'w')
+		except IOError as Err:
+			print str(Err) + '. Exiting...'
+		Result.close()
 		if self.qMax.replace(' ','') == 'p-1':
 			for p in xrange(self.pMin, self.pMax + 1):
 				for q in xrange(self.qMin, p):
@@ -305,4 +334,22 @@ class fitCARMATask(SuppliedLCTask):
 					else:
 						self.p = p
 						self.q = q
-						self._doCARMAFit();
+						self._doCARMAFit()
+		try:
+			Result = open(self.ResultFile, 'a')
+		except IOError as Err:
+			print str(Err) + '. Exiting...'
+		self.sortedDICVals = sorted(self.dictDIC.items(), key = operator.itemgetter(1))
+		self.pBest = int(self.sortedDICVals[0][0].split()[0])
+		self.qBest = int(self.sortedDICVals[0][0].split()[1])
+		line = "Model Appropriateness (in descending order of appropriateness) & Relative Likelihood (i.e. Relative Likelihood of Minimal Infrmation Loss)\n"
+		Result.write(line)
+		line = "Model       DIC Value    Relative Likelihood\n"
+		Result.write(line)
+		line = "-----       ---------    -------------------\n"
+		Result.write(line)
+		for i in range(len(self.sortedDICVals)):
+			RelProbOfMinInfLoss = 100.0*math.exp(0.5*(float(self.sortedDICVals[0][1]) - float(self.sortedDICVals[i][1])))
+			line = '{:>4}   {:> 13.3f}    {:> 18.2f}%\n'.format(self.sortedDICVals[i][0], float(self.sortedDICVals[i][1]), RelProbOfMinInfLoss)
+			Result.write(line);
+		Result.close()

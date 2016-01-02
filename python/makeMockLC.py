@@ -245,7 +245,7 @@ class makeMockLCTask(SuppliedParametersTask, SuppliedLCTask):
 				ax2 = fig1.add_subplot(gs[50:299,700:949])
 				ax2.locator_params(nbins = 3)
 				ax2.ticklabel_format(useOffset = False)
-				notMissingDetail = np.where(self.LC.mask[self.detailStart:self.detailStart+self.numPtsDetail] == 1.0)[0]
+				notMissingDetail = np.where(self.LC.mask[self.detailStart:self.detailStart+self.numPtsDetail] == 1.0)[0] + self.detailStart
 				if self.doNoiseless == True:
 					ax2.plot(self.LC.t[notMissingDetail[:]], self.LC.x[notMissingDetail[:]], color = '#7570b3', zorder = 15)
 				ax2.errorbar(self.LC.t[notMissingDetail[:]], self.LC.y[notMissingDetail[:]], self.LC.yerr[notMissingDetail[:]], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10)
