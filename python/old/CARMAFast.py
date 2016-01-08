@@ -20,7 +20,7 @@ Deltat=(intTime+readTime)*numIntLC
 secPerSiderealDay=86164.0905
 dt=Deltat/secPerSiderealDay
 
-def makeSystem(m):
+def makeSystem(p,q,m):
 
 	A=zeros((m,m))
 	for i in xrange(m):
@@ -29,13 +29,12 @@ def makeSystem(m):
 
 	F=zeros((m,m))
 	I=identity(m)
-	D=zeros((m,1))
 	Q=zeros((m,m))
 	H=zeros((1,m))
 	R=zeros((1,1))
 	K=zeros((m,1))
 
-	return (m,A,B,F,I,D,Q,H,R,K)
+	return (p,q,m,A,B,F,I,Q,H,R,K)
 
 def checkParams(aList=None,bList=None):
 	if aList is None:
@@ -44,7 +43,7 @@ def checkParams(aList=None,bList=None):
 
 	if bList is None:
 		raise ValueError('#CMA > 0')
-	q = len(bList) - 1
+	q = len(bList)-1
 
 	hasUniqueEigenValues=1
 	isStable=1
@@ -100,8 +99,7 @@ def getRoots(aList=None,bList=None):
 
 	if bList is None:
 		raise ValueError('#CMA > 0')
-	if (len(bList)!=len(aList)):
-		raise ValueError('#CMA == #CAR (pad with 0s in front!)')
+	q = len(bList)-1
 
 	CARPoly=list()
 	CARPoly.append(1.0)
@@ -110,18 +108,18 @@ def getRoots(aList=None,bList=None):
 	CARRoots=roots(CARPoly)
 
 	CMAPoly=list()
-	for i in xrange(p):
+	for i in xrange(q+1):
 		CMAPoly.append(bList[i])
 	CMARoots=roots(CMAPoly)
 
 	return (CARRoots,CMARoots)
 
-def setSystem(dt,m,aList,bList,A,B,F,I,D,Q):
+def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 	for i in xrange(len(aList)):
 		A[i,0]=-1.0*aList[i]
 
 	for i in xrange(len(bList)):
-		B[m-1-i,0] = bList[i];
+		B[m-1-i,0] = bList[q-i];
 
 	F=expm(A*dt)
 
@@ -148,9 +146,9 @@ def setSystem(dt,m,aList,bList,A,B,F,I,D,Q):
 					P[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*(-1.0/(lam[k] + lam[l]))
 	XMinus=zeros((m,1))
 	PMinus=zeros((m,m))
-	return (X,P,XMinus,PMinus,F,I,D,Q)
+	return (X,P,XMinus,PMinus,F,Q)
 
-def setSystemDiffuse(dt,m,aList,bList,A,B,F,I,D,Q):
+def setSystemDiffuse(dt,p,q,m,aList,bList,A,B,F,Q):
 	for i in xrange(p):
 		A[i,0]=-aList[i]
 		B[i]=bList[i]
@@ -170,7 +168,7 @@ def setSystemDiffuse(dt,m,aList,bList,A,B,F,I,D,Q):
 	XMinus=zeros((m,1))
 	PMinus=zeros((m,m))
 	H[0,0]=1.0
-	return (X,P,XMinus,PMinus,F,I,D,Q)
+	return (X,P,XMinus,PMinus,F,Q)
 
 def burnSystem(m,X,F,Q,numBurn,burnSeed):
 	seed(burnSeed)
@@ -429,7 +427,7 @@ def plotLnLike(t,y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 
 	return LnLike
 
-def getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
+def getLnLike(y,mask,X,P,XMinus,PMinus,F,I,Q,H,R,K):
 	veryLarge = float_info[0]
 	numPts=y.shape[0]
 	numObs=sum(mask)
@@ -451,7 +449,7 @@ def getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 	#LnLike += -0.5*numObs*log(2.0*pi)
 	return LnLike
 
-def getLnLikeMissing(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
+def getLnLikeMissing(y,mask,X,P,XMinus,PMinus,F,I,Q,H,R,K):
 	numPts=y.shape[0]
 	numObs=sum(mask)
 	LnLike=0.0
@@ -476,7 +474,7 @@ def getLnLikeMissing(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 	LnLike += -0.5*numObs*log(2.0*pi)
 	return LnLike
 
-def getResiduals(y,r,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
+def getResiduals(y,r,X,P,XMinus,PMinus,F,I,Q,H,R,K):
 	numPts=y.shape[0]
 	for i in range(numPts):
 		R[0,0]=y[i,1]*y[i,1]
@@ -500,7 +498,7 @@ def getResiduals(y,r,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
 			r[i,1]=nan
 	return r
 
-def fixedIntervalSmoother(y,r,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K):
+def fixedIntervalSmoother(y,r,x,X,P,XMinus,PMinus,F,I,Q,H,R,K):
 	m=F.shape[0]
 	numPts=y.shape[0]
 	XArr=npzeros((numPts,m,1))

@@ -60,7 +60,7 @@ Deltat=((intTime+readTime)*numIntLC)/(1.0+redShift)
 secPerSiderealDay=86164.0905
 
 dt=0.1
-T=400.0
+T=4000.0
 numPts=int(T/dt)
 
 TalkPath="/home/vish/Documents/AASWinter2015/Talk/"
@@ -78,37 +78,50 @@ noiseSeed=r.randint(1000000000,9999999999)
 
 outPath=CARMAPath
 
-aMaster=[0.75,0.01]
-bMaster=[7.0*math.pow(10.0,-9.0),1.2*math.pow(10.0,-9.0)]
+#aMaster=[0.75,0.01]
+
+aRoots=[-0.73642081+0j, -0.01357919+0j]#, -0.578976+0.25j, -0.578976-0.25j]
+aPoly=(np.polynomial.polynomial.polyfromroots(aRoots)).tolist()
+aPoly.reverse()
+aPoly.pop(0)
+aMaster=[coeff.real for coeff in aPoly]
+
+sigma = 1.0e-9
+bRoots=[-5.83333333]#-0.53642081+0j, -0.00563952+0j]
+bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
+bPoly.reverse()
+divisor=bPoly[-1].real
+bMaster=[sigma*(coeff.real/divisor) for coeff in bPoly]
+#bMaster=[7.0e-9, 1.2e-9, 6.0e-9, -1.0e-9]
+
+print 'aMaster: '+str(aMaster)
+print 'bMaster: '+str(bMaster)
 aNum=len(aMaster)
 bNum=len(bMaster)
-if (aNum!=bNum):
-	raise ValueError('#CMA == #CAR (pad with 0s in front!)')
+m=aNum
+p=aNum
+q=bNum-1
+
 noiseMaster=math.pow(10.0,-12.0)
-numBurn=100000
+numBurn=1000000
 
 ndim=aNum+bNum
-
 nwalkers=100
 nsteps=500
-
 chop=int(nsteps/2.0)
 
-def CARMALnLikeMissing(Theta,dt,y,mask,m,A,B,F,I,D,Q,H,R,K):
+def CARMALnLikeMissing(Theta,dt,y,mask,p,q,m,A,B,F,I,Q,H,R,K):
 	pTrial=Theta[0:m].tolist()
 	qTrial=Theta[m:2*m+1].tolist()
-	#print Theta
 	if (CF.checkParams(aList=pTrial,bList=qTrial)==0):
-		#(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,pTrial,qTrial,A,B,F,I,D,Q)
 		logLike=-np.inf
 	else:
-		(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,pTrial,qTrial,A,B,F,I,D,Q)
-		logLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
-	#print 'logLike: %+4.3e'%(logLike)
+		(X,P,XMinus,PMinus,F,Q)=CF.setSystem(dt,p,q,m,pTrial,qTrial,A,B,F,Q)
+		logLike=CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,Q,H,R,K)
 	return logLike
 
-def CARMANegLnLikeMissing(Theta,dt,y,mask,m,A,B,F,I,D,Q,H,R,K):
-	return -CARMALnLikeMissing(Theta,dt,y,mask,m,A,B,F,I,D,Q,H,R,K)
+def CARMANegLnLikeMissing(Theta,dt,y,mask,p,q,m,A,B,F,I,Q,H,R,K):
+	return -CARMALnLikeMissing(Theta,dt,y,mask,p,q,m,A,B,F,I,Q,H,R,K)
 
 
 (CARRoots,CMARoots)=CF.getRoots(aList=aMaster,bList=bMaster)
@@ -129,8 +142,8 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 	x=np.zeros((numPts,2))
 	v=np.zeros((numPts,2))
 
-	(m,A,B,F,I,D,Q,H,R,K)=CF.makeSystem(aNum)
-	(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,aMaster,bMaster,A,B,F,I,D,Q)
+	(p,q,m,A,B,F,I,Q,H,R,K)=CF.makeSystem(p,q,m)
+	(X,P,XMinus,PMinus,F,Q)=CF.setSystem(dt,p,q,m,aMaster,bMaster,A,B,F,Q)
 	X=CF.burnSystem(m,X,F,Q,numBurn,burnSeed)
 
 	KeplerObj="kplr006932990Carini"
@@ -163,29 +176,29 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 	#plt.ylim(yMin,yMax)
 	plt.tight_layout()
 	plt.draw()
-	plt.savefig(outPath+"CARMA(%d,%d)_Master.jpg"%(aNum,bNum),dpi=dotsPerInch)
+	plt.savefig(outPath+"CARMA(%d,%d)_Master.jpg"%(p,q),dpi=dotsPerInch)
 
-	(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,aMaster,bMaster,A,B,F,I,D,Q)
-	print "Master LnLike: %f"%(CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,D,Q,H,R,K))
+	(X,P,XMinus,PMinus,F,Q)=CF.setSystem(dt,p,q,m,aMaster,bMaster,A,B,F,Q)
+	print "Master LnLike: %f"%(CF.getLnLike(y,mask,X,P,XMinus,PMinus,F,I,Q,H,R,K))
 
 	thetaInit = list()
 	for i in range(aNum):
 		thetaInit.append(r.gauss(0.0,1e-10)+aMaster[i])
 	for i in range(bNum):
 		thetaInit.append(r.gauss(0.0,1e-10)+bMaster[i])
-	result=opt.fmin_powell(CARMANegLnLikeMissing,x0=thetaInit,args=(dt,y,mask,m,A,B,F,I,D,Q,H,R,K),ftol=0.001,disp=1)
+	result=opt.fmin_powell(CARMANegLnLikeMissing,x0=thetaInit,args=(dt,y,mask,p,q,m,A,B,F,I,Q,H,R,K),ftol=0.001,disp=1)
 
 	pInferred=list()
 	qInferred=list()
-	for i in range(0,m):
+	for i in range(0,p):
 		pInferred.append(result[i])
 		print "phi[%d]: %e"%(i+1,result[i])
-	for i in range(m,2*m):
+	for i in range(p,p+q+1):
 		qInferred.append(result[i])
 		print "theta[%d]: %e"%(i-m+1,result[i])
 
-	(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,pInferred,qInferred,A,B,F,I,D,Q)
-	CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
+	(X,P,XMinus,PMinus,F,Q)=CF.setSystem(dt,p,q,m,pInferred,qInferred,A,B,F,Q)
+	CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,Q,H,R,K)
 	nBins=50
 	binVals,binEdges=np.histogram(v[~np.isnan(v[:,0]),0],bins=nBins,range=(0.1*np.nanmin(v[1:numPts,0]),0.1*np.nanmax(v[1:numPts,0])))
 	binMax=np.nanmax(binVals)
@@ -210,14 +223,14 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 	plt.xlim(t[0,1],t[-1,1])
 	plt.tight_layout()
 	plt.draw()
-	plt.savefig(outPath+"CARMA(%d,%d)_PowellFit.jpg"%(aNum,bNum),dpi=dotsPerInch)
+	plt.savefig(outPath+"CARMA(%d,%d)_PowellFit.jpg"%(p,q),dpi=dotsPerInch)
 
 	YesNo=input("Happy? (1/0): ")
 	#YesNo=1
 
 	if (YesNo):
 		pos=[np.array(result)+1e-10*np.random.randn(ndim) for i in range(nwalkers)]
-		sampler=emcee.EnsembleSampler(nwalkers,ndim,CARMALnLikeMissing,a=2.0,args=(dt,y,mask,m,A,B,F,I,D,Q,H,R,K),threads=4)
+		sampler=emcee.EnsembleSampler(nwalkers,ndim,CARMALnLikeMissing,a=2.0,args=(dt,y,mask,p,q,m,A,B,F,I,Q,H,R,K),threads=4)
 		beginT=time.time()
 		sampler.run_mcmc(pos,nsteps)
 		endT=time.time()
@@ -235,8 +248,8 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 			plt.tight_layout()
 			plt.draw()
 		#plt.show()
-		plt.savefig(outPath+"CARMA(%d,%d)_Walkers.jpg"%(aNum,bNum),dpi=dotsPerInch)
-		WalkersFilePath=outPath+'CARMA(%d,%d)_Walkers.dat'%(aNum,bNum)
+		plt.savefig(outPath+"CARMA(%d,%d)_Walkers.jpg"%(p,q),dpi=dotsPerInch)
+		WalkersFilePath=outPath+'CARMA(%d,%d)_Walkers.dat'%(p,q)
 		WalkersFile=open(WalkersFilePath,'w')
 		WalkersFile.write("nsteps: %d\n"%(nsteps))
 		WalkersFile.write("nwalkers: %d\n"%(nwalkers))
@@ -244,7 +257,7 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 		aMasterNum=len(aMaster)
 		bMasterNum=len(bMaster)
 		WalkersFile.write("pMasterNum: %d\n"%(aMasterNum))
-		WalkersFile.write("qMasterNum: %d\n"%(bMasterNum))
+		WalkersFile.write("qMasterNum: %d\n"%(bMasterNum-1))
 		for i in range(aMasterNum):
 			WalkersFile.write("p_%d: %e\n"%(i+1,aMaster[i]))
 		for i in range(bMasterNum):
@@ -266,20 +279,20 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 		for i in range(bNum):
 			lbls.append("$\\theta_{%d}$"%(i+1))
 		fig,quantiles,allqvalues = triangle.corner(samples,labels=lbls,truths=aMaster+bMaster,truth_color='#000000',show_titles=True,title_args={"fontsize":12},quantiles=[lower/100.0, 0.5, upper/100.0],plot_contours=True,plot_datapoints=True,plot_contour_lines=False,pcolor_cmap=cm.gist_earth,bins=nbins)
-		fig.savefig(outPath+"CARMA(%d,%d)_MCMC.jpg"%(aNum,bNum),dpi=dotsPerInch)
+		fig.savefig(outPath+"CARMA(%d,%d)_MCMC.jpg"%(p,q),dpi=dotsPerInch)
 
 		pMCMC=list()
 		qMCMC=list()
 		distMCMC=0.0
-		for i in range(0,m):
+		for i in range(0,p):
 			pMCMC.append(np.percentile(samples[:,i],50.0))
 			print "phi[%d]: %e"%(i,pMCMC[i])
-		for i in range(m,2*m):
+		for i in range(p,p+q+1):
 			qMCMC.append(np.percentile(samples[:,i],50.0))
 			print "theta[%d]: %e"%(i-m,qMCMC[i-m])
 
-		(X,P,XMinus,PMinus,F,I,D,Q)=CF.setSystem(dt,m,pMCMC,qMCMC,A,B,F,I,D,Q)
-		CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,D,Q,H,R,K)
+		(X,P,XMinus,PMinus,F,Q)=CF.setSystem(dt,p,q,m,pMCMC,qMCMC,A,B,F,Q)
+		CF.fixedIntervalSmoother(y,v,x,X,P,XMinus,PMinus,F,I,Q,H,R,K)
 		nBins=50
 		binVals,binEdges=np.histogram(v[~np.isnan(v[:,0]),0],bins=nBins,range=(0.1*np.nanmin(v[1:numPts,0]),0.1*np.nanmax(v[1:numPts,0])))
 		binMax=np.nanmax(binVals)
@@ -319,7 +332,7 @@ if CF.checkParams(aList=aMaster,bList=bMaster):
 		plt.ylim(0.1*vMin,0.1*vMax)
 		plt.tight_layout()
 		plt.draw()
-		plt.savefig(outPath+"CARMA(%d,%d)_MCMCFit.jpg"%(aNum,bNum),dpi=dotsPerInch)
+		plt.savefig(outPath+"CARMA(%d,%d)_MCMCFit.jpg"%(p,q),dpi=dotsPerInch)
 		#plt.show()
 		#mail('vishal.kasliwal@gmail.com','Earth to Vishal...',"All done!",outPath+"CARMA(%d,%d)_Master.jpg"%(aNum,bNum),outPath+"CARMA(%d,%d)_PowellFit.jpg"%(aNum,bNum),outPath+"CARMA(%d,%d)_Walkers.jpg"%(aNum,bNum),outPath+"CARMA(%d,%d)_MCMC.jpg"%(aNum,bNum),outPath+"CARMA(%d,%d)_MCMCFit.jpg"%(aNum,bNum))
 
