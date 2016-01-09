@@ -118,10 +118,19 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 	for i in xrange(len(aList)):
 		A[i,0]=-1.0*aList[i]
 
+	#print 'A'
+	#print A
+
 	for i in xrange(len(bList)):
 		B[m-1-i,0] = bList[q-i];
 
+	#print 'B'
+	#print B
+
 	F=expm(A*dt)
+
+	#print 'F'
+	#print F
 
 	lam,vr = eig(A)
 	vr = matrix(vr)
@@ -130,12 +139,18 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 
 	C = vrInv*B*transpose(B)*transpose(vrInv)
 
+	#print 'C'
+	#print C
+
 	Q=zeros((m,m))
 	for i in xrange(m):
 		for j in xrange(m):
 			for k in xrange(m):
 				for l in xrange(m):
 					Q[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*((cexp((lam[k] + lam[l])*dt) - 1.0)/(lam[k] + lam[l]))
+
+	#print 'Q'
+	#print Q
 
 	X=zeros((m,1))
 	P=zeros((m,m))
@@ -144,6 +159,10 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 			for k in xrange(m):
 				for l in xrange(m):
 					P[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*(-1.0/(lam[k] + lam[l]))
+
+	#print 'P'
+	#print P
+
 	XMinus=zeros((m,1))
 	PMinus=zeros((m,m))
 	return (X,P,XMinus,PMinus,F,Q)

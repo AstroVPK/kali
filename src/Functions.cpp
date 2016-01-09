@@ -78,11 +78,11 @@ int printSystem(double dt, int p, int q, double *Theta) {
 		printf("Q\n");
 		SystemMaster.printQ();
 		printf("\n");
-		printf("D\n");
-		SystemMaster.printD();
+		printf("T\n");
+		SystemMaster.printT();
 		printf("\n");
 
-		SystemMaster.computeSigma();
+		//SystemMaster.computeSigma();
 
 		printf("Sigma\n");
 		SystemMaster.printSigma();
@@ -115,13 +115,13 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 		SystemMaster.setCARMA(Theta);
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
-		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*sizeof(double),64));
+		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 		for (int i = 0; i < numBurn; i++) {
 			burnRand[i] = 0.0;
 			}
 		SystemMaster.burnSystem(numBurn, burnSeed, burnRand);
 		_mm_free(burnRand);
-		double* distRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
 		for (int i = 0; i < numCadences; i++) {
 			distRand[i] = 0.0;
 			}
@@ -154,13 +154,13 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 		SystemMaster.setCARMA(Theta);
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
-		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*sizeof(double),64));
+		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 		for (int i = 0; i < numBurn; i++) {
 			burnRand[i] = 0.0;
 			}
 		SystemMaster.burnSystem(numBurn, burnSeed, burnRand);
 		_mm_free(burnRand);
-		double* distRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
 		for (int i = 0; i < numCadences; i++) {
 			distRand[i] = 0.0;
 			}

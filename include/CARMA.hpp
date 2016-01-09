@@ -70,10 +70,12 @@ private:
 	double *F;
 	complex<double> *ACopy;
 	complex<double> *AScratch;
+	complex<double> *AScratch2;
 	complex<double> *BScratch;
 	double *Sigma;
-	double *D;
+	//double *D;
 	double *Q;
+	double* T;
 	double *H;
 	double *R;
 	double *K;
@@ -114,10 +116,12 @@ public:
 	const double* getF() const;
 	void printSigma();
 	const double* getSigma() const;
-	void printD();
-	const double* getD() const;
+	//void printD();
+	//const double* getD() const;
 	void printQ();
 	const double* getQ() const;
+	void printT();
+	const double* getT() const;
 
 	void allocCARMA(int numP, int numQ);
 	void deallocCARMA();

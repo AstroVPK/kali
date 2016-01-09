@@ -59,8 +59,8 @@ numIntLC=270
 Deltat=((intTime+readTime)*numIntLC)/(1.0+redShift)
 secPerSiderealDay=86164.0905
 
-dt=0.1
-T=4000.0
+dt=0.02
+T=2.0
 numPts=int(T/dt)
 
 TalkPath="/home/vish/Documents/AASWinter2015/Talk/"
@@ -80,19 +80,19 @@ outPath=CARMAPath
 
 #aMaster=[0.75,0.01]
 
-aRoots=[-0.73642081+0j, -0.01357919+0j]#, -0.578976+0.25j, -0.578976-0.25j]
+aRoots = [-0.73642081+0.0j, -0.01357919-0.0j]#, -0.578976+0.25j, -0.578976-0.25j]
 aPoly=(np.polynomial.polynomial.polyfromroots(aRoots)).tolist()
 aPoly.reverse()
 aPoly.pop(0)
 aMaster=[coeff.real for coeff in aPoly]
 
-sigma = 1.0e-9
+sigma = 7.0e-9
 bRoots=[-5.83333333]#-0.53642081+0j, -0.00563952+0j]
 bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
 bPoly.reverse()
 divisor=bPoly[-1].real
 bMaster=[sigma*(coeff.real/divisor) for coeff in bPoly]
-#bMaster=[7.0e-9, 1.2e-9, 6.0e-9, -1.0e-9]
+#bMaster = [1.2e-9, 7.0e-9]
 
 print 'aMaster: '+str(aMaster)
 print 'bMaster: '+str(bMaster)

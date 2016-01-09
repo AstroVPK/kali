@@ -471,14 +471,18 @@ CARMA::CARMA() {
 
 	Theta = nullptr;
 	A = nullptr;
+	ACopy = nullptr;
 	AScratch = nullptr;
+	AScratch2 = nullptr;
 	B = nullptr;
 	BScratch = nullptr;
+	C = nullptr;
 	I = nullptr;
 	F = nullptr;
 	Sigma = nullptr;
-	D = nullptr;
+	//D = nullptr;
 	Q = nullptr;
+	T = nullptr;
 	H = nullptr;
 	R = nullptr;
 	K = nullptr;
@@ -533,13 +537,16 @@ CARMA::~CARMA() {
 	A = nullptr;
 	ACopy = nullptr;
 	AScratch = nullptr;
+	AScratch2 = nullptr;
 	B = nullptr;
 	BScratch = nullptr;
+	C = nullptr;
 	I = nullptr;
 	F = nullptr;
-	D = nullptr;
+	//D = nullptr;
 	Sigma = nullptr;
 	Q = nullptr;
+	T = nullptr;
 	H = nullptr;
 	R = nullptr;
 	K = nullptr;
@@ -573,6 +580,10 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	pSq = p*p;
 	qSq = q*q;
 
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Allocating ilo, ihi, abnrm, ipiv, scale, rconde, rcondv Address of System: %p\n",threadNum,this);
+	#endif
+
 	ilo = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
 	ihi = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
 	allocated += 2*sizeof(lapack_int);
@@ -601,6 +612,10 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		rcondv[rowCtr] = 0.0;
 		}
 
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Allocating w, CARw, B, BScratch Address of System: %p\n",threadNum,this);
+	#endif
+
 	w = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	CARw = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
 	B = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
@@ -608,6 +623,11 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	allocated += 4*p*sizeof(complex<double>);
 
 	if (q > 0) {
+
+		#ifdef DEBUG_ALLOCATECARMA
+		printf("allocDLM - threadNum: %d; Allocating CMAw, CMAMatrix Address of System: %p\n",threadNum,this);
+		#endif
+
 		CMAw = static_cast<complex<double>*>(_mm_malloc(q*sizeof(complex<double>),64));
 		CMAMatrix = static_cast<complex<double>*>(_mm_malloc(qSq*sizeof(complex<double>),64));
 		allocated += q*sizeof(complex<double>);
@@ -622,15 +642,21 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			}
 		}
 
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Allocating CARMatrix, expw, vr, vrInv, A, ACopy, AScratch, AScratch2 Address of System: %p\n",threadNum,this);
+	#endif
+
 	CARMatrix = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	expw = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	vr = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	vrInv = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	C = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	ACopy = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
-	C = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
-	allocated += 7*pSq*sizeof(complex<double>);
+	AScratch2 = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	//allocated += 7*pSq*sizeof(complex<double>);
+	allocated += 8*pSq*sizeof(complex<double>);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		w[colCtr] = 0.0+0.0i;
@@ -647,6 +673,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			C[rowCtr + colCtr*p] = 0.0+0.0i;
 			ACopy[rowCtr + colCtr*p] = 0.0+0.0i;
 			AScratch[rowCtr + colCtr*p] = 0.0+0.0i;
+			AScratch2[rowCtr + colCtr*p] = 0.0+0.0i;
 			}
 		}
 
@@ -657,25 +684,31 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		Theta[rowCtr] = 0.0;
 		}
 
-	D = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Allocating H, K, X, XMinus, VScratch, I, F, Sigma, Q, T, P, PMinus, MScratch Address of System: %p\n",threadNum,this);
+	#endif
+
+	//D = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	H = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	K = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	X = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	XMinus = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	VScratch = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
-	allocated += 6*p*sizeof(double);
+	//allocated += 6*p*sizeof(double);
+	allocated += 5*p*sizeof(double);
 
 	I = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	F = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	Sigma = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	Q = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	T = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	P = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	PMinus = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	MScratch = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
 	allocated += 7*pSq*sizeof(double);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		D[colCtr] = 0.0;
+		//D[colCtr] = 0.0;
 		H[colCtr] = 0.0;
 		K[colCtr] = 0.0;
 		X[colCtr] = 0.0;
@@ -687,11 +720,16 @@ void CARMA::allocCARMA(int numP, int numQ) {
 			F[rowCtr + colCtr*p] = 0.0;
 			Sigma[rowCtr + colCtr*p] = 0.0;
 			Q[rowCtr + colCtr*p] = 0.0;
+			T[rowCtr + colCtr*p] = 0.0;
 			P[rowCtr + colCtr*p] = 0.0;
 			PMinus[rowCtr + colCtr*p] = 0.0;
 			MScratch[rowCtr + colCtr*p] = 0.0;
 			}
 		}
+
+	#ifdef DEBUG_ALLOCATECARMA
+	printf("allocDLM - threadNum: %d; Allocating R Address of System: %p\n",threadNum,this);
+	#endif
 
 	R = static_cast<double*>(_mm_malloc(sizeof(double),64));
 	allocated += sizeof(double);
@@ -898,6 +936,15 @@ void CARMA::deallocCARMA() {
 	printf("deallocDLM - threadNum: %d; Deallocated AScratch Address of System: %p\n",threadNum,this);
 	#endif
 
+	if (AScratch2) {
+		_mm_free(AScratch2);
+		AScratch2 = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated AScratch2 Address of System: %p\n",threadNum,this);
+	#endif
+
 	if (C) {
 		_mm_free(C);
 		C = nullptr;
@@ -916,14 +963,14 @@ void CARMA::deallocCARMA() {
 	printf("deallocDLM - threadNum: %d; Deallocated Theta Address of System: %p\n",threadNum,this);
 	#endif
 
-	if (D) {
+	/*if (D) {
 		_mm_free(D);
 		D = nullptr;
 		}
 
 	#ifdef DEBUG_DEALLOCATECARMA_DEEP
 	printf("deallocDLM - threadNum: %d; Deallocated D Address of System: %p\n",threadNum,this);
-	#endif
+	#endif*/
 
 	if (H) {
 		_mm_free(H);
@@ -1004,6 +1051,15 @@ void CARMA::deallocCARMA() {
 
 	#ifdef DEBUG_DEALLOCATECARMA_DEEP
 	printf("deallocDLM - threadNum: %d; Deallocated Q Address of System: %p\n",threadNum,this);
+	#endif
+
+	if (T) {
+		_mm_free(T);
+		T = nullptr;
+		}
+
+	#ifdef DEBUG_DEALLOCATECARMA_DEEP
+	printf("deallocDLM - threadNum: %d; Deallocated T Address of System: %p\n",threadNum,this);
 	#endif
 
 	if (P) {
@@ -1155,13 +1211,13 @@ const double* CARMA::getF() const {
 	return F;
 	}
 
-void CARMA::printD() {
+/*void CARMA::printD() {
 	viewMatrix(p,1,D);
 	}
 
 const double* CARMA::getD() const {
 	return D;
-	}
+	}*/
 
 void CARMA::printQ() {
 	viewMatrix(p,p,Q);
@@ -1169,6 +1225,14 @@ void CARMA::printQ() {
 
 const double* CARMA::getQ() const {
 	return Q;
+	}
+
+void CARMA::printT() {
+	viewMatrix(p,p,T);
+	}
+
+const double* CARMA::getT() const {
+	return T;
 	}
 
 void CARMA::printSigma() {
@@ -1634,271 +1698,6 @@ void CARMA::setCARMA(double *ThetaIn) {
 	H[0] = 1.0;
 	}
 
-//void CARMA::oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi) {
-	/*! \brief Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)
-
-	At every step, it is necessary to compute the conditional covariance matrix of the state given by \f$\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi\f$. Notice that the matrix \f$\textbf{\textsf{Q}}\f$ is symmetric positive definate and only the first column needfs to be computed.
-	*/
-	/*complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
-
-	#ifdef DEBUG_FUNCTOR
-	int threadNum = omp_get_thread_num();
-	printf("() - threadNum: %d; Address of System: %p\n",threadNum,this);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; xi: %+7.6e\n",threadNum,xi);
-	printf("() - threadNum: %d; w (Before)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; expw (Before)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	#endif
-
-	// Start by computing expw = exp(w*t) where w is an e-value of A i.e. the diagonal of expw consists of the exponents of the e-values of A times t
-	#pragma omp simd
-	for (int i = 0; i < p; ++i) {
-		expw[i + i*p] = exp(xi*w[i]);
-		}
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; w (After)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; expw = exp(w) (After)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (Before)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	printf("() - threadNum: %d; C (Before)\n",threadNum);
-	viewMatrix(p,p,C);
-	printf("\n");
-	printf("() - threadNum: %d; AScratch = expw*C (Before)\n",threadNum);
-	viewMatrix(p,p,AScratch);
-	printf("\n");
-	#endif
-
-	// Begin by computing expw*C. This is a pXp matrix. Store it in AScratch
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, expw, p, C, p, &beta, AScratch, p); // AScratch = expw*C
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (After)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	printf("() - threadNum: %d; C (After)\n",threadNum);
-	viewMatrix(p,p,C);
-	printf("\n");
-	printf("() - threadNum: %d; AScratch = expw*C (After)\n",threadNum);
-	viewMatrix(p,p,AScratch);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (Before)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	printf("() - threadNum: %d; AScratch (Before)\n",threadNum);
-	viewMatrix(p,p,AScratch);
-	printf("\n");
-	printf("() - threadNum: %d; ACopy = AScratch*expw (Before)\n",threadNum);
-	viewMatrix(p,p,ACopy);
-	printf("\n");
-	#endif
-
-	// Next compute AScratch*expw. This is a pXp matrix. Store it in ACopy
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, AScratch, p, expw, p, &beta, ACopy, p); // dxdt = AScartch*expw
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (After)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	printf("() - threadNum: %d; AScratch (After)\n",threadNum);
-	viewMatrix(p,p,AScratch);
-	printf("\n");
-	printf("() - threadNum: %d; ACopy = AScratch*expw (After)\n",threadNum);
-	viewMatrix(p,p,ACopy);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; ACopy (Before)\n",threadNum);
-	viewMatrix(p,p,ACopy);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.real() = ACopy (Before)\n",threadNum);
-	viewMatrix(p,p,&dxdt[0]);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.imag() = ACopy (Before)\n",threadNum);
-	viewMatrix(p,p,&dxdt[pSq]);
-	printf("\n");
-	#endif
-
-	// Now read ACopy.real into dxdt which is pSq in size
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			dxdt[rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].real();
-			dxdt[pSq + rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].imag();
-			}
-		}
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; ACopy (After)\n",threadNum);
-	viewMatrix(p,p,ACopy);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.real() = ACopy (After)\n",threadNum);
-	viewMatrix(p,p,&dxdt[0]);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.imag() = ACopy (After)\n",threadNum);
-	viewMatrix(p,p,&dxdt[pSq]);
-	printf("\n");
-	#endif
-
-	}
-
-void CARMA::operator()(const vector<double> &x, vector<double> &dxdt, const double xi) {
-	#ifdef DEBUG_FUNCTOR
-	int threadNum = omp_get_thread_num();
-	printf("() - threadNum: %d; Address of System: %p\n",threadNum,this);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; xi: %+7.6e\n",threadNum,xi);
-	printf("() - threadNum: %d; w (Before)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; expw (Before)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	#endif
-
-	// We wish to compute expw*C*expw. Ordinarily, this requires 4 loops to compute . But since expw is diagonal, we can reduce the multiplication to 2 loops.
-	// result_{ij} = \Sum_{l}(\Sum_{k} expw_{ik}C_{kl})exp_{lj}
-	// expw_{ik} = 0 unless k = i
-	// expw_{lj} = 0 unless l = j
-	// Hence result_{ij} = expw_{ii}C_{ij}expw_{jj} which can be computed quickly by just looping over i & j
-
-	// Start by computing expw = exp(w*t) where w is an e-value of A i.e. the diagonal of expw consists of the exponents of the e-values of A times t
-	#pragma omp simd
-	for (int i = 0; i < p; ++i) {
-		expw[i + i*p] = exp(xi*w[i]);
-		}
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; w (After)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; expw = exp(w) (After)\n",threadNum);
-	viewMatrix(p,p,expw);
-	printf("\n");
-	#endif
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (Before)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; C (Before)\n",threadNum);
-	viewMatrix(p,p,C);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.real() (Before)\n",threadNum);
-	viewMatrix(p,p,&dxdt[0]);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.imag() (Before)\n",threadNum);
-	viewMatrix(p,p,&dxdt[pSq]);
-	printf("\n");
-	#endif
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			ACopy[rowCtr + colCtr*p] = expw[rowCtr + rowCtr*p]*C[rowCtr + colCtr*p]*expw[colCtr + colCtr*p];
-			dxdt[rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].real();
-			dxdt[pSq + rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].imag();
-			}
-		}
-
-	#ifdef DEBUG_FUNCTOR
-	printf("() - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
-		}
-	printf("\n");
-	printf("() - threadNum: %d; expw (After)\n",threadNum);
-	viewMatrix(p,1,w);
-	printf("\n");
-	printf("() - threadNum: %d; C (After)\n",threadNum);
-	viewMatrix(p,p,C);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.real() (After)\n",threadNum);
-	viewMatrix(p,p,&dxdt[0]);
-	printf("\n");
-	printf("() - threadNum: %d; dxdt.imag() (After)\n",threadNum);
-	viewMatrix(p,p,&dxdt[pSq]);
-	printf("\n");
-	#endif
-	}*/
-
 void CARMA::solveCARMA() {
 	#if (defined DEBUG_SOLVECARMA_F) || (defined DEBUG_SOLVECARMA_Q)
 	int threadNum = omp_get_thread_num();
@@ -2051,7 +1850,7 @@ void CARMA::solveCARMA() {
 	printf("\n");
 	#endif
 
-	complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
+	/*complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
 	for (int j = 0; j < p; ++j) {
 		BScratch[j] = 0.0+0.0i;
 		for (int l = 0; l < p; ++l) {
@@ -2073,11 +1872,46 @@ void CARMA::solveCARMA() {
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			Q[rowCtr + colCtr*p] = D[rowCtr]*D[colCtr];
 			}
+		}*/
+
+	for (int colNum = 0; colNum < p; ++colNum) {
+		#pragma omp simd
+		for (int rowNum = 0; rowNum < p; ++rowNum) {
+			AScratch[rowNum + p*colNum] = C[rowNum + p*colNum]*(exp((dt+0.0i)*(w[rowNum] + w[colNum])) - (1.0+0.0i))*((1.0+0.0i)/(w[rowNum] + w[colNum])); // AScratch[i,j] = (C[i,j]*(exp((lambda[i] + lambda[j])*dt) - 1))/(lambda[i] + lambda[j])
+			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - (1.0+0.0i))*((1.0+0.0i)/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
 		}
+	}
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, AScratch, p, &beta, AScratch2, p); // AScratch2 = vr*AScratch
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, AScratch2, p, vr, p, &beta, AScratch, p); // AScratch = AScratch2*trans(vr)
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, ACopy, p, &beta, AScratch2, p); // AScratch2 = vr*ACopy
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, AScratch2, p, vr, p, &beta, ACopy, p); // Sigma = AScratch2*trans(vr)
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			Q[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
+			Sigma[rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].real();
+			}
+		}
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			T[rowCtr + colCtr*p] = Q[rowCtr + colCtr*p];
+			}
+		}
+
+	char uplo = 'U';
+	int n = p, lda = p;
+	lapack_int YesNo;
+	//YesNo = LAPACKE_dpotrf(LAPACK_COL_MAJOR, 'U', p, T, p);
+	dpotrf(&uplo, &n, T, &lda, &YesNo);
 
 	}
 
-void CARMA::computeSigma() {
+/*void CARMA::computeSigma() {
 
 	complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
 	for (int j = 0; j < p; ++j) {
@@ -2103,7 +1937,7 @@ void CARMA::computeSigma() {
 			}
 		}
 
-	}
+	}*/
 
 void CARMA::resetState(double InitUncertainty) {
 
@@ -2129,7 +1963,7 @@ void CARMA::resetState(double InitUncertainty) {
 
 void CARMA::resetState() {
 
-	computeSigma();
+	//computeSigma();
 
 	// Copy P and reset the other matrices
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
@@ -2157,13 +1991,19 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream __attribute__((aligned(64)));
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, 1.0); // Check
+	//vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, 1.0); // Check
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		VScratch[rowCtr] = 0.0;
+		}
+	vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, burnStream, numBurn, burnRand, p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 	vslDeleteStream(&burnStream);
 
 	for (int i = 0; i < numBurn; ++i) {
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*X
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
-		cblas_daxpy(p, burnRand[i], D, 1, X, 1); // X = w*D + X
+		//cblas_daxpy(p, burnRand[i], D, 1, X, 1);
+		cblas_daxpy(p, 1.0, &burnRand[i*p], 1, X, 1); // X = w*D + X
 		}
 	}
 
@@ -2181,7 +2021,12 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
-	vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numCadences, distRand, 0.0, 1.0); // Check Theta[p] = distSigma
+	//vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numCadences, distRand, 0.0, 1.0); // Check Theta[p] = distSigma
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		VScratch[rowCtr] = 0.0;
+		}
+	vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, numCadences, distRand, p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 
 	if (IR == false) {
 
@@ -2189,7 +2034,8 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
-			cblas_daxpy(p, distRand[i], D, 1, X, 1);
+			//cblas_daxpy(p, distRand[i], D, 1, X, 1);
+			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 
 			y[i] = mask[i]*X[0];
 			}
@@ -2200,7 +2046,8 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
-		cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
+		//cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
+		cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
 		y[0] = X[0];
 
 		for (int i = 1; i < numCadences; ++i) {
@@ -2216,7 +2063,8 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
-			cblas_daxpy(p, distRand[i], D, 1, X, 1);
+			//cblas_daxpy(p, distRand[i], D, 1, X, 1);
+			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 			y[i] = X[0];
 			}
 
@@ -2242,8 +2090,9 @@ void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noise
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
 
-	this->computeSigma();
-	double absIntrinsicVar = sqrt((this->getSigma())[0]);
+	//this->computeSigma();
+	//double absIntrinsicVar = sqrt((this->getSigma())[0]);
+	double absIntrinsicVar = sqrt(Sigma[0]);
 	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
 	double absFlux = 0.0, noiseLvl = 0.0;
 	for (int i = 0; i < numCadences; ++i) {
