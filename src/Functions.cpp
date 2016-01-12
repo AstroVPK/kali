@@ -113,13 +113,13 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
-		for (int i = 0; i < numBurn; i++) {
+		for (int i = 0; i < numBurn*p; i++) {
 			burnRand[i] = 0.0;
 			}
 		SystemMaster.burnSystem(numBurn, burnSeed, burnRand);
 		_mm_free(burnRand);
 		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
-		for (int i = 0; i < numCadences; i++) {
+		for (int i = 0; i < numCadences*p; i++) {
 			distRand[i] = 0.0;
 			}
 		LnLikeData Data;
@@ -152,13 +152,13 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 		SystemMaster.solveCARMA();
 		SystemMaster.resetState();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
-		for (int i = 0; i < numBurn; i++) {
+		for (int i = 0; i < numBurn*p; i++) {
 			burnRand[i] = 0.0;
 			}
 		SystemMaster.burnSystem(numBurn, burnSeed, burnRand);
 		_mm_free(burnRand);
 		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
-		for (int i = 0; i < numCadences; i++) {
+		for (int i = 0; i < numCadences*p; i++) {
 			distRand[i] = 0.0;
 			}
 		LnLikeData Data;
