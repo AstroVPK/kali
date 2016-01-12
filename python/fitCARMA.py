@@ -70,7 +70,7 @@ class fitCARMATask(SuppliedLCTask):
 				a = self.qMin
 				self.qMin = self.qMax
 				self.qMax = self.a
-			if qMaxInts >= self.pMax:
+			if qMaxInt >= self.pMax:
 				print 'Invalid pMax and qMax!'
 				sys.exit(1)
 		except ValueError as Err:
@@ -328,7 +328,7 @@ class fitCARMATask(SuppliedLCTask):
 		else:
 			self.qMax = int(self.qMax)
 			for p in xrange(self.pMin, self.pMax + 1):
-				for q in xrange(self.qMin, self.qMax):
+				for q in xrange(self.qMin, self.qMax + 1):
 					if q >= p:
 						break
 					else:

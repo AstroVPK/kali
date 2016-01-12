@@ -4,7 +4,7 @@ from numpy import transpose,roots,kron,reshape,isnan,nan,sum,inf
 from numpy import zeros as npzeros
 from numpy import array
 from numpy.matlib import matrix,zeros,identity
-from numpy.linalg import inv,solve,det,eig
+from numpy.linalg import inv,solve,det,eig,cholesky
 from numpy.random import multivariate_normal
 from scipy.linalg import expm
 from scipy.integrate import quad
@@ -118,19 +118,10 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 	for i in xrange(len(aList)):
 		A[i,0]=-1.0*aList[i]
 
-	#print 'A'
-	#print A
-
 	for i in xrange(len(bList)):
 		B[m-1-i,0] = bList[q-i];
 
-	#print 'B'
-	#print B
-
 	F=expm(A*dt)
-
-	#print 'F'
-	#print F
 
 	lam,vr = eig(A)
 	vr = matrix(vr)
@@ -139,9 +130,6 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 
 	C = vrInv*B*transpose(B)*transpose(vrInv)
 
-	#print 'C'
-	#print C
-
 	Q=zeros((m,m))
 	for i in xrange(m):
 		for j in xrange(m):
@@ -149,22 +137,48 @@ def setSystem(dt,p,q,m,aList,bList,A,B,F,Q):
 				for l in xrange(m):
 					Q[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*((cexp((lam[k] + lam[l])*dt) - 1.0)/(lam[k] + lam[l]))
 
-	#print 'Q'
-	#print Q
+	T=cholesky(Q)
 
 	X=zeros((m,1))
+	Sigma=zeros((m,m))
 	P=zeros((m,m))
 	for i in xrange(m):
 		for j in xrange(m):
 			for k in xrange(m):
 				for l in xrange(m):
-					P[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*(-1.0/(lam[k] + lam[l]))
-
-	#print 'P'
-	#print P
+					Sigma[i,j] += vr[i,k]*C[k,l]*vrTrans[l,j]*(-1.0/(lam[k] + lam[l]))
+			P[i,j] = Sigma[i,j]
 
 	XMinus=zeros((m,1))
 	PMinus=zeros((m,m))
+
+	'''print 'A'
+	print A
+	print
+	print 'B'
+	print B
+	print
+	print 'F'
+	print F
+	print
+	print 'C'
+	print C
+	print
+	print 'Q'
+	print Q
+	print
+	print 'T'
+	print T
+	print
+	print 'Sigma'
+	print Sigma
+	print
+	print 'X'
+	print X
+	print
+	print 'P'
+	print P'''
+
 	return (X,P,XMinus,PMinus,F,Q)
 
 def setSystemDiffuse(dt,p,q,m,aList,bList,A,B,F,Q):

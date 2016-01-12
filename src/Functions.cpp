@@ -57,9 +57,6 @@ int printSystem(double dt, int p, int q, double *Theta) {
 		printf("w\n");
 		SystemMaster.printw();
 		printf("\n");
-		printf("expw\n");
-		SystemMaster.printexpw();
-		printf("\n");
 		printf("vr\n");
 		SystemMaster.printvr();
 		printf("\n");
@@ -72,6 +69,9 @@ int printSystem(double dt, int p, int q, double *Theta) {
 
 		SystemMaster.solveCARMA();
 
+		printf("expw\n");
+		SystemMaster.printexpw();
+		printf("\n");
 		printf("F\n");
 		SystemMaster.printF();
 		printf("\n");
@@ -81,9 +81,6 @@ int printSystem(double dt, int p, int q, double *Theta) {
 		printf("T\n");
 		SystemMaster.printT();
 		printf("\n");
-
-		//SystemMaster.computeSigma();
-
 		printf("Sigma\n");
 		SystemMaster.printSigma();
 		printf("\n");

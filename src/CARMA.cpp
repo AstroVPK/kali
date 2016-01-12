@@ -1504,14 +1504,14 @@ void CARMA::setCARMA(double *ThetaIn) {
 		}
 
 	lapack_int YesNo;
-	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, ACopy, p, w, vrInv, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv); // NOT WORKING!!!!
+	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, ACopy, p, w, vrInv, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv); // Compute w and vr
 	//YesNo = LAPACKE_zgeev(LAPACK_COL_MAJOR, 'N', 'V', p, ACopy, p, w, vrInv, p, vr, p);
 
-	YesNo = LAPACKE_zlacpy(LAPACK_COL_MAJOR, 'B', p, p, vr, p, vrInv, p);
+	YesNo = LAPACKE_zlacpy(LAPACK_COL_MAJOR, 'B', p, p, vr, p, vrInv, p); // Copy vr into vrInv
 
-	YesNo = LAPACKE_zgetrf(LAPACK_COL_MAJOR, p, p, vrInv, p, ipiv);
+	YesNo = LAPACKE_zgetrf(LAPACK_COL_MAJOR, p, p, vrInv, p, ipiv); // Compute LU factorization of vrInv == vr
 
-	YesNo = LAPACKE_zgetri(LAPACK_COL_MAJOR, p, vrInv, p, ipiv);
+	YesNo = LAPACKE_zgetri(LAPACK_COL_MAJOR, p, vrInv, p, ipiv); // Compute vrInv = inverse of vr from LU decomposition
 
 	#ifdef DEBUG_SETCARMA
 	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1545,6 +1545,8 @@ void CARMA::setCARMA(double *ThetaIn) {
 	viewMatrix(p,1,B);
 	printf("\n");
 	#endif
+
+	// Start computation of C
 
 	#ifdef DEBUG_SETCARMA_C
 	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1602,7 +1604,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			ACopy[rowCtr + colCtr*p] = BScratch[rowCtr]*B[colCtr]; // ACopy = BScratch*trans(B)
+			ACopy[rowCtr + colCtr*p] = BScratch[rowCtr]*B[colCtr]; // ACopy = BScratch*trans(B) = vrInv*b*trans(B)
 			}
 		}
 
@@ -1641,7 +1643,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	printf("\n");
 	#endif
 
-	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p); // C = ACopy*vrInv
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p); // AScratch = ACopy*trans(vrInv) = vrInv*b*trans(B)*trans(vrInv)
 
 	#ifdef DEBUG_SETCARMA_C
 	printf("setCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -1677,7 +1679,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			C[rowCtr + colCtr*p] = (AScratch[rowCtr + colCtr*p] + AScratch[colCtr + rowCtr*p])/2.0; // Ensure symmetry!
+			C[rowCtr + colCtr*p] = (AScratch[rowCtr + colCtr*p] + AScratch[colCtr + rowCtr*p])/2.0; // C = (AScratch + trans(AScratch))/2 to ensure symmetry!
 			}
 		}
 
