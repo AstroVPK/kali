@@ -18,6 +18,7 @@ parser.add_argument("pwd", help = "Path to Working Directory")
 parser.add_argument("cf", help = "Configuration File")
 parser.add_argument("-o", "--old", help = "DateTime of run to be used")
 parser.add_argument("-v", "--verbose", help = "Verbose T/F")
+parser.add_argument("-p", "--prob", help = "Probability of retaining a point in lc", deafult = 0.5)
 args = parser.parse_args()
 
 if args.old:
@@ -47,8 +48,9 @@ IrregularFile = 'Irregular.lc'
 Regular = np.loadtxt(args.pwd + RegularFile, skiprows = 7)
 numCadences_Regular = Regular.shape[0]
 
-Prob = 0.5
-ProbList = spstats.bernoulli.rvs(Prob, size = numCadences_Regular)
+if (float(args.prob) > 1.0):
+	throw RuntimeError
+ProbList = spstats.bernoulli.rvs(float(args.prob), size = numCadences_Regular)
 numCadences_Missing = np.sum(ProbList)
 numCadences_Irregular = np.sum(ProbList)
 
