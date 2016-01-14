@@ -3,7 +3,8 @@
 # source this file from your ~/.bashrc
 #
 # relative to <libcarma>/bin/
+LIBCARMA=$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)
 
-export PYTHONPATH=/home/vish/code/trunk/cpp/libcarma/
+export PYTHONPATH=$LIBCARMA
 export OMP_NUM_THREADS=4
 echo "notice: libcarma tools have been set up."
