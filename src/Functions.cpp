@@ -125,7 +125,7 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 		LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.IR = IR;
-		Data.tolIR = IR;
+		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.y = x;
 		Data.mask = mask;
@@ -164,7 +164,7 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 		LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.IR = IR;
-		Data.tolIR = IR;
+		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.y = y;
 		Data.yerr = yerr;
@@ -223,7 +223,7 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.IR = IR;
-	Data.tolIR = IR;
+	Data.tolIR = tolIR;
 	Data.t = t;
 	Data.y = y;
 	Data.yerr = yerr;

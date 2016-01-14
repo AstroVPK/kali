@@ -76,19 +76,18 @@ def MAD(a):
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-dt = 0.02
-p = 2
-q = 1
-ndims = p + q + 1
-
-aListRoots = [-0.73642081+0.0j, -0.01357919-0.0j]
+aListRoots = [-0.73642081+0.0j, -0.01357919-0.0j, -0.5672388-0.0j]
 aPoly = np.polynomial.polynomial.polyfromroots(aListRoots)
 aPoly = aPoly.tolist()
 aPoly.reverse()
 aPoly.pop(0)
 aPoly = [coeff.real for coeff in aPoly]
+p = len(aPoly)
 
 bPoly = [7.0e-9, 1.2e-9]
+q = len(bPoly) - 1
+
+ndims = p + q + 1
 
 Theta = aPoly + bPoly
 ThetaLine = "Theta: "
@@ -99,6 +98,7 @@ Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
 numBurn = 1000000
+dt = 0.1
 numCadences = 100
 startCadence = 0
 burnSeed = 1311890535

@@ -2004,7 +2004,6 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	for (int i = 0; i < numBurn; ++i) {
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*X
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
-		//cblas_daxpy(p, burnRand[i], D, 1, X, 1);
 		cblas_daxpy(p, 1.0, &burnRand[i*p], 1, X, 1); // X = w*D + X
 		}
 	}
@@ -2023,20 +2022,18 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
-	//vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, distStream, numCadences, distRand, 0.0, 1.0); // Check Theta[p] = distSigma
-	#pragma omp simd
-	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		VScratch[rowCtr] = 0.0;
-		}
-	vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, numCadences, distRand, p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 
 	if (IR == false) {
 
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			VScratch[rowCtr] = 0.0;
+			}
+		vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, numCadences, &distRand[0], p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 		for (int i = 0; i < numCadences; ++i) {
 
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
-			//cblas_daxpy(p, distRand[i], D, 1, X, 1);
 			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 
 			y[i] = mask[i]*X[0];
@@ -2046,9 +2043,14 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 
 		double fracChange = 0.0;
 
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			VScratch[rowCtr] = 0.0;
+			}
+		vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, 1, &distRand[0], p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
+
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
-		//cblas_daxpy(p, distRand[0], D, 1, X, 1); // X = X + D*w
 		cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
 		y[0] = X[0];
 
@@ -2058,14 +2060,18 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 
 			if (fracChange > tolIR) {
-			//if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}
 
+			#pragma omp simd
+			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+				VScratch[rowCtr] = 0.0;
+				}
+			vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, 1, &distRand[i*p], p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
+
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
-			//cblas_daxpy(p, distRand[i], D, 1, X, 1);
 			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 			y[i] = X[0];
 			}
@@ -2092,8 +2098,6 @@ void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noise
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
 
-	//this->computeSigma();
-	//double absIntrinsicVar = sqrt((this->getSigma())[0]);
 	double absIntrinsicVar = sqrt(Sigma[0]);
 	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
 	double absFlux = 0.0, noiseLvl = 0.0;
@@ -2121,7 +2125,7 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	double LnLike = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0;
+	double LnLike = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
 	if (IR == false) {
 		for (int i = 0; i < numCadences; i++) {
@@ -2153,10 +2157,11 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 					P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 					}
 				}
-			LnLike += mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE); // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-			ptCounter += mask[i];
+			Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+			LnLike = LnLike + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+			ptCounter = ptCounter + mask[i];
 			}
-		LnLike += -0.5*ptCounter*log2Pi;
+		//LnLike += -0.5*ptCounter*log2Pi;
 		} else {
 		H[0] = 1.0;
 		R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
@@ -2186,13 +2191,13 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-		ptCounter += 1;
+		Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		LnLike = LnLike + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+		ptCounter = ptCounter + 1;
 		for (int i = 1; i < numCadences; i++) {
 			t_incr = t[i] - t[i - 1];
 			fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 			if (fracChange > tolIR) {
-			//if (fracChange > tolIR*dt) {
 				dt = t_incr;
 				solveCARMA();
 				}
@@ -2223,10 +2228,11 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 					P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 					}
 				}
-			LnLike += -0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-			ptCounter += 1;
+			Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+			LnLike = LnLike + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+			ptCounter = ptCounter + 1;
 			}
-		LnLike += -0.5*ptCounter*log2Pi;
+		//LnLike += -0.5*ptCounter*log2Pi;
 		}
 
 	return LnLike;
