@@ -184,9 +184,10 @@ class SuppliedParametersTask(Task):
 
 		ARRoots = list()
 		ARPoly = list()
-		MACoefs = list()
-		self.ARCoefs = list()
-		self.ARRoots = list()
+		MARoots = list()
+		MAPoly = list()
+		#self.ARCoefs = list()
+		#self.ARRoots = list()
 
 		doneReadingARRoots = False
 		pRoot = 0
@@ -241,14 +242,6 @@ class SuppliedParametersTask(Task):
 			print 'ARRoots and ARPolynomial supplied are not equivalent!'
 			sys.exit(1)
 
-		try:
-			sigma = float(self.parser.get('C-ARMA', 'sigma'))
-		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			print str(Err) + '. sigma must be specified if supplying MA roots!'
-			sys.exit(1)
-		if sigma <= 0.0:
-			print 'sima must be strictly postive!'
-			sys.exit(1)
 		doneReadingMARoots = False
 		qRoot = -1
 		while not doneReadingMARoots:
@@ -257,21 +250,28 @@ class SuppliedParametersTask(Task):
 				qRoot += 1
 			except (CP.NoOptionError, CP.NoSectionError) as Err:
 				doneReadingMARoots = True
+		if len(MARoots) > 0:
+			try:
+				sigma = float(self.parser.get('C-ARMA', 'sigma'))
+			except (CP.NoOptionError, CP.NoSectionError) as Err:
+				print str(Err) + '. sigma must be specified if supplying MA roots!'
+				sys.exit(1)
+			if sigma <= 0.0:
+				print 'sigma must be strictly postive!'
+				sys.exit(1)
 
 		doneReadingMAPoly = False
-		self.qPoly = -1
+		qPoly = -1
 		while not doneReadingMAPoly:
 			try:
-				MAPoly.append(float(self.parser.get('C-ARMA', 'b_%d'%(self.qPoly + 1))))
-				self.qPoly += 1
+				MAPoly.append(float(self.parser.get('C-ARMA', 'b_%d'%(qPoly + 1))))
+				qPoly += 1
 			except (CP.NoOptionError, CP.NoSectionError) as Err:
 				doneReadingMAPoly = True
-		self.MACoefs = np.array(MAPoly)
 
 		if ((qRoot + 1) == qPoly):
-			bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
-			bPoly.reverse()
-			divisor=bPoly[-1].real
+			bPoly=(np.polynomial.polynomial.polyfromroots(MARoots)).tolist()
+			divisor=bPoly[0].real
 			bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
 			for MACoef, bPolyCoef in zip(MAPoly, bPoly):
 				if abs((MACoef - bPolyCoef)/((MACoef + bPolyCoef)/2.0)) > 1.0e-6:
@@ -289,10 +289,9 @@ class SuppliedParametersTask(Task):
 		elif (qRoot > -1) and (qPoly == -1):
 			self.q = qRoot + 1
 			self.MARoots = np.array(MARoots)
-			bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
-			bPoly.reverse()
-			divisor=bPoly[-1].real
-			bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
+			bPoly = (np.polynomial.polynomial.polyfromroots(MARoots)).tolist()
+			divisor = bPoly[0].real
+			bPoly = [sigma*(coeff.real/divisor) for coeff in bPoly]
 			MACoefs = copy.deepcopy(bPoly)
 			self.MACoefs = np.array(MACoefs)
 		else:

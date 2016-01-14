@@ -99,16 +99,6 @@ Missing.close()
 Irregular.close()
 
 try:
-	TestFile = open(args.pwd + 'Regular_MMDDYYYYHHMMSS.log', 'r')
-	TestFile.close()
-except IOError:
-	plotSuppliedLCTask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
-try:
-	TestFile = open(args.pwd + 'Regular_MMDDYYYYHHMMSS_CARMAResult.dat', 'r')
-except IOError:
-	fitCARMATask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
-
-try:
 	TestFile = open(args.pwd + 'Irregular_MMDDYYYYHHMMSS.log', 'r')
 	TestFile.close()
 except IOError:
@@ -127,3 +117,13 @@ try:
 	TestFile = open(args.pwd + 'Missing_MMDDYYYYHHMMSS_CARMAResult.dat', 'r')
 except IOError:
 	fitCARMATask(args.pwd, 'Missing.ini', 'MMDDYYYYHHMMSS').run()
+
+try:
+	TestFile = open(args.pwd + 'Regular_MMDDYYYYHHMMSS.log', 'r')
+	TestFile.close()
+except IOError:
+	plotSuppliedLCTask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
+try:
+	TestFile = open(args.pwd + 'Regular_MMDDYYYYHHMMSS_CARMAResult.dat', 'r')
+except IOError:
+	fitCARMATask(args.pwd, 'Regular.ini', 'MMDDYYYYHHMMSS').run()
