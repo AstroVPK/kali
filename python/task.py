@@ -201,7 +201,7 @@ class SuppliedParametersTask(Task):
 		pPoly = 0
 		while not doneReadingARPoly:
 			try:
-				ARPoly.append(float(self.parser.get('C-ARMA', 'a_%d'%(pRoot + 1))))
+				ARPoly.append(float(self.parser.get('C-ARMA', 'a_%d'%(pPoly + 1))))
 				pPoly += 1
 			except ValueError as Err:
 				print str(Err) + '. All AR polynomial coefficients must be real!'
@@ -224,36 +224,80 @@ class SuppliedParametersTask(Task):
 			self.ARCoefs = np.array(ARPoly)
 		elif (pRoot == 0) and (pPoly > 0):
 			self.p = pPoly
-			self.ARCoefs = aPoly
-			ARPoly = copy.deepcopy(self.ARCoefs)
-			self.ARCoefs = np.array(self.ARCoefs)
+			self.ARCoefs = np.array(aPoly)
+			ARPoly = copy.deepcopy(aPoly)
 			ARPoly.insert(0,1.0)
-			self.ARRoots = np.roots(ARPoly)
-			self.ARRoots = np.array(self.ARRoots)
+			self.ARRoots = np.array(np.roots(ARPoly))
 		elif (pRoot > 0) and (pPoly == 0):
 			self.p = pRoot
-			self.ARRoots = ARRoots
+			self.ARRoots = np.array(ARRoots)
 			aPoly = np.polynomial.polynomial.polyfromroots(ARRoots)
-			self.ARRoots = np.array(self.ARRoots)
 			aPoly = aPoly.tolist()
 			aPoly.reverse()
 			aPoly.pop(0)
 			aPoly = [coeff.real for coeff in aPoly]
-			self.ARCoefs = copy.deepcopy(aPoly)
-			self.ARCoefs = np.array(self.ARCoefs)
+			self.ARCoefs = np.array(copy.deepcopy(aPoly))
 		else:
 			print 'ARRoots and ARPolynomial supplied are not equivalent!'
 			sys.exit(1)
 
-		doneReadingMACoefs = False
-		self.q = -1
-		while not doneReadingMACoefs:
+		try:
+			sigma = float(self.parser.get('C-ARMA', 'sigma'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			print str(Err) + '. sigma must be specified if supplying MA roots!'
+			sys.exit(1)
+		if sigma <= 0.0:
+			print 'sima must be strictly postive!'
+			sys.exit(1)
+		doneReadingMARoots = False
+		qRoot = -1
+		while not doneReadingMARoots:
 			try:
-				MACoefs.append(float(self.parser.get('C-ARMA', 'b_%d'%(self.q + 1))))
-				self.q += 1
+				MARoots.append(complex(self.parser.get('C-ARMA', 'm_%d'%(qRoot + 1))))
+				qRoot += 1
 			except (CP.NoOptionError, CP.NoSectionError) as Err:
-				doneReadingMACoefs = True
-		self.MACoefs = np.array(MACoefs)
+				doneReadingMARoots = True
+
+		doneReadingMAPoly = False
+		self.qPoly = -1
+		while not doneReadingMAPoly:
+			try:
+				MAPoly.append(float(self.parser.get('C-ARMA', 'b_%d'%(self.qPoly + 1))))
+				self.qPoly += 1
+			except (CP.NoOptionError, CP.NoSectionError) as Err:
+				doneReadingMAPoly = True
+		self.MACoefs = np.array(MAPoly)
+
+		if ((qRoot + 1) == qPoly):
+			bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
+			bPoly.reverse()
+			divisor=bPoly[-1].real
+			bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
+			for MACoef, bPolyCoef in zip(MAPoly, bPoly):
+				if abs((MACoef - bPolyCoef)/((MACoef + bPolyCoef)/2.0)) > 1.0e-6:
+					print 'MARoots and MAPolynomial supplied are not equivalent!'
+					sys.exit(1)
+			self.q = qRoot + 1
+			self.MARoots = np.array(MARoots)
+			self.MACoefs = np.array(MAPoly)
+		elif (qRoot == -1) and (qPoly > -1):
+			self.q = qPoly
+			bPoly = copy.deepcopy(MAPoly)
+			bPoly.reverse()
+			self.MACoefs = np.array(MAPoly)
+			self.MARoots = np.array(np.roots(bPoly))
+		elif (qRoot > -1) and (qPoly == -1):
+			self.q = qRoot + 1
+			self.MARoots = np.array(MARoots)
+			bPoly=(np.polynomial.polynomial.polyfromroots(bRoots)).tolist()
+			bPoly.reverse()
+			divisor=bPoly[-1].real
+			bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
+			MACoefs = copy.deepcopy(bPoly)
+			self.MACoefs = np.array(MACoefs)
+		else:
+			print 'MARoots and MAPolynomial supplied are not equivalent!'
+			sys.exit(1)
 
 		if self.p < 1:
 			print 'No C-AR roots supplied!'
