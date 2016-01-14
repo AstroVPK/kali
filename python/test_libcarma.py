@@ -76,7 +76,7 @@ def MAD(a):
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-aListRoots = [-0.73642081+0.0j, -0.01357919-0.0j, -0.5672388-0.0j]
+aListRoots = [-0.73642081+0.0j, -0.01357919-0.0j, -0.52329875-0.0j]#, -0.29848912+1.57831276j, -0.29848912-1.57831276j]
 aPoly = np.polynomial.polynomial.polyfromroots(aListRoots)
 aPoly = aPoly.tolist()
 aPoly.reverse()
