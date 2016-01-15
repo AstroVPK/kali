@@ -90,7 +90,7 @@ class plotSuppliedLCTask(SuppliedParametersTask, SuppliedLCTask):
 			notMissing = np.where(self.LC.mask[:] == 1.0)[0]
 			if self.doNoiseless == True:
 				ax1.plot(self.LC.t[notMissing[:]], self.LC.x[notMissing[:]], color = '#7570b3', zorder = 5, label = r'Intrinsic LC')
-			ax1.errorbar(self.LC.t[notMissing[:]], self.LC.y[notMissing[:]], self.LC.yerr[notMissing[:]], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, Label = r'Observed LC')
+			ax1.errorbar(self.LC.t[notMissing[:]], self.LC.y[notMissing[:]], self.LC.yerr[notMissing[:]], fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, label = r'Observed LC')
 			if self.showLegendLC == True:
 				ax1.legend(loc = self.LegendLCLoc, ncol = 1, fancybox = True, fontsize = self.LegendLCFontsize)
 			yMax=np.max(self.LC.y[np.nonzero(self.LC.y[:])])
