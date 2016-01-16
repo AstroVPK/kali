@@ -1,12 +1,14 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include <complex>
+
 using namespace std;
 
+extern complex<double> complexZero;
+extern complex<double> complexOne;
 extern double pi;
-
 extern double e;
-
 extern double infiniteVal;
 
 extern double integrationTime;

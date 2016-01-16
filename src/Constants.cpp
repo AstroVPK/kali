@@ -1,13 +1,15 @@
 #include <cmath>
 #include <mathimf.h>
+#include <complex>
 #include "Constants.hpp"
 
 using namespace std;
 
-extern double infiniteVal = HUGE_VAL;
-
+extern complex<double> complexZero (0.0,0.0);
+extern complex<double> complexOne (1.0,0.0);
 extern double pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
 extern double e = 2.71828182845904523536028747135266249775724709369995;
+extern double infiniteVal = HUGE_VAL;
 
 extern double integrationTime = 6.019802903;
 extern double readTime = 0.5189485261;

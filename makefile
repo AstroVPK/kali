@@ -27,7 +27,13 @@ MKLFLAGS = -qopenmp -I$(MKLROOT)/include -limf
 # Dynamic Linking
 #MKL_LIBS = -L$(MKLROOT)/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread -lm
 # Static linking
-MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+endif
+ifeq ($(UNAME_S),Darwin)
+	MKL_LIBS = $(MKLROOT)/lib/libmkl_intel_lp64.a $(MKLROOT)/lib/libmkl_core.a $(MKLROOT)/lib/libmkl_intel_thread.a -lpthread -lm
+endif
 
 NLOPTLIBS = -lnlopt
 OMPFLAGS = -openmp -openmp-simd

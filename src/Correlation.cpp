@@ -2,7 +2,7 @@
 #include <limits>
 #include <mathimf.h>
 #include <omp.h>
-#include <sys/sysinfo.h>
+//#include <sys/sysinfo.h>
 #include <unistd.h>
 #include <cstdlib>
 #include <mkl.h>
@@ -15,8 +15,8 @@
 
 using namespace std;
 
-void ACVF(int numCadences, const double* const y, const double* const mask, double* acvf) {
-	int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
+void ACVF(int nthreads, int numCadences, const double* const y, const double* const mask, double* acvf) {
+	//int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
 	omp_set_num_threads(nthreads);
 	/*! First remove the mean. */
 	double sum = 0.0, numObs = 0.0;
@@ -58,8 +58,8 @@ void ACVF(int numCadences, const double* const y, const double* const mask, doub
 	_mm_free(yScratch);
 	}
 
-void ACF(int numCadences, const double* const acvf, double* acf) {
-	int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
+void ACF(int nthreads, int numCadences, const double* const acvf, double* acf) {
+	//int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
 	omp_set_num_threads(nthreads);
 	#pragma omp parallel for simd default(none) shared(numCadences, acf, acvf)
 	for (int lagCounter = 0; lagCounter < numCadences; ++lagCounter) {
@@ -67,8 +67,8 @@ void ACF(int numCadences, const double* const acvf, double* acf) {
 		}
 	}
 
-void PACF(int numCadences, int maxLag, const double* const acvf, double* pacf) {
-	int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
+void PACF(int nthreads, int numCadences, int maxLag, const double* const acvf, double* pacf) {
+	//int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
 	omp_set_num_threads(nthreads);
 
 	pacf[0] = 1.0;
@@ -124,8 +124,8 @@ void PACF(int numCadences, int maxLag, const double* const acvf, double* pacf) {
 	_mm_free(R);
 	}
 
-void SF1(int numCadences, const double* const acvf, double* sf1) {
-	int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
+void SF1(int nthreads, int numCadences, const double* const acvf, double* sf1) {
+	//int nthreads = sysconf(_SC_NPROCESSORS_ONLN);
 	omp_set_num_threads(nthreads);
 	#pragma omp parallel for simd default(none) shared(numCadences, sf1, acvf)
 	for (int lagCounter = 0; lagCounter < numCadences; ++lagCounter) {
