@@ -3,7 +3,6 @@
 #else
 #include <malloc.h>
 #endif
-
 #include <sys/time.h>
 #include <limits>
 #include <omp.h>
