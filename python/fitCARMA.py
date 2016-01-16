@@ -27,6 +27,7 @@ except KeyError as Err:
 import sys as sys
 import time as time
 import operator as operator
+import psutil
 import multiprocessing
 import pdb as pdb
 
@@ -192,7 +193,7 @@ class fitCARMATask(SuppliedLCTask):
 		Result.write(line5)
 		Result.close()
 
-	def _read_00_LCProps(self):
+	def _read_00_MCMCProps(self):
 		"""	Attempts to read in the configuration parameters `dt', `T' or `numCadences', & `tStart'.
 		"""
 		try:
@@ -229,16 +230,16 @@ class fitCARMATask(SuppliedLCTask):
 		try:
 			self.nthreads = int(self.parser.get('MCMC', 'nthreads'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
-			self.nthreads = (multiprocessing.cpu_count()/int(os.popen('lscpu').readlines()[5].rstrip('\n').split()[3]))
+			self.nthreads = psutil.cpu_count(logical = False)
 			print str(Err) + '. Using default nthreads = %d'%(self.nthreads)
-		if self.nthreads > (multiprocessing.cpu_count()/int(os.popen('lscpu').readlines()[5].rstrip('\n').split()[3])):
-			if self.nthreads > multiprocessing.cpu_count():
+		if self.nthreads > psutil.cpu_count(logical = False):
+			if self.nthreads > psutil.cpu_count():
 				print 'Using Intel Hyperthreading...'
 			else:
 				print 'More threads requested than available hardware threads...'
 				print 'Caching may not be optimal.'
-		elif self.nthreads < (multiprocessing.cpu_count()/int(os.popen('lscpu').readlines()[5].rstrip('\n').split()[3])):
-			print '%d cores/%d cores will be used in computation.'%(self.nthreads,multiprocessing.cpu_count()/int(os.popen('lscpu').readlines()[5].rstrip('\n').split()[3]))
+		elif self.nthreads < psutil.cpu_count(logical = False):
+			print '%d cores/%d cores will be used in computation.'%(self.nthreads,psutil.cpu_count(logical = False))
 		try:
 			self.nwalkers = int(self.parser.get('MCMC', 'nwalkers'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
