@@ -15,11 +15,15 @@ import cffi as cffi
 import inspect
 import socket
 HOST = socket.gethostname()
-if HOST == 'dirac.physics.drexel.edu':
+print 'HOST: '%(HOST)
+import os as os
+try: 
+	os.environ['DISPLAY']
+except KeyErr as Err:
+	print "No display environment! Using matplotlib backend 'Agg'"
 	import matplotlib
 	matplotlib.use('Agg')
 import sys as sys
-import os as os
 import time as time
 import ConfigParser as CP
 import argparse as AP
