@@ -30,9 +30,11 @@ MKLFLAGS = -qopenmp -I$(MKLROOT)/include -limf
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	MKL_LIBS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+	SONAME = -Wl,-soname,libcarma.so.1
 endif
 ifeq ($(UNAME_S),Darwin)
 	MKL_LIBS = $(MKLROOT)/lib/libmkl_intel_lp64.a $(MKLROOT)/lib/libmkl_core.a $(MKLROOT)/lib/libmkl_intel_thread.a -lpthread -lm
+	SONAME = -Wl,-install_name,libcarma.so.1
 endif
 
 NLOPTLIBS = -lnlopt
@@ -85,7 +87,7 @@ TEST = test_libcarma.py
 all: $(LIBCARMA_STAT) $(LIBCARMA_DYN) $(LIBCARMA_LINKING) $(PYTHON_BINDING) $(TEST)
 
 $(LIBCARMA_DYN): $(OBJECTS)
-	$(CPPC) -shared -Wl,-soname,libcarma.so.1 -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o $(LDIR)/libcarma.so.1.0.0 $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(MKL_LIBS) $(NLOPTLIBS)
+	$(CPPC) -shared $(SONAME) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o $(LDIR)/libcarma.so.1.0.0 $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(MKL_LIBS) $(NLOPTLIBS)
 
 $(LIBCARMA_STAT): $(OBJECTS)
 	ar r $(LDIR)libcarma.a $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o
