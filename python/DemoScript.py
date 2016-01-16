@@ -4,6 +4,9 @@ import argparse as argparse
 import numpy as np
 import scipy.stats as spstats
 import sys
+import socket
+HOST = socket.gethostname()
+print 'HOST: %s'%(str(HOST))
 import os
 import time
 import pdb

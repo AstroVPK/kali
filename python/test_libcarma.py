@@ -3,6 +3,9 @@ import cmath as cmath
 import numpy as np
 import random as random
 import cffi as cffi
+import socket
+HOST = socket.gethostname()
+print 'HOST: %s'%(str(HOST))
 import os as os
 try: 
 	os.environ['DISPLAY']

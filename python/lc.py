@@ -12,11 +12,15 @@ import numpy as np
 import inspect
 import socket
 HOST = socket.gethostname()
-if HOST == 'dirac.physics.drexel.edu':
-	import matplotlib
-	matplotlib.use('Agg')
+print 'HOST: %s'%(str(HOST))
 import sys as sys
 import os as os
+try: 
+	os.environ['DISPLAY']
+except KeyError as Err:
+	print "No display environment! Using matplotlib backend 'Agg'"
+	import matplotlib
+	matplotlib.use('Agg')
 import time as time
 import ConfigParser as CP
 import argparse as AP

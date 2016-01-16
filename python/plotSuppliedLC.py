@@ -14,6 +14,9 @@ import random as random
 import ConfigParser as CP
 import argparse as AP
 import cffi as cffi
+import socket
+HOST = socket.gethostname()
+print 'HOST: %s'%(str(HOST))
 import os as os
 try: 
 	os.environ['DISPLAY']
