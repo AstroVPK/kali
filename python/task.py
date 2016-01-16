@@ -53,7 +53,8 @@ class Task:
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
 		self.preprefix = ConfigFile.split(".")[0]
-		self.PlotConfigFile = self.preprefix + "Plot.ini"
+		self.extension = ConfigFile.split(".")[1]
+		self.PlotConfigFile = self.preprefix + "Plot." + self.extension
 		try:
 			self.ConfigFileHash = self.getHash(self.WorkingDirectory + self.ConfigFile)
 		except IOError as Err:
