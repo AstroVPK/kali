@@ -8,17 +8,17 @@ Version: 1.0.0
 
 Install
 -------
-Install instructions are provided for linux machines. The following OSs have been tested
+Install instructions are provided for Linux & Mac OSX machines. The following OSs have been tested
 
 
 1. Ubuntu 14.04 LTS Trusty Tahr
 
+2. Mac OS X 10.10.5 Yosemite
 
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, cffi & Brandon Kelly's 
 `carma_pack` (optional) installed. At the moment, Anaconda Python, Intel C++ Compiler XE, Intel MKL, `cffi`, 
 & NLOpt are required though the plan is to eventually allow the use of g++ etc... Brandon Kelly's 
 `carma_pack` is not required but is recommended.
-
 
 1. Anaconda Python
 
@@ -83,8 +83,11 @@ required by the compiler.
   This software has been tested with
 
 
-  1. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021(icpc version 16.0.1 
+  1. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021 (icpc version 16.0.1 
 (gcc version 4.8.0 compatibility)
+
+  2. Intel® Parallel Studio XE 2016 Cluster Edition Initial Release 16.0.1.111 / 20151020 (icpc version 16.0.0 
+(gcc version 4.9.0 compatibility)
 
 
 3. Intel MKL Library
