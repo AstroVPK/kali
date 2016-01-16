@@ -9,6 +9,7 @@ print 'HOST: %s'%(str(HOST))
 import os as os
 try: 
 	os.environ['DISPLAY']
+	usingAGG = False
 except KeyError as Err:
 	print "No display environment! Using matplotlib backend 'Agg'"
 	import matplotlib
@@ -28,7 +29,12 @@ from bin._libcarma import ffi
 import python.util.triangle as triangle
 from python.util.mpl_settings import *
 ffiObj = cffi.FFI()
-C = ffi.dlopen("./bin/libcarma.so.1.0.0")
+try:
+	libcarmaPath = str(os.environ['LIBCARMA'])
+except KeyError as Err:
+	print str(Err) + '. Exiting....'
+	sys.exit(1)
+C = ffi.dlopen(libcarmaPath + '/bin/libcarma.so.1.0.0')
 
 goldenRatio=1.61803398875
 fhgt=10.0

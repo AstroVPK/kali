@@ -47,7 +47,13 @@ set_plot_params(fontfamily = 'serif', fontstyle = 'normal', fontvariant = 'norma
 gs = gridspec.GridSpec(1000, 1000)
 
 ffiObj = cffi.FFI()
-C = ffi.dlopen("./bin/libcarma.so.1.0.0")
+try:
+	libcarmaPath = str(os.environ['LIBCARMA'])
+except KeyError as Err:
+	print str(Err) + '. Exiting....'
+	sys.exit(1)
+C = ffi.dlopen(libcarmaPath + '/bin/libcarma.so.1.0.0')
+new_uint = ffiObj.new_allocator(alloc = C._malloc_uint, free = C._free_uint)
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
