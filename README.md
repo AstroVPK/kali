@@ -149,13 +149,13 @@ replace it with an alternative. Intel MKL may be obtained from
 be installed into Anaconda using
 
 
-  `bash-prompt$ sudo apt-get install libffi6`
+  `bash-prompt$ sudo apt-get install libffi6` (On linux only)
 
 
-  `bash-prompt$ sudo apt-get install libffi6:i386`
+  `bash-prompt$ sudo apt-get install libffi6:i386` (On linux only)
 
 
-  `bash-prompt$ sudo apt-get install libffi-dev`
+  `bash-prompt$ sudo apt-get install libffi-dev` (On linux only)
 
 
   `bash-prompt$ conda update conda`
