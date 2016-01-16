@@ -15,6 +15,15 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 2. Mac OS X 10.10.5 Yosemite
 
+  NB: On Mac OS X, Anaconda's matplotlib.pyplot seems to have trouble understanding the tilde '~' character as 
+  part of a path. So instead of
+
+  `<libcarma dir>$ python python/DemoScript.py ~/<path to working dir> Config.ini`
+
+  do
+
+  `<libcarma dir>$ python python/DemoScript.py /Users/<user name>/<path to working dir> Config.ini`
+
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, cffi & Brandon Kelly's 
 `carma_pack` (optional) installed. At the moment, Anaconda Python, Intel C++ Compiler XE, Intel MKL, `cffi`, 
 & NLOpt are required though the plan is to eventually allow the use of g++ etc... Brandon Kelly's 
@@ -136,7 +145,7 @@ replace it with an alternative. Intel MKL may be obtained from
   `<nlopt dir>$ ./configure --enable-shared`
 
 
-  `<nlopt dir> make`
+  `<nlopt dir>$ make`
 
 
   `<nlopt dir>$ sudo make install`
