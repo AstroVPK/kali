@@ -15,6 +15,12 @@ import ConfigParser as CP
 import argparse as AP
 import cffi as cffi
 import os as os
+try: 
+	os.environ['DISPLAY']
+except KeyError as Err:
+	print "No display environment! Using matplotlib backend 'Agg'"
+	import matplotlib
+	matplotlib.use('Agg')
 import sys as sys
 import time as time
 import operator as operator
