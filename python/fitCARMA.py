@@ -291,7 +291,7 @@ class fitCARMATask(SuppliedLCTask):
 			y_cffi[i] = self.LC.y[i]
 			yerr_cffi[i] = self.LC.yerr[i]
 		self.ndims = self.p + self.q + 1
-		yORn = C._getRandoms(5, randomSeeds)
+		yORn = self.rdrand(5, randomSeeds)
 		Chain_cffi = ffiObj.new('double[%d]'%(self.nsteps*self.nwalkers*self.ndims))
 		LnLike_cffi = ffiObj.new('double[%d]'%(self.nsteps*self.nwalkers))
 		if self.LC.IR == True:

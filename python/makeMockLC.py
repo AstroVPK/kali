@@ -168,7 +168,7 @@ class makeMockLCTask(SuppliedParametersTask, SuppliedLCTask):
 			for i in xrange(self.q + 1):
 				Theta_cffi[self.p + i] = self.MACoefs[i]
 			randomSeeds = ffiObj.new('unsigned int[3]')
-			yORn = C._getRandoms(3, randomSeeds)
+			yORn = self.rdrand(3, randomSeeds)
 			if self.LC.IR == True:
 				IR = 1
 			else:

@@ -87,6 +87,13 @@ class Task:
 		self.escChar = '#'
 		self.LC = lc.LC()
 
+	def rdrand(self, nrands, rands):
+		yORn = C._getRandoms(nrands, rands)
+		for i in xrange(nrands):
+			if rands[i] == 0:
+				rands[i] = np.random.randint(1,4294967296)
+		return yORn
+
 	def log(self, val):
 		LogFile = open(self.WorkingDirectory + self.prefix + '.log', 'a')
 		line = val + ' on ' + time.strftime("%m-%d-%Y") + ' at ' + time.strftime("%H:%M:%S") + '\n'
