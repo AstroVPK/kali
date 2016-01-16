@@ -42,6 +42,12 @@ to date by periodically doing
   `bash-prompt$ conda update --all` to update all the installed packages.
 
 
+  This software has been tested with
+
+
+  1. Python 2.7.11 |Anaconda 2.4.1 (64-bit)
+
+
 2. Intel C++ Compiler XE
 
 
