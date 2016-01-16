@@ -15,7 +15,7 @@ import cffi as cffi
 import inspect
 import socket
 HOST = socket.gethostname()
-print 'HOST: '%(HOST)
+print 'HOST: %s'%(str(HOST))
 import os as os
 try: 
 	os.environ['DISPLAY']
