@@ -132,6 +132,9 @@ replace it with an alternative. Intel MKL may be obtained from
 
   `<nlopt dir>$ sudo make install`
 
+  Lastly, one must update the list of installed shared libraries by running
+
+  `bash-prompt$ sudo ldconfig`
 
   This software has been tested with
   1. NLOpt Version 2.4.2
