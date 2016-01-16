@@ -19,7 +19,7 @@ print 'HOST: %s'%(str(HOST))
 import os as os
 try: 
 	os.environ['DISPLAY']
-except KeyErr as Err:
+except KeyError as Err:
 	print "No display environment! Using matplotlib backend 'Agg'"
 	import matplotlib
 	matplotlib.use('Agg')
