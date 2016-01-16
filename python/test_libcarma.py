@@ -237,7 +237,7 @@ if doR:
 	ax1.set_xlim(t[0],t[-1])
 	ax1.set_ylim(yMin,yMax)
 	if usingAGG:
-		fig1.savefig('.examples/fig1.jpg',dpi=70)
+		fig1.savefig('./examples/fig1.jpg',dpi=70)
 
 	LnLikeStart = time.time()
 	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
@@ -279,7 +279,7 @@ if doR:
 			elif ((k >= p) and (k < ndims)):
 				plt.ylabel("$b_{%d}$"%(k - p))
 			if usingAGG:
-				fig2.savefig('.examples/fig2.jpg',dpi=70)
+				fig2.savefig('./examples/fig2.jpg',dpi=70)
 
 		dictDIC = dict()
 		samples = Chain[nsteps/2.0:,:,:].reshape((-1,ndims))
@@ -293,7 +293,7 @@ if doR:
 			lbls.append("$b_{%d}$"%(i))
 		fig3, quantiles, qvalues = triangle.corner(samples, labels = lbls, fig_title = "DIC: %f"%(dictDIC["%d %d"%(p,q)]), show_titles = True, title_args = {"fontsize": 12}, quantiles = [0.16, 0.5, 0.84], verbose = False, plot_contours = True, plot_datapoints = True, plot_contour_lines = False, pcolor_cmap = cm.gist_earth)
 		if usingAGG:
-			fig3.savefig('.examples/fig3.jpg',dpi=70)
+			fig3.savefig('./examples/fig3.jpg',dpi=70)
 
 
 ##############################################################################################################
@@ -379,7 +379,7 @@ if doIR:
 	ax1.set_xlim(irr_t[0],irr_t[-1])
 	ax1.set_ylim(irr_yMin,irr_yMax)
 	if usingAGG:
-		fig4.savefig('.examples/fig4.jpg',dpi=70)
+		fig4.savefig('./examples/fig4.jpg',dpi=70)
 
 	irr_LnLikeStart = time.time()
 	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
@@ -421,7 +421,7 @@ if doIR:
 			elif ((k >= p) and (k < ndims)):
 				plt.ylabel("$b_{%d}$"%(k - p))
 			if usingAGG:
-				fig5.savefig('.examples/fig5.jpg',dpi=70)
+				fig5.savefig('./examples/fig5.jpg',dpi=70)
 
 		irr_dictDIC = dict()
 		irr_samples = irr_Chain[nsteps/2.0:,:,:].reshape((-1,ndims))
@@ -435,7 +435,7 @@ if doIR:
 			irr_lbls.append("$b_{%d}$"%(i))
 		fig6, irr_quantiles, irr_qvalues = triangle.corner(irr_samples, labels = irr_lbls, fig_title = "DIC: %f"%(irr_dictDIC["%d %d"%(p,q)]), show_titles = True, title_args = {"fontsize": 12}, quantiles = [0.16, 0.5, 0.84], verbose = False, plot_contours = True, plot_datapoints = True, plot_contour_lines = False, pcolor_cmap = cm.gist_earth)
 		if usingAGG:
-			fig6.savefig('.examples/fig6.jpg',dpi=70)
+			fig6.savefig('./examples/fig6.jpg',dpi=70)
 
 if usingAGG:
 	print 'Figures saved in ./examples directory'
