@@ -232,4 +232,4 @@ This covers installation. While waiting for a usage guide, please feel free to t
 `bash-prompt$ source <path to libcarma>/bin/setup.sh`
 
 
-`bash-prompt$ python python/DemoScript.py <path to libcarma>/examples/Demo02/ Config.ini`
+`bash-prompt$/usr/bin/time -p -v python scripts/DemoScript.py <path to libcarma>/examples/Demo01/ Config.ini | tee <path to libcarma>/examples/Demo01/timing.dat`

@@ -32,13 +32,11 @@ if args.old:
 		print args.pwd + args.cf.split('.')[0] + '_' + args.old + '_LC.dat not found!'
 		sys.exit(1)
 	Stamp = args.old
-	plotPSDTask(args.pwd, args.cf, args.old).run()
-	makeMockLCTask(args.pwd, args.cf, args.old).run()
 else:
 	TimeStr = time.strftime("%m%d%Y") + time.strftime("%H%M%S")
 	Stamp = TimeStr
-	plotPSDTask(args.pwd, args.cf, TimeStr).run()
-	makeMockLCTask(args.pwd, args.cf, TimeStr).run()
+plotPSDTask(args.pwd, args.cf, Stamp).run()
+makeMockLCTask(args.pwd, args.cf, Stamp).run()
 
 cmd = 'cp %s%s %sRegular.lc'%(args.pwd, args.cf.split('.')[0] + '_' + Stamp + '.lc', args.pwd)
 os.system(cmd)

@@ -111,7 +111,7 @@ class fitCARMATask(SuppliedLCTask):
 				for qNum in xrange(self.q + 1):
 					line += "%+17.16e "%(self.Chain[stepNum,walkerNum,qNum])
 				line += "%+17.16e\n"%(self.LnLike[stepNum,walkerNum])
-			chainFile.write(line)
+				chainFile.write(line)
 		chainFile.close()
 
 	def _plotMCMC(self):
@@ -289,7 +289,7 @@ class fitCARMATask(SuppliedLCTask):
 			self.doNoiseless = True
 
 	def _doCARMAFit(self):
-		logEntry = 'Computing C-ARMA fit for p = %d and q = %d'%(self.p, self.q)
+		logEntry = r'Computing C-ARMA fit for p = %d and q = %d'%(self.p, self.q)
 		self.echo(logEntry)
 		self.log(logEntry)
 		randomSeeds = ffiObj.new('unsigned int[5]')
@@ -314,16 +314,25 @@ class fitCARMATask(SuppliedLCTask):
 			IR = 1
 		else:
 			IR = 0
+		startT = time.time()
 		C._fitCARMA(self.LC.dt, self.p, self.q, IR, self.LC.tolIR, self.scatterFactor, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, self.nthreads, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, randomSeeds[0], randomSeeds[1], randomSeeds[2], randomSeeds[3], randomSeeds[4], Chain_cffi, LnLike_cffi)
+		stopT = time.time()
+		diffT = stopT - startT
+		logEntry = r'C-ARMA fit for p = %d and q = %d took %f sec = %f min = %f hrs'%(self.p, self.q, diffT, diffT/60.0, diffT/3600.0)
+		self.echo(logEntry)
+		self.log(logEntry)
 		self.Chain = np.zeros((self.nsteps, self.nwalkers, self.ndims))
 		self.LnLike = np.zeros((self.nsteps, self.nwalkers))
 		self.Deviances = np.zeros((self.nsteps, self.nwalkers))
 		for stepNum in xrange(self.nsteps):
 			for walkerNum in xrange(self.nwalkers):
-				self.LnLike[stepNum, walkerNum] = LnLike_cffi[walkerNum + stepNum*self.nwalkers]
-				self.Deviances[stepNum,walkerNum] = -2.0*LnLike_cffi[walkerNum + stepNum*self.nwalkers]
-				for dimNum in xrange(self.ndims):
-					self.Chain[stepNum, walkerNum, dimNum] = Chain_cffi[dimNum + walkerNum*self.ndims + stepNum*self.ndims*self.nwalkers]
+				if math.isnan(float(LnLike_cffi[walkerNum + stepNum*self.nwalkers])):
+					pass
+				else:
+					self.LnLike[stepNum, walkerNum] = float(LnLike_cffi[walkerNum + stepNum*self.nwalkers])
+					self.Deviances[stepNum,walkerNum] = -2.0*float(LnLike_cffi[walkerNum + stepNum*self.nwalkers])
+					for dimNum in xrange(self.ndims):
+						self.Chain[stepNum, walkerNum, dimNum] = float(Chain_cffi[dimNum + walkerNum*self.ndims + stepNum*self.ndims*self.nwalkers])
 		self._writeMCMC()
 		self._plotMCMC()
 
