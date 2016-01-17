@@ -315,6 +315,7 @@ if doIR:
 	irr_mask = np.array(numCadences*[1.0])
 	irr_t = np.array([index*dt for index in xrange(numCadences)])
 	if makeIRR:
+		random.seed(983440498)
 		for i in xrange(numCadences):
 			irr_t[i] += random.uniform(-dt/2.0, dt/2.0)
 		dt = np.median(irr_t[1:] - irr_t[:-1])
