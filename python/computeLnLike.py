@@ -81,9 +81,9 @@ class computeLnLikeTask(SuppliedLCTask,SuppliedParametersTask):
 		self._readLC(suppliedLC = self.LC.SuppliedLC)
 
 	def _make_01_computeLnlike(self):
-		"""	Attempts to make the LC
+		"""	Attempts to compute the log likelihood of the LC
 		"""
-		logEntry = 'Computing LnLike of LC'
+		logEntry = 'Computing LnLike of LC %s'%(self.SuppliedLCFile)
 		self.echo(logEntry)
 		self.log(logEntry)
 		cadence_cffi = ffiObj.new('int[%d]'%(self.LC.numCadences))
