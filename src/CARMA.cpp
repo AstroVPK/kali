@@ -118,7 +118,7 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
 		#endif
 
-		LnLike = -infiniteValL;
+		LnLike = -infiniteVal;
 		}
 	return LnLike;
 
