@@ -125,12 +125,12 @@ class computeLnLikeTask(SuppliedLCTask,SuppliedParametersTask):
 			for i in xrange(self.p):
 				logEntry += '%+17.16e '%(float(self.ARCoefs[i]))
 			for i in xrange(self.q + 1):
-				logEntry += '%+17.16e '(float(self.MACoefs[i]))
+				logEntry += '%+17.16e '%(float(self.MACoefs[i]))
 		else:
 			for i in xrange(self.p):
-				logEntry += '%+17.16e '(float(self.args[i]))
+				logEntry += '%+17.16e '%(float(self.args[i]))
 			for i in xrange(self.q + 1):
-				logEntry += '%+17.16e '(float(self.args[self.p + i]))
+				logEntry += '%+17.16e '%(float(self.args[self.p + i]))
 		logEntry += 'LnLike = %+17.16e'%(float(self.LC.LnLike))
 		self.echo(logEntry)
 		self.log(logEntry)
