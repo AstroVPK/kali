@@ -289,7 +289,7 @@ class fitCARMATask(SuppliedLCTask):
 			self.doNoiseless = True
 
 	def _doCARMAFit(self):
-		logEntry = r'Computing C-ARMA fit for p = %d and q = %d'%(self.p, self.q)
+		logEntry = r'Computing C-ARMA fit for p = %d and q = %d for LC %s'%(self.p, self.q, self.SuppliedLCFile)
 		self.echo(logEntry)
 		self.log(logEntry)
 		randomSeeds = ffiObj.new('unsigned int[5]')

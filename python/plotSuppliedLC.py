@@ -95,7 +95,7 @@ class plotSuppliedLCTask(SuppliedParametersTask, SuppliedLCTask):
 
 	def _make_01_plot(self):
 		if self.makePlot == True:
-			logEntry = 'Plotting LC'
+			logEntry = 'Plotting LC %s'%(self.SuppliedLCFile)
 			self.echo(logEntry)
 			self.log(logEntry)
 			fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
