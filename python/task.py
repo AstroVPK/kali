@@ -47,11 +47,13 @@ new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_doubl
 class Task:
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
-	def __init__(self, WorkingDirectory, ConfigFile, TimeStr):
+	def __init__(self, WorkingDirectory, ConfigFile, TimeStr, *args, **kwargs):
 		"""	Initialize Task object.
 		"""
 		self.WorkingDirectory = WorkingDirectory
 		self.ConfigFile = ConfigFile
+		self.args = list(args)
+		self.kwargs = dict(kwargs)
 		self.preprefix = ConfigFile.split(".")[0]
 		self.extension = ConfigFile.split(".")[1]
 		self.PlotConfigFile = self.preprefix + "Plot." + self.extension

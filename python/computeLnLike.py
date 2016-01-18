@@ -99,11 +99,20 @@ class computeLnLikeTask(SuppliedLCTask,SuppliedParametersTask):
 			x_cffi[i] = self.LC.x[i]
 			y_cffi[i] = self.LC.y[i]
 			yerr_cffi[i] = self.LC.yerr[i]
-		Theta_cffi = ffiObj.new('double[%d]'%(self.p + self.q + 1))
-		for i in xrange(self.p):
-			Theta_cffi[i] = self.ARCoefs[i]
-		for i in xrange(self.q + 1):
-			Theta_cffi[self.p + i] = self.MACoefs[i]
+		if not self.args:
+			Theta_cffi = ffiObj.new('double[%d]'%(self.p + self.q + 1))
+			for i in xrange(self.p):
+				Theta_cffi[i] = self.ARCoefs[i]
+			for i in xrange(self.q + 1):
+				Theta_cffi[self.p + i] = self.MACoefs[i]
+		else:
+			self.p = int(self.kwargs['p'])
+			self.q = int(self.kwargs['q'])
+			Theta_cffi = ffiObj.new('double[%d]'%(self.p + self.q + 1))
+			for i in xrange(self.p):
+				Theta_cffi[i] = self.args[i]
+			for i in xrange(self.q + 1):
+				Theta_cffi[self.p + i] = self.args[self.p + i]
 		randomSeeds = ffiObj.new('unsigned int[3]')
 		yORn = self.rdrand(3, randomSeeds)
 		if self.LC.IR == True:
