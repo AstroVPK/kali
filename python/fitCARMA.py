@@ -267,7 +267,7 @@ class fitCARMATask(SuppliedLCTask):
 			sys.exit(1)
 		self._readLC(suppliedLC = self.LC.SuppliedLC)
 
-	def _read_01_TaskProps(self):
+	def _read_01_TaskProps(self): # DO WE NEED THIS?
 		try:
 			self.doNoiseless = self.strToBool(self.parser.get('TASK', 'doNoiseless'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:

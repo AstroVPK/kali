@@ -243,10 +243,10 @@ class SuppliedParametersTask(Task):
 			self.ARCoefs = np.array(ARPoly)
 		elif (pRoot == 0) and (pPoly > 0):
 			self.p = pPoly
-			self.ARCoefs = np.array(aPoly)
-			ARPoly = copy.deepcopy(aPoly)
-			ARPoly.insert(0,1.0)
-			self.ARRoots = np.array(np.roots(ARPoly))
+			self.ARCoefs = np.array(ARPoly)
+			aPoly = copy.deepcopy(ARPoly)
+			aPoly.insert(0,1.0)
+			self.ARRoots = np.array(np.roots(aPoly))
 		elif (pRoot > 0) and (pPoly == 0):
 			self.p = pRoot
 			self.ARRoots = np.array(ARRoots)
@@ -300,9 +300,9 @@ class SuppliedParametersTask(Task):
 			self.MACoefs = np.array(MAPoly)
 		elif (qRoot == -1) and (qPoly > -1):
 			self.q = qPoly
+			self.MACoefs = np.array(MAPoly)
 			bPoly = copy.deepcopy(MAPoly)
 			bPoly.reverse()
-			self.MACoefs = np.array(MAPoly)
 			self.MARoots = np.array(np.roots(bPoly))
 		elif (qRoot > -1) and (qPoly == -1):
 			self.q = qRoot + 1
