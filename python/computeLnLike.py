@@ -121,10 +121,16 @@ class computeLnLikeTask(SuppliedLCTask,SuppliedParametersTask):
 			IR = 0
 		self.LC.LnLike = C._computeLnlike(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 		logEntry = 'For Theta = '
-		for i in xrange(self.p):
-			logEntry += str(self.ARCoefs[i]) + ' '
-		for i in xrange(self.q + 1):
-			logEntry += str(self.MACoefs[i]) + ' '
+		if not self.args:
+			for i in xrange(self.p):
+				logEntry += str(self.ARCoefs[i]) + ' '
+			for i in xrange(self.q + 1):
+				logEntry += str(self.MACoefs[i]) + ' '
+		else:
+			for i in xrange(self.p):
+				logEntry += str(self.args[i]) + ' '
+			for i in xrange(self.q + 1):
+				logEntry += str(self.args[self.p + i]) + ' '
 		logEntry += 'LnLike = %+8.7e'%(self.LC.LnLike)
 		self.echo(logEntry)
 		self.log(logEntry)

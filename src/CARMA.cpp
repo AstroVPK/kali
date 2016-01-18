@@ -64,7 +64,7 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void *p2Ar
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA *Systems = Args.Systems;
-	double LnLike = 0;
+	double LnLike = 0.0;
 
 	#ifdef DEBUG_CALCLNLIKE2
 	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
@@ -73,7 +73,7 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void *p2Ar
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
 		LnLike = 0.0;
 		} else {
-		LnLike = -HUGE_VAL;
+		LnLike = -infiniteVal;
 		}
 
 	#ifdef DEBUG_CALCLNLIKE2
@@ -93,7 +93,7 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA* Systems = Args.Systems;
-	double LnLike = 0;
+	double LnLike = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
@@ -118,7 +118,7 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
 		#endif
 
-		LnLike = -HUGE_VAL;
+		LnLike = -infiniteValL;
 		}
 	return LnLike;
 
@@ -222,7 +222,7 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
 		#endif
 
 		} else {
-		LnLike = -HUGE_VAL;
+		LnLike = -infiniteVal;
 		}
 	return LnLike;
 
@@ -323,7 +323,7 @@ double calcLnLike(double *walkerPos, void *func_args) {
 		#endif
 
 		} else {
-		LnLike = -HUGE_VAL;
+		LnLike = -infiniteVal;
 		}
 
 	return LnLike;
