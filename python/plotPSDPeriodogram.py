@@ -27,6 +27,7 @@ except KeyError as Err:
 import sys as sys
 import time as time
 import gatspy.periodic as periodic
+import scipy.signal as signal
 import pdb as pdb
 
 import matplotlib.pyplot as plt
@@ -94,12 +95,15 @@ class plotPSDPeriodogramTask(SuppliedLCTask,plotPSDTask):
 				start = i
 				break
 
+		periodogramScipy = signal.lombscargle(self.LC.t, self.LC.y, frequencies[start:])
+
 		numerPSD = np.zeros((frequencies[start:].shape[0],(self.maxNumerOrder/2) + 2))
 		denomPSD = np.zeros((frequencies[start:].shape[0],(self.maxDenomOrder/2) + 2))
 		PSDNumerator = np.zeros((frequencies[start:].shape[0]))
 		PSDDenominator = np.zeros((frequencies[start:].shape[0]))
 		PSD = np.zeros((frequencies[start:].shape[0]))
 		Ratio = np.zeros((frequencies[start:].shape[0]))
+		RatioScipy = np.zeros((frequencies[start:].shape[0]))
 		for orderVal in xrange(0, self.maxDenomOrder + 1, 2):
 			denomPSD[:,orderVal/2] = self.getPSDDenominator(frequencies[start:], self.aList, orderVal)
 		for orderVal in xrange(0, self.maxNumerOrder + 1, 2):
@@ -111,10 +115,12 @@ class plotPSDPeriodogramTask(SuppliedLCTask,plotPSDTask):
 				PSDDenominator[freq] += denomPSD[freq, orderVal/2]
 			PSD[freq] = PSDNumerator[freq]/PSDDenominator[freq]
 			Ratio[freq] = periodogram[start + freq]/PSD[freq]
+			RatioScipy[freq] = periodogramScipy[freq]/PSD[freq]
 
 		medRatio = np.median(Ratio)
-		plt.loglog(frequencies[start:],periodogram[start:]/Ratio[0])
-		pdb.set_trace()
+		medRatioScipy = np.median(RatioScipy)
+		plt.loglog(frequencies[start:], periodogram[start:]/Ratio[0], label = 'Gatspy periodogram')
+		plt.loglog(frequencies[start:], periodogramScipy/medRatioScipy, label = 'Scipy periodogram')
 
 		logEntry = 'Plotting PSD'
 		self.echo(logEntry)
