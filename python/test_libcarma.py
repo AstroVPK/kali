@@ -113,8 +113,10 @@ for param in Theta:
 	ThetaLine += " %8.7e"%(param)
 print ThetaLine
 Theta_cffi = ffiObj.new("double[%d]"%(len(Theta)))
+xTemp_cffi = ffiObj.new("double[%d]"%(len(Theta)))
 for i in xrange(len(Theta)):
 	Theta_cffi[i] = Theta[i]
+	xTemp_cffi[i] = Theta[i]
 numBurn = 1000000
 dt = 0.1
 numCadences = 100
@@ -256,7 +258,7 @@ if doR:
 	
 	if doFitCARMA:
 		fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, Chain_cffi, LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, xTemp_cffi, Chain_cffi, LnLike_cffi)
 		fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of LC: %f (min)"%((fitStop - fitStart)/60.0)
 
@@ -399,7 +401,7 @@ if doIR:
 
 	if irr_doFitCARMA:
 		irr_fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, irr_Chain_cffi, irr_LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, xTemp_cffi, irr_Chain_cffi, irr_LnLike_cffi)
 		irr_fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of irregular LC: %f (min)"%((irr_fitStop - irr_fitStart)/60.0)
 
