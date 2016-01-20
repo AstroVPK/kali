@@ -27,7 +27,7 @@ import argparse as AP
 import hashlib as hashlib
 import pdb
 
-class LC:
+class LC(object):
 	def __init__(self):
 		self.numCadences = 0
 		self.dt = 0.0

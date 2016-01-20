@@ -44,7 +44,7 @@ new_uint = ffiObj.new_allocator(alloc = C._malloc_uint, free = C._free_uint)
 new_int = ffiObj.new_allocator(alloc = C._malloc_int, free = C._free_int)
 new_double = ffiObj.new_allocator(alloc = C._malloc_double, free = C._free_double)
 
-class Task:
+class Task(object):
 	"""	Base Task class. All other tasks inherit from Task.
 	"""
 	def __init__(self, WorkingDirectory, ConfigFile, TimeStr, *args, **kwargs):
@@ -126,6 +126,10 @@ class Task:
 		frontVal = strVal[0:int(formatStr[1:2])+2]
 		expLoc = strVal.find(r'e')
 		expVal = strVal[expLoc+1:len(strVal)]
+		try:
+			expValInt = int(expVal)
+		except ValueError:
+			return str(val)
 		if int(expVal) == 0:
 			retVal = frontVal
 		else:
@@ -209,6 +213,12 @@ class SuppliedParametersTask(Task):
 		#self.ARCoefs = list()
 		#self.ARRoots = list()
 
+		try:
+			self.RootPolyTol = float(self.parser.get('C-ARMA', 'RootPolyTol'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.RootPolyTol = 1.0e-6
+			print str(Err) + '. Using default RootPolyTol = %+3.4e'%(self.RootPolyTol)
+
 		doneReadingARRoots = False
 		pRoot = 0
 		while not doneReadingARRoots:
@@ -237,7 +247,7 @@ class SuppliedParametersTask(Task):
 			aPoly.pop(0)
 			aPoly = [coeff.real for coeff in aPoly]
 			for ARCoef, aPolyCoef in zip(ARPoly, aPoly):
-				if abs((ARCoef - aPolyCoef)/((ARCoef + aPolyCoef)/2.0)) > 1.0e-6:
+				if abs((ARCoef - aPolyCoef)/((ARCoef + aPolyCoef)/2.0)) > self.RootPolyTol:
 					print 'ARRoots and ARPolynomial supplied are not equivalent!'
 					sys.exit(1)
 			self.p = pRoot
@@ -263,55 +273,57 @@ class SuppliedParametersTask(Task):
 			sys.exit(1)
 
 		doneReadingMARoots = False
-		qRoot = -1
+		qRoot = 0
 		while not doneReadingMARoots:
 			try:
 				MARoots.append(complex(self.parser.get('C-ARMA', 'm_%d'%(qRoot + 1))))
 				qRoot += 1
 			except (CP.NoOptionError, CP.NoSectionError) as Err:
 				doneReadingMARoots = True
-		if len(MARoots) > 0:
-			try:
-				sigma = float(self.parser.get('C-ARMA', 'sigma'))
-			except (CP.NoOptionError, CP.NoSectionError) as Err:
-				print str(Err) + '. sigma must be specified if supplying MA roots!'
-				sys.exit(1)
-			if sigma <= 0.0:
-				print 'sigma must be strictly postive!'
-				sys.exit(1)
+		self.noSigma = False
+		try:
+			self.Sigma = float(self.parser.get('C-ARMA', 'sigma'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.Sigma = 0.0
+			self.noSigma = True
+		if self.noSigma == False and self.Sigma <= 0.0:
+			print 'sigma must be strictly postive!'
+			sys.exit(1)
 
 		doneReadingMAPoly = False
-		qPoly = -1
+		qPoly = 0
 		while not doneReadingMAPoly:
 			try:
-				MAPoly.append(float(self.parser.get('C-ARMA', 'b_%d'%(qPoly + 1))))
+				MAPoly.append(float(self.parser.get('C-ARMA', 'b_%d'%(qPoly))))
 				qPoly += 1
 			except (CP.NoOptionError, CP.NoSectionError) as Err:
 				doneReadingMAPoly = True
 
-		if ((qRoot + 1) == qPoly):
+		if qRoot + 1 == qPoly and self.noSigma == False:
 			bPoly=(np.polynomial.polynomial.polyfromroots(MARoots)).tolist()
 			divisor=bPoly[0].real
-			bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
+			bPoly=[self.Sigma*(coeff.real/divisor) for coeff in bPoly]
 			for MACoef, bPolyCoef in zip(MAPoly, bPoly):
-				if abs((MACoef - bPolyCoef)/((MACoef + bPolyCoef)/2.0)) > 1.0e-6:
+				if abs((MACoef - bPolyCoef)/((MACoef + bPolyCoef)/2.0)) > self.RootPolyTol:
 					print 'MARoots and MAPolynomial supplied are not equivalent!'
 					sys.exit(1)
-			self.q = qRoot + 1
+			self.q = qRoot
 			self.MARoots = np.array(MARoots)
 			self.MACoefs = np.array(MAPoly)
-		elif (qRoot == -1) and (qPoly > -1):
-			self.q = qPoly
+		elif (qRoot == 0) and (qPoly > 0):
+			self.q = qPoly - 1
 			self.MACoefs = np.array(MAPoly)
 			bPoly = copy.deepcopy(MAPoly)
+			self.Sigma = bPoly[0]
 			bPoly.reverse()
+			bPoly = [polyVal/self.Sigma for polyVal in bPoly]
 			self.MARoots = np.array(np.roots(bPoly))
-		elif (qRoot > -1) and (qPoly == -1):
-			self.q = qRoot + 1
+		elif ((qRoot > 0) or (self.Sigma > 0)) and (qPoly == 0):
+			self.q = qRoot
 			self.MARoots = np.array(MARoots)
 			bPoly = (np.polynomial.polynomial.polyfromroots(MARoots)).tolist()
 			divisor = bPoly[0].real
-			bPoly = [sigma*(coeff.real/divisor) for coeff in bPoly]
+			bPoly = [self.Sigma*(coeff.real/divisor) for coeff in bPoly]
 			MACoefs = copy.deepcopy(bPoly)
 			self.MACoefs = np.array(MACoefs)
 		else:
