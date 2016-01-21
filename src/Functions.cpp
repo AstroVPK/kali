@@ -216,7 +216,7 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 	return LnLike;
 	}
 
-int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double* xStart, double *Chain, double *LnLike) {
+int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
 	omp_set_num_threads(nthreads);
 	int threadNum = omp_get_thread_num();
 
@@ -247,54 +247,42 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	VSLStreamStatePtr xStream, initStream;
 	int ndims = p + q + 1;
 	deltaXTemp = static_cast<double*>(_mm_malloc(ndims*sizeof(double),64));
+	initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
 	vslNewStream(&xStream, VSL_BRNG_SFMT19937, xSeed);
-	bool goodPoint = false;
-	do {
-		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, deltaXTemp, 0.0, 1.0e-1);
-		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-			deltaXTemp[dimCtr] += xStart[dimCtr];
-			}
-		if (Systems[threadNum].checkCARMAParams(deltaXTemp) == 1) {
-			//Systems[threadNum].set_dt(dt);
-			//Systems[threadNum].setCARMA(deltaXTemp);
-			//Systems[threadNum].solveCARMA();
-			//Systems[threadNum].resetState();
-			//LnLikeVal = Systems[threadNum].computeLnLike(ptr2Data);
-			goodPoint = true;
-			} else {
-			//LnLikeVal = -infiniteVal;
-			goodPoint = false;
-			}
-		} while (goodPoint == false);
-	vslDeleteStream(&xStream);
-	x.clear();
-	for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-		x.push_back(deltaXTemp[dimCtr]);
-		}
-	_mm_free(deltaXTemp);
 	nlopt::opt opt(nlopt::LN_NELDERMEAD, ndims);
 	opt.set_max_objective(calcLnLike, p2Args);
 	opt.set_maxeval(maxEvals);
 	opt.set_xtol_rel(xTol);
 	double max_LnLike = 0.0;
-	nlopt::result yesno = opt.optimize(x, max_LnLike);
-	initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
-	offsetArr = static_cast<double*>(_mm_malloc(nwalkers*sizeof(double),64));
+	/* NEED TO PARALLELIZE THIS LOOP*/
 	for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
-		offsetArr[walkerNum] = 0.0;
+		bool goodPoint = false;
+		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
+			deltaXTemp[dimCtr] = 0.0;
+			}
+		do {
+			vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, deltaXTemp, 0.0, scatterFactor);
+			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
+				deltaXTemp[dimCtr] += 1.0;
+				deltaXTemp[dimCtr] *= xStart[dimCtr];
+				}
+			if (Systems[threadNum].checkCARMAParams(deltaXTemp) == 1) {
+				goodPoint = true;
+				} else {
+				goodPoint = false;
+				}
+			} while (goodPoint == false);
+		x.clear();
+		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
+			x.push_back(deltaXTemp[dimCtr]);
+			}
+		nlopt::result yesno = opt.optimize(x, max_LnLike);
 		for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-			initPos[walkerNum*ndims + dimNum] = 0.0;
+			initPos[walkerNum*ndims + dimNum] = x[dimNum];
 			}
 		}
-	vslNewStream(&initStream, VSL_BRNG_SFMT19937, initSeed);
-	for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, initStream, nwalkers, offsetArr, 0.0, x[dimNum]*scatterFactor);
-		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
-			initPos[walkerNum*ndims + dimNum] = x[dimNum] + offsetArr[walkerNum];
-			}
-		}
-	vslDeleteStream(&initStream);
-	_mm_free(offsetArr);
+	vslDeleteStream(&xStream);
+	_mm_free(deltaXTemp);
 	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
@@ -386,13 +374,13 @@ extern "C" {
 		return computeLnlike(dt, p, q, Theta, boolIR, tolIR, numCadences, cadence, mask, t, y, yerr);
 		}
 
-	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, unsigned int initSeed, double* xStart, double *Chain, double *LnLike) {
+	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, initSeed, xStart, Chain, LnLike);
+		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, Chain, LnLike);
 		}
 	}

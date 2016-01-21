@@ -292,7 +292,7 @@ class fitCARMATask(SuppliedLCTask):
 		logEntry = r'Computing C-ARMA fit for p = %d and q = %d for LC %s'%(self.p, self.q, self.SuppliedLCFile)
 		self.echo(logEntry)
 		self.log(logEntry)
-		randomSeeds = ffiObj.new('unsigned int[5]')
+		randomSeeds = ffiObj.new('unsigned int[4]')
 		cadence_cffi = ffiObj.new('int[%d]'%(self.LC.numCadences))
 		mask_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
 		t_cffi = ffiObj.new('double[%d]'%(self.LC.numCadences))
@@ -307,7 +307,38 @@ class fitCARMATask(SuppliedLCTask):
 			y_cffi[i] = self.LC.y[i]
 			yerr_cffi[i] = self.LC.yerr[i]
 		self.ndims = self.p + self.q + 1
-		yORn = self.rdrand(5, randomSeeds)
+		yORn = self.rdrand(4, randomSeeds)
+		xStart_cffi = ffiObj.new('double[%d]'%(self.ndims))
+
+		pRoots = -1.0*np.random.random_sample(self.p) + 0.0j
+		for root1 in pRoots:
+			for root2 in pRoots:
+				if root1 == root2:
+					imag = np.random.random_sample(1)
+					root1 += imag*1.0j
+					root2 -= imag*1.0j
+		aPoly = np.polynomial.polynomial.polyfromroots(pRoots)
+		aPoly = aPoly.tolist()
+		aPoly.reverse()
+		aPoly.pop(0)
+		aPoly = [coeff.real for coeff in aPoly]
+
+		sigma = np.std(self.LC.y)
+		qRoots = -1.0*np.random.random_sample(self.q) + 0.0j
+		for root1 in qRoots:
+			for root2 in qRoots:
+				if root1 == root2:
+					imag = np.random.random_sample(1)
+					root1 += imag*1.0j
+					root2 -= imag*1.0j
+		bPoly=(np.polynomial.polynomial.polyfromroots(qRoots)).tolist()
+		divisor=bPoly[0].real
+		bPoly=[sigma*(coeff.real/divisor) for coeff in bPoly]
+
+		xStart = np.array(aPoly + bPoly)
+		for i in xrange(self.p + self.q + 1):
+			xStart_cffi[i] = xStart[i]
+
 		Chain_cffi = ffiObj.new('double[%d]'%(self.nsteps*self.nwalkers*self.ndims))
 		LnLike_cffi = ffiObj.new('double[%d]'%(self.nsteps*self.nwalkers))
 		if self.LC.IR == True:
@@ -315,7 +346,7 @@ class fitCARMATask(SuppliedLCTask):
 		else:
 			IR = 0
 		startT = time.time()
-		C._fitCARMA(self.LC.dt, self.p, self.q, IR, self.LC.tolIR, self.scatterFactor, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, self.nthreads, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, randomSeeds[0], randomSeeds[1], randomSeeds[2], randomSeeds[3], randomSeeds[4], Chain_cffi, LnLike_cffi)
+		C._fitCARMA(self.LC.dt, self.p, self.q, IR, self.LC.tolIR, self.scatterFactor, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, self.nthreads, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, randomSeeds[0], randomSeeds[1], randomSeeds[2], randomSeeds[3], xStart_cffi, Chain_cffi, LnLike_cffi)
 		stopT = time.time()
 		diffT = stopT - startT
 		logEntry = r'C-ARMA fit for p = %d and q = %d took %f sec = %f min = %f hrs'%(self.p, self.q, diffT, diffT/60.0, diffT/3600.0)
