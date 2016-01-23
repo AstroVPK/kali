@@ -202,6 +202,11 @@ class fitCARMATask(SuppliedLCTask):
 			self.LC.tolIR = 1.0e-3
 			print str(Err) + '. Using default tolIR = %+4.3e'%(self.LC.tolIR)
 		try:
+			self.sigmaFactor = float(self.parser.get('MCMC', 'sigmaFactor'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.sigmaFactor = 1.0e-2
+			print str(Err) + '. Using default sigmaFactor = %+4.3e'%(self.sigmaFactor)
+		try:
 			self.scatterFactor = float(self.parser.get('MCMC', 'scatterFactor'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.scatterFactor = 1.0e-6
@@ -323,7 +328,7 @@ class fitCARMATask(SuppliedLCTask):
 		aPoly.pop(0)
 		aPoly = [coeff.real for coeff in aPoly]
 
-		sigma = np.std(self.LC.y)
+		sigma = np.std(self.LC.y)*self.sigmaFactor
 		qRoots = -1.0*np.random.random_sample(self.q) + 0.0j
 		for root1 in qRoots:
 			for root2 in qRoots:

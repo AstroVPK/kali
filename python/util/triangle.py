@@ -248,15 +248,19 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 #title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
                 #title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
                 if labels is not None:
-                    numberLog10 = int(math.log10(q_50))
-                    numberLog10 -= 1
-                    if (numberLog10!=0):
-                        remainingPart = q_50/math.pow(10.0,numberLog10)
-                        minusPart = q_m/math.pow(10.0,numberLog10)
-                        plusPart = q_p/math.pow(10.0,numberLog10)
-                        title = r"%s$ = %3.2f^{+%.2f}_{-%.2f} \times 10^{%d}$"%(labels[i],remainingPart,plusPart,minusPart,numberLog10)
-                    else:
-                        title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i],q_50,q_p,q_m)
+                    try:
+                        numberLog10 = int(math.log10(q_50))
+                        numberLog10 -= 1
+                        if (numberLog10!=0):
+                            remainingPart = q_50/math.pow(10.0,numberLog10)
+                            minusPart = q_m/math.pow(10.0,numberLog10)
+                            plusPart = q_p/math.pow(10.0,numberLog10)
+                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f} \times 10^{%d}$"%(labels[i],remainingPart,plusPart,minusPart,numberLog10)
+                        else:
+                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i],q_50,q_p,q_m)
+                    except:
+                        #print str(Err) + '. Using np.nan!'
+                        title = str(np.nan)
 
                 # Add in the column name if it's given.
                 #if labels is not None:
