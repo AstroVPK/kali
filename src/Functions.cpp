@@ -218,6 +218,7 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 
 int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
 	omp_set_num_threads(nthreads);
+	int ndims = p + q + 1;
 	int threadNum = omp_get_thread_num();
 
 	LnLikeData Data;
@@ -243,46 +244,59 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	p2Args = &Args;
 	double LnLikeVal = 0.0;
 	double *initPos = nullptr, *offsetArr = nullptr, *deltaXTemp = nullptr;
-	vector<double> x;
-	VSLStreamStatePtr xStream, initStream;
-	int ndims = p + q + 1;
-	deltaXTemp = static_cast<double*>(_mm_malloc(ndims*sizeof(double),64));
+	vector<vector<double>> x (nthreads, vector<double>(ndims));
+	VSLStreamStatePtr *xStream = (VSLStreamStatePtr*)_mm_malloc(nthreads*sizeof(VSLStreamStatePtr),64);
+	deltaXTemp = static_cast<double*>(_mm_malloc(ndims*nthreads*sizeof(double),64));
 	initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
-	vslNewStream(&xStream, VSL_BRNG_SFMT19937, xSeed);
-	nlopt::opt opt(nlopt::LN_NELDERMEAD, ndims);
-	opt.set_max_objective(calcLnLike, p2Args);
-	opt.set_maxeval(maxEvals);
-	opt.set_xtol_rel(xTol);
-	double max_LnLike = 0.0;
-	/* NEED TO PARALLELIZE THIS LOOP*/
+	#pragma omp parallel for default(none) shared(nthreads, xStream, xSeed, nwalkers)
+	for (int i = 0; i < nthreads; ++i) {
+		vslNewStream(&xStream[i], VSL_BRNG_SFMT19937, xSeed);
+		vslSkipAheadStream(xStream[i], i*(nwalkers/nthreads));
+		}
+	nlopt::opt *optArray[nthreads];
+	for (int i = 0; i < nthreads; ++i) {
+		optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims);
+		optArray[i]->set_max_objective(calcLnLike, p2Args);
+		optArray[i]->set_maxeval(maxEvals);
+		optArray[i]->set_xtol_rel(xTol);
+		}
+	double *max_LnLike = static_cast<double*>(_mm_malloc(nthreads*sizeof(double),64));
+	#pragma omp parallel for default(none) shared(nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, Systems, x, max_LnLike)
 	for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
+		int threadNum = omp_get_thread_num();
 		bool goodPoint = false;
+		max_LnLike[threadNum] = 0.0;
 		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-			deltaXTemp[dimCtr] = 0.0;
+			deltaXTemp[threadNum*ndims + dimCtr] = 0.0;
 			}
 		do {
-			vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream, ndims, deltaXTemp, 0.0, scatterFactor);
+			vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream[threadNum], ndims, &deltaXTemp[threadNum*ndims], 0.0, scatterFactor);
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-				deltaXTemp[dimCtr] += 1.0;
-				deltaXTemp[dimCtr] *= xStart[dimCtr];
+				deltaXTemp[threadNum*ndims + dimCtr] += 1.0;
+				deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
 				}
-			if (Systems[threadNum].checkCARMAParams(deltaXTemp) == 1) {
+			if (Systems[threadNum].checkCARMAParams(&deltaXTemp[threadNum*ndims]) == 1) {
 				goodPoint = true;
 				} else {
 				goodPoint = false;
 				}
 			} while (goodPoint == false);
-		x.clear();
+		x[threadNum].clear();
 		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-			x.push_back(deltaXTemp[dimCtr]);
+			x[threadNum].push_back(deltaXTemp[threadNum*ndims + dimCtr]);
 			}
-		nlopt::result yesno = opt.optimize(x, max_LnLike);
+		nlopt::result yesno = optArray[threadNum]->optimize(x[threadNum], max_LnLike[threadNum]);
 		for (int dimNum = 0; dimNum < ndims; ++dimNum) {
-			initPos[walkerNum*ndims + dimNum] = x[dimNum];
+			initPos[walkerNum*ndims + dimNum] = x[threadNum][dimNum];
 			}
 		}
-	vslDeleteStream(&xStream);
+	for (int i = 0; i < nthreads; ++i) {
+		vslDeleteStream(&xStream[i]);
+		delete optArray[i];
+		}
+	_mm_free(xStream);
 	_mm_free(deltaXTemp);
+	_mm_free(max_LnLike);
 	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
