@@ -207,6 +207,21 @@ class fitCARMATask(SuppliedLCTask):
 			self.sigmaFactor = 1.0e-2
 			print str(Err) + '. Using default sigmaFactor = %+4.3e'%(self.sigmaFactor)
 		try:
+			self.maxSigmaFactor = float(self.parser.get('C-ARMA', 'maxSigmaFactor'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.maxSigmaFactor = 1.0e2
+			print str(Err) + '. Using default maxSigmaFactor = %+4.3e'%(self.maxSigmaFactor)
+		try:
+			self.minTimescaleFactor = float(self.parser.get('C-ARMA', 'minTimescaleFactor'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.minTimescaleFactor = 1.0e-2
+			print str(Err) + '. Using default minTimescaleFactor = %+4.3e'%(self.minTimescaleFactor)
+		try:
+			self.maxTimescaleFactor = float(self.parser.get('C-ARMA', 'maxTimescaleFactor'))
+		except (CP.NoOptionError, CP.NoSectionError) as Err:
+			self.maxTimescaleFactor = 1.0e2
+			print str(Err) + '. Using default maxTimescaleFactor = %+4.3e'%(self.maxTimescaleFactor)
+		try:
 			self.scatterFactor = float(self.parser.get('MCMC', 'scatterFactor'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.scatterFactor = 1.0e-1
@@ -328,7 +343,10 @@ class fitCARMATask(SuppliedLCTask):
 		aPoly.pop(0)
 		aPoly = [coeff.real for coeff in aPoly]
 
-		sigma = np.std(self.LC.y[np.nonzero(self.LC.y)])*self.sigmaFactor
+		sigma = (np.std(self.LC.y[np.nonzero(self.LC.y)]) - np.median(self.LC.yerr[np.nonzero(self.LC.y)]))*self.sigmaFactor
+		self.maxSigma = self.maxSigmaFactor*np.std(self.LC.y[np.nonzero(self.LC.y)])
+		self.minTimescale = self.minTimescaleFactor*(np.min(self.LC.t_incr))
+		self.maxTimescale = self.maxTimescaleFactor*(self.LC.t[-1] - self.LC.t[0])
 		qRoots = -1.0*np.random.random_sample(self.q) + 0.0j
 		for root1 in qRoots:
 			for root2 in qRoots:
@@ -351,7 +369,7 @@ class fitCARMATask(SuppliedLCTask):
 		else:
 			IR = 0
 		startT = time.time()
-		C._fitCARMA(self.LC.dt, self.p, self.q, IR, self.LC.tolIR, self.scatterFactor, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, self.nthreads, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, randomSeeds[0], randomSeeds[1], randomSeeds[2], randomSeeds[3], xStart_cffi, Chain_cffi, LnLike_cffi)
+		C._fitCARMA(self.LC.dt, self.p, self.q, IR, self.LC.tolIR, self.scatterFactor, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, self.maxSigma, self.minTimescale, self.maxTimescale, self.nthreads, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, randomSeeds[0], randomSeeds[1], randomSeeds[2], randomSeeds[3], xStart_cffi, Chain_cffi, LnLike_cffi)
 		stopT = time.time()
 		diffT = stopT - startT
 		logEntry = r'C-ARMA fit for p = %d and q = %d took %f sec = %f min = %f hrs'%(self.p, self.q, diffT, diffT/60.0, diffT/3600.0)

@@ -9,13 +9,13 @@
 
 using namespace std;
 
-double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
+double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcCARMALnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcCARMALnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
-double calcLnLike(const vector<double> &x, vector<double>& grad, void* p2Args);
+double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcLnLike(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 struct LnLikeData {
 	int numCadences;
@@ -28,6 +28,9 @@ struct LnLikeData {
 	double *y;
 	double *yerr;
 	double *mask;
+	double maxSigma;
+	double minTimescale;
+	double maxTimescale;
 	};
 
 class CARMA {
@@ -140,20 +143,10 @@ public:
 	void getCMARoots(complex<double>*& CMARoots);
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
-
-	/*double observeSystem(double distRand, double noiseRand);
-	double observeSystem(double distRand, double noiseRand, double mask);
-	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y);
-	void observeSystem(int numObs, unsigned int distSeed, unsigned int noiseSeed, double* distRand, double* noiseRand, double noiseSigma, double* y, double* mask);*/
-
 	void observeSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
 	void addNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
-	double computeLnLike(LnLikeData *ptr2LnLikeData);
-
-	/*double computeLnLikeR(int numPts, double *t, double *y, double *yerr);
-	double computeLnLikeR(int numPts, double *t, double *y, double *yerr, double *mask);
-	double computeLnLikeIR(int numPts, double *t, double *y, double *yerr);
-	double computeLnLikeIR(int numPts, double *t, double *y, double *yerr, double *mask);*/
+	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
+	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	};
 
 struct LnLikeArgs {
@@ -179,7 +172,5 @@ void viewMatrix(int nRows, int nCols, complex<double>* mat);
 double dtime();
 
 void kron(int m, int n, double* A, int p, int q, double* B, double* C);
-
-void expm(double xi, double* out);
 
 #endif

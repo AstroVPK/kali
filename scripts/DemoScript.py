@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse as argparse
+import math
 import numpy as np
 import scipy.stats as spstats
 import sys
@@ -21,7 +22,9 @@ parser.add_argument("pwd", help = "Path to Working Directory")
 parser.add_argument("cf", help = "Configuration File")
 parser.add_argument("-o", "--old", help = "DateTime of run to be used")
 parser.add_argument("-v", "--verbose", help = "Verbose T/F")
-parser.add_argument("-p", "--prob", help = "Probability of retaining a point in lc", default = 0.5)
+parser.add_argument("-p", "--prob", help = "Probability of retaining a point in lc")
+parser.add_argument("-pS1", "--probSuper1", help = "Location of sinc peak in time for computing probability")
+parser.add_argument("-pS2", "--probSuper2", help = "Divisor of total length of sinc")
 args = parser.parse_args()
 
 if args.old:
@@ -56,13 +59,25 @@ except IOError:
 	IrregularFile = 'Irregular.lc'
 	Regular = np.loadtxt(args.pwd + RegularFile, skiprows = 7)
 	numCadences_Regular = Regular.shape[0]
-	
-	if (float(args.prob) >= 1.0) or (float(args.prob) <= 0.0):
-		raise RuntimeError('rob must be between 0.0 and 1.0')
-	ProbList = spstats.bernoulli.rvs(float(args.prob), size = numCadences_Regular)
+
+	if args.probSuper1 and args.probSuper2 and args.prob == None:
+		timePeriod = float(args.probSuper1)
+		multiplier = float(args.probSuper2)
+		ProbList = list()
+		dt = np.median(Regular[1:,2] - Regular[:-1,2])
+		for i in xrange(numCadences_Regular):
+			p = abs(np.sinc((i*dt - timePeriod)/(numCadences_Regular*dt*multiplier)))
+			ProbList.append(spstats.bernoulli.rvs(float(p), size = 1))
+
+	if args.prob == None and args.probSuper1 == None and args.probSuper2 == None:
+		args.prob  = 0.5
+		if (float(args.prob) >= 1.0) or (float(args.prob) <= 0.0):
+			raise RuntimeError('prob must be between 0.0 and 1.0')
+		ProbList = spstats.bernoulli.rvs(float(args.prob), size = numCadences_Regular)
+
 	numCadences_Missing = np.sum(ProbList)
 	numCadences_Irregular = np.sum(ProbList)
-	
+
 	Missing = open(args.pwd + MissingFile, 'w')
 	line = "#ConfigFileHash: %s\n"%('e338349c2ce27cd3daa690704386d14c6299d410efe52e3df9c5e1ca75c8347d32782aa7e289514b95cc8901ad3a88b87cb56e1925392968d4471fb480e1e37a')
 	Missing.write(line)
@@ -78,7 +93,7 @@ except IOError:
 	Missing.write(line)
 	line = "#cadence mask t x y yerr\n"
 	Missing.write(line)
-	
+
 	Irregular = open(args.pwd + IrregularFile, 'w')
 	line = "#ConfigFileHash: %s\n"%('e338349c2ce27cd3daa690704386d14c6299d410efe52e3df9c5e1ca75c8347d32782aa7e289514b95cc8901ad3a88b87cb56e1925392968d4471fb480e1e37a')
 	Irregular.write(line)

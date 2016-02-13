@@ -104,6 +104,7 @@ p = len(aPoly)
 
 bPoly = [7.0e-9, 1.2e-9]
 q = len(bPoly) - 1
+maxSigma = 7.0e-9*100.0
 
 ndims = p + q + 1
 
@@ -120,6 +121,8 @@ for i in xrange(len(Theta)):
 numBurn = 1000000
 dt = 0.1
 numCadences = 100
+minTimescale = dt/1000.0
+maxTimescale = dt*numCadences*100.0
 startCadence = 0
 burnSeed = 1311890535
 distSeed = 2603023340
@@ -131,7 +134,7 @@ fracSignalToNoiseLSST = 1.0e-3
 fracSignalToNoiseSDSS = 1.0e-2
 fracSignalToNoise = fracSignalToNoiseNone
 nthreads = 4
-nwalkers = 100
+nwalkers = 160
 nsteps = 500
 maxEvals = 1000
 xTol = 0.005
@@ -250,14 +253,16 @@ if doR:
 		fig1.savefig('./examples/fig1.jpg',dpi=70)
 
 	LnLikeStart = time.time()
-	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+	LnLikeVal = C._computeLnLikelihood(dt, p, q, Theta_cffi, IR, tolIR, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 	LnLikeStop = time.time()
 	print "LnLike: %+17.17e"%(LnLikeVal)
 	print "Time taken to compute LnLike of LC: %f (min)"%((LnLikeStop - LnLikeStart)/60.0)
 	
 	if doFitCARMA:
+		#print "minTimescale: %+4.3e"%(minTimescale)
+		#print "maxTimescale: %+4.3e"%(maxTimescale)
 		fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart_cffi, Chain_cffi, LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart_cffi, Chain_cffi, LnLike_cffi)
 		fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of LC: %f (min)"%((fitStop - fitStart)/60.0)
 
@@ -393,14 +398,14 @@ if doIR:
 		fig4.savefig('./examples/fig4.jpg',dpi=70)
 
 	irr_LnLikeStart = time.time()
-	LnLikeVal = C._computeLnlike(dt, p, q, Theta_cffi, IR, tolIR, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
+	LnLikeVal = C._computeLnLikelihood(dt, p, q, Theta_cffi, IR, tolIR, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi)
 	irr_LnLikeStop = time.time()
 	print "LnLike: %+17.17e"%(LnLikeVal)
 	print "Time taken to compute LnLike of irregular LC: %f (min)"%((irr_LnLikeStop - irr_LnLikeStart)/60.0)
 
 	if irr_doFitCARMA:
 		irr_fitStart = time.time()
-		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart_cffi, irr_Chain_cffi, irr_LnLike_cffi)
+		C._fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, irr_cadence_cffi, irr_mask_cffi, irr_t_cffi, irr_y_cffi, irr_yerr_cffi, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart_cffi, irr_Chain_cffi, irr_LnLike_cffi)
 		irr_fitStop = time.time()
 		print "Time taken to estimate C-ARMA params of irregular LC: %f (min)"%((irr_fitStop - irr_fitStart)/60.0)
 

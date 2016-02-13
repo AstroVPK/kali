@@ -190,8 +190,8 @@ int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR
 	return retVal;
 	}
 
-double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
-	double LnLike = 0.0;
+double computeLnLikelihood(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	double LnLikelihood = 0.0;
 	CARMA SystemMaster = CARMA();
 	SystemMaster.allocCARMA(p, q);
 	int goodYN = SystemMaster.checkCARMAParams(Theta);
@@ -210,16 +210,48 @@ double computeLnlike(double dt, int p, int q, double *Theta, bool IR, double tol
 		Data.yerr = yerr;
 		Data.mask = mask;
 		LnLikeData *ptr2Data = &Data;
-		LnLike = SystemMaster.computeLnLike(ptr2Data);
+		LnLikelihood = SystemMaster.computeLnLikelihood(ptr2Data);
 		SystemMaster.deallocCARMA();
 		}
-	return LnLike;
+	return LnLikelihood;
 	}
 
-int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
+double computeLnPosterior(double dt, int p, int q, double *Theta, bool IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale) {
+	double LnPosterior = 0.0;
+	CARMA SystemMaster = CARMA();
+	SystemMaster.allocCARMA(p, q);
+	int goodYN = SystemMaster.checkCARMAParams(Theta);
+	if (goodYN == 1) {
+		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
+		SystemMaster.set_dt(dt);
+		SystemMaster.setCARMA(Theta);
+		SystemMaster.solveCARMA();
+		SystemMaster.resetState();
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
+		LnLikeData *ptr2Data = &Data;
+		LnPosterior = SystemMaster.computeLnLikelihood(ptr2Data) + SystemMaster.computeLnPrior(ptr2Data);
+		SystemMaster.deallocCARMA();
+		}
+	return LnPosterior;
+	}
+
+int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
 	omp_set_num_threads(nthreads);
 	int ndims = p + q + 1;
 	int threadNum = omp_get_thread_num();
+
+	//printf("minTimescale: %+4.3e\n",minTimescale);
+	//printf("maxTimescale: %+4.3e\n",maxTimescale);
 
 	LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -229,6 +261,9 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+	Data.maxSigma = maxSigma;
+	Data.minTimescale = minTimescale;
+	Data.maxTimescale = maxTimescale;
 	LnLikeData *ptr2Data = &Data;
 	LnLikeArgs Args;
 	Args.numThreads = nthreads;
@@ -256,7 +291,7 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	nlopt::opt *optArray[nthreads];
 	for (int i = 0; i < nthreads; ++i) {
 		optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims);
-		optArray[i]->set_max_objective(calcLnLike, p2Args);
+		optArray[i]->set_max_objective(calcLnPosterior, p2Args);
 		optArray[i]->set_maxeval(maxEvals);
 		optArray[i]->set_xtol_rel(xTol);
 		}
@@ -297,7 +332,7 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	_mm_free(xStream);
 	_mm_free(deltaXTemp);
 	_mm_free(max_LnLike);
-	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnLike, p2Args, zSSeed, walkerSeed, moveSeed);
+	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, nthreads, 2.0, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
 	for (int tNum = 0; tNum < nthreads; ++tNum) {
@@ -378,23 +413,33 @@ extern "C" {
 		return makeObservedLC(dt, p, q, Theta, boolIR, tolIR, fracIntrinsicVar,fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, cadence, mask, t, y, yerr);
 		}
 
-	extern double _computeLnlike(double dt, int p, int q, double *Theta, int IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
+	extern double _computeLnLikelihood(double dt, int p, int q, double *Theta, int IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return computeLnlike(dt, p, q, Theta, boolIR, tolIR, numCadences, cadence, mask, t, y, yerr);
+		return computeLnLikelihood(dt, p, q, Theta, boolIR, tolIR, numCadences, cadence, mask, t, y, yerr);
 		}
 
-	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
+	extern double _computeLnPosterior(double dt, int p, int q, double *Theta, int IR, double tolIR, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale) {
 		bool boolIR;
 		if (IR == 0) {
 			boolIR = false;
 			} else {
 			boolIR = true;
 			}
-		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, Chain, LnLike);
+		return computeLnPosterior(dt, p, q, Theta, boolIR, tolIR, numCadences, cadence, mask, t, y, yerr, maxSigma, minTimescale, maxTimescale);
+		}
+
+	extern int _fitCARMA(double dt, int p, int q, int IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
+		bool boolIR;
+		if (IR == 0) {
+			boolIR = false;
+			} else {
+			boolIR = true;
+			}
+		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, Chain, LnLike);
 		}
 	}

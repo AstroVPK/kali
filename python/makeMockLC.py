@@ -190,7 +190,7 @@ class makeMockLCTask(SuppliedParametersTask, SuppliedLCTask):
 			if self.doNoiseless == True:
 				yORn = C._makeIntrinsicLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.numBurn, self.LC.numCadences, self.LC.startCadence, randomSeeds[0], randomSeeds[1], cadence_cffi, mask_cffi, t_cffi, x_cffi)
 			yORn = C._makeObservedLC(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.intrinsicVar, self.LC.noiseLvl, self.numBurn, self.LC.numCadences, self.LC.startCadence, randomSeeds[0], randomSeeds[1], randomSeeds[2], cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
-			self.LC.LnLike = C._computeLnlike(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
+			self.LC.LnLike = C._computeLnLikelihood(self.LC.dt, self.p, self.q, Theta_cffi, IR, self.LC.tolIR, self.LC.numCadences, cadence_cffi, mask_cffi, t_cffi, y_cffi, yerr_cffi)
 			for i in xrange(self.LC.numCadences):
 				self.LC.cadence[i] = cadence_cffi[i]
 				self.LC.mask[i] = mask_cffi[i]

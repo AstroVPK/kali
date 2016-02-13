@@ -46,12 +46,14 @@
 //#define DEBUG_DEALLOCATECARMA_DEEP
 //#define DEBUG_RESETSTATE
 //#define DEBUG_CALCLNLIKE
-//#define DEBUG_CALCLNLIKE2
+//#define DEBUG_CALCCARMALNLIKE
+//#define DEBUG_COMPUTELNPRIOR
 
 using namespace std;
 
-double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	/*! Used for computing good regions */
+
 	if (!grad.empty()) {
 		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
@@ -64,28 +66,28 @@ double calcCARMALnLike(const vector<double> &x, vector<double>& grad, void *p2Ar
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA *Systems = Args.Systems;
-	double LnLike = 0.0;
+	double LnPosterior = 0.0;
 
 	#ifdef DEBUG_CALCLNLIKE2
-	printf("calcLnLike - threadNum: %d; Location: ",threadNum);
+	printf("calcCARMALnPosterior - threadNum: %d; Location: ",threadNum);
 	#endif
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
-		LnLike = 0.0;
+		LnPosterior = 0.0;
 		} else {
-		LnLike = -infiniteVal;
+		LnPosterior = -infiniteVal;
 		}
 
-	#ifdef DEBUG_CALCLNLIKE2
-	printf("LnLike: %f\n",LnLike);
+	#ifdef DEBUG_CALCCARMALNLIKE
+	printf("calcCARMALnPosterior - threadNum: %d; LnPosterior: %f\n", threadNum, LnPosterior);
 	fflush(0);
 	#endif
 
-	return LnLike;
+	return LnPosterior;
 
 	}
 
-double calcCARMALnLike(double *walkerPos, void *func_args) {
+double calcCARMALnPosterior(double *walkerPos, void *func_args) {
 	/*! Used for computing good regions */
 
 	int threadNum = omp_get_thread_num();
@@ -93,7 +95,7 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA* Systems = Args.Systems;
-	double LnLike = 0.0;
+	double LnPosterior = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
@@ -106,7 +108,7 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
 		#endif
 
-		LnLike = 0.0;
+		LnPosterior = 0.0;
 		} else {
 
 		#ifdef DEBUG_FUNC2
@@ -118,13 +120,13 @@ double calcCARMALnLike(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
 		#endif
 
-		LnLike = -infiniteVal;
+		LnPosterior = -infiniteVal;
 		}
-	return LnLike;
+	return LnPosterior;
 
 	}
 
-double calcLnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	if (!grad.empty()) {
 		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
@@ -138,7 +140,7 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	LnLikeArgs Args = *ptr2Args;
 	LnLikeData *ptr2Data = Args.Data;
 	CARMA *Systems = Args.Systems;
-	double LnLike = 0;
+	double LnPosterior = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
 		Systems[threadNum].setCARMA(const_cast<double*>(&x[0]));
@@ -148,87 +150,85 @@ double calcLnLike(const vector<double> &x, vector<double>& grad, void *p2Args) {
 		#ifdef DEBUG_CALCLNLIKE
 		#pragma omp critical
 		{
-			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
 				}
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
-			printf("calcLnLike - threadNum: %d; dt\n",threadNum);
-			printf("%DISPLAY\n",Systems[threadNum].get_dt());
+			printf("calcLnPosterior - threadNum: %d; System good!\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; dt\n",threadNum, Systems[threadNum].get_dt());
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; A\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; A\n",threadNum);
 			Systems[threadNum].printA();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; w\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; w\n",threadNum);
 			Systems[threadNum].printw();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; expw\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; expw\n",threadNum);
 			Systems[threadNum].printexpw();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; vr\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; vr\n",threadNum);
 			Systems[threadNum].printvr();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; vrInv\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; vrInv\n",threadNum);
 			Systems[threadNum].printvrInv();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; B\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; B\n",threadNum);
 			Systems[threadNum].printB();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; C\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; C\n",threadNum);
 			Systems[threadNum].printC();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; F\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; F\n",threadNum);
 			Systems[threadNum].printF();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; D\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; D\n",threadNum);
 			Systems[threadNum].printD();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; Q\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; Q\n",threadNum);
 			Systems[threadNum].printQ();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; Sigma\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; Sigma\n",threadNum);
 			Systems[threadNum].printSigma();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; X\n",threadNum);
 			Systems[threadNum].printX();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; P\n",threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
 			fflush(0);
 		}
 		#endif
 
-		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
 
 		#ifdef DEBUG_CALCLNLIKE
 		#pragma omp critical
 		{
-			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
 				}
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; X\n",threadNum);
 			Systems[threadNum].printX();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; P\n",threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
+			printf("calcLnPosterior - threadNum: %d; LnLike: %f\n",threadNum,LnPosterior);
 			printf("\n");
 		}
 		#endif
 
 		} else {
-		LnLike = -infiniteVal;
+		LnPosterior = -infiniteVal;
 		}
-	return LnLike;
-
+	return LnPosterior;
 	}
 
-double calcLnLike(double *walkerPos, void *func_args) {
+double calcLnPosterior(double *walkerPos, void *func_args) {
 
 	int threadNum = omp_get_thread_num();
 
@@ -238,10 +238,9 @@ double calcLnLike(double *walkerPos, void *func_args) {
 	LnLikeData *Data = Args.Data;
 	CARMA *Systems = Args.Systems;
 	LnLikeData *ptr2Data = Data;
-	double LnLike = 0;
+	double LnPosterior = 0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
-
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
@@ -249,84 +248,83 @@ double calcLnLike(double *walkerPos, void *func_args) {
 		#ifdef DEBUG_CALCLNLIKE2
 		#pragma omp critical
 		{
-			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
-			printf("calcLnLike - threadNum: %d; dt\n",threadNum);
-			printf("%DISPLAY\n",Systems[threadNum].get_dt());
+			printf("calcLnPosterior - threadNum: %d; System good!\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; dt\n",threadNum, Systems[threadNum].get_dt());
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; A\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; A\n",threadNum);
 			Systems[threadNum].printA();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; w\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; w\n",threadNum);
 			Systems[threadNum].printw();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; expw\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; expw\n",threadNum);
 			Systems[threadNum].printexpw();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; vr\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; vr\n",threadNum);
 			Systems[threadNum].printvr();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; vrInv\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; vrInv\n",threadNum);
 			Systems[threadNum].printvrInv();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; B\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; B\n",threadNum);
 			Systems[threadNum].printB();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; C\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; C\n",threadNum);
 			Systems[threadNum].printC();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; F\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; F\n",threadNum);
 			Systems[threadNum].printF();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; D\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; D\n",threadNum);
 			Systems[threadNum].printD();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; Q\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; Q\n",threadNum);
 			Systems[threadNum].printQ();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; Sigma\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; Sigma\n",threadNum);
 			Systems[threadNum].printSigma();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; X\n",threadNum);
 			Systems[threadNum].printX();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; P\n",threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
 			fflush(0);
 		}
 		#endif
 
-		LnLike = Systems[threadNum].computeLnLike(ptr2Data);
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
 
 		#ifdef DEBUG_CALCLNLIKE2
 		#pragma omp critical
 		{
-			printf("calcLnLike - threadNum: %d; walkerPos: ",threadNum);
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ", threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; X\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; X\n", threadNum);
 			Systems[threadNum].printX();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; P\n",threadNum);
+			printf("calcLnPosterior - threadNum: %d; P\n", threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
-			printf("calcLnLike - threadNum: %d; LnLike: %f\n",threadNum,LnLike);
+			printf("calcLnLike - threadNum: %d; LnPosterior: %f\n", threadNum, LnPosterior);
 			printf("\n");
 		}
 		#endif
 
 		} else {
-		LnLike = -infiniteVal;
+		LnPosterior = -infiniteVal;
 		}
 
-	return LnLike;
+	return LnPosterior;
 	}
 
 void zeroMatrix(int nRows, int nCols, int* mat) {
@@ -417,24 +415,6 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 				}
 			}
 		}
-	}
-
-void expm(double xi, double* out) {
-	/*#pragma omp simd
-	for (int i = 0; i < p; ++i) {
-		expw[i + i*p] = exp(dt*w[i]);
-		}
-
-	complex<double> alpha = 1.0+0.0i, beta = 0.0+0.0i;
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw, p, &beta, A, p);
-	cblas_zgemm3m(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, A, p, vrInv, p, &beta, AScratch, p);
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			out[rowCtr + colCtr*p] = FScratch[rowCtr + colCtr*p];
-			}
-		}*/
 	}
 
 CARMA::CARMA() {
@@ -967,15 +947,6 @@ void CARMA::deallocCARMA() {
 	printf("deallocDLM - threadNum: %d; Deallocated Theta Address of System: %p\n",threadNum,this);
 	#endif
 
-	/*if (D) {
-		_mm_free(D);
-		D = nullptr;
-		}
-
-	#ifdef DEBUG_DEALLOCATECARMA_DEEP
-	printf("deallocDLM - threadNum: %d; Deallocated D Address of System: %p\n",threadNum,this);
-	#endif*/
-
 	if (H) {
 		_mm_free(H);
 		H = nullptr;
@@ -1214,14 +1185,6 @@ void CARMA::printF() {
 const double* CARMA::getF() const {
 	return F;
 	}
-
-/*void CARMA::printD() {
-	viewMatrix(p,1,D);
-	}
-
-const double* CARMA::getD() const {
-	return D;
-	}*/
 
 void CARMA::printQ() {
 	viewMatrix(p,p,Q);
@@ -1856,30 +1819,6 @@ void CARMA::solveCARMA() {
 	printf("\n");
 	#endif
 
-	/*complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
-	for (int j = 0; j < p; ++j) {
-		BScratch[j] = 0.0+0.0i;
-		for (int l = 0; l < p; ++l) {
-			#pragma omp simd
-			for (int k = 0; k < p; ++k) {
-				rootSum = w[k] + w[l];
-				rootSumInv = (1.0+0.0i)/rootSum;
-				rootSumDT = rootSum*dt;
-				expRootSumDTM1 = exp(rootSumDT) - 1.0;
-				AScratch[k + l*p] = C[k + l*p]*(exp((dt+0.0i)*rootSum) - (1.0+0.0i))*rootSumInv;
-				BScratch[j] += vr[j + k*p]*AScratch[k + l*p]*vr[j + l*p];
-				}
-			}
-		D[j] = sqrt(BScratch[j].real());
-		}
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			Q[rowCtr + colCtr*p] = D[rowCtr]*D[colCtr];
-			}
-		}*/
-
 	for (int colNum = 0; colNum < p; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < p; ++rowNum) {
@@ -1917,34 +1856,6 @@ void CARMA::solveCARMA() {
 
 	}
 
-/*void CARMA::computeSigma() {
-
-	complex<double> rootSum, rootSumInv, rootSumDT, expRootSumDTM1;
-	for (int j = 0; j < p; ++j) {
-		BScratch[j] = 0.0+0.0i;
-		for (int l = 0; l < p; ++l) {
-			#pragma omp simd
-			for (int k = 0; k < p; ++k) {
-				rootSum = w[k] + w[l];
-				rootSumInv = (1.0+0.0i)/rootSum;
-				rootSumDT = rootSum*dt;
-				expRootSumDTM1 = -1.0;
-				AScratch[k + l*p] = C[k + l*p]*expRootSumDTM1*rootSumInv;
-				BScratch[j] += vr[j + k*p]*AScratch[k + l*p]*vr[j + l*p];
-				}
-			}
-		VScratch[j] = sqrt(BScratch[j].real());
-		}
-
-	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		#pragma omp simd
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			Sigma[rowCtr + colCtr*p] = VScratch[rowCtr]*VScratch[colCtr];
-			}
-		}
-
-	}*/
-
 void CARMA::resetState(double InitUncertainty) {
 
 	#ifdef DEBUG_RESETSTATE
@@ -1968,8 +1879,6 @@ void CARMA::resetState(double InitUncertainty) {
 	}
 
 void CARMA::resetState() {
-
-	//computeSigma();
 
 	// Copy P and reset the other matrices
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
@@ -1997,7 +1906,6 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream __attribute__((aligned(64)));
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
-	//vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, burnStream, numBurn, burnRand, 0.0, 1.0); // Check
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		VScratch[rowCtr] = 0.0;
@@ -2115,7 +2023,7 @@ void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noise
 	vslDeleteStream(&noiseStream);
 	}
 
-double CARMA::computeLnLike(LnLikeData *ptr2Data) {
+double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2126,6 +2034,8 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
+	double maxSigma = Data.maxSigma;
+	double maxTimescale = Data.maxTimescale;
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
@@ -2240,4 +2150,66 @@ double CARMA::computeLnLike(LnLikeData *ptr2Data) {
 		}
 
 	return LnLike;
+	}
+
+double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	bool IR = Data.IR;
+	double tolIR = Data.tolIR; 
+	double t_incr = Data.t_incr;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+	double maxSigma = Data.maxSigma;
+	double minTimescale = Data.minTimescale;
+	double maxTimescale = Data.maxTimescale;
+	double maxDouble = numeric_limits<double>::max();
+
+	#ifdef DEBUG_COMPUTELNPRIOR
+	int threadNum = omp_get_thread_num();
+	printf("computeLnPrior - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	printf("computeLnPrior - threadNum: %d; maxSigma: %+4.3e\n",threadNum,maxSigma);
+	printf("computeLnPrior - threadNum: %d; minTimescale: %+4.3e\n",threadNum,minTimescale);
+	printf("computeLnPrior - threadNum: %d; maxTimescale: %+4.3e\n",threadNum,maxTimescale);
+	#endif
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
+	if (Theta[p] > maxSigma) {
+		LnPrior = -infiniteVal;
+		}
+	for (int i = 0; i < p; ++i) {
+		timescale = fabs(1.0/(CARw[i].real()));
+		timescaleOsc = fabs((2.0*pi)/(CARw[i].imag()));
+
+		#ifdef DEBUG_COMPUTELNPRIOR
+		printf("computeLnPrior - threadNum: %d; timescale: %+4.3e\n",threadNum,timescale);
+		printf("computeLnPrior - threadNum: %d; timescaleOsc: %+4.3e\n",threadNum,timescaleOsc);
+		#endif
+
+		if (timescale < minTimescale) {
+			LnPrior = -infiniteVal; 
+			}
+
+		if (timescale > maxTimescale) {
+			LnPrior = -infiniteVal;
+			}
+
+		if (timescaleOsc > 0.0) {
+			if (timescaleOsc < minTimescale) {
+				LnPrior = -infiniteVal;
+				}
+			}
+
+		}
+
+		#ifdef DEBUG_COMPUTELNPRIOR
+		printf("computeLnPrior - threadNum: %d; LnPrior: %+4.3e\n",threadNum,LnPrior);
+		#endif
+
+	return LnPrior;
 	}
