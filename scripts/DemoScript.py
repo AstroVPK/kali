@@ -71,6 +71,7 @@ except IOError:
 
 	if args.prob == None and args.probSuper1 == None and args.probSuper2 == None:
 		args.prob  = 0.5
+	if args.prob:
 		if (float(args.prob) >= 1.0) or (float(args.prob) <= 0.0):
 			raise RuntimeError('prob must be between 0.0 and 1.0')
 		ProbList = spstats.bernoulli.rvs(float(args.prob), size = numCadences_Regular)
