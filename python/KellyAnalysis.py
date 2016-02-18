@@ -32,7 +32,7 @@ import matplotlib.mlab as mlab
 import cPickle as cPickle
 import pdb
 
-from mpl_settings import *
+from python.util.mpl_settings import *
 import carmcmc as cmcmc
 
 goldenRatio=1.61803398875
