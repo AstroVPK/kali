@@ -98,12 +98,14 @@ required by the compiler.
   This software has been tested with
 
 
-  1. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021 (icpc version 16.0.1 
-(gcc version 4.8.0 compatibility)
-
-  2. Intel® Parallel Studio XE 2016 Cluster Edition Initial Release 16.0.1.111 / 20151020 (icpc version 16.0.0 
+  1. Intel® Parallel Studio XE 2016 Cluster Edition Initial Release 16.0.1.111 / 20151020 (icpc version 16.0.0 
 (gcc version 4.9.0 compatibility)
 
+  2. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021 (icpc version 16.0.1 
+(gcc version 4.8.0 compatibility)
+
+  3. Intel® Parallel Studio XE 2016 Cluster Edition Update 2 16.0.1.181 / 20151021 (icpc version 16.0.2 
+(gcc version 4.8.0 compatibility)
 
 3. Intel MKL Library
 
@@ -122,7 +124,11 @@ replace it with an alternative. Intel MKL may be obtained from
   This software has been tested with
 
 
-  1. Intel® Math Kernel Library 11.3
+  1. Intel® Math Kernel Library 11.3 11.3
+
+  1. Intel® Math Kernel Library 11.3 Update 1 11.3.1
+
+  3. Intel® Math Kernel Library 11.3 Update 2 11.3.2
 
 4. NLOpt
 
