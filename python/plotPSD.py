@@ -328,22 +328,196 @@ class plotPSDTask(SuppliedParametersTask):
 		self.echo(logEntry)
 		self.log(logEntry)
 		fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fhgt']))
-		for orderVal in xrange(0, self.maxNumerOrder + 1, 2):
-			plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
-			plt.annotate(r'$\nu^{%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracNumerX)], self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDNumer*self.freqs[int(self.fNum*self.fFracNumerX)], self.yTextPSDNumer*self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
-		for orderVal in xrange(0, self.maxDenomOrder + 1, 2):
-			plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
-			plt.annotate(r'$\nu^{-%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracDenomX)], 1.0/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDDenom*self.freqs[int(self.fNum*self.fFracDenomX)], self.yTextPSDDenom/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
-		plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$-\log_{10}D(\nu)$')
-		plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$log_{10}N(\nu)$')
-		plt.loglog(self.freqs, self.PSD, linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD(\nu) = \log_{10}N(\nu)-\log_{10}D(\nu)$')
-		if self.showEqnPSD == True:
-			plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
-		if self.showLegendPSD == True:
-			plt.legend(loc = self.LegendPSDLoc, ncol = 1, fancybox = True, fontsize = self.LegendPSDFontsize)
+		gs = gridspec.GridSpec(500, 500)
+		ax1 = fig1.add_subplot(gs[:,:])
+		#for orderVal in xrange(0, self.maxNumerOrder + 1, 2):
+			#plt.loglog(self.freqs, self.numerPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
+			#plt.annotate(r'$\nu^{%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracNumerX)], self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDNumer*self.freqs[int(self.fNum*self.fFracNumerX)], self.yTextPSDNumer*self.numerPSD[int(self.fNum*self.fFracNumerY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		#for orderVal in xrange(0, self.maxDenomOrder + 1, 2):
+			#plt.loglog(self.freqs, 1.0/self.denomPSD[:,orderVal/2], linestyle = self.freqLine, color = self.color[orderVal/2], linewidth = self.freqLineWidth, zorder = 5)
+			#plt.annotate(r'$\nu^{-%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracDenomX)], 1.0/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDDenom*self.freqs[int(self.fNum*self.fFracDenomX)], self.yTextPSDDenom/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		#plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$-\log_{10}D(\nu)$')
+		#plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$log_{10}N(\nu)$')
+		ax1.plot(np.log10(self.freqs), np.log10(self.PSD), linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD_{\mathrm{DHO}}(\nu)$')
+		ax1.annotate(r'Damped Harmonic Oscillator Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.1)[0][0]]), np.log10(self.PSD[np.where(self.freqs > 0.1)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -16.0), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center',multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		#if self.showEqnPSD == True:
+		#	plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 
-		plt.xlabel(self.x1LabelPSD)
-		plt.ylabel(self.yLabelPSD)
+		aListDRW = [0.014375664874500446]
+		bListDRW = [1.725e-9]
+		maxDenomOrderDRW = 2*len(self.aList)
+		maxNumerOrderDRW = 2*(len(self.bList)-1)
+
+		numerPSDDRW = np.zeros((self.fNum,(maxNumerOrderDRW/2) + 2))
+		denomPSDDRW = np.zeros((self.fNum,(maxDenomOrderDRW/2) + 2))
+
+		PSDNumeratorDRW = np.zeros((self.fNum))
+		PSDDenominatorDRW = np.zeros((self.fNum))
+		PSDDRW = np.zeros((self.fNum))
+
+		for orderVal in xrange(0, maxDenomOrderDRW + 1, 2):
+			denomPSDDRW[:,orderVal/2] = self.getPSDDenominator(self.freqs, aListDRW, orderVal)
+
+		for orderVal in xrange(0, maxNumerOrderDRW + 1, 2):
+			numerPSDDRW[:,orderVal/2] = self.getPSDNumerator(self.freqs, bListDRW, orderVal)
+
+		for freq in xrange(self.fNum):
+			for orderVal in xrange(0, maxNumerOrderDRW + 1, 2):
+				PSDNumeratorDRW[freq] += numerPSDDRW[freq, orderVal/2]
+			for orderVal in xrange(0, maxDenomOrderDRW + 1, 2):
+				PSDDenominatorDRW[freq] += denomPSDDRW[freq, orderVal/2]
+			PSDDRW[freq] = PSDNumeratorDRW[freq]/PSDDenominatorDRW[freq]
+
+		ax1.plot(np.log10(self.freqs), np.log10(PSDDRW), linestyle = self.PSDLine, color = '#67a9cf', linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD_{\mathrm{DRW}}(\nu)$')
+		ax1.annotate(r'Damped Random Walk Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.1)[0][0]]), np.log10(PSDDRW[np.where(self.freqs > 0.1)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -16.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		if self.showLegendPSD == True:
+			ax1.legend(loc = self.LegendPSDLoc, ncol = 1, fancybox = True, fontsize = self.LegendPSDFontsize)
+
+		SDSSK2MJDList = list()
+
+		SDSSMJDList = list()
+		SDSSFileName = 'LightCurveSDSS_39.csv'
+		SDSSFile = open(SDSSFileName, 'r')
+		SDSSFile.readline()
+		for line in SDSSFile:
+			line.rstrip('/n')
+			words = line.split(',')
+			SDSSMJDList.append(float(words[12]))
+			SDSSK2MJDList.append(float(words[12]))
+		SDSSFile.close()
+		SDSSMJDList = np.array(SDSSMJDList)
+		SDSSIncrT = list()
+		for i in xrange(SDSSMJDList.shape[0]):
+			for j in xrange(i + 1, SDSSMJDList.shape[0]):
+				SDSSIncrT.append(SDSSMJDList[j] - SDSSMJDList[i])
+		SDSSIncrT = np.array(SDSSIncrT)
+		SDSSIncrF = 1.0/SDSSIncrT
+
+		SDSSMinT = np.min(SDSSIncrT)
+		SDSSMaxT = np.max(SDSSIncrT)
+		SDSSMedianT = np.median(SDSSIncrT)
+		SDSSMeanT = np.mean(SDSSIncrT)
+
+		SDSSMinF = 1.0/SDSSMaxT
+		SDSSMaxF = 1.0/SDSSMinT
+		SDSSMedianF = 1.0/SDSSMedianT
+		SDSSMeanF = 1.0/SDSSMeanT
+
+		SDSSYLoc = 1.0e-19
+		SDSSYArr = np.array(SDSSIncrF.shape[0]*[SDSSYLoc])
+		#plt.hlines(y = SDSSYLoc, xmin = SDSSMinF, xmax = SDSSMaxF, colors = '#ff00ff', linestyles = 'dashed', linewidths = 4)
+		ax1.scatter(np.log10(SDSSIncrF), np.log10(SDSSYArr), marker = '|', color = '#e41a1c', edgecolors = 'none', zorder = 150)
+		ax1.annotate(r'Timescales probed by SDSS', xy = (np.log10(1.0e-1), np.log10(2.0*SDSSYLoc)), xycoords = 'data', xytext = (np.log10(1.0e-1), np.log10(2.0*SDSSYLoc)), textcoords = 'data', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 150)
+		#plt.vlines(x = SDSSMedianF, ymin = 0.1*SDSSYLoc, ymax = 10.0*SDSSYLoc, colors = '#ff00ff', linestyles = 'solid', linewidth = 4)
+		#plt.annotate(r'Median frequency probed by SDSS', xy = (SDSSMedianF, SDSSYLoc), xycoords = 'data', xytext = (1.0e-0, 0.1*SDSSYLoc), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		K2StartMJD = 57737.0
+		K2Duration = 79
+		intTime = 6.019802903
+		readTime = 0.5189485261
+		numIntLC = 270
+		K2Deltat = (intTime+readTime)*numIntLC
+		secPerSiderealDay = 86164.0905
+		K2dt = K2Deltat/secPerSiderealDay
+
+		K2MJDList = list()
+		for i in xrange(int(round(K2Duration/K2dt))):
+			K2MJDList.append(i*K2dt + K2StartMJD)
+			SDSSK2MJDList.append(i*K2dt + K2StartMJD)
+		K2MJDList = np.array(K2MJDList)
+		K2IncrT = list()
+		for i in xrange(K2MJDList.shape[0]):
+			for j in xrange(i + 1, K2MJDList.shape[0]):
+				K2IncrT.append(K2MJDList[j] - K2MJDList[i])
+		K2IncrT = np.array(K2IncrT)
+		K2IncrF = 1.0/K2IncrT
+
+		K2MinT = np.min(K2IncrT)
+		K2MaxT = np.max(K2IncrT)
+		K2MedianT = np.median(K2IncrT)
+		K2MeanT = np.mean(K2IncrT)
+
+		K2MinF = 1.0/K2MaxT
+		K2MaxF = 1.0/K2MinT
+		K2MedianF = 1.0/K2MedianT
+		K2MeanF = 1.0/K2MeanT
+
+		K2YLoc = 1.0e-18
+		K2YArr = np.array(K2IncrF.shape[0]*[K2YLoc])
+		#plt.hlines(y = K2YLoc, xmin = K2MinF, xmax = K2MaxF, colors = '#f62817', linestyles = 'dashed', linewidths = 4)
+		ax1.scatter(np.log10(K2IncrF), np.log10(K2YArr), marker = '|', color = '#984ea3', edgecolors = 'none', zorder = 150)
+		ax1.annotate(r'Timescales probed by K2', xy = (np.log10(1.0e-1), np.log10(2.0*K2YLoc)), xycoords = 'data', xytext = (np.log10(1.0e-1), np.log10(2.0*K2YLoc)), textcoords = 'data', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 150)
+		#plt.vlines(x = K2MedianF, ymin = 0.1*K2YLoc, ymax = 10.0*K2YLoc, colors = '#f62817', linestyles = 'solid', linewidth = 4)
+		#plt.annotate(r'Median frequency probed by K2', xy = (K2MedianF, K2YLoc), xycoords = 'data', xytext = (1.0e-0, 0.1*K2YLoc), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		SDSSK2MJDList = np.array(SDSSK2MJDList)
+		SDSSK2IncrT = list()
+		for i in xrange(SDSSK2MJDList.shape[0]):
+			for j in xrange(i + 1, SDSSK2MJDList.shape[0]):
+				SDSSK2IncrT.append(SDSSK2MJDList[j] - SDSSK2MJDList[i])
+		SDSSK2IncrT = np.array(SDSSK2IncrT)
+		SDSSK2IncrF = 1.0/SDSSK2IncrT
+
+		SDSSK2MinT = np.min(SDSSK2IncrT)
+		SDSSK2MaxT = np.max(SDSSK2IncrT)
+		SDSSK2MedianT = np.median(SDSSK2IncrT)
+		SDSSK2MeanT = np.mean(SDSSK2IncrT)
+
+		SDSSK2MinF = 1.0/SDSSK2MaxT
+		SDSSK2MaxF = 1.0/SDSSK2MinT
+		SDSSK2MedianF = 1.0/SDSSK2MedianT
+		SDSSK2MeanF = 1.0/SDSSK2MeanT
+
+		SDSSK2YLoc = 1.0e-20
+		SDSSK2YArr = np.array(SDSSK2IncrF.shape[0]*[SDSSK2YLoc])
+		#plt.hlines(y = allYLoc, xmin = allMinF, xmax = allMaxF, colors = '#66cd00', linestyles = 'dashed', linewidths = 4)
+		ax1.scatter(np.log10(SDSSK2IncrF), np.log10(SDSSK2YArr), marker = '|', color = '#4daf4a', edgecolors = 'none', zorder = 150)
+		ax1.annotate(r'Timescales probed by SDSS+K2', xy = (np.log10(1.0e-1), np.log10(2.0*SDSSK2YLoc)), xycoords = 'data', xytext = (np.log10(1.0e-1), np.log10(2.0*SDSSK2YLoc)), textcoords = 'data', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 150)
+		#plt.vlines(x = SDSSK2MedianF, ymin = 0.1*SDSSK2YLoc, ymax = 10.0*SDSSK2YLoc, colors = '#66cd00', linestyles = 'solid', linewidth = 4)
+		#plt.annotate(r'Median frequency probed by SDSS+K2', xy = (SDSSK2MedianF, SDSSK2YLoc), xycoords = 'data', xytext = (1.0e-0, 0.1*SDSSK2YLoc), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		#plt.annotate(r'Timescales enabled \textit{solely} \\* by combining SDSS \& K2 \\* due to time interval \\* between end of SDSS \\* \& start of K2', xy = (np.log10(self.freqs[np.where(self.freqs > 5.0e-3)[0][0]]), SDSSK2YLoc), xycoords = 'data', xytext = (-3, -2), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		ax1.set_xlim(-4.0,2.0)
+
+		ax1.set_ylim(-20.5,-13.5)
+		numYTicks = 4
+		yTicks = np.zeros(numYTicks)
+		for i in xrange(numYTicks):
+			yTicks[i] = -2.0*i - 14.0
+		ax1.set_yticks(yTicks)
+		yLabels = [item.get_text() for item in ax1.get_yticklabels()]
+		for i in xrange(numYTicks):
+			yLabels[i]=r'$10^{%d}$'%(yTicks[i] + 14.0)
+		ax1.set_yticklabels(yLabels)
+
+
+		ax2 = ax1.twiny()
+		ax1Ticks = ax1.get_xticks()
+		yTicks = ax1.get_yticks()
+		ax2Ticks = ax1Ticks
+		ax2.set_xticks(ax2Ticks)
+
+		def tick_function(F):
+			T = np.log10(1.0/np.power(10.0, F))
+			tick_list = [r'$10^{%d}$'%(z) for z in T]
+			#tick_list = [r'$10^{%d}$'%(z) for z in F]
+			return tick_list
+
+		def format_function(F):
+			#T = np.log10(1.0/np.power(10.0, F))
+			tick_list = [r'$10^{%d}$'%(z) for z in F]
+			#tick_list = [r'$10^{%d}$'%(z) for z in T]
+			return tick_list
+
+		ax2.set_xbound(ax1.get_xbound())
+		ax1.set_xticklabels(format_function(ax1Ticks))
+		ax2.set_xticklabels(tick_function(ax2Ticks))
+
+		ax1.set_xlabel(self.x1LabelPSD)
+		ax2.set_xlabel(self.x2LabelPSD)
+		ax1.set_ylabel(self.yLabelPSD)
 
 		if self.JPG == True:
 			fig1.savefig(self.WorkingDirectory + self.prefix + "_PSD.jpg" , dpi = self.dpi)
