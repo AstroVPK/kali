@@ -294,6 +294,7 @@ if __name__ == "__main__":
 	plt.plot(times/A.T, beamingFac2, color = '#e41a1c', label = r'$D_{m_{2}}^{3-\alpha}(t/T)$')
 	plt.xlabel(r'$t/T$ ($T = %3.2f$ yr)'%(A.T/A.Year))
 	plt.ylabel(r'$D$, $D^{3-\alpha}$')
+	plt.grid(True)
 	plt.legend()
 
 	plt.show()
