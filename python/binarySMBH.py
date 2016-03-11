@@ -105,12 +105,11 @@ class binarySMBH(object):
 		self.M = 2.0*math.pi*(self.t - self.tau)/self.T # compute Mean Anomoly
 		self.E = opt.newton(self.KE, 0.0, fprime = self.KEPrime, fprime2 = self.KEPrimePrime, tol = TOL, args = (self.e, self.M), maxiter = MAXITER) # solve Kepler's Equation to compute the Eccentric Anomoly
 		self.r1 = self.a1*(1.0 - self.e*math.cos(self.E)) # current distance of m1 from COM
-		self.r2 = self.a2*(1.0 - self.e*math.cos(self.E)) # current distance of m2 from COM
+		self.r2 = (self.m1*self.r1)/self.m2 # current distance of m2 from COM
 		self.nu1 = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
 		if self.nu1 < 0.0:
 			self.nu1 = 2.0*math.pi + self.nu1
-		self.nu2 = self.nu1 + math.pi # current true anomoly of m2
-		#self.nu = math.acos((math.cos(self.E) - self.e)/(1.0 + self.e*math.cos(self.E)))
+		self.nu2 = self.nu1 + math.pi
 
 	def KeplersEquation(self, M):
 		"""!
@@ -148,14 +147,13 @@ class binarySMBH(object):
 		if t != self.t:
 			self.t = t
 			self.M = 2.0*math.pi*(self.t - self.tau)/self.T # compute Mean Anomoly
-			self.E = opt.newton(self.KE, 0.0, fprime = self.KEPrime, fprime2 = self.KEPrimePrime, tol = TOL, args = (self.e, self.M), maxiter = MAXITER)# solve Kepler's Equation to compute the Eccentric Anomoly
+			self.E = opt.newton(self.KE, 0.0, fprime = self.KEPrime, fprime2 = self.KEPrimePrime, tol = TOL, args = (self.e, self.M), maxiter = MAXITER) # solve Kepler's Equation to compute the Eccentric Anomoly
 			self.r1 = self.a1*(1.0 - self.e*math.cos(self.E)) # current distance of m1 from COM
-			self.r2 = self.a2*(1.0 - self.e*math.cos(self.E)) # current distance of m2 from COM
+			self.r2 = (self.m1*self.r1)/self.m2 # current distance of m2 from COM
 			self.nu1 = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
 			if self.nu1 < 0.0:
 				self.nu1 = 2.0*math.pi + self.nu1
-			self.nu2 = self.nu1 + math.pi # current true anomoly of m2
-			#self.nu = math.acos((math.cos(self.E) - self.e)/(1.0 + self.e*math.cos(self.E)))
+			self.nu2 = self.nu1 + math.pi
 
 	def getPosition(self, t):
 		self(t)
@@ -213,7 +211,8 @@ class binarySMBH(object):
 if __name__ == "__main__":
 	import argparse as argparse
 	import matplotlib.pyplot as plt
-	plt.ion()
+	from matplotlib import animation
+	#plt.ion()
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p','--p', type = float, default = 0.01, help = r'Seperation at periapsis i.e. closest approach (parsec), default = 0.01 parsec')
@@ -227,20 +226,19 @@ if __name__ == "__main__":
 	parser.add_argument('-alpha2','--alpha2', type = float, default = -0.44, help = r'SED power-law spectral index of 2nd black hole (dimensionless), default = -0.44')
 	args = parser.parse_args()
 
-	Num = 100
+	Num = 1000
 	numOrbits = 3
 	Num = numOrbits*Num
+	numFrames = 100
 
 	A = binarySMBH(p = args.p, m12 = args.m12, q = args.q, e = args.e, omega = d2r(args.omega), i = d2r(args.i), tau = args.tau, alpha1 = args.alpha1, alpha2 = args.alpha2)
+	dt = A.T/numFrames
 
 	times = np.linspace(0.0, numOrbits*A.T, num = Num)
 	angles1 = np.zeros(Num)
 	dists1 = np.zeros(Num)
 	angles2 = np.zeros(Num)
 	dists2 = np.zeros(Num)
-
-	MArray = np.zeros(Num)
-	EArray = np.zeros(Num)
 
 	betaFac1 = np.zeros(Num)
 	betaFac2 = np.zeros(Num)
@@ -251,27 +249,33 @@ if __name__ == "__main__":
 	beamingFac1 = np.zeros(Num)
 	beamingFac2 = np.zeros(Num)
 
-
-
 	for i in xrange(Num):
 		dists1[i], angles1[i], dists2[i], angles2[i] = A.getPosition(times[i])
-		MArray[i] = A.M
-		EArray[i] = A.E
 		betaFac1[i], betaFac2[i] = A.beta(times[i])
 		radialBetaFac1[i], radialBetaFac2[i] = A.radialBeta(times[i])
 		dopplerFac1[i], dopplerFac2[i] = A.dopplerFactor(times[i])
 		beamingFac1[i], beamingFac2[i] = A.beamingFactor(times[i])
 
-	fig1 = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fwid']))
-	ax = plt.subplot(111, projection='polar')
-	ax.plot(angles1, dists1/A.Parsec, linewidth=3, color = '#377eb8', label = r'$m_{1}$')
-	ax.plot(angles2, dists2/A.Parsec, linewidth=3, color = '#e41a1c', label = r'$m_{2}$')
-	ax.set_rmax(1.1*np.nanmax(dists2)/A.Parsec)
-	ax.grid(True)
-	ax.set_title('Orbit of binary SMBH', va='bottom')
-	ax.set_xlabel(r'$r$ (parsec)')
-	ax.legend()
-	#ax.set_ylabel(r'$\theta$ (degree)')
+	fig = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fwid']))
+	ax1 = plt.subplot(111, projection='polar')
+	line1, = ax1.plot([], [], 'o', ms = 20, color = '#377eb8', label = r'$m_{1}$ \& $m_{2}$')
+	ax1.set_rmax(1.1*np.nanmax(dists2)/A.Parsec)
+	ax1.grid(True)
+	ax1.set_title('Orbit of binary SMBH', va='bottom')
+	ax1.set_xlabel(r'$r$ (parsec)')
+	ax1.legend()
+
+	def init():
+		line1.set_data([], [])
+		return line1,
+
+	def animate(i):
+		times = i*dt
+		dists1, angles1, dists2, angles2 = A.getPosition(times)
+		line1.set_data([angles1, angles2], [dists1/A.Parsec, dists2/A.Parsec])
+		return line1,
+
+	anim = animation.FuncAnimation(fig, animate, init_func = init, frames = numFrames, interval = 20, blit = True)
 
 	fig2 = plt.figure(2, figsize = (plot_params['fwid'], plot_params['fhgt']))
 	plt.plot(times/A.T,betaFac1, color = '#377eb8', label = r'$\beta_{m_{1}}(t/T)$')
@@ -280,10 +284,11 @@ if __name__ == "__main__":
 	plt.plot(times/A.T,radialBetaFac2, color = '#d95f02', label = r'$\beta_{m_{2},\parallel}(t/T)$')
 	plt.xlabel(r'$t/T$ ($T = %3.2f$ yr)'%(A.T/A.Year))
 	plt.ylabel(r'$\beta$, $\beta_{\parallel}$')
+	plt.grid(True)
 	plt.legend()
 
 	fig3 = plt.figure(3, figsize = (plot_params['fwid'], plot_params['fhgt']))
-	plt.plot(times/A.T, dopplerFac1, color = '#7570b3', label = r'$D_{m_{1}}(t/T)$')
+	plt.plot(times/A.T, dopplerFac1, color = '#7570b3', label = r'$D_{m_{1}}(t/T)$') 
 	plt.plot(times/A.T, beamingFac1, color = '#377eb8', label = r'$D_{m_{1}}^{3-\alpha}(t/T)$')
 	plt.plot(times/A.T, dopplerFac2, color = '#d95f02', label = r'$D_{m_{2}}(t/T)$')
 	plt.plot(times/A.T, beamingFac2, color = '#e41a1c', label = r'$D_{m_{2}}^{3-\alpha}(t/T)$')
