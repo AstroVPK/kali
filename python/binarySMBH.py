@@ -106,10 +106,11 @@ class binarySMBH(object):
 		self.E = opt.newton(self.KE, 0.0, fprime = self.KEPrime, fprime2 = self.KEPrimePrime, tol = TOL, args = (self.e, self.M), maxiter = MAXITER) # solve Kepler's Equation to compute the Eccentric Anomoly
 		self.r1 = self.a1*(1.0 - self.e*math.cos(self.E)) # current distance of m1 from COM
 		self.r2 = (self.m1*self.r1)/self.m2 # current distance of m2 from COM
-		self.nu1 = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
-		if self.nu1 < 0.0:
-			self.nu1 = 2.0*math.pi + self.nu1
-		self.nu2 = self.nu1 + math.pi
+		self.nu = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
+		if self.nu < 0.0:
+			self.nu = 2.0*math.pi + self.nu
+		self.theta1 = self.nu + self.omega1
+		self.theta2 = self.nu + self.omega2
 
 	def KeplersEquation(self, M):
 		"""!
@@ -150,31 +151,32 @@ class binarySMBH(object):
 			self.E = opt.newton(self.KE, 0.0, fprime = self.KEPrime, fprime2 = self.KEPrimePrime, tol = TOL, args = (self.e, self.M), maxiter = MAXITER) # solve Kepler's Equation to compute the Eccentric Anomoly
 			self.r1 = self.a1*(1.0 - self.e*math.cos(self.E)) # current distance of m1 from COM
 			self.r2 = (self.m1*self.r1)/self.m2 # current distance of m2 from COM
-			self.nu1 = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
-			if self.nu1 < 0.0:
-				self.nu1 = 2.0*math.pi + self.nu1
-			self.nu2 = self.nu1 + math.pi
+			self.nu = 2.0*math.atan(self.ellipticityFactor*math.tan(self.E/2.0)) # current true anomoly of m1
+			if self.nu < 0.0:
+				self.nu = 2.0*math.pi + self.nu
+			self.theta1 = self.nu + self.omega1
+			self.theta2 = self.nu + self.omega2
 
 	def getPosition(self, t):
 		self(t)
-		return self.r1, self.nu1, self.r2, self.nu2
+		return self.r1, self.theta1, self.r2, self.theta2
 
 	def beta(self, t):
 		"""!
 		\brief Orbital beta.
 		"""
-		r1, nu1, r2, nu2 = self.getPosition(t)
-		b1 = math.sqrt(self.G*(math.pow(self.mu, 2.0)*self.q/self.m1)*((2.0/r1) - (1.0/self.a1)))/self.c
-		b2 = math.sqrt(self.G*(math.pow(self.mu, 2.0)/(self.q*self.m2))*((2.0/r2) - (1.0/self.a2)))/self.c
+		self(t)
+		b1 = math.sqrt(self.G*(math.pow(self.mu, 2.0)*self.q/self.m1)*((2.0/self.r1) - (1.0/self.a1)))/self.c
+		b2 = math.sqrt(self.G*(math.pow(self.mu, 2.0)/(self.q*self.m2))*((2.0/self.r2) - (1.0/self.a2)))/self.c
 		return b1, b2
 
 	def radialBeta(self, t):
 		"""!
 		\brief Transverse beta.
 		"""
-		r1, nu1, r2, nu2 = self.getPosition(t)
-		rB1 = ((((2.0*math.pi*self.a1)/self.T)*math.sin(self.i)/math.sqrt(1.0 - math.pow(self.e, 2.0)))*(math.cos(nu1 + self.omega1) + self.e*math.cos(self.omega1)))/self.c
-		rB2 = ((((2.0*math.pi*self.a2)/self.T)*math.sin(self.i)/math.sqrt(1.0 - math.pow(self.e, 2.0)))*(math.cos(nu2 + self.omega2) + self.e*math.cos(self.omega2)))/self.c
+		self(t)
+		rB1 = ((((2.0*math.pi*self.a1)/self.T)*math.sin(self.i)/math.sqrt(1.0 - math.pow(self.e, 2.0)))*(math.cos(self.nu + self.omega1) + self.e*math.cos(self.omega1)))/self.c
+		rB2 = ((((2.0*math.pi*self.a2)/self.T)*math.sin(self.i)/math.sqrt(1.0 - math.pow(self.e, 2.0)))*(math.cos(self.nu + self.omega2) + self.e*math.cos(self.omega2)))/self.c
 		return rB1, rB2
 
 	def dopplerFactor(self, t):
@@ -216,7 +218,7 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p','--p', type = float, default = 0.01, help = r'Seperation at periapsis i.e. closest approach (parsec), default = 0.01 parsec')
-	parser.add_argument('-m12','--m12', type = float, default = 1.0e8, help = r'Sum of masses of black holes (M_Sun), default = 10^8 M_Sun')
+	parser.add_argument('-m12','--m12', type = float, default = 1.0e7, help = r'Sum of masses of black holes (M_Sun), default = 10^7 M_Sun')
 	parser.add_argument('-q','--q', type = float, default = 1.0, help = r'Mass ratio of black holes (dimensionless), default = 1.0')
 	parser.add_argument('-e','--e', type = float, default = 0.0, help = r'Orbital eccentricity (dimensionless), default = 0.0')
 	parser.add_argument('-omega','--omega', type = float, default = 0.0, help = r'Argument of periapsis (degree), default = 0.0 degree')
