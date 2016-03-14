@@ -22,7 +22,7 @@ LegendSize = plot_params['LegendXXXSmall']
 set_plot_params(fontfamily = 'serif', fontstyle = 'normal', fontvariant = 'normal', fontweight = 'normal', fontstretch = 'normal', fontsize = AxisSize, useTex = 'True')
 
 MAXITER = 1000000
-TOL = 1.0e-6
+TOL = 1.0e-9
 
 SigmaOoM = 200.0 # km/s
 HOoM = 16.0
@@ -53,14 +53,14 @@ class binarySMBH(object):
 	kms2ms = 1.0e3 # m/s
 	SolarMassPerCubicParsec = 1.98855e30/math.pow(3.0857e16, 3.0) # kg/m^3
 
-	def __init__(self, p = 0.01, m12 = 1.0e7, q = 1.0, e = 0.0, omega = 0.0, i = 90.0, tau = 0.0, alpha1 = -0.44, alpha2 = -0.44):
+	def __init__(self, rPer = 0.01, m12 = 1.0e7, q = 1.0, e = 0.0, omega = 0.0, i = 90.0, tau = 0.0, alpha1 = -0.44, alpha2 = -0.44):
 		"""!
 		\brief Initialize the binarySMBH object.
 
 		Check to see if the parameter values are sane. 
 
 		List of keyword arguments.
-		\param[in] a1:          Separation at periapsis i.e. closest separation (default 0.01 parsec)
+		\param[in] rPer:        Separation at periapsis i.e. closest separation (default 0.01 parsec)
 		\param[in] m12:         Combined mass of binary SMBHs in Solar mass (default 1.0e7 Solar mass)
 		\param[in] q:           Mass ratio of secondary to primary (default 1.0)
 		\param[in] e:           Ellipticity of orbit (default 0.0)
@@ -88,10 +88,10 @@ class binarySMBH(object):
 		else: 
 			raise ValueError('Orbital ellipticity must be >= 0.0') 
 		self.ellipticityFactor = math.sqrt((1.0 + self.e)/(1.0 - self.e))
-		if p > 0.0:
-			self.p = p*self.Parsec
-			self.a1 = (self.p*self.m2)/(self.m12*(1.0 - self.e))
-			self.a2 = (self.p*self.m1)/(self.m12*(1.0 - self.e))
+		if rPer > 0.0:
+			self.rPer = rPer*self.Parsec
+			self.a1 = (self.rPer*self.m2)/(self.m12*(1.0 - self.e))
+			self.a2 = (self.rPer*self.m1)/(self.m12*(1.0 - self.e))
 		else:
 			raise ValueError('Separation at periapsis must be > 0.0 parsec')
 		self.omega1 = d2r(omega)
@@ -112,13 +112,6 @@ class binarySMBH(object):
 		self.theta1 = self.nu + self.omega1
 		self.theta2 = self.nu + self.omega2
 
-	def KeplersEquation(self, M):
-		"""!
-		\brief Less accurate computation of E from M
-		"""
-		E = M + (self.e - (math.pow(self.e, 3.0)/8.0))*math.sin(M) + 0.5*math.pow(self.e, 2.0)*math.sin(2.0*M) + 0.375*math.pow(self.e, 3.0)*math.sin(3.0*M)
-		return E
-
 	@staticmethod
 	def KE(E, e, M):
 		val = E - e*math.sin(E) - M
@@ -126,7 +119,7 @@ class binarySMBH(object):
 
 	@staticmethod
 	def KEPrime(E, e, M):
-		val = 1 - e*math.cos(E)
+		val = 1.0 - e*math.cos(E)
 		return val
 
 	@staticmethod
@@ -138,7 +131,7 @@ class binarySMBH(object):
 		"""!
 		\brief Orbital period (years).
 		"""
-		self.T = (math.sqrt((4*self.PiSq*math.pow(self.a1,3.0))/(self.G*(math.pow(self.mu, 2.0)*self.q/self.m1))))
+		self.T = math.sqrt((4.0*self.PiSq*math.pow(self.a1,3.0)*math.pow(self.m12, 2.0))/(self.G*math.pow(self.m2, 3.0)))
 		return self.T/self.Year
 
 	def __call__(self, t):
@@ -157,17 +150,13 @@ class binarySMBH(object):
 			self.theta1 = self.nu + self.omega1
 			self.theta2 = self.nu + self.omega2
 
-	def getPosition(self, t):
-		self(t)
-		return self.r1, self.theta1, self.r2, self.theta2
-
 	def beta(self, t):
 		"""!
 		\brief Orbital beta.
 		"""
 		self(t)
-		b1 = math.sqrt(self.G*(math.pow(self.mu, 2.0)*self.q/self.m1)*((2.0/self.r1) - (1.0/self.a1)))/self.c
-		b2 = math.sqrt(self.G*(math.pow(self.mu, 2.0)/(self.q*self.m2))*((2.0/self.r2) - (1.0/self.a2)))/self.c
+		b1 = math.sqrt(((self.G*math.pow(self.m2, 2.0))/self.m12)*((2.0/self.r1) - (1.0/self.a1)))/self.c
+		b2 = math.sqrt(((self.G*math.pow(self.m1, 2.0))/self.m12)*((2.0/self.r2) - (1.0/self.a2)))/self.c
 		return b1, b2
 
 	def radialBeta(self, t):
@@ -217,15 +206,16 @@ if __name__ == "__main__":
 	#plt.ion()
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-p','--p', type = float, default = 0.01, help = r'Seperation at periapsis i.e. closest approach (parsec), default = 0.01 parsec')
-	parser.add_argument('-m12','--m12', type = float, default = 1.0e7, help = r'Sum of masses of black holes (M_Sun), default = 10^7 M_Sun')
-	parser.add_argument('-q','--q', type = float, default = 1.0, help = r'Mass ratio of black holes (dimensionless), default = 1.0')
-	parser.add_argument('-e','--e', type = float, default = 0.0, help = r'Orbital eccentricity (dimensionless), default = 0.0')
-	parser.add_argument('-omega','--omega', type = float, default = 0.0, help = r'Argument of periapsis (degree), default = 0.0 degree')
-	parser.add_argument('-i','--i', type = float, default = 90, help = r'Inclination of orbit (radian), default = 90 degree')
-	parser.add_argument('-tau','--tau', type = float, default = 0.0, help = r'MJD at periapsis (day), default = 0.0 day')
-	parser.add_argument('-alpha1','--alpha1', type = float, default = -0.44, help = r'SED power-law spectral index of 1st black hole (dimensionless), default = -0.44')
-	parser.add_argument('-alpha2','--alpha2', type = float, default = -0.44, help = r'SED power-law spectral index of 2nd black hole (dimensionless), default = -0.44')
+	parser.add_argument('-rPer', '--rPer', type = float, default = 0.01, help = r'Seperation at periapsis i.e. closest approach (parsec), default = 0.01 parsec')
+	parser.add_argument('-m12', '--m12', type = float, default = 1.0e7, help = r'Sum of masses of black holes (M_Sun), default = 10^7 M_Sun')
+	parser.add_argument('-q', '--q', type = float, default = 1.0, help = r'Mass ratio of black holes (dimensionless), default = 1.0')
+	parser.add_argument('-e', '--e', type = float, default = 0.0, help = r'Orbital eccentricity (dimensionless), default = 0.0')
+	parser.add_argument('-omega', '--omega', type = float, default = 0.0, help = r'Argument of periapsis (degree), default = 0.0 degree')
+	parser.add_argument('-i', '--i', type = float, default = 90.0, help = r'Inclination of orbit (radian), default = 90 degree')
+	parser.add_argument('-tau', '--tau', type = float, default = 0.0, help = r'MJD at periapsis (day), default = 0.0 day')
+	parser.add_argument('-alpha1', '--alpha1', type = float, default = -0.44, help = r'SED power-law spectral index of 1st black hole (dimensionless), default = -0.44')
+	parser.add_argument('-alpha2', '--alpha2', type = float, default = -0.44, help = r'SED power-law spectral index of 2nd black hole (dimensionless), default = -0.44')
+	parser.add_argument('-v', '--verbose', action = 'store_true', help = r'Make plots of mean anomoly, eccentric anomoloy, orbital velocity etc...?')
 	args = parser.parse_args()
 
 	Num = 1000
@@ -233,35 +223,14 @@ if __name__ == "__main__":
 	Num = numOrbits*Num
 	numFrames = 100
 
-	A = binarySMBH(p = args.p, m12 = args.m12, q = args.q, e = args.e, omega = d2r(args.omega), i = d2r(args.i), tau = args.tau, alpha1 = args.alpha1, alpha2 = args.alpha2)
+	A = binarySMBH(rPer = args.rPer, m12 = args.m12, q = args.q, e = args.e, omega = args.omega, i = args.i, tau = args.tau, alpha1 = args.alpha1, alpha2 = args.alpha2)
 	dt = A.T/numFrames
-
-	times = np.linspace(0.0, numOrbits*A.T, num = Num)
-	angles1 = np.zeros(Num)
-	dists1 = np.zeros(Num)
-	angles2 = np.zeros(Num)
-	dists2 = np.zeros(Num)
-
-	betaFac1 = np.zeros(Num)
-	betaFac2 = np.zeros(Num)
-	radialBetaFac1 = np.zeros(Num)
-	radialBetaFac2 = np.zeros(Num)
-	dopplerFac1 = np.zeros(Num)
-	dopplerFac2 = np.zeros(Num)
-	beamingFac1 = np.zeros(Num)
-	beamingFac2 = np.zeros(Num)
-
-	for i in xrange(Num):
-		dists1[i], angles1[i], dists2[i], angles2[i] = A.getPosition(times[i])
-		betaFac1[i], betaFac2[i] = A.beta(times[i])
-		radialBetaFac1[i], radialBetaFac2[i] = A.radialBeta(times[i])
-		dopplerFac1[i], dopplerFac2[i] = A.dopplerFactor(times[i])
-		beamingFac1[i], beamingFac2[i] = A.beamingFactor(times[i])
 
 	fig = plt.figure(1, figsize = (plot_params['fwid'], plot_params['fwid']))
 	ax1 = plt.subplot(111, projection='polar')
 	line1, = ax1.plot([], [], 'o', ms = 20, color = '#377eb8', label = r'$m_{1}$ \& $m_{2}$')
-	ax1.set_rmax(1.1*np.nanmax(dists2)/A.Parsec)
+	rmax = (A.a2*(1.0 + A.e))/A.Parsec
+	ax1.set_rmax(1.1*rmax)
 	ax1.grid(True)
 	ax1.set_title('Orbit of binary SMBH', va='bottom')
 	ax1.set_xlabel(r'$r$ (parsec)')
@@ -273,17 +242,59 @@ if __name__ == "__main__":
 
 	def animate(i):
 		times = i*dt
-		dists1, angles1, dists2, angles2 = A.getPosition(times)
-		line1.set_data([angles1, angles2], [dists1/A.Parsec, dists2/A.Parsec])
+		A(times)
+		r1 = A.r1
+		theta1 = A.theta1
+		r2 = A.r2
+		theta2 = A.theta2
+		line1.set_data([theta1, theta2], [r1/A.Parsec, r2/A.Parsec])
 		return line1,
 
 	anim = animation.FuncAnimation(fig, animate, init_func = init, frames = numFrames, interval = 20, blit = True)
 
+	times = np.linspace(0.0, numOrbits*A.T, num = Num)
+
+	betaFac1 = np.zeros(Num)
+	betaFac2 = np.zeros(Num)
+	radialBetaFac1 = np.zeros(Num)
+	radialBetaFac2 = np.zeros(Num)
+	dopplerFac1 = np.zeros(Num)
+	dopplerFac2 = np.zeros(Num)
+	beamingFac1 = np.zeros(Num)
+	beamingFac2 = np.zeros(Num)
+
+	if args.verbose:
+		theta1 = np.zeros(Num)
+		r1 = np.zeros(Num)
+		theta2 = np.zeros(Num)
+		r2 = np.zeros(Num)
+		MList = np.zeros(Num)
+		EList = np.zeros(Num)
+		nuList = np.zeros(Num)
+		for i in xrange(Num):
+			r1[i] = A.r1
+			theta1[i] = A.theta1
+			r2[i] = A.r2
+			theta2[i] = A.theta2
+			MList[i] = A.M
+			EList[i] = A.E
+			nuList[i] = A.nu
+			etaFac1[i], betaFac2[i] = A.beta(times[i])
+			radialBetaFac1[i], radialBetaFac2[i] = A.radialBeta(times[i])
+			dopplerFac1[i], dopplerFac2[i] = A.dopplerFactor(times[i])
+			beamingFac1[i], beamingFac2[i] = A.beamingFactor(times[i])
+	else:
+		for i in xrange(Num):
+			betaFac1[i], betaFac2[i] = A.beta(times[i])
+			radialBetaFac1[i], radialBetaFac2[i] = A.radialBeta(times[i])
+			dopplerFac1[i], dopplerFac2[i] = A.dopplerFactor(times[i])
+			beamingFac1[i], beamingFac2[i] = A.beamingFactor(times[i])
+
 	fig2 = plt.figure(2, figsize = (plot_params['fwid'], plot_params['fhgt']))
-	plt.plot(times/A.T,betaFac1, color = '#377eb8', label = r'$\beta_{m_{1}}(t/T)$')
-	plt.plot(times/A.T,radialBetaFac1, color = '#7570b3', label = r'$\beta_{m_{1},\parallel}(t/T)$')
-	plt.plot(times/A.T,betaFac2, color = '#e41a1c', label = r'$\beta_{m_{2}}(t/T)$')
-	plt.plot(times/A.T,radialBetaFac2, color = '#d95f02', label = r'$\beta_{m_{2},\parallel}(t/T)$')
+	plt.plot(times/A.T, betaFac1, color = '#377eb8', label = r'$\beta_{m_{1}}(t/T)$')
+	plt.plot(times/A.T, radialBetaFac1, color = '#7570b3', label = r'$\beta_{m_{1},\parallel}(t/T)$')
+	plt.plot(times/A.T, betaFac2, color = '#e41a1c', label = r'$\beta_{m_{2}}(t/T)$')
+	plt.plot(times/A.T, radialBetaFac2, color = '#d95f02', label = r'$\beta_{m_{2},\parallel}(t/T)$')
 	plt.xlabel(r'$t/T$ ($T = %3.2f$ yr)'%(A.T/A.Year))
 	plt.ylabel(r'$\beta$, $\beta_{\parallel}$')
 	plt.grid(True)
@@ -298,6 +309,24 @@ if __name__ == "__main__":
 	plt.ylabel(r'$D$, $D^{3-\alpha}$')
 	plt.grid(True)
 	plt.legend()
+
+	if args.verbose:
+		fig4 = plt.figure(4, figsize = (plot_params['fwid'], plot_params['fhgt']))
+		plt.plot(times/A.T, r2d(MList), label = r'$M$ (degree)')
+		plt.plot(times/A.T, r2d(EList), label = r'$E$ (degree)')
+		plt.plot(times/A.T, r2d(nuList), label = r'$\nu$ (degree)')
+		plt.plot(times/A.T, r2d(theta1), color = '#377eb8', label = r'$\theta_{1}$ (degree)')
+		plt.plot(times/A.T, r2d(theta2), color = '#377eb8', label = r'$\theta_{2}$ (degree)')
+		plt.xlabel(r'$t/T$ ($T = %3.2f$ yr)'%(A.T/A.Year))
+		plt.ylabel(r'$M$, $E$, $\nu$, \& $\theta$ (degree)')
+		plt.grid(True)
+		plt.legend()
+	
+		cosTheta1 = np.cos(theta1)
+		cosTheta2 = np.cos(theta2)
+		fig5 = plt.figure(5, figsize = (plot_params['fwid'], plot_params['fhgt']))
+		plt.plot(times/A.T, cosTheta1, label = r'$\cos(\theta_{1})$')
+		plt.plot(times/A.T, cosTheta2, label = r'$\cos(\theta_{2})$')
 
 	plt.show()
 

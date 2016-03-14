@@ -140,6 +140,27 @@ int makeIntrinsicLC(double dt, int p, int q, double *Theta, bool IR, double tolI
 	return retVal;
 	}
 
+double getMeanFlux(int p, int q, double *Theta, double fracIntrinsicVar) {
+	CARMA SystemMaster = CARMA();
+	SystemMaster.allocCARMA(p, q);
+	int goodYN = SystemMaster.checkCARMAParams(Theta);
+	double meanFlux = -1.0;
+	if (goodYN == 1) {
+		double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
+		SystemMaster.set_dt(1.0);
+		SystemMaster.setCARMA(Theta);
+		SystemMaster.solveCARMA();
+		SystemMaster.resetState();
+		LnLikeData Data;
+		Data.fracIntrinsicVar = fracIntrinsicVar;
+		LnLikeData *ptr2Data = &Data;
+		meanFlux = SystemMaster.getMeanFlux(ptr2Data);
+		}
+	SystemMaster.deallocCARMA();
+	return meanFlux;
+	}
+
+
 int makeObservedLC(double dt, int p, int q, double *Theta, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {
 	int retVal = 1;
 	CARMA SystemMaster = CARMA();
@@ -401,6 +422,10 @@ extern "C" {
 			boolIR = true;
 			}
 		return makeIntrinsicLC(dt, p, q, Theta, boolIR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, cadence, mask, t, x);
+		}
+
+	extern double _getMeanFlux(int p, int q, double *Theta, double fracIntrinsicVar) {
+		return getMeanFlux(p, q, Theta, fracIntrinsicVar);
 		}
 
 	extern int _makeObservedLC(double dt, int p, int q, double *Theta, int IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, int numBurn, int numCadences, int startCadence, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int *cadence, double *mask, double *t, double *y, double *yerr) {

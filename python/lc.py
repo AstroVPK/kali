@@ -32,6 +32,7 @@ class LC(object):
 		self.numCadences = 0
 		self.dt = 0.0
 		self.T = 0.0
+		self.meanFlux = 0.0
 		self.cadence = None
 		self.mask = None
 		self.t = None
@@ -39,6 +40,12 @@ class LC(object):
 		self.y = None
 		self.yerr = None
 		self.t_incr = None
+		self.bx = None
+		self.fFFT = None
+		self.xFFT = None
+		self.xPSD = None
+		self.xbFFT = None
+		self.xbPSD = None
 		self.intrinsicVar = 0.0
 		self.noiseLvl = 0.0
 		self.startT = 0.0

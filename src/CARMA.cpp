@@ -1993,6 +1993,19 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	vslDeleteStream(&distStream);
 	}
 
+double CARMA::getIntrinsicVar() {
+	return sqrt(Sigma[0]);
+	}
+
+double CARMA::getMeanFlux(LnLikeData *ptr2Data) {
+	LnLikeData Data = *ptr2Data;
+
+	double fracIntrinsicVar = Data.fracIntrinsicVar;
+
+	double intrinsicVar = sqrt(Sigma[0]);
+	return intrinsicVar/fracIntrinsicVar;
+	}
+
 void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 

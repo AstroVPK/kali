@@ -141,9 +141,11 @@ public:
 	void computeSigma();
 	void getCARRoots(complex<double>*& CARoots);
 	void getCMARoots(complex<double>*& CMARoots);
+	double getIntrinsicVar();
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
 	void observeSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
+	double getMeanFlux(LnLikeData *ptr2Data);
 	void addNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
