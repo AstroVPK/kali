@@ -27,7 +27,9 @@ elif System == 'Darwin':
 else:
 	MKLLIBS = []
 
-ext = Extension(name='bSMBH', sources=['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp'], language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['-I/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
+
+ext = Extension(name='bSMBH', sources=sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['-I/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
 
 setup(
 	ext_modules = cythonize([ext])
