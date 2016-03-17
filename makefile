@@ -56,11 +56,11 @@ FPFLAGS = -fp-model strict -fp-model extended -fimf-arch-consistency=true -fimf-
 #     source     - enables intermediates in source precision
 #     strict     - enables -fp-model precise -fp-model except and disables floating point multiply add
 
-_DEPENDENCIES = Constants.hpp rdrand.hpp CARMA.hpp MCMC.hpp Correlation.hpp DLAPACKE.hpp
+_DEPENDENCIES = Constants.hpp rdrand.hpp CARMA.hpp MCMC.hpp Correlation.hpp DLAPACKE.hpp binarySMBH.hpp
 #Constants.hpp Utilities.hpp Acquire.hpp Universe.hpp Spherical.hpp Obj.hpp Kepler.hpp CARMA.hpp MCMC.hpp DLAPACKE.hpp Correlation.hpp PRH.hpp
 DEPENDENCIES = $(patsubst %,$(IDIR)/%,$(_DEPENDENCIES))
 
-_OBJECTS = Constants.o rdrand.o CARMA.o MCMC.o Correlation.o Functions.o DLAPACKE.o
+_OBJECTS = Constants.o rdrand.o CARMA.o MCMC.o Correlation.o Functions.o DLAPACKE.o binarySMBH.o
 #Constants.o Utilities.o Acquire.o Universe.o Spherical.o Obj.o Kepler.o CARMA.o MCMC.o DLAPACKE.o Correlation.o Functions.o PRH.o
 OBJECTS = $(patsubst %,$(ODIR)%,$(_OBJECTS))
 
@@ -87,10 +87,10 @@ TEST = test_libcarma.py
 all: $(LIBCARMA_STAT) $(LIBCARMA_DYN) $(LIBCARMA_LINKING) $(PYTHON_BINDING) $(TEST)
 
 $(LIBCARMA_DYN): $(OBJECTS)
-	$(CPPC) -shared $(SONAME) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o $(LDIR)/libcarma.so.1.0.0 $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(MKL_LIBS) $(NLOPTLIBS)
+	$(CPPC) -shared $(SONAME) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) -o $(LDIR)/libcarma.so.1.0.0 $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(ODIR)binarySMBH.o $(MKL_LIBS) $(NLOPTLIBS)
 
 $(LIBCARMA_STAT): $(OBJECTS)
-	ar r $(LDIR)libcarma.a $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o
+	ar r $(LDIR)libcarma.a $(ODIR)Functions.o $(ODIR)rdrand.o $(ODIR)CARMA.o $(ODIR)MCMC.o $(ODIR)Constants.o $(ODIR)Correlation.o $(ODIR)DLAPACKE.o $(ODIR)binarySMBH.o
 
 $(LIBCARMA_LINKING): $(LIBCARMA)
 	rm -rf $(LDIR)libcarma.so.1
@@ -151,6 +151,9 @@ $(ODIR)Correlation.o: $(SRCDIR)Correlation.cpp $(IDIR)Correlation.hpp
 
 $(ODIR)Constants.o: $(SRCDIR)Constants.cpp $(IDIR)Constants.hpp
 	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $< -o $@
+
+$(ODIR)binarySMBH.o: $(SRCDIR)binarySMBH.cpp $(IDIR)Constants.hpp
+	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $(NLOPTLIBS) $< -o $@ 
 
 $(ODIR)Functions.o: $(SRCDIR)Functions.cpp
 	$(CPPC) -c -Wall -fpic $(VERFLAGS) -xHost $(CPPFLAGS) $(ALIGN_FLAGS) $(OMPFLAGS) $(FPFLAGS) $(MKLFLAGS) $(REPORTFLAG) -I $(IDIR) $(NLOPTLIBS) $< -o $@ 
