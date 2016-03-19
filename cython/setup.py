@@ -31,15 +31,15 @@ else:
 
 bSMBH_sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
 
-bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['-I/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
 
 rand_sourceList = ['rand.pyx', 'rdrand.cpp']
 
-rand_ext = Extension(name='rand', sources=rand_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['-I/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+rand_ext = Extension(name='rand', sources=rand_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
 
-CARMATask_sourceList = ['CARMATask.pyx', 'Constants.cpp', 'CARMA.cpp', 'Task.cpp']
+CARMATask_sourceList = ['CARMATask.pyx', 'Task.cpp', 'CARMA.cpp', 'LC.cpp', 'Constants.cpp']
 
-CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['-I/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython'], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
 
 setup(
 	ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext])

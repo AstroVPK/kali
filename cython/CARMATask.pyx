@@ -8,7 +8,7 @@ from libcpp cimport bool
 DTYPE = np.float64
 ctypedef np.float64_t DTYPE_t
 
-cdef extern from 'Task.hpp':
+cdef extern from 'LC.hpp':
 	cdef cppclass LCData:
 		int numCadences
 		double dt
@@ -24,17 +24,18 @@ cdef extern from 'Task.hpp':
 		double *y
 		double *yerr
 		double *mask
-		LCData() except+
+		int LCData() except+
 
 cdef extern from 'Task.hpp':
 	cdef cppclass Task:
 		Task(int p, int q, int numThreads, int numBurn) except+
+		void guard()
 		int getNumBurn()
 		void setNumBurn(int numBurn)
 		int checkParams(double *Theta, int threadNum)
 		void setDT(double dt, int threadNum)
 		int printSystem(double dt, double *Theta, int threadNum)
-		int makeIntrinsicLC(double *Theta, LCData *ptrToWorkingLC, unsigned int burnSeed, unsigned int distSeed, int threadNum)
+		int makeIntrinsicLC(double *Theta, int numCadences, double dt, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
 
 cdef class lc:
 	cdef LCData *thisptr
@@ -110,16 +111,19 @@ cdef class CARMATask:
 
 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
 		if numThreads == None:
-			numThreads = psutil.cpu_count(logical = False)
+			numThreads = int(psutil.cpu_count(logical = False))
 		if numBurn == None:
-			numBurn == 1000000
+			numBurn = 1000000
 		self.thisptr = new Task(p, q, numThreads, numBurn)
+
+	def guard(self):
+		self.thisptr.guard()
 
 	def __dealloc__(self):
 		del self.thisptr
+
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-
 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
@@ -139,8 +143,7 @@ cdef class CARMATask:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, lc workingLC, burnSeed, distSeed, threadNum = None):
+	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		cdef LCData *ptrToWorkingLC = workingLC.thisptr
-		return self.thisptr.makeIntrinsicLC(&Theta[0], ptrToWorkingLC, burnSeed, distSeed, threadNum)
+		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)

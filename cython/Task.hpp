@@ -8,31 +8,10 @@
 #include <mkl.h>
 
 #include "CARMA.hpp"
-//#include "MCMC.hpp"
+#include "LC.hpp"
 #include "Constants.hpp"
-//#include "rdrand.hpp"
 
 using namespace std;
-
-	class LCData {
-	public:
-		int numCadences;
-		bool IR;
-		double tolIR;
-		double dt;
-		double fracIntrinsicVar;
-		double fracSignalToNoise;
-		double maxSigma;
-		double minTimescale;
-		double maxTimescale;
-		double *t;
-		double *x;
-		double *y;
-		double *yerr;
-		double *mask;
-		LCData() = default;
-		~LCData();
-	};
 
 	class Task {
 	private:
@@ -44,14 +23,14 @@ using namespace std;
 	public:
 		Task() = delete;
 		Task(int p, int q, int numThreads, int numBurn);
-		~Task();
+		//~Task();
+		void guard();
 		int getNumBurn();
 		void setNumBurn(int numBurn);
 		int checkParams(double *Theta, int threadNum);
 		void setDT(double dt, int threadNum);
 		int printSystem(double dt, double *Theta, int threadNum);
-		int makeIntrinsicLC(double *Theta, LCData *ptrToWorkingLC, unsigned int burnSeed, unsigned int distSeed, int threadNum);
+		int makeIntrinsicLC(double *Theta, int numCadences, double dt, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum);
 		};
-
 
 #endif

@@ -62,6 +62,7 @@ class lc(object):
 		if not supplied:
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
+				self.mask[i] = 1.0
 		else:
 			self._readlc(supplied)
 
@@ -176,15 +177,15 @@ class lc(object):
 			self.x[key] = val.x
 			self.y[key] = val.y
 			self.yerr[key] = val.yerr
-			self.mask[key] = val.mas
+			self.mask[key] = val.mask
 
 	@abc.abstractmethod
 	def _readlc(self, supplied):
 		raise NotImplementedError('Override readlc ')
 
-class baseicLC(lc):
+class basicLC(lc):
 	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
-		super().__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, supplied)
+		super(basicLC, self).__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, supplied)
 
 	def _readlc(self, supplied):
 		data = np.loadtxt(supplied)
