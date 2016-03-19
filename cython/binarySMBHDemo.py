@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """	Module to simulate binary SMBHs.
 
-	For a demonstration of the module, please run the module as a command line program using 
-	bash-prompt$ python makeMockLC.py --help
+	For a demonstration of the module, please run the module as a command line program eg.
+	bash-prompt$ python binarySMBHDemo.py --help
 	and
-	bash-prompt$ python makeMockLC.py $PWD/examples/taskTest taskTest01.ini
+	bash-prompt$ python binarySMBHDemo.py -rPer 0.001 -m12 6.0e8 -q 0.2 -e 0.75 -omega 90.0 -i 90.0
 """
 import math as math
 import cmath as cmath

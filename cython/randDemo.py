@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+"""	Module to draw hardware random numbers.
+
+	For a demonstration of the module, please run the module as a command line program eg.
+	bash-prompt$ python randDemo.py --help
+	and
+	bash-prompt$ python randDemo.py -n 100
+"""
+
 import numpy as np
 import rand
 
