@@ -4,7 +4,7 @@
 {
     "distutils": {
         "depends": [
-            "rdrand.hpp"
+            "/home/vish/code/trunk/cpp/libcarma/cython/rdrand.hpp"
         ], 
         "extra_compile_args": [
             "-gxx-name=g++-4.8", 
@@ -37,7 +37,7 @@
             "-lnlopt"
         ], 
         "include_dirs": [
-            "-I/home/vish/code/trunk/cpp/libcarma/cython"
+            "/home/vish/code/trunk/cpp/libcarma/cython"
         ], 
         "language": "c++", 
         "library_dirs": [

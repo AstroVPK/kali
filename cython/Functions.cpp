@@ -9,6 +9,7 @@
 #include "MCMC.hpp"
 #include "Constants.hpp"
 #include "rdrand.hpp"
+#include "Functions.hpp"
 
 //#define TIME_LNLIKE
 //#define TIME_MCMC
@@ -16,7 +17,7 @@
 //#define DEBUG_CFFI_MAKEMOCKLC
 //#define DEBUG_COMPUTELNLIKE
 //#define DEBUG_CFFI_COMPUTELNLIKE
-#define DEBUG_FITCARMA 
+//#define DEBUG_FITCARMA 
 //#define DEBUG_CFFI_FITCARMA
 
 #if defined(DEBUG_MAKEMOCKLC) || defined(DEBUG_CFFI_MAKEMOCKLC) || defined(DEBUG_COMPUTELNLIKE) || defined(DEBUG_CFFI_COMPUTELNLIKE) || defined(DEBUG_FITCARMA) || defined(DEBUG_CFFI_FITCARMA)
@@ -266,7 +267,7 @@ double computeLnPosterior(double dt, int p, int q, double *Theta, bool IR, doubl
 	return LnPosterior;
 	}
 
-int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnLike) {
+int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 	omp_set_num_threads(nthreads);
 	int ndims = p + q + 1;
 	int threadNum = omp_get_thread_num();
@@ -360,11 +361,11 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 		Systems[tNum].deallocCARMA();
 		}
 	newEnsemble.getChain(Chain);
-	newEnsemble.getLnLike(LnLike);
+	newEnsemble.getLnLike(LnPosterior);
 	return 0;
 	}
 
-extern "C" {
+/*extern "C" {
 
 	extern int _getRandoms(int numRequested, unsigned int *Randoms) {
 		return getRandoms(numRequested, Randoms);
@@ -467,4 +468,4 @@ extern "C" {
 			}
 		return fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, cadence, mask, t, y, yerr, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, Chain, LnLike);
 		}
-	}
+	}*/

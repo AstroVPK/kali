@@ -4,8 +4,8 @@
 {
     "distutils": {
         "depends": [
-            "/home/vish/code/trunk/cpp/libcarma/cython/LC.hpp", 
-            "/home/vish/code/trunk/cpp/libcarma/cython/Task.hpp"
+            "/home/vish/code/trunk/cpp/libcarma/cython/Functions.hpp", 
+            "/home/vish/code/trunk/cpp/libcarma/cython/LC.hpp"
         ], 
         "extra_compile_args": [
             "-gxx-name=g++-4.8", 
@@ -307,7 +307,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
-#include "Task.hpp"
+#include "Functions.hpp"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -770,8 +770,8 @@ typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
  * from libcpp cimport bool
  * DTYPE = np.float64
  * ctypedef np.float64_t DTYPE_t             # <<<<<<<<<<<<<<
- * 
- * cdef extern from 'LC.hpp':
+ * #DTYPE = np.uint32
+ * #ctypedef np.uint32_t DTYPE_t
  */
 typedef __pyx_t_5numpy_float64_t __pyx_t_9CARMATask_DTYPE_t;
 #if CYTHON_CCOMPLEX
@@ -797,7 +797,6 @@ typedef __pyx_t_5numpy_float64_t __pyx_t_9CARMATask_DTYPE_t;
 
 /*--- Type declarations ---*/
 struct __pyx_obj_9CARMATask_lc;
-struct __pyx_obj_9CARMATask_CARMATask;
 
 /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":764
  * ctypedef npy_longdouble longdouble_t
@@ -835,8 +834,8 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
-/* "CARMATask.pyx":40
- * 		int makeIntrinsicLC(double *Theta, int numCadences, double dt, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
+/* "CARMATask.pyx":50
+ * 	cdef int fitCARMACARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFactor, int numCadences, int *cadence, double *mask, double *t, double *y, double *yerr, double maxSigma, double minTimescale, double maxTimescale, int nthreads, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior)
  * 
  * cdef class lc:             # <<<<<<<<<<<<<<
  * 	cdef LCData *thisptr
@@ -845,19 +844,6 @@ typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_obj_9CARMATask_lc {
   PyObject_HEAD
   LCData *thisptr;
-};
-
-
-/* "CARMATask.pyx":109
- * 		return self.thisptr.t[cadence], self.thisptr.x[cadence], self.thisptr.y[cadence], self.thisptr.yerr[cadence], self.thisptr.mask[cadence]
- * 
- * cdef class CARMATask:             # <<<<<<<<<<<<<<
- * 	cdef Task *thisptr
- * 
- */
-struct __pyx_obj_9CARMATask_CARMATask {
-  PyObject_HEAD
-  Task *thisptr;
 };
 
 
@@ -990,6 +976,10 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+static void __Pyx_RaiseBufferFallbackError(void);
+
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
 #if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
@@ -1017,8 +1007,6 @@ static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
 static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
-
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
@@ -1265,8 +1253,9 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 
 /* Module declarations from 'CARMATask' */
 static PyTypeObject *__pyx_ptype_9CARMATask_lc = 0;
-static PyTypeObject *__pyx_ptype_9CARMATask_CARMATask = 0;
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_unsigned_int = { "unsigned int", NULL, sizeof(unsigned int), { 0 }, 0, IS_UNSIGNED(unsigned int) ? 'U' : 'I', IS_UNSIGNED(unsigned int), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_int = { "int", NULL, sizeof(int), { 0 }, 0, IS_UNSIGNED(int) ? 'U' : 'I', IS_UNSIGNED(int), 0 };
 #define __Pyx_MODULE_NAME "CARMATask"
 int __pyx_module_is_main_CARMATask = 0;
 
@@ -1302,78 +1291,132 @@ static char __pyx_k_main[] = "__main__";
 static char __pyx_k_mask[] = "mask";
 static char __pyx_k_math[] = "math";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_xTol[] = "xTol";
 static char __pyx_k_yerr[] = "yerr";
+static char __pyx_k_Chain[] = "Chain";
 static char __pyx_k_DTYPE[] = "DTYPE";
 static char __pyx_k_Theta[] = "Theta";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_tolIR[] = "tolIR";
+static char __pyx_k_xSeed[] = "xSeed";
 static char __pyx_k_import[] = "__import__";
+static char __pyx_k_nsteps[] = "nsteps";
 static char __pyx_k_psutil[] = "psutil";
+static char __pyx_k_random[] = "random";
+static char __pyx_k_xStart[] = "xStart";
+static char __pyx_k_zSSeed[] = "zSSeed";
+static char __pyx_k_Randoms[] = "Randoms";
+static char __pyx_k_cadence[] = "cadence";
 static char __pyx_k_float64[] = "float64";
-static char __pyx_k_logical[] = "logical";
 static char __pyx_k_numBurn[] = "numBurn";
+static char __pyx_k_numRand[] = "numRand";
+static char __pyx_k_randint[] = "randint";
+static char __pyx_k_success[] = "success";
 static char __pyx_k_burnSeed[] = "burnSeed";
 static char __pyx_k_distSeed[] = "distSeed";
+static char __pyx_k_fitCARMA[] = "fitCARMA";
+static char __pyx_k_maxEvals[] = "maxEvals";
 static char __pyx_k_maxSigma[] = "maxSigma";
-static char __pyx_k_cpu_count[] = "cpu_count";
-static char __pyx_k_threadNum[] = "threadNum";
+static char __pyx_k_moveSeed[] = "moveSeed";
+static char __pyx_k_nthreads[] = "nthreads";
+static char __pyx_k_nwalkers[] = "nwalkers";
+static char __pyx_k_CARMATask[] = "CARMATask";
+static char __pyx_k_noiseSeed[] = "noiseSeed";
 static char __pyx_k_ValueError[] = "ValueError";
-static char __pyx_k_numThreads[] = "numThreads";
+static char __pyx_k_getRandoms[] = "getRandoms";
+static char __pyx_k_testSystem[] = "testSystem";
+static char __pyx_k_walkerSeed[] = "walkerSeed";
+static char __pyx_k_LnPosterior[] = "LnPosterior";
 static char __pyx_k_numCadences[] = "numCadences";
+static char __pyx_k_printSystem[] = "printSystem";
 static char __pyx_k_RuntimeError[] = "RuntimeError";
 static char __pyx_k_maxTimescale[] = "maxTimescale";
 static char __pyx_k_minTimescale[] = "minTimescale";
+static char __pyx_k_startCadence[] = "startCadence";
+static char __pyx_k_scatterFactor[] = "scatterFactor";
+static char __pyx_k_makeObservedLC[] = "makeObservedLC";
+static char __pyx_k_makeIntrinsicLC[] = "makeIntrinsicLC";
 static char __pyx_k_fracIntrinsicVar[] = "fracIntrinsicVar";
 static char __pyx_k_fracSignalToNoise[] = "fracSignalToNoise";
+static char __pyx_k_computeLnPosterior[] = "computeLnPosterior";
+static char __pyx_k_computeLnLikelihood[] = "computeLnLikelihood";
 static char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
+static char __pyx_k_home_vish_code_trunk_cpp_libcar[] = "/home/vish/code/trunk/cpp/libcarma/cython/CARMATask.pyx";
 static char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
 static char __pyx_k_Format_string_allocated_too_shor[] = "Format string allocated too short, see comment in numpy.pxd";
 static char __pyx_k_Non_native_byte_order_not_suppor[] = "Non-native byte order not supported";
 static char __pyx_k_ndarray_is_not_Fortran_contiguou[] = "ndarray is not Fortran contiguous";
 static char __pyx_k_Format_string_allocated_too_shor_2[] = "Format string allocated too short.";
+static PyObject *__pyx_n_s_CARMATask;
+static PyObject *__pyx_n_s_Chain;
 static PyObject *__pyx_n_s_DTYPE;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
 static PyObject *__pyx_n_s_IR;
+static PyObject *__pyx_n_s_LnPosterior;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
+static PyObject *__pyx_n_s_Randoms;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_Theta;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_burnSeed;
-static PyObject *__pyx_n_s_cpu_count;
+static PyObject *__pyx_n_s_cadence;
+static PyObject *__pyx_n_s_computeLnLikelihood;
+static PyObject *__pyx_n_s_computeLnPosterior;
 static PyObject *__pyx_n_s_distSeed;
 static PyObject *__pyx_n_s_dt;
+static PyObject *__pyx_n_s_fitCARMA;
 static PyObject *__pyx_n_s_float64;
 static PyObject *__pyx_n_s_fracIntrinsicVar;
 static PyObject *__pyx_n_s_fracSignalToNoise;
+static PyObject *__pyx_n_s_getRandoms;
+static PyObject *__pyx_kp_s_home_vish_code_trunk_cpp_libcar;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_logical;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_s_makeIntrinsicLC;
+static PyObject *__pyx_n_s_makeObservedLC;
 static PyObject *__pyx_n_s_mask;
 static PyObject *__pyx_n_s_math;
+static PyObject *__pyx_n_s_maxEvals;
 static PyObject *__pyx_n_s_maxSigma;
 static PyObject *__pyx_n_s_maxTimescale;
 static PyObject *__pyx_n_s_minTimescale;
+static PyObject *__pyx_n_s_moveSeed;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
+static PyObject *__pyx_n_s_noiseSeed;
 static PyObject *__pyx_n_s_np;
+static PyObject *__pyx_n_s_nsteps;
+static PyObject *__pyx_n_s_nthreads;
 static PyObject *__pyx_n_s_numBurn;
 static PyObject *__pyx_n_s_numCadences;
-static PyObject *__pyx_n_s_numThreads;
+static PyObject *__pyx_n_s_numRand;
 static PyObject *__pyx_n_s_numpy;
+static PyObject *__pyx_n_s_nwalkers;
 static PyObject *__pyx_n_s_p;
+static PyObject *__pyx_n_s_printSystem;
 static PyObject *__pyx_n_s_psutil;
 static PyObject *__pyx_n_s_q;
+static PyObject *__pyx_n_s_randint;
+static PyObject *__pyx_n_s_random;
 static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_n_s_scatterFactor;
+static PyObject *__pyx_n_s_startCadence;
+static PyObject *__pyx_n_s_success;
 static PyObject *__pyx_n_s_t;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_threadNum;
+static PyObject *__pyx_n_s_testSystem;
 static PyObject *__pyx_n_s_tolIR;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
+static PyObject *__pyx_n_s_walkerSeed;
 static PyObject *__pyx_n_s_x;
+static PyObject *__pyx_n_s_xSeed;
+static PyObject *__pyx_n_s_xStart;
+static PyObject *__pyx_n_s_xTol;
 static PyObject *__pyx_n_s_y;
 static PyObject *__pyx_n_s_yerr;
+static PyObject *__pyx_n_s_zSSeed;
 static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_dt, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracSignalToNoise, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale); /* proto */
 static PyObject *__pyx_pf_9CARMATask_2lc_11numCadences___get__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9CARMATask_2lc_2dt___get__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self); /* proto */
@@ -1394,17 +1437,17 @@ static int __pyx_pf_9CARMATask_2lc_12maxTimescale_2__set__(struct __pyx_obj_9CAR
 static Py_ssize_t __pyx_pf_9CARMATask_2lc_2__len__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self); /* proto */
 static int __pyx_pf_9CARMATask_2lc_4__setitem__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self, PyObject *__pyx_v_cadence, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_9CARMATask_2lc_6__getitem__(struct __pyx_obj_9CARMATask_lc *__pyx_v_self, PyObject *__pyx_v_cadence); /* proto */
-static int __pyx_pf_9CARMATask_9CARMATask___cinit__(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numThreads, PyObject *__pyx_v_numBurn); /* proto */
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_2guard(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self); /* proto */
-static void __pyx_pf_9CARMATask_9CARMATask_4__dealloc__(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_6checkParams(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_8setDT(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_10printSystem(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_dt, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_12makeIntrinsicLC(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracSignalToNoise, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9CARMATask_getRandoms(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_Randoms); /* proto */
+static PyObject *__pyx_pf_9CARMATask_2testSystem(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta); /* proto */
+static PyObject *__pyx_pf_9CARMATask_4printSystem(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta); /* proto */
+static PyObject *__pyx_pf_9CARMATask_6makeIntrinsicLC(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numBurn, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_startCadence, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_9CARMATask_8makeObservedLC(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracSignalToNoise, PyObject *__pyx_v_numBurn, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_startCadence, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_noiseSeed, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr); /* proto */
+static PyObject *__pyx_pf_9CARMATask_10computeLnLikelihood(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr); /* proto */
+static PyObject *__pyx_pf_9CARMATask_12computeLnPosterior(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale); /* proto */
+static PyObject *__pyx_pf_9CARMATask_14fitCARMA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_scatterFactor, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_nthreads, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_9CARMATask_lc(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9CARMATask_CARMATask(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_float_1_0;
 static PyObject *__pyx_float_5_0;
 static PyObject *__pyx_float_0_15;
@@ -1413,15 +1456,31 @@ static PyObject *__pyx_float_1_0e2;
 static PyObject *__pyx_float_1_0eneg_3;
 static PyObject *__pyx_float_5_0eneg_1;
 static PyObject *__pyx_int_0;
-static PyObject *__pyx_int_1000000;
+static PyObject *__pyx_int_4294967295;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_tuple__6;
+static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__9;
+static PyObject *__pyx_tuple__11;
+static PyObject *__pyx_tuple__13;
+static PyObject *__pyx_tuple__15;
+static PyObject *__pyx_tuple__17;
+static PyObject *__pyx_tuple__19;
+static PyObject *__pyx_tuple__21;
+static PyObject *__pyx_codeobj__8;
+static PyObject *__pyx_codeobj__10;
+static PyObject *__pyx_codeobj__12;
+static PyObject *__pyx_codeobj__14;
+static PyObject *__pyx_codeobj__16;
+static PyObject *__pyx_codeobj__18;
+static PyObject *__pyx_codeobj__20;
+static PyObject *__pyx_codeobj__22;
 
-/* "CARMATask.pyx":45
+/* "CARMATask.pyx":55
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0):             # <<<<<<<<<<<<<<
@@ -1490,22 +1549,22 @@ static int __pyx_pw_9CARMATask_2lc_1__cinit__(PyObject *__pyx_v_self, PyObject *
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (kw_args > 0) {
@@ -1549,7 +1608,7 @@ static int __pyx_pw_9CARMATask_2lc_1__cinit__(PyObject *__pyx_v_self, PyObject *
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1586,17 +1645,17 @@ static int __pyx_pw_9CARMATask_2lc_1__cinit__(PyObject *__pyx_v_self, PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 5, 13, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("CARMATask.lc.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_9CARMATask_2lc___cinit__(((struct __pyx_obj_9CARMATask_lc *)__pyx_v_self), __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_dt, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_fracIntrinsicVar, __pyx_v_fracSignalToNoise, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale);
 
   /* function exit code */
@@ -1655,31 +1714,31 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "CARMATask.pyx":46
+  /* "CARMATask.pyx":56
  * 	@cython.wraparound(False)
  * 	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0):
  * 		self.thisptr = new LCData()             # <<<<<<<<<<<<<<
@@ -1690,11 +1749,11 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
     __pyx_t_1 = new LCData();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "CARMATask.pyx":47
+  /* "CARMATask.pyx":57
  * 	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0):
  * 		self.thisptr = new LCData()
  * 		self.thisptr.numCadences = t.shape[0]             # <<<<<<<<<<<<<<
@@ -1703,87 +1762,87 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
  */
   __pyx_v_self->thisptr->numCadences = (__pyx_v_t->dimensions[0]);
 
-  /* "CARMATask.pyx":48
+  /* "CARMATask.pyx":58
  * 		self.thisptr = new LCData()
  * 		self.thisptr.numCadences = t.shape[0]
  * 		self.thisptr.dt = dt             # <<<<<<<<<<<<<<
  * 		self.thisptr.IR = IR
  * 		self.thisptr.tolIR = tolIR
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 58; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->dt = __pyx_t_2;
 
-  /* "CARMATask.pyx":49
+  /* "CARMATask.pyx":59
  * 		self.thisptr.numCadences = t.shape[0]
  * 		self.thisptr.dt = dt
  * 		self.thisptr.IR = IR             # <<<<<<<<<<<<<<
  * 		self.thisptr.tolIR = tolIR
  * 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_3 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_3 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->IR = __pyx_t_3;
 
-  /* "CARMATask.pyx":50
+  /* "CARMATask.pyx":60
  * 		self.thisptr.dt = dt
  * 		self.thisptr.IR = IR
  * 		self.thisptr.tolIR = tolIR             # <<<<<<<<<<<<<<
  * 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
  * 		self.thisptr.fracSignalToNoise = fracSignalToNoise
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->tolIR = __pyx_t_2;
 
-  /* "CARMATask.pyx":51
+  /* "CARMATask.pyx":61
  * 		self.thisptr.IR = IR
  * 		self.thisptr.tolIR = tolIR
  * 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar             # <<<<<<<<<<<<<<
  * 		self.thisptr.fracSignalToNoise = fracSignalToNoise
  * 		self.thisptr.maxSigma = maxSigma
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->fracIntrinsicVar = __pyx_t_2;
 
-  /* "CARMATask.pyx":52
+  /* "CARMATask.pyx":62
  * 		self.thisptr.tolIR = tolIR
  * 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
  * 		self.thisptr.fracSignalToNoise = fracSignalToNoise             # <<<<<<<<<<<<<<
  * 		self.thisptr.maxSigma = maxSigma
  * 		self.thisptr.minTimescale = minTimescale
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->fracSignalToNoise = __pyx_t_2;
 
-  /* "CARMATask.pyx":53
+  /* "CARMATask.pyx":63
  * 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
  * 		self.thisptr.fracSignalToNoise = fracSignalToNoise
  * 		self.thisptr.maxSigma = maxSigma             # <<<<<<<<<<<<<<
  * 		self.thisptr.minTimescale = minTimescale
  * 		self.thisptr.maxTimescale = maxTimescale
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->maxSigma = __pyx_t_2;
 
-  /* "CARMATask.pyx":54
+  /* "CARMATask.pyx":64
  * 		self.thisptr.fracSignalToNoise = fracSignalToNoise
  * 		self.thisptr.maxSigma = maxSigma
  * 		self.thisptr.minTimescale = minTimescale             # <<<<<<<<<<<<<<
  * 		self.thisptr.maxTimescale = maxTimescale
  * 		self.thisptr.t = &t[0]
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->minTimescale = __pyx_t_2;
 
-  /* "CARMATask.pyx":55
+  /* "CARMATask.pyx":65
  * 		self.thisptr.maxSigma = maxSigma
  * 		self.thisptr.minTimescale = minTimescale
  * 		self.thisptr.maxTimescale = maxTimescale             # <<<<<<<<<<<<<<
  * 		self.thisptr.t = &t[0]
  * 		self.thisptr.x = &x[0]
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->maxTimescale = __pyx_t_2;
 
-  /* "CARMATask.pyx":56
+  /* "CARMATask.pyx":66
  * 		self.thisptr.minTimescale = minTimescale
  * 		self.thisptr.maxTimescale = maxTimescale
  * 		self.thisptr.t = &t[0]             # <<<<<<<<<<<<<<
@@ -1793,7 +1852,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_t_4 = 0;
   __pyx_v_self->thisptr->t = (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_t.diminfo[0].strides)));
 
-  /* "CARMATask.pyx":57
+  /* "CARMATask.pyx":67
  * 		self.thisptr.maxTimescale = maxTimescale
  * 		self.thisptr.t = &t[0]
  * 		self.thisptr.x = &x[0]             # <<<<<<<<<<<<<<
@@ -1803,7 +1862,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_t_5 = 0;
   __pyx_v_self->thisptr->x = (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_x.diminfo[0].strides)));
 
-  /* "CARMATask.pyx":58
+  /* "CARMATask.pyx":68
  * 		self.thisptr.t = &t[0]
  * 		self.thisptr.x = &x[0]
  * 		self.thisptr.y = &y[0]             # <<<<<<<<<<<<<<
@@ -1813,7 +1872,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_t_6 = 0;
   __pyx_v_self->thisptr->y = (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_y.diminfo[0].strides)));
 
-  /* "CARMATask.pyx":59
+  /* "CARMATask.pyx":69
  * 		self.thisptr.x = &x[0]
  * 		self.thisptr.y = &y[0]
  * 		self.thisptr.yerr = &yerr[0]             # <<<<<<<<<<<<<<
@@ -1823,7 +1882,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_t_7 = 0;
   __pyx_v_self->thisptr->yerr = (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_yerr.diminfo[0].strides)));
 
-  /* "CARMATask.pyx":60
+  /* "CARMATask.pyx":70
  * 		self.thisptr.y = &y[0]
  * 		self.thisptr.yerr = &yerr[0]
  * 		self.thisptr.mask = &mask[0]             # <<<<<<<<<<<<<<
@@ -1833,7 +1892,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   __pyx_t_8 = 0;
   __pyx_v_self->thisptr->mask = (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_mask.diminfo[0].strides)));
 
-  /* "CARMATask.pyx":45
+  /* "CARMATask.pyx":55
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0):             # <<<<<<<<<<<<<<
@@ -1867,7 +1926,7 @@ static int __pyx_pf_9CARMATask_2lc___cinit__(struct __pyx_obj_9CARMATask_lc *__p
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":63
+/* "CARMATask.pyx":73
  * 
  * 	property numCadences:
  * 		def __get__(self): return self.thisptr.numCadences             # <<<<<<<<<<<<<<
@@ -1897,7 +1956,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_11numCadences___get__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->numCadences); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->numCadences); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1914,7 +1973,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_11numCadences___get__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":66
+/* "CARMATask.pyx":76
  * 
  * 	property dt:
  * 		def __get__(self): return self.thisptr.dt             # <<<<<<<<<<<<<<
@@ -1944,7 +2003,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_2dt___get__(struct __pyx_obj_9CARMATask
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->dt); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->dt); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1961,7 +2020,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_2dt___get__(struct __pyx_obj_9CARMATask
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":69
+/* "CARMATask.pyx":79
  * 
  * 	property IR:
  * 		def __get__(self): return self.thisptr.IR             # <<<<<<<<<<<<<<
@@ -1991,7 +2050,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_2IR___get__(struct __pyx_obj_9CARMATask
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->IR); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->IR); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2008,7 +2067,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_2IR___get__(struct __pyx_obj_9CARMATask
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":70
+/* "CARMATask.pyx":80
  * 	property IR:
  * 		def __get__(self): return self.thisptr.IR
  * 		def __set__(self, IR): self.thisptr.IR = IR             # <<<<<<<<<<<<<<
@@ -2037,7 +2096,7 @@ static int __pyx_pf_9CARMATask_2lc_2IR_2__set__(struct __pyx_obj_9CARMATask_lc *
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_1 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_1 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->IR = __pyx_t_1;
 
   /* function exit code */
@@ -2051,7 +2110,7 @@ static int __pyx_pf_9CARMATask_2lc_2IR_2__set__(struct __pyx_obj_9CARMATask_lc *
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":73
+/* "CARMATask.pyx":83
  * 
  * 	property tolIR:
  * 		def __get__(self): return self.thisptr.tolIR             # <<<<<<<<<<<<<<
@@ -2081,7 +2140,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_5tolIR___get__(struct __pyx_obj_9CARMAT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->tolIR); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->tolIR); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2098,7 +2157,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_5tolIR___get__(struct __pyx_obj_9CARMAT
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":74
+/* "CARMATask.pyx":84
  * 	property tolIR:
  * 		def __get__(self): return self.thisptr.tolIR
  * 		def __set__(self, tolIR): self.thisptr.tolIR = tolIR             # <<<<<<<<<<<<<<
@@ -2127,7 +2186,7 @@ static int __pyx_pf_9CARMATask_2lc_5tolIR_2__set__(struct __pyx_obj_9CARMATask_l
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->tolIR = __pyx_t_1;
 
   /* function exit code */
@@ -2141,7 +2200,7 @@ static int __pyx_pf_9CARMATask_2lc_5tolIR_2__set__(struct __pyx_obj_9CARMATask_l
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":77
+/* "CARMATask.pyx":87
  * 
  * 	property fracIntrinsicVar:
  * 		def __get__(self): return self.thisptr.fracIntrinsicVar             # <<<<<<<<<<<<<<
@@ -2171,7 +2230,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_16fracIntrinsicVar___get__(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->fracIntrinsicVar); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->fracIntrinsicVar); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2188,7 +2247,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_16fracIntrinsicVar___get__(struct __pyx
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":78
+/* "CARMATask.pyx":88
  * 	property fracIntrinsicVar:
  * 		def __get__(self): return self.thisptr.fracIntrinsicVar
  * 		def __set__(self, fracIntrinsicVar): self.thisptr.fracIntrinsicVar = fracIntrinsicVar             # <<<<<<<<<<<<<<
@@ -2217,7 +2276,7 @@ static int __pyx_pf_9CARMATask_2lc_16fracIntrinsicVar_2__set__(struct __pyx_obj_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->fracIntrinsicVar = __pyx_t_1;
 
   /* function exit code */
@@ -2231,7 +2290,7 @@ static int __pyx_pf_9CARMATask_2lc_16fracIntrinsicVar_2__set__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":81
+/* "CARMATask.pyx":91
  * 
  * 	property fracSignalToNoise:
  * 		def __get__(self): return self.thisptr.fracSignalToNoise             # <<<<<<<<<<<<<<
@@ -2261,7 +2320,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_17fracSignalToNoise___get__(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->fracSignalToNoise); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->fracSignalToNoise); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2278,7 +2337,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_17fracSignalToNoise___get__(struct __py
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":82
+/* "CARMATask.pyx":92
  * 	property fracSignalToNoise:
  * 		def __get__(self): return self.thisptr.fracSignalToNoise
  * 		def __set__(self, fracSignalToNoise): self.thisptr.fracSignalToNoise = fracSignalToNoise             # <<<<<<<<<<<<<<
@@ -2307,7 +2366,7 @@ static int __pyx_pf_9CARMATask_2lc_17fracSignalToNoise_2__set__(struct __pyx_obj
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->fracSignalToNoise = __pyx_t_1;
 
   /* function exit code */
@@ -2321,7 +2380,7 @@ static int __pyx_pf_9CARMATask_2lc_17fracSignalToNoise_2__set__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":85
+/* "CARMATask.pyx":95
  * 
  * 	property maxSigma:
  * 		def __get__(self): return self.thisptr.maxSigma             # <<<<<<<<<<<<<<
@@ -2351,7 +2410,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_8maxSigma___get__(struct __pyx_obj_9CAR
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->maxSigma); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->maxSigma); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2368,7 +2427,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_8maxSigma___get__(struct __pyx_obj_9CAR
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":86
+/* "CARMATask.pyx":96
  * 	property maxSigma:
  * 		def __get__(self): return self.thisptr.maxSigma
  * 		def __set__(self, maxSigma): self.thisptr.maxSigma = maxSigma             # <<<<<<<<<<<<<<
@@ -2397,7 +2456,7 @@ static int __pyx_pf_9CARMATask_2lc_8maxSigma_2__set__(struct __pyx_obj_9CARMATas
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->maxSigma = __pyx_t_1;
 
   /* function exit code */
@@ -2411,7 +2470,7 @@ static int __pyx_pf_9CARMATask_2lc_8maxSigma_2__set__(struct __pyx_obj_9CARMATas
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":89
+/* "CARMATask.pyx":99
  * 
  * 	property minTimescale:
  * 		def __get__(self): return self.thisptr.minTimescale             # <<<<<<<<<<<<<<
@@ -2441,7 +2500,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_12minTimescale___get__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->minTimescale); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->minTimescale); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2458,7 +2517,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_12minTimescale___get__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":90
+/* "CARMATask.pyx":100
  * 	property minTimescale:
  * 		def __get__(self): return self.thisptr.minTimescale
  * 		def __set__(self, minTimescale): self.thisptr.minTimescale = minTimescale             # <<<<<<<<<<<<<<
@@ -2487,7 +2546,7 @@ static int __pyx_pf_9CARMATask_2lc_12minTimescale_2__set__(struct __pyx_obj_9CAR
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->minTimescale = __pyx_t_1;
 
   /* function exit code */
@@ -2501,7 +2560,7 @@ static int __pyx_pf_9CARMATask_2lc_12minTimescale_2__set__(struct __pyx_obj_9CAR
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":93
+/* "CARMATask.pyx":103
  * 
  * 	property maxTimescale:
  * 		def __get__(self): return self.thisptr.maxTimescale             # <<<<<<<<<<<<<<
@@ -2531,7 +2590,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_12maxTimescale___get__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->maxTimescale); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->maxTimescale); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2548,7 +2607,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_12maxTimescale___get__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":94
+/* "CARMATask.pyx":104
  * 	property maxTimescale:
  * 		def __get__(self): return self.thisptr.maxTimescale
  * 		def __set__(self, maxTimescale): self.thisptr.maxTimescale = maxTimescale             # <<<<<<<<<<<<<<
@@ -2577,7 +2636,7 @@ static int __pyx_pf_9CARMATask_2lc_12maxTimescale_2__set__(struct __pyx_obj_9CAR
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->thisptr->maxTimescale = __pyx_t_1;
 
   /* function exit code */
@@ -2591,7 +2650,7 @@ static int __pyx_pf_9CARMATask_2lc_12maxTimescale_2__set__(struct __pyx_obj_9CAR
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":96
+/* "CARMATask.pyx":106
  * 		def __set__(self, maxTimescale): self.thisptr.maxTimescale = maxTimescale
  * 
  * 	def __len__(self):             # <<<<<<<<<<<<<<
@@ -2617,7 +2676,7 @@ static Py_ssize_t __pyx_pf_9CARMATask_2lc_2__len__(struct __pyx_obj_9CARMATask_l
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "CARMATask.pyx":97
+  /* "CARMATask.pyx":107
  * 
  * 	def __len__(self):
  * 		return self.thisptr.numCadences             # <<<<<<<<<<<<<<
@@ -2627,7 +2686,7 @@ static Py_ssize_t __pyx_pf_9CARMATask_2lc_2__len__(struct __pyx_obj_9CARMATask_l
   __pyx_r = __pyx_v_self->thisptr->numCadences;
   goto __pyx_L0;
 
-  /* "CARMATask.pyx":96
+  /* "CARMATask.pyx":106
  * 		def __set__(self, maxTimescale): self.thisptr.maxTimescale = maxTimescale
  * 
  * 	def __len__(self):             # <<<<<<<<<<<<<<
@@ -2641,7 +2700,7 @@ static Py_ssize_t __pyx_pf_9CARMATask_2lc_2__len__(struct __pyx_obj_9CARMATask_l
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":99
+/* "CARMATask.pyx":109
  * 		return self.thisptr.numCadences
  * 
  * 	def __setitem__(self, cadence, value):             # <<<<<<<<<<<<<<
@@ -2673,77 +2732,77 @@ static int __pyx_pf_9CARMATask_2lc_4__setitem__(struct __pyx_obj_9CARMATask_lc *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "CARMATask.pyx":100
+  /* "CARMATask.pyx":110
  * 
  * 	def __setitem__(self, cadence, value):
  * 		self.thisptr.t[cadence] = value[0]             # <<<<<<<<<<<<<<
  * 		self.thisptr.x[cadence] = value[1]
  * 		self.thisptr.y[cadence] = value[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   (__pyx_v_self->thisptr->t[__pyx_t_3]) = __pyx_t_2;
 
-  /* "CARMATask.pyx":101
+  /* "CARMATask.pyx":111
  * 	def __setitem__(self, cadence, value):
  * 		self.thisptr.t[cadence] = value[0]
  * 		self.thisptr.x[cadence] = value[1]             # <<<<<<<<<<<<<<
  * 		self.thisptr.y[cadence] = value[2]
  * 		self.thisptr.yerr[cadence] = value[3]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   (__pyx_v_self->thisptr->x[__pyx_t_3]) = __pyx_t_2;
 
-  /* "CARMATask.pyx":102
+  /* "CARMATask.pyx":112
  * 		self.thisptr.t[cadence] = value[0]
  * 		self.thisptr.x[cadence] = value[1]
  * 		self.thisptr.y[cadence] = value[2]             # <<<<<<<<<<<<<<
  * 		self.thisptr.yerr[cadence] = value[3]
  * 		self.thisptr.mask[cadence] = value[4]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   (__pyx_v_self->thisptr->y[__pyx_t_3]) = __pyx_t_2;
 
-  /* "CARMATask.pyx":103
+  /* "CARMATask.pyx":113
  * 		self.thisptr.x[cadence] = value[1]
  * 		self.thisptr.y[cadence] = value[2]
  * 		self.thisptr.yerr[cadence] = value[3]             # <<<<<<<<<<<<<<
  * 		self.thisptr.mask[cadence] = value[4]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   (__pyx_v_self->thisptr->yerr[__pyx_t_3]) = __pyx_t_2;
 
-  /* "CARMATask.pyx":104
+  /* "CARMATask.pyx":114
  * 		self.thisptr.y[cadence] = value[2]
  * 		self.thisptr.yerr[cadence] = value[3]
  * 		self.thisptr.mask[cadence] = value[4]             # <<<<<<<<<<<<<<
  * 
  * 	def __getitem__(self, cadence):
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_value, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   (__pyx_v_self->thisptr->mask[__pyx_t_3]) = __pyx_t_2;
 
-  /* "CARMATask.pyx":99
+  /* "CARMATask.pyx":109
  * 		return self.thisptr.numCadences
  * 
  * 	def __setitem__(self, cadence, value):             # <<<<<<<<<<<<<<
@@ -2763,7 +2822,7 @@ static int __pyx_pf_9CARMATask_2lc_4__setitem__(struct __pyx_obj_9CARMATask_lc *
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":106
+/* "CARMATask.pyx":116
  * 		self.thisptr.mask[cadence] = value[4]
  * 
  * 	def __getitem__(self, cadence):             # <<<<<<<<<<<<<<
@@ -2799,30 +2858,30 @@ static PyObject *__pyx_pf_9CARMATask_2lc_6__getitem__(struct __pyx_obj_9CARMATas
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "CARMATask.pyx":107
+  /* "CARMATask.pyx":117
  * 
  * 	def __getitem__(self, cadence):
  * 		return self.thisptr.t[cadence], self.thisptr.x[cadence], self.thisptr.y[cadence], self.thisptr.yerr[cadence], self.thisptr.mask[cadence]             # <<<<<<<<<<<<<<
  * 
- * cdef class CARMATask:
+ * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = PyFloat_FromDouble((__pyx_v_self->thisptr->t[__pyx_t_1])); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyFloat_FromDouble((__pyx_v_self->thisptr->t[__pyx_t_1])); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->thisptr->x[__pyx_t_1])); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->thisptr->x[__pyx_t_1])); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_4 = PyFloat_FromDouble((__pyx_v_self->thisptr->y[__pyx_t_1])); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble((__pyx_v_self->thisptr->y[__pyx_t_1])); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_5 = PyFloat_FromDouble((__pyx_v_self->thisptr->yerr[__pyx_t_1])); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = PyFloat_FromDouble((__pyx_v_self->thisptr->yerr[__pyx_t_1])); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_6 = PyFloat_FromDouble((__pyx_v_self->thisptr->mask[__pyx_t_1])); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_cadence); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyFloat_FromDouble((__pyx_v_self->thisptr->mask[__pyx_t_1])); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyTuple_New(5); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyTuple_New(5); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_2);
@@ -2843,7 +2902,7 @@ static PyObject *__pyx_pf_9CARMATask_2lc_6__getitem__(struct __pyx_obj_9CARMATas
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "CARMATask.pyx":106
+  /* "CARMATask.pyx":116
  * 		self.thisptr.mask[cadence] = value[4]
  * 
  * 	def __getitem__(self, cadence):             # <<<<<<<<<<<<<<
@@ -2867,532 +2926,254 @@ static PyObject *__pyx_pf_9CARMATask_2lc_6__getitem__(struct __pyx_obj_9CARMATas
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":112
- * 	cdef Task *thisptr
- * 
- * 	def __cinit__(self, p, q, numThreads = None, numBurn = None):             # <<<<<<<<<<<<<<
- * 		if numThreads == None:
- * 			numThreads = int(psutil.cpu_count(logical = False))
+/* "CARMATask.pyx":121
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):             # <<<<<<<<<<<<<<
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
  */
 
 /* Python wrapper */
-static int __pyx_pw_9CARMATask_9CARMATask_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_9CARMATask_9CARMATask_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_p = 0;
-  PyObject *__pyx_v_q = 0;
-  PyObject *__pyx_v_numThreads = 0;
-  PyObject *__pyx_v_numBurn = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  int __pyx_r;
+static PyObject *__pyx_pw_9CARMATask_1getRandoms(PyObject *__pyx_self, PyObject *__pyx_v_Randoms); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_1getRandoms = {"getRandoms", (PyCFunction)__pyx_pw_9CARMATask_1getRandoms, METH_O, 0};
+static PyObject *__pyx_pw_9CARMATask_1getRandoms(PyObject *__pyx_self, PyObject *__pyx_v_Randoms) {
+  CYTHON_UNUSED int __pyx_lineno = 0;
+  CYTHON_UNUSED const char *__pyx_filename = NULL;
+  CYTHON_UNUSED int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_numThreads,&__pyx_n_s_numBurn,0};
-    PyObject* values[4] = {0,0,0,0};
-    values[2] = ((PyObject *)Py_None);
-    values[3] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-        }
-        case  2:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numThreads);
-          if (value) { values[2] = value; kw_args--; }
-        }
-        case  3:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numBurn);
-          if (value) { values[3] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_p = values[0];
-    __pyx_v_q = values[1];
-    __pyx_v_numThreads = values[2];
-    __pyx_v_numBurn = values[3];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("CARMATask.CARMATask.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return -1;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask___cinit__(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self), __pyx_v_p, __pyx_v_q, __pyx_v_numThreads, __pyx_v_numBurn);
+  __Pyx_RefNannySetupContext("getRandoms (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Randoms), __pyx_ptype_5numpy_ndarray, 0, "Randoms", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_getRandoms(__pyx_self, ((PyArrayObject *)__pyx_v_Randoms));
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9CARMATask_9CARMATask___cinit__(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numThreads, PyObject *__pyx_v_numBurn) {
-  int __pyx_r;
+static PyObject *__pyx_pf_9CARMATask_getRandoms(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_Randoms) {
+  int __pyx_v_numRand;
+  int __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Randoms;
+  __Pyx_Buffer __pyx_pybuffer_Randoms;
+  PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_1;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  Task *__pyx_t_9;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  Py_ssize_t __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
+  PyArrayObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__cinit__", 0);
-  __Pyx_INCREF(__pyx_v_numThreads);
-  __Pyx_INCREF(__pyx_v_numBurn);
-
-  /* "CARMATask.pyx":113
- * 
- * 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
- * 		if numThreads == None:             # <<<<<<<<<<<<<<
- * 			numThreads = int(psutil.cpu_count(logical = False))
- * 		if numBurn == None:
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_numThreads, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "CARMATask.pyx":114
- * 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
- * 		if numThreads == None:
- * 			numThreads = int(psutil.cpu_count(logical = False))             # <<<<<<<<<<<<<<
- * 		if numBurn == None:
- * 			numBurn = 1000000
- */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_psutil); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cpu_count); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_logical, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF_SET(__pyx_v_numThreads, __pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "CARMATask.pyx":113
- * 
- * 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
- * 		if numThreads == None:             # <<<<<<<<<<<<<<
- * 			numThreads = int(psutil.cpu_count(logical = False))
- * 		if numBurn == None:
- */
-  }
-
-  /* "CARMATask.pyx":115
- * 		if numThreads == None:
- * 			numThreads = int(psutil.cpu_count(logical = False))
- * 		if numBurn == None:             # <<<<<<<<<<<<<<
- * 			numBurn = 1000000
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_numBurn, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "CARMATask.pyx":116
- * 			numThreads = int(psutil.cpu_count(logical = False))
- * 		if numBurn == None:
- * 			numBurn = 1000000             # <<<<<<<<<<<<<<
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)
- * 
- */
-    __Pyx_INCREF(__pyx_int_1000000);
-    __Pyx_DECREF_SET(__pyx_v_numBurn, __pyx_int_1000000);
-
-    /* "CARMATask.pyx":115
- * 		if numThreads == None:
- * 			numThreads = int(psutil.cpu_count(logical = False))
- * 		if numBurn == None:             # <<<<<<<<<<<<<<
- * 			numBurn = 1000000
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)
- */
-  }
-
-  /* "CARMATask.pyx":117
- * 		if numBurn == None:
- * 			numBurn = 1000000
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)             # <<<<<<<<<<<<<<
- * 
- * 	def guard(self):
- */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_numThreads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_numBurn); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  try {
-    __pyx_t_9 = new Task(__pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8);
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  __pyx_v_self->thisptr = __pyx_t_9;
-
-  /* "CARMATask.pyx":112
- * 	cdef Task *thisptr
- * 
- * 	def __cinit__(self, p, q, numThreads = None, numBurn = None):             # <<<<<<<<<<<<<<
- * 		if numThreads == None:
- * 			numThreads = int(psutil.cpu_count(logical = False))
- */
-
-  /* function exit code */
-  __pyx_r = 0;
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("CARMATask.CARMATask.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = -1;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_numThreads);
-  __Pyx_XDECREF(__pyx_v_numBurn);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "CARMATask.pyx":119
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)
- * 
- * 	def guard(self):             # <<<<<<<<<<<<<<
- * 		self.thisptr.guard()
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_3guard(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_3guard(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("guard (wrapper)", 0);
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask_2guard(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_2guard(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("guard", 0);
-
-  /* "CARMATask.pyx":120
- * 
- * 	def guard(self):
- * 		self.thisptr.guard()             # <<<<<<<<<<<<<<
- * 
- * 	def __dealloc__(self):
- */
-  __pyx_v_self->thisptr->guard();
-
-  /* "CARMATask.pyx":119
- * 		self.thisptr = new Task(p, q, numThreads, numBurn)
- * 
- * 	def guard(self):             # <<<<<<<<<<<<<<
- * 		self.thisptr.guard()
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "CARMATask.pyx":122
- * 		self.thisptr.guard()
- * 
- * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
- * 		del self.thisptr
- * 
- */
-
-/* Python wrapper */
-static void __pyx_pw_9CARMATask_9CARMATask_5__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_9CARMATask_9CARMATask_5__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_9CARMATask_9CARMATask_4__dealloc__(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_9CARMATask_9CARMATask_4__dealloc__(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "CARMATask.pyx":123
- * 
- * 	def __dealloc__(self):
- * 		del self.thisptr             # <<<<<<<<<<<<<<
- * 
- * 	@cython.boundscheck(False)
- */
-  delete __pyx_v_self->thisptr;
-
-  /* "CARMATask.pyx":122
- * 		self.thisptr.guard()
- * 
- * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
- * 		del self.thisptr
- * 
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-/* "CARMATask.pyx":127
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_7checkParams(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_7checkParams(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyArrayObject *__pyx_v_Theta = 0;
-  PyObject *__pyx_v_threadNum = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("checkParams (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_Theta,&__pyx_n_s_threadNum,0};
-    PyObject* values[2] = {0,0};
-    values[1] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        case  1:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[1] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "checkParams") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_Theta = ((PyArrayObject *)values[0]);
-    __pyx_v_threadNum = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("checkParams", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("CARMATask.CARMATask.checkParams", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask_6checkParams(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self), __pyx_v_Theta, __pyx_v_threadNum);
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_6checkParams(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum) {
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
-  __Pyx_Buffer __pyx_pybuffer_Theta;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("checkParams", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
-  __pyx_pybuffer_Theta.pybuffer.buf = NULL;
-  __pyx_pybuffer_Theta.refcount = 0;
-  __pyx_pybuffernd_Theta.data = NULL;
-  __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  __Pyx_RefNannySetupContext("getRandoms", 0);
+  __Pyx_INCREF((PyObject *)__pyx_v_Randoms);
+  __pyx_pybuffer_Randoms.pybuffer.buf = NULL;
+  __pyx_pybuffer_Randoms.refcount = 0;
+  __pyx_pybuffernd_Randoms.data = NULL;
+  __pyx_pybuffernd_Randoms.rcbuffer = &__pyx_pybuffer_Randoms;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer, (PyObject*)__pyx_v_Randoms, &__Pyx_TypeInfo_unsigned_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
+  __pyx_pybuffernd_Randoms.diminfo[0].strides = __pyx_pybuffernd_Randoms.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Randoms.diminfo[0].shape = __pyx_pybuffernd_Randoms.rcbuffer->pybuffer.shape[0];
 
-  /* "CARMATask.pyx":128
- * 	@cython.wraparound(False)
- * 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)
+  /* "CARMATask.pyx":122
+ * @cython.wraparound(False)
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):
+ * 	cdef int numRand = Randoms.shape[0]             # <<<<<<<<<<<<<<
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ * 	if success != 1:
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_numRand = (__pyx_v_Randoms->dimensions[0]);
+
+  /* "CARMATask.pyx":123
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])             # <<<<<<<<<<<<<<
+ * 	if success != 1:
+ * 		Randoms = np.random.randint(0, 4294967295, numRand)
+ */
+  __pyx_t_1 = 0;
+  __pyx_v_success = getRandomsCARMA(__pyx_v_numRand, (&(*__Pyx_BufPtrCContig1d(unsigned int *, __pyx_pybuffernd_Randoms.rcbuffer->pybuffer.buf, __pyx_t_1, __pyx_pybuffernd_Randoms.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":124
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ * 	if success != 1:             # <<<<<<<<<<<<<<
+ * 		Randoms = np.random.randint(0, 4294967295, numRand)
+ * 		#raise RuntimeError('Intel RDRAND failed with error code %d! Using numpy.random'%(success))
+ */
+  __pyx_t_2 = ((__pyx_v_success != 1) != 0);
   if (__pyx_t_2) {
 
-    /* "CARMATask.pyx":129
- * 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)
- * 
+    /* "CARMATask.pyx":125
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ * 	if success != 1:
+ * 		Randoms = np.random.randint(0, 4294967295, numRand)             # <<<<<<<<<<<<<<
+ * 		#raise RuntimeError('Intel RDRAND failed with error code %d! Using numpy.random'%(success))
+ * 	return success
  */
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_random); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_randint); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_numRand); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = NULL;
+    __pyx_t_7 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_6);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __pyx_t_7 = 1;
+      }
+    }
+    __pyx_t_8 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
+    }
     __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+    __Pyx_GIVEREF(__pyx_int_0);
+    PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_int_0);
+    __Pyx_INCREF(__pyx_int_4294967295);
+    __Pyx_GIVEREF(__pyx_int_4294967295);
+    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_int_4294967295);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_8, 2+__pyx_t_7, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = ((PyArrayObject *)__pyx_t_3);
+    {
+      __Pyx_BufFmt_StackElem __pyx_stack[1];
+      __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer);
+      __pyx_t_10 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer, (PyObject*)__pyx_t_9, &__Pyx_TypeInfo_unsigned_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack);
+      if (unlikely(__pyx_t_10 < 0)) {
+        PyErr_Fetch(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
+        if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer, (PyObject*)__pyx_v_Randoms, &__Pyx_TypeInfo_unsigned_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {
+          Py_XDECREF(__pyx_t_11); Py_XDECREF(__pyx_t_12); Py_XDECREF(__pyx_t_13);
+          __Pyx_RaiseBufferFallbackError();
+        } else {
+          PyErr_Restore(__pyx_t_11, __pyx_t_12, __pyx_t_13);
+        }
+      }
+      __pyx_pybuffernd_Randoms.diminfo[0].strides = __pyx_pybuffernd_Randoms.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Randoms.diminfo[0].shape = __pyx_pybuffernd_Randoms.rcbuffer->pybuffer.shape[0];
+      if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __pyx_t_9 = 0;
+    __Pyx_DECREF_SET(__pyx_v_Randoms, ((PyArrayObject *)__pyx_t_3));
+    __pyx_t_3 = 0;
 
-    /* "CARMATask.pyx":128
- * 	@cython.wraparound(False)
- * 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)
+    /* "CARMATask.pyx":124
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ * 	if success != 1:             # <<<<<<<<<<<<<<
+ * 		Randoms = np.random.randint(0, 4294967295, numRand)
+ * 		#raise RuntimeError('Intel RDRAND failed with error code %d! Using numpy.random'%(success))
  */
   }
 
-  /* "CARMATask.pyx":130
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)             # <<<<<<<<<<<<<<
+  /* "CARMATask.pyx":127
+ * 		Randoms = np.random.randint(0, 4294967295, numRand)
+ * 		#raise RuntimeError('Intel RDRAND failed with error code %d! Using numpy.random'%(success))
+ * 	return success             # <<<<<<<<<<<<<<
  * 
- * 	def setDT(self, dt, threadNum = None):
+ * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->checkParams((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "CARMATask.pyx":127
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def checkParams(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+  /* "CARMATask.pyx":121
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):             # <<<<<<<<<<<<<<
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
-    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("CARMATask.CARMATask.checkParams", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.getRandoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
-  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Randoms.rcbuffer->pybuffer);
   __pyx_L2:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XDECREF((PyObject *)__pyx_v_Randoms);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":132
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)
- * 
- * 	def setDT(self, dt, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+/* "CARMATask.pyx":131
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_9setDT(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_9setDT(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9CARMATask_3testSystem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_3testSystem = {"testSystem", (PyCFunction)__pyx_pw_9CARMATask_3testSystem, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_3testSystem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_dt = 0;
-  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyArrayObject *__pyx_v_Theta = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("setDT (wrapper)", 0);
+  __Pyx_RefNannySetupContext("testSystem (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_threadNum,0};
-    PyObject* values[2] = {0,0};
-    values[1] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         case  0: break;
@@ -3404,131 +3185,151 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_9setDT(PyObject *__pyx_v_self, P
         if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[1] = value; kw_args--; }
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("testSystem", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("testSystem", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("testSystem", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "setDT") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "testSystem") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
     } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_dt = values[0];
-    __pyx_v_threadNum = values[1];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("setDT", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("testSystem", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("CARMATask.CARMATask.setDT", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.testSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask_8setDT(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self), __pyx_v_dt, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_2testSystem(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta);
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_8setDT(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9CARMATask_2testSystem(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta) {
+  int __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
+  __Pyx_Buffer __pyx_pybuffer_Theta;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  double __pyx_t_1;
   int __pyx_t_2;
-  double __pyx_t_3;
-  int __pyx_t_4;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("setDT", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
-
-  /* "CARMATask.pyx":133
- * 
- * 	def setDT(self, dt, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		self.thisptr.setDT(dt, threadNum)
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "CARMATask.pyx":134
- * 	def setDT(self, dt, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		self.thisptr.setDT(dt, threadNum)
- * 
- */
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
-
-    /* "CARMATask.pyx":133
- * 
- * 	def setDT(self, dt, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		self.thisptr.setDT(dt, threadNum)
- */
+  __Pyx_RefNannySetupContext("testSystem", 0);
+  __pyx_pybuffer_Theta.pybuffer.buf = NULL;
+  __pyx_pybuffer_Theta.refcount = 0;
+  __pyx_pybuffernd_Theta.data = NULL;
+  __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-
-  /* "CARMATask.pyx":135
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		self.thisptr.setDT(dt, threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	@cython.boundscheck(False)
- */
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_v_self->thisptr->setDT(__pyx_t_3, __pyx_t_4);
+  __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
 
   /* "CARMATask.pyx":132
- * 		return self.thisptr.checkParams(&Theta[0], threadNum)
+ * @cython.wraparound(False)
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])             # <<<<<<<<<<<<<<
+ * 	return success
  * 
- * 	def setDT(self, dt, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+ */
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = 0;
+  __pyx_v_success = testSystemCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":133
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_r = __pyx_t_5;
+  __pyx_t_5 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":131
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("CARMATask.CARMATask.setDT", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_5);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("CARMATask.testSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
+  goto __pyx_L2;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __pyx_L2:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":139
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def printSystem(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+/* "CARMATask.pyx":137
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_11printSystem(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_11printSystem(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9CARMATask_5printSystem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_5printSystem = {"printSystem", (PyCFunction)__pyx_pw_9CARMATask_5printSystem, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_5printSystem(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
   PyArrayObject *__pyx_v_Theta = 0;
-  PyObject *__pyx_v_threadNum = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3536,13 +3337,13 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_11printSystem(PyObject *__pyx_v_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("printSystem (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_Theta,&__pyx_n_s_threadNum,0};
-    PyObject* values[3] = {0,0,0};
-    values[2] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3555,42 +3356,47 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_11printSystem(PyObject *__pyx_v_
         if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("printSystem", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("printSystem", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[2] = value; kw_args--; }
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("printSystem", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("printSystem", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "printSystem") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "printSystem") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
     } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_dt = values[0];
-    __pyx_v_Theta = ((PyArrayObject *)values[1]);
-    __pyx_v_threadNum = values[2];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("printSystem", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("printSystem", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("CARMATask.CARMATask.printSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.printSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask_10printSystem(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self), __pyx_v_dt, __pyx_v_Theta, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_4printSystem(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3601,135 +3407,111 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_11printSystem(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_10printSystem(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyObject *__pyx_v_dt, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9CARMATask_4printSystem(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta) {
+  int __pyx_v_success;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
   __Pyx_Buffer __pyx_pybuffer_Theta;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  double __pyx_t_1;
   int __pyx_t_2;
-  double __pyx_t_3;
+  int __pyx_t_3;
   Py_ssize_t __pyx_t_4;
-  int __pyx_t_5;
+  PyObject *__pyx_t_5 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("printSystem", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
   __pyx_pybuffer_Theta.pybuffer.buf = NULL;
   __pyx_pybuffer_Theta.refcount = 0;
   __pyx_pybuffernd_Theta.data = NULL;
   __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
 
-  /* "CARMATask.pyx":140
- * 	@cython.wraparound(False)
- * 	def printSystem(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.printSystem(dt, &Theta[0], threadNum)
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "CARMATask.pyx":141
- * 	def printSystem(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.printSystem(dt, &Theta[0], threadNum)
+  /* "CARMATask.pyx":138
+ * @cython.wraparound(False)
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])             # <<<<<<<<<<<<<<
+ * 	return success
  * 
  */
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
-
-    /* "CARMATask.pyx":140
- * 	@cython.wraparound(False)
- * 	def printSystem(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.printSystem(dt, &Theta[0], threadNum)
- */
-  }
-
-  /* "CARMATask.pyx":142
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.printSystem(dt, &Theta[0], threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	@cython.boundscheck(False)
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->printSystem(__pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_5)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
+  __pyx_v_success = printSystemCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))));
 
   /* "CARMATask.pyx":139
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def printSystem(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_r = __pyx_t_5;
+  __pyx_t_5 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":137
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_5);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("CARMATask.CARMATask.printSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.printSystem", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
   __pyx_L2:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "CARMATask.pyx":146
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+/* "CARMATask.pyx":143
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):             # <<<<<<<<<<<<<<
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])
+ * 	return success
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyArrayObject *__pyx_v_Theta = 0;
-  PyObject *__pyx_v_numCadences = 0;
+static PyObject *__pyx_pw_9CARMATask_7makeIntrinsicLC(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_7makeIntrinsicLC = {"makeIntrinsicLC", (PyCFunction)__pyx_pw_9CARMATask_7makeIntrinsicLC, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_7makeIntrinsicLC(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyArrayObject *__pyx_v_Theta = 0;
   PyObject *__pyx_v_IR = 0;
   PyObject *__pyx_v_tolIR = 0;
-  PyObject *__pyx_v_fracIntrinsicVar = 0;
-  PyObject *__pyx_v_fracSignalToNoise = 0;
-  PyObject *__pyx_v_maxSigma = 0;
-  PyObject *__pyx_v_minTimescale = 0;
-  PyObject *__pyx_v_maxTimescale = 0;
-  PyArrayObject *__pyx_v_t = 0;
-  PyArrayObject *__pyx_v_x = 0;
-  PyArrayObject *__pyx_v_y = 0;
-  PyArrayObject *__pyx_v_yerr = 0;
-  PyArrayObject *__pyx_v_mask = 0;
+  PyObject *__pyx_v_numBurn = 0;
+  PyObject *__pyx_v_numCadences = 0;
+  PyObject *__pyx_v_startCadence = 0;
   PyObject *__pyx_v_burnSeed = 0;
   PyObject *__pyx_v_distSeed = 0;
-  PyObject *__pyx_v_threadNum = 0;
+  PyArrayObject *__pyx_v_cadence = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3737,13 +3519,365 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC(PyObject *__py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("makeIntrinsicLC (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_Theta,&__pyx_n_s_numCadences,&__pyx_n_s_dt,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracSignalToNoise,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_burnSeed,&__pyx_n_s_distSeed,&__pyx_n_s_threadNum,0};
-    PyObject* values[18] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[17] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_numBurn,&__pyx_n_s_numCadences,&__pyx_n_s_startCadence,&__pyx_n_s_burnSeed,&__pyx_n_s_distSeed,&__pyx_n_s_cadence,&__pyx_n_s_mask,&__pyx_n_s_t,&__pyx_n_s_x,0};
+    PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numBurn)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startCadence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_burnSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_distSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 12:
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 13:
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 14:
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "makeIntrinsicLC") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 15) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+      values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+      values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+      values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+      values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+    }
+    __pyx_v_dt = values[0];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
+    __pyx_v_IR = values[4];
+    __pyx_v_tolIR = values[5];
+    __pyx_v_numBurn = values[6];
+    __pyx_v_numCadences = values[7];
+    __pyx_v_startCadence = values[8];
+    __pyx_v_burnSeed = values[9];
+    __pyx_v_distSeed = values[10];
+    __pyx_v_cadence = ((PyArrayObject *)values[11]);
+    __pyx_v_mask = ((PyArrayObject *)values[12]);
+    __pyx_v_t = ((PyArrayObject *)values[13]);
+    __pyx_v_x = ((PyArrayObject *)values[14]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 1, 15, 15, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("CARMATask.makeIntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cadence), __pyx_ptype_5numpy_ndarray, 0, "cadence", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_6makeIntrinsicLC(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_numBurn, __pyx_v_numCadences, __pyx_v_startCadence, __pyx_v_burnSeed, __pyx_v_distSeed, __pyx_v_cadence, __pyx_v_mask, __pyx_v_t, __pyx_v_x);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9CARMATask_6makeIntrinsicLC(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numBurn, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_startCadence, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x) {
+  int __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
+  __Pyx_Buffer __pyx_pybuffer_Theta;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_cadence;
+  __Pyx_Buffer __pyx_pybuffer_cadence;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
+  __Pyx_Buffer __pyx_pybuffer_x;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  bool __pyx_t_5;
+  double __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  unsigned int __pyx_t_10;
+  unsigned int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  PyObject *__pyx_t_16 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("makeIntrinsicLC", 0);
+  __pyx_pybuffer_Theta.pybuffer.buf = NULL;
+  __pyx_pybuffer_Theta.refcount = 0;
+  __pyx_pybuffernd_Theta.data = NULL;
+  __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  __pyx_pybuffer_cadence.pybuffer.buf = NULL;
+  __pyx_pybuffer_cadence.refcount = 0;
+  __pyx_pybuffernd_cadence.data = NULL;
+  __pyx_pybuffernd_cadence.rcbuffer = &__pyx_pybuffer_cadence;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_x.pybuffer.buf = NULL;
+  __pyx_pybuffer_x.refcount = 0;
+  __pyx_pybuffernd_x.data = NULL;
+  __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer, (PyObject*)__pyx_v_cadence, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_cadence.diminfo[0].strides = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cadence.diminfo[0].shape = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
+
+  /* "CARMATask.pyx":144
+ * @cython.wraparound(False)
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])             # <<<<<<<<<<<<<<
+ * 	return success
+ * 
+ */
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_5 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_numBurn); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_startCadence); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __Pyx_PyInt_As_unsigned_int(__pyx_v_burnSeed); if (unlikely((__pyx_t_10 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_v_distSeed); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_12 = 0;
+  __pyx_t_13 = 0;
+  __pyx_t_14 = 0;
+  __pyx_t_15 = 0;
+  __pyx_v_success = makeIntrinsicLCCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, __pyx_t_11, (&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_cadence.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_cadence.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_x.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":145
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_16 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_16);
+  __pyx_r = __pyx_t_16;
+  __pyx_t_16 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":143
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):             # <<<<<<<<<<<<<<
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])
+ * 	return success
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_16);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("CARMATask.makeIntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "CARMATask.pyx":149
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9CARMATask_9makeObservedLC(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_9makeObservedLC = {"makeObservedLC", (PyCFunction)__pyx_pw_9CARMATask_9makeObservedLC, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_9makeObservedLC(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyArrayObject *__pyx_v_Theta = 0;
+  PyObject *__pyx_v_IR = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_fracIntrinsicVar = 0;
+  PyObject *__pyx_v_fracSignalToNoise = 0;
+  PyObject *__pyx_v_numBurn = 0;
+  PyObject *__pyx_v_numCadences = 0;
+  PyObject *__pyx_v_startCadence = 0;
+  PyObject *__pyx_v_burnSeed = 0;
+  PyObject *__pyx_v_distSeed = 0;
+  PyObject *__pyx_v_noiseSeed = 0;
+  PyArrayObject *__pyx_v_cadence = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("makeObservedLC (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracSignalToNoise,&__pyx_n_s_numBurn,&__pyx_n_s_numCadences,&__pyx_n_s_startCadence,&__pyx_n_s_burnSeed,&__pyx_n_s_distSeed,&__pyx_n_s_noiseSeed,&__pyx_n_s_cadence,&__pyx_n_s_mask,&__pyx_n_s_t,&__pyx_n_s_y,&__pyx_n_s_yerr,0};
+    PyObject* values[19] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 19: values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
         case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
         case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
         case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
@@ -3768,155 +3902,160 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC(PyObject *__py
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
         case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracSignalToNoise)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracSignalToNoise)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numBurn)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startCadence)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 11:
-        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_burnSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 12:
-        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_distSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 13:
-        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_noiseSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 14:
-        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadence)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 15:
-        if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_burnSeed)) != 0)) kw_args--;
+        if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 15); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 15); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 16:
-        if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_distSeed)) != 0)) kw_args--;
+        if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, 16); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 16); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 17:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[17] = value; kw_args--; }
+        if (likely((values[17] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 17); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 18:
+        if (likely((values[18] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, 18); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "makeIntrinsicLC") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "makeObservedLC") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 19) {
+      goto __pyx_L5_argtuple_error;
     } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
-        case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
-        values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
-        values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
-        values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
-        values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
-        values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
-        values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
-        values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
-        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
-        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
-        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+      values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+      values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+      values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+      values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+      values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
+      values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
+      values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
+      values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
     }
-    __pyx_v_Theta = ((PyArrayObject *)values[0]);
-    __pyx_v_numCadences = values[1];
-    __pyx_v_dt = values[2];
-    __pyx_v_IR = values[3];
-    __pyx_v_tolIR = values[4];
-    __pyx_v_fracIntrinsicVar = values[5];
-    __pyx_v_fracSignalToNoise = values[6];
-    __pyx_v_maxSigma = values[7];
-    __pyx_v_minTimescale = values[8];
-    __pyx_v_maxTimescale = values[9];
-    __pyx_v_t = ((PyArrayObject *)values[10]);
-    __pyx_v_x = ((PyArrayObject *)values[11]);
-    __pyx_v_y = ((PyArrayObject *)values[12]);
-    __pyx_v_yerr = ((PyArrayObject *)values[13]);
-    __pyx_v_mask = ((PyArrayObject *)values[14]);
-    __pyx_v_burnSeed = values[15];
-    __pyx_v_distSeed = values[16];
-    __pyx_v_threadNum = values[17];
+    __pyx_v_dt = values[0];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
+    __pyx_v_IR = values[4];
+    __pyx_v_tolIR = values[5];
+    __pyx_v_fracIntrinsicVar = values[6];
+    __pyx_v_fracSignalToNoise = values[7];
+    __pyx_v_numBurn = values[8];
+    __pyx_v_numCadences = values[9];
+    __pyx_v_startCadence = values[10];
+    __pyx_v_burnSeed = values[11];
+    __pyx_v_distSeed = values[12];
+    __pyx_v_noiseSeed = values[13];
+    __pyx_v_cadence = ((PyArrayObject *)values[14]);
+    __pyx_v_mask = ((PyArrayObject *)values[15]);
+    __pyx_v_t = ((PyArrayObject *)values[16]);
+    __pyx_v_y = ((PyArrayObject *)values[17]);
+    __pyx_v_yerr = ((PyArrayObject *)values[18]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("makeIntrinsicLC", 0, 17, 18, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("makeObservedLC", 1, 19, 19, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("CARMATask.CARMATask.makeIntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.makeObservedLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_9CARMATask_9CARMATask_12makeIntrinsicLC(((struct __pyx_obj_9CARMATask_CARMATask *)__pyx_v_self), __pyx_v_Theta, __pyx_v_numCadences, __pyx_v_dt, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_fracIntrinsicVar, __pyx_v_fracSignalToNoise, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_burnSeed, __pyx_v_distSeed, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cadence), __pyx_ptype_5numpy_ndarray, 0, "cadence", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_8makeObservedLC(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_fracIntrinsicVar, __pyx_v_fracSignalToNoise, __pyx_v_numBurn, __pyx_v_numCadences, __pyx_v_startCadence, __pyx_v_burnSeed, __pyx_v_distSeed, __pyx_v_noiseSeed, __pyx_v_cadence, __pyx_v_mask, __pyx_v_t, __pyx_v_y, __pyx_v_yerr);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3927,58 +4066,62 @@ static PyObject *__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9CARMATask_9CARMATask_12makeIntrinsicLC(struct __pyx_obj_9CARMATask_CARMATask *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracSignalToNoise, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9CARMATask_8makeObservedLC(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracSignalToNoise, PyObject *__pyx_v_numBurn, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_startCadence, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_noiseSeed, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr) {
+  int __pyx_v_success;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
   __Pyx_Buffer __pyx_pybuffer_Theta;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_cadence;
+  __Pyx_Buffer __pyx_pybuffer_cadence;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
   __Pyx_Buffer __pyx_pybuffer_t;
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
-  __Pyx_Buffer __pyx_pybuffer_x;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
   __Pyx_Buffer __pyx_pybuffer_y;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
   __Pyx_Buffer __pyx_pybuffer_yerr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  double __pyx_t_1;
   int __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  int __pyx_t_4;
-  double __pyx_t_5;
-  bool __pyx_t_6;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  bool __pyx_t_5;
+  double __pyx_t_6;
   double __pyx_t_7;
   double __pyx_t_8;
-  double __pyx_t_9;
-  double __pyx_t_10;
-  double __pyx_t_11;
-  double __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
-  Py_ssize_t __pyx_t_14;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  unsigned int __pyx_t_12;
+  unsigned int __pyx_t_13;
+  unsigned int __pyx_t_14;
   Py_ssize_t __pyx_t_15;
   Py_ssize_t __pyx_t_16;
   Py_ssize_t __pyx_t_17;
-  unsigned int __pyx_t_18;
-  unsigned int __pyx_t_19;
-  int __pyx_t_20;
+  Py_ssize_t __pyx_t_18;
+  Py_ssize_t __pyx_t_19;
+  PyObject *__pyx_t_20 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("makeIntrinsicLC", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
+  __Pyx_RefNannySetupContext("makeObservedLC", 0);
   __pyx_pybuffer_Theta.pybuffer.buf = NULL;
   __pyx_pybuffer_Theta.refcount = 0;
   __pyx_pybuffernd_Theta.data = NULL;
   __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  __pyx_pybuffer_cadence.pybuffer.buf = NULL;
+  __pyx_pybuffer_cadence.refcount = 0;
+  __pyx_pybuffernd_cadence.data = NULL;
+  __pyx_pybuffernd_cadence.rcbuffer = &__pyx_pybuffer_cadence;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   __pyx_pybuffer_t.pybuffer.buf = NULL;
   __pyx_pybuffer_t.refcount = 0;
   __pyx_pybuffernd_t.data = NULL;
   __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
-  __pyx_pybuffer_x.pybuffer.buf = NULL;
-  __pyx_pybuffer_x.refcount = 0;
-  __pyx_pybuffernd_x.data = NULL;
-  __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   __pyx_pybuffer_y.pybuffer.buf = NULL;
   __pyx_pybuffer_y.refcount = 0;
   __pyx_pybuffernd_y.data = NULL;
@@ -3987,133 +4130,1320 @@ static PyObject *__pyx_pf_9CARMATask_9CARMATask_12makeIntrinsicLC(struct __pyx_o
   __pyx_pybuffer_yerr.refcount = 0;
   __pyx_pybuffernd_yerr.data = NULL;
   __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
-  __pyx_pybuffer_mask.pybuffer.buf = NULL;
-  __pyx_pybuffer_mask.refcount = 0;
-  __pyx_pybuffernd_mask.data = NULL;
-  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer, (PyObject*)__pyx_v_cadence, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_cadence.diminfo[0].strides = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cadence.diminfo[0].shape = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "CARMATask.pyx":147
- * 	@cython.wraparound(False)
- * 	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
+  /* "CARMATask.pyx":150
+ * @cython.wraparound(False)
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])             # <<<<<<<<<<<<<<
+ * 	return success
+ * 
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "CARMATask.pyx":148
- * 	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
- */
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
-
-    /* "CARMATask.pyx":147
- * 	@cython.wraparound(False)
- * 	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
- */
-  }
-
-  /* "CARMATask.pyx":149
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)             # <<<<<<<<<<<<<<
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_6 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_9 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_12 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_12 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_13 = 0;
-  __pyx_t_14 = 0;
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_5 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_v_fracSignalToNoise); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_numBurn); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_startCadence); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_burnSeed); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_13 = __Pyx_PyInt_As_unsigned_int(__pyx_v_distSeed); if (unlikely((__pyx_t_13 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_14 = __Pyx_PyInt_As_unsigned_int(__pyx_v_noiseSeed); if (unlikely((__pyx_t_14 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_15 = 0;
   __pyx_t_16 = 0;
   __pyx_t_17 = 0;
-  __pyx_t_18 = __Pyx_PyInt_As_unsigned_int(__pyx_v_burnSeed); if (unlikely((__pyx_t_18 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_19 = __Pyx_PyInt_As_unsigned_int(__pyx_v_distSeed); if (unlikely((__pyx_t_19 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_20 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_20 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->makeIntrinsicLC((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, __pyx_t_11, __pyx_t_12, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_18, __pyx_t_19, __pyx_t_20)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_18 = 0;
+  __pyx_t_19 = 0;
+  __pyx_v_success = makeObservedLCCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, (&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_cadence.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_cadence.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_yerr.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":151
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_20 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_20);
+  __pyx_r = __pyx_t_20;
+  __pyx_t_20 = 0;
   goto __pyx_L0;
 
-  /* "CARMATask.pyx":146
- * 	@cython.boundscheck(False)
- * 	@cython.wraparound(False)
- * 	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
+  /* "CARMATask.pyx":149
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_20);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
-    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("CARMATask.CARMATask.makeIntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CARMATask.makeObservedLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
-  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
   __pyx_L2:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "CARMATask.pyx":155
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9CARMATask_11computeLnLikelihood(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_11computeLnLikelihood = {"computeLnLikelihood", (PyCFunction)__pyx_pw_9CARMATask_11computeLnLikelihood, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_11computeLnLikelihood(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyArrayObject *__pyx_v_Theta = 0;
+  PyObject *__pyx_v_IR = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_numCadences = 0;
+  PyArrayObject *__pyx_v_cadence = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("computeLnLikelihood (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_numCadences,&__pyx_n_s_cadence,&__pyx_n_s_mask,&__pyx_n_s_t,&__pyx_n_s_y,&__pyx_n_s_yerr,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeLnLikelihood") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 12) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+      values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+    }
+    __pyx_v_dt = values[0];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
+    __pyx_v_IR = values[4];
+    __pyx_v_tolIR = values[5];
+    __pyx_v_numCadences = values[6];
+    __pyx_v_cadence = ((PyArrayObject *)values[7]);
+    __pyx_v_mask = ((PyArrayObject *)values[8]);
+    __pyx_v_t = ((PyArrayObject *)values[9]);
+    __pyx_v_y = ((PyArrayObject *)values[10]);
+    __pyx_v_yerr = ((PyArrayObject *)values[11]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("computeLnLikelihood", 1, 12, 12, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("CARMATask.computeLnLikelihood", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cadence), __pyx_ptype_5numpy_ndarray, 0, "cadence", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_10computeLnLikelihood(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_numCadences, __pyx_v_cadence, __pyx_v_mask, __pyx_v_t, __pyx_v_y, __pyx_v_yerr);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9CARMATask_10computeLnLikelihood(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr) {
+  double __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
+  __Pyx_Buffer __pyx_pybuffer_Theta;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_cadence;
+  __Pyx_Buffer __pyx_pybuffer_cadence;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  bool __pyx_t_5;
+  double __pyx_t_6;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  PyObject *__pyx_t_13 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("computeLnLikelihood", 0);
+  __pyx_pybuffer_Theta.pybuffer.buf = NULL;
+  __pyx_pybuffer_Theta.refcount = 0;
+  __pyx_pybuffernd_Theta.data = NULL;
+  __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  __pyx_pybuffer_cadence.pybuffer.buf = NULL;
+  __pyx_pybuffer_cadence.refcount = 0;
+  __pyx_pybuffernd_cadence.data = NULL;
+  __pyx_pybuffernd_cadence.rcbuffer = &__pyx_pybuffer_cadence;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer, (PyObject*)__pyx_v_cadence, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_cadence.diminfo[0].strides = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cadence.diminfo[0].shape = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+
+  /* "CARMATask.pyx":156
+ * @cython.wraparound(False)
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])             # <<<<<<<<<<<<<<
+ * 	return success
+ * 
+ */
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_5 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_v_success = computeLnLikelihoodCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_5, __pyx_t_6, __pyx_t_7, (&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_cadence.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_cadence.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_yerr.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":157
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_13 = PyFloat_FromDouble(__pyx_v_success); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_13);
+  __pyx_r = __pyx_t_13;
+  __pyx_t_13 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":155
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_13);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("CARMATask.computeLnLikelihood", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "CARMATask.pyx":161
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):             # <<<<<<<<<<<<<<
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)
+ * 	return success
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9CARMATask_13computeLnPosterior(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_13computeLnPosterior = {"computeLnPosterior", (PyCFunction)__pyx_pw_9CARMATask_13computeLnPosterior, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_13computeLnPosterior(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyArrayObject *__pyx_v_Theta = 0;
+  PyObject *__pyx_v_IR = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_numCadences = 0;
+  PyArrayObject *__pyx_v_cadence = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  PyObject *__pyx_v_maxSigma = 0;
+  PyObject *__pyx_v_minTimescale = 0;
+  PyObject *__pyx_v_maxTimescale = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("computeLnPosterior (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_Theta,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_numCadences,&__pyx_n_s_cadence,&__pyx_n_s_mask,&__pyx_n_s_t,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,0};
+    PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Theta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 12:
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 13:
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 14:
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeLnPosterior") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 15) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+      values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+      values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+      values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+      values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+    }
+    __pyx_v_dt = values[0];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_Theta = ((PyArrayObject *)values[3]);
+    __pyx_v_IR = values[4];
+    __pyx_v_tolIR = values[5];
+    __pyx_v_numCadences = values[6];
+    __pyx_v_cadence = ((PyArrayObject *)values[7]);
+    __pyx_v_mask = ((PyArrayObject *)values[8]);
+    __pyx_v_t = ((PyArrayObject *)values[9]);
+    __pyx_v_y = ((PyArrayObject *)values[10]);
+    __pyx_v_yerr = ((PyArrayObject *)values[11]);
+    __pyx_v_maxSigma = values[12];
+    __pyx_v_minTimescale = values[13];
+    __pyx_v_maxTimescale = values[14];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("computeLnPosterior", 1, 15, 15, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("CARMATask.computeLnPosterior", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cadence), __pyx_ptype_5numpy_ndarray, 0, "cadence", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_12computeLnPosterior(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_Theta, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_numCadences, __pyx_v_cadence, __pyx_v_mask, __pyx_v_t, __pyx_v_y, __pyx_v_yerr, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9CARMATask_12computeLnPosterior(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale) {
+  double __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Theta;
+  __Pyx_Buffer __pyx_pybuffer_Theta;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_cadence;
+  __Pyx_Buffer __pyx_pybuffer_cadence;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  bool __pyx_t_5;
+  double __pyx_t_6;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  double __pyx_t_13;
+  double __pyx_t_14;
+  double __pyx_t_15;
+  PyObject *__pyx_t_16 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("computeLnPosterior", 0);
+  __pyx_pybuffer_Theta.pybuffer.buf = NULL;
+  __pyx_pybuffer_Theta.refcount = 0;
+  __pyx_pybuffernd_Theta.data = NULL;
+  __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
+  __pyx_pybuffer_cadence.pybuffer.buf = NULL;
+  __pyx_pybuffer_cadence.refcount = 0;
+  __pyx_pybuffernd_cadence.data = NULL;
+  __pyx_pybuffernd_cadence.rcbuffer = &__pyx_pybuffer_cadence;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer, (PyObject*)__pyx_v_cadence, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_cadence.diminfo[0].strides = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cadence.diminfo[0].shape = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+
+  /* "CARMATask.pyx":162
+ * @cython.wraparound(False)
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)             # <<<<<<<<<<<<<<
+ * 	return success
+ * 
+ */
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_5 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_13 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_15 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_15 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_success = computeLnPosteriorCARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_5, __pyx_t_6, __pyx_t_7, (&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_cadence.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_cadence.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_yerr.diminfo[0].strides))), __pyx_t_13, __pyx_t_14, __pyx_t_15);
+
+  /* "CARMATask.pyx":163
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)
+ * 	return success             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_16 = PyFloat_FromDouble(__pyx_v_success); if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_16);
+  __pyx_r = __pyx_t_16;
+  __pyx_t_16 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":161
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):             # <<<<<<<<<<<<<<
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)
+ * 	return success
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_16);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("CARMATask.computeLnPosterior", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "CARMATask.pyx":167
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):             # <<<<<<<<<<<<<<
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+ * 	return success
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9CARMATask_15fitCARMA(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9CARMATask_15fitCARMA = {"fitCARMA", (PyCFunction)__pyx_pw_9CARMATask_15fitCARMA, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9CARMATask_15fitCARMA(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_dt = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_q = 0;
+  PyObject *__pyx_v_IR = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_scatterFactor = 0;
+  PyObject *__pyx_v_numCadences = 0;
+  PyArrayObject *__pyx_v_cadence = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  PyObject *__pyx_v_maxSigma = 0;
+  PyObject *__pyx_v_minTimescale = 0;
+  PyObject *__pyx_v_maxTimescale = 0;
+  PyObject *__pyx_v_nthreads = 0;
+  PyObject *__pyx_v_nwalkers = 0;
+  PyObject *__pyx_v_nsteps = 0;
+  PyObject *__pyx_v_maxEvals = 0;
+  PyObject *__pyx_v_xTol = 0;
+  PyObject *__pyx_v_zSSeed = 0;
+  PyObject *__pyx_v_walkerSeed = 0;
+  PyObject *__pyx_v_moveSeed = 0;
+  PyObject *__pyx_v_xSeed = 0;
+  PyArrayObject *__pyx_v_xStart = 0;
+  PyArrayObject *__pyx_v_Chain = 0;
+  PyArrayObject *__pyx_v_LnPosterior = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("fitCARMA (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dt,&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_IR,&__pyx_n_s_tolIR,&__pyx_n_s_scatterFactor,&__pyx_n_s_numCadences,&__pyx_n_s_cadence,&__pyx_n_s_mask,&__pyx_n_s_t,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,&__pyx_n_s_nthreads,&__pyx_n_s_nwalkers,&__pyx_n_s_nsteps,&__pyx_n_s_maxEvals,&__pyx_n_s_xTol,&__pyx_n_s_zSSeed,&__pyx_n_s_walkerSeed,&__pyx_n_s_moveSeed,&__pyx_n_s_xSeed,&__pyx_n_s_xStart,&__pyx_n_s_Chain,&__pyx_n_s_LnPosterior,0};
+    PyObject* values[27] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 27: values[26] = PyTuple_GET_ITEM(__pyx_args, 26);
+        case 26: values[25] = PyTuple_GET_ITEM(__pyx_args, 25);
+        case 25: values[24] = PyTuple_GET_ITEM(__pyx_args, 24);
+        case 24: values[23] = PyTuple_GET_ITEM(__pyx_args, 23);
+        case 23: values[22] = PyTuple_GET_ITEM(__pyx_args, 22);
+        case 22: values[21] = PyTuple_GET_ITEM(__pyx_args, 21);
+        case 21: values[20] = PyTuple_GET_ITEM(__pyx_args, 20);
+        case 20: values[19] = PyTuple_GET_ITEM(__pyx_args, 19);
+        case 19: values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
+        case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
+        case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
+        case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_IR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_scatterFactor)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 12:
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 13:
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 14:
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 15:
+        if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nthreads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 15); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 16:
+        if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nwalkers)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 16); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 17:
+        if (likely((values[17] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nsteps)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 17); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 18:
+        if (likely((values[18] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxEvals)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 18); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 19:
+        if (likely((values[19] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xTol)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 19); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 20:
+        if (likely((values[20] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_zSSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 20); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 21:
+        if (likely((values[21] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_walkerSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 21); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 22:
+        if (likely((values[22] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_moveSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 22); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 23:
+        if (likely((values[23] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 23); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 24:
+        if (likely((values[24] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xStart)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 24); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 25:
+        if (likely((values[25] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Chain)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 25); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case 26:
+        if (likely((values[26] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_LnPosterior)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, 26); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fitCARMA") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 27) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+      values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+      values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+      values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+      values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+      values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+      values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
+      values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
+      values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
+      values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
+      values[19] = PyTuple_GET_ITEM(__pyx_args, 19);
+      values[20] = PyTuple_GET_ITEM(__pyx_args, 20);
+      values[21] = PyTuple_GET_ITEM(__pyx_args, 21);
+      values[22] = PyTuple_GET_ITEM(__pyx_args, 22);
+      values[23] = PyTuple_GET_ITEM(__pyx_args, 23);
+      values[24] = PyTuple_GET_ITEM(__pyx_args, 24);
+      values[25] = PyTuple_GET_ITEM(__pyx_args, 25);
+      values[26] = PyTuple_GET_ITEM(__pyx_args, 26);
+    }
+    __pyx_v_dt = values[0];
+    __pyx_v_p = values[1];
+    __pyx_v_q = values[2];
+    __pyx_v_IR = values[3];
+    __pyx_v_tolIR = values[4];
+    __pyx_v_scatterFactor = values[5];
+    __pyx_v_numCadences = values[6];
+    __pyx_v_cadence = ((PyArrayObject *)values[7]);
+    __pyx_v_mask = ((PyArrayObject *)values[8]);
+    __pyx_v_t = ((PyArrayObject *)values[9]);
+    __pyx_v_y = ((PyArrayObject *)values[10]);
+    __pyx_v_yerr = ((PyArrayObject *)values[11]);
+    __pyx_v_maxSigma = values[12];
+    __pyx_v_minTimescale = values[13];
+    __pyx_v_maxTimescale = values[14];
+    __pyx_v_nthreads = values[15];
+    __pyx_v_nwalkers = values[16];
+    __pyx_v_nsteps = values[17];
+    __pyx_v_maxEvals = values[18];
+    __pyx_v_xTol = values[19];
+    __pyx_v_zSSeed = values[20];
+    __pyx_v_walkerSeed = values[21];
+    __pyx_v_moveSeed = values[22];
+    __pyx_v_xSeed = values[23];
+    __pyx_v_xStart = ((PyArrayObject *)values[24]);
+    __pyx_v_Chain = ((PyArrayObject *)values[25]);
+    __pyx_v_LnPosterior = ((PyArrayObject *)values[26]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("fitCARMA", 1, 27, 27, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("CARMATask.fitCARMA", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_cadence), __pyx_ptype_5numpy_ndarray, 0, "cadence", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xStart), __pyx_ptype_5numpy_ndarray, 0, "xStart", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Chain), __pyx_ptype_5numpy_ndarray, 0, "Chain", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_LnPosterior), __pyx_ptype_5numpy_ndarray, 0, "LnPosterior", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_9CARMATask_14fitCARMA(__pyx_self, __pyx_v_dt, __pyx_v_p, __pyx_v_q, __pyx_v_IR, __pyx_v_tolIR, __pyx_v_scatterFactor, __pyx_v_numCadences, __pyx_v_cadence, __pyx_v_mask, __pyx_v_t, __pyx_v_y, __pyx_v_yerr, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale, __pyx_v_nthreads, __pyx_v_nwalkers, __pyx_v_nsteps, __pyx_v_maxEvals, __pyx_v_xTol, __pyx_v_zSSeed, __pyx_v_walkerSeed, __pyx_v_moveSeed, __pyx_v_xSeed, __pyx_v_xStart, __pyx_v_Chain, __pyx_v_LnPosterior);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9CARMATask_14fitCARMA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_IR, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_scatterFactor, PyObject *__pyx_v_numCadences, PyArrayObject *__pyx_v_cadence, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_nthreads, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior) {
+  int __pyx_v_success;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_Chain;
+  __Pyx_Buffer __pyx_pybuffer_Chain;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_LnPosterior;
+  __Pyx_Buffer __pyx_pybuffer_LnPosterior;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_cadence;
+  __Pyx_Buffer __pyx_pybuffer_cadence;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_xStart;
+  __Pyx_Buffer __pyx_pybuffer_xStart;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  bool __pyx_t_4;
+  double __pyx_t_5;
+  double __pyx_t_6;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  double __pyx_t_13;
+  double __pyx_t_14;
+  double __pyx_t_15;
+  int __pyx_t_16;
+  int __pyx_t_17;
+  int __pyx_t_18;
+  int __pyx_t_19;
+  double __pyx_t_20;
+  unsigned int __pyx_t_21;
+  unsigned int __pyx_t_22;
+  unsigned int __pyx_t_23;
+  unsigned int __pyx_t_24;
+  Py_ssize_t __pyx_t_25;
+  Py_ssize_t __pyx_t_26;
+  Py_ssize_t __pyx_t_27;
+  PyObject *__pyx_t_28 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("fitCARMA", 0);
+  __pyx_pybuffer_cadence.pybuffer.buf = NULL;
+  __pyx_pybuffer_cadence.refcount = 0;
+  __pyx_pybuffernd_cadence.data = NULL;
+  __pyx_pybuffernd_cadence.rcbuffer = &__pyx_pybuffer_cadence;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  __pyx_pybuffer_xStart.pybuffer.buf = NULL;
+  __pyx_pybuffer_xStart.refcount = 0;
+  __pyx_pybuffernd_xStart.data = NULL;
+  __pyx_pybuffernd_xStart.rcbuffer = &__pyx_pybuffer_xStart;
+  __pyx_pybuffer_Chain.pybuffer.buf = NULL;
+  __pyx_pybuffer_Chain.refcount = 0;
+  __pyx_pybuffernd_Chain.data = NULL;
+  __pyx_pybuffernd_Chain.rcbuffer = &__pyx_pybuffer_Chain;
+  __pyx_pybuffer_LnPosterior.pybuffer.buf = NULL;
+  __pyx_pybuffer_LnPosterior.refcount = 0;
+  __pyx_pybuffernd_LnPosterior.data = NULL;
+  __pyx_pybuffernd_LnPosterior.rcbuffer = &__pyx_pybuffer_LnPosterior;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer, (PyObject*)__pyx_v_cadence, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_cadence.diminfo[0].strides = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cadence.diminfo[0].shape = __pyx_pybuffernd_cadence.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xStart.rcbuffer->pybuffer, (PyObject*)__pyx_v_xStart, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_xStart.diminfo[0].strides = __pyx_pybuffernd_xStart.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_xStart.diminfo[0].shape = __pyx_pybuffernd_xStart.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Chain.rcbuffer->pybuffer, (PyObject*)__pyx_v_Chain, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_Chain.diminfo[0].strides = __pyx_pybuffernd_Chain.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Chain.diminfo[0].shape = __pyx_pybuffernd_Chain.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer, (PyObject*)__pyx_v_LnPosterior, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_pybuffernd_LnPosterior.diminfo[0].strides = __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_LnPosterior.diminfo[0].shape = __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.shape[0];
+
+  /* "CARMATask.pyx":168
+ * @cython.wraparound(False)
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])             # <<<<<<<<<<<<<<
+ * 	return success
+ */
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_q); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_IR); if (unlikely((__pyx_t_4 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_scatterFactor); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_13 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_15 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_15 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_16 = __Pyx_PyInt_As_int(__pyx_v_nthreads); if (unlikely((__pyx_t_16 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_17 = __Pyx_PyInt_As_int(__pyx_v_nwalkers); if (unlikely((__pyx_t_17 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_18 = __Pyx_PyInt_As_int(__pyx_v_nsteps); if (unlikely((__pyx_t_18 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_19 = __Pyx_PyInt_As_int(__pyx_v_maxEvals); if (unlikely((__pyx_t_19 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_v_xTol); if (unlikely((__pyx_t_20 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_21 = __Pyx_PyInt_As_unsigned_int(__pyx_v_zSSeed); if (unlikely((__pyx_t_21 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_22 = __Pyx_PyInt_As_unsigned_int(__pyx_v_walkerSeed); if (unlikely((__pyx_t_22 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_23 = __Pyx_PyInt_As_unsigned_int(__pyx_v_moveSeed); if (unlikely((__pyx_t_23 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_24 = __Pyx_PyInt_As_unsigned_int(__pyx_v_xSeed); if (unlikely((__pyx_t_24 == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_25 = 0;
+  __pyx_t_26 = 0;
+  __pyx_t_27 = 0;
+  __pyx_v_success = fitCARMACARMA(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, (&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_cadence.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_cadence.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_yerr.diminfo[0].strides))), __pyx_t_13, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_t_17, __pyx_t_18, __pyx_t_19, __pyx_t_20, __pyx_t_21, __pyx_t_22, __pyx_t_23, __pyx_t_24, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xStart.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_xStart.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Chain.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_Chain.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_LnPosterior.diminfo[0].strides))));
+
+  /* "CARMATask.pyx":169
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+ * 	return success             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_28 = __Pyx_PyInt_From_int(__pyx_v_success); if (unlikely(!__pyx_t_28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_28);
+  __pyx_r = __pyx_t_28;
+  __pyx_t_28 = 0;
+  goto __pyx_L0;
+
+  /* "CARMATask.pyx":167
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):             # <<<<<<<<<<<<<<
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+ * 	return success
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_28);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Chain.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xStart.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("CARMATask.fitCARMA", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_Chain.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cadence.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xStart.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -6503,104 +7833,6 @@ static PyTypeObject __pyx_type_9CARMATask_lc = {
   #endif
 };
 
-static PyObject *__pyx_tp_new_9CARMATask_CARMATask(PyTypeObject *t, PyObject *a, PyObject *k) {
-  PyObject *o;
-  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
-    o = (*t->tp_alloc)(t, 0);
-  } else {
-    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
-  }
-  if (unlikely(!o)) return 0;
-  if (unlikely(__pyx_pw_9CARMATask_9CARMATask_1__cinit__(o, a, k) < 0)) {
-    Py_DECREF(o); o = 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_9CARMATask_CARMATask(PyObject *o) {
-  #if PY_VERSION_HEX >= 0x030400a1
-  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    ++Py_REFCNT(o);
-    __pyx_pw_9CARMATask_9CARMATask_5__dealloc__(o);
-    --Py_REFCNT(o);
-    PyErr_Restore(etype, eval, etb);
-  }
-  (*Py_TYPE(o)->tp_free)(o);
-}
-
-static PyMethodDef __pyx_methods_9CARMATask_CARMATask[] = {
-  {"guard", (PyCFunction)__pyx_pw_9CARMATask_9CARMATask_3guard, METH_NOARGS, 0},
-  {"checkParams", (PyCFunction)__pyx_pw_9CARMATask_9CARMATask_7checkParams, METH_VARARGS|METH_KEYWORDS, 0},
-  {"setDT", (PyCFunction)__pyx_pw_9CARMATask_9CARMATask_9setDT, METH_VARARGS|METH_KEYWORDS, 0},
-  {"printSystem", (PyCFunction)__pyx_pw_9CARMATask_9CARMATask_11printSystem, METH_VARARGS|METH_KEYWORDS, 0},
-  {"makeIntrinsicLC", (PyCFunction)__pyx_pw_9CARMATask_9CARMATask_13makeIntrinsicLC, METH_VARARGS|METH_KEYWORDS, 0},
-  {0, 0, 0, 0}
-};
-
-static PyTypeObject __pyx_type_9CARMATask_CARMATask = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "CARMATask.CARMATask", /*tp_name*/
-  sizeof(struct __pyx_obj_9CARMATask_CARMATask), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9CARMATask_CARMATask, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  0, /*tp_doc*/
-  0, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  __pyx_methods_9CARMATask_CARMATask, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_9CARMATask_CARMATask, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -6624,48 +7856,75 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_s_CARMATask, __pyx_k_CARMATask, sizeof(__pyx_k_CARMATask), 0, 0, 1, 1},
+  {&__pyx_n_s_Chain, __pyx_k_Chain, sizeof(__pyx_k_Chain), 0, 0, 1, 1},
   {&__pyx_n_s_DTYPE, __pyx_k_DTYPE, sizeof(__pyx_k_DTYPE), 0, 0, 1, 1},
   {&__pyx_kp_u_Format_string_allocated_too_shor, __pyx_k_Format_string_allocated_too_shor, sizeof(__pyx_k_Format_string_allocated_too_shor), 0, 1, 0, 0},
   {&__pyx_kp_u_Format_string_allocated_too_shor_2, __pyx_k_Format_string_allocated_too_shor_2, sizeof(__pyx_k_Format_string_allocated_too_shor_2), 0, 1, 0, 0},
   {&__pyx_n_s_IR, __pyx_k_IR, sizeof(__pyx_k_IR), 0, 0, 1, 1},
+  {&__pyx_n_s_LnPosterior, __pyx_k_LnPosterior, sizeof(__pyx_k_LnPosterior), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
+  {&__pyx_n_s_Randoms, __pyx_k_Randoms, sizeof(__pyx_k_Randoms), 0, 0, 1, 1},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_Theta, __pyx_k_Theta, sizeof(__pyx_k_Theta), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_burnSeed, __pyx_k_burnSeed, sizeof(__pyx_k_burnSeed), 0, 0, 1, 1},
-  {&__pyx_n_s_cpu_count, __pyx_k_cpu_count, sizeof(__pyx_k_cpu_count), 0, 0, 1, 1},
+  {&__pyx_n_s_cadence, __pyx_k_cadence, sizeof(__pyx_k_cadence), 0, 0, 1, 1},
+  {&__pyx_n_s_computeLnLikelihood, __pyx_k_computeLnLikelihood, sizeof(__pyx_k_computeLnLikelihood), 0, 0, 1, 1},
+  {&__pyx_n_s_computeLnPosterior, __pyx_k_computeLnPosterior, sizeof(__pyx_k_computeLnPosterior), 0, 0, 1, 1},
   {&__pyx_n_s_distSeed, __pyx_k_distSeed, sizeof(__pyx_k_distSeed), 0, 0, 1, 1},
   {&__pyx_n_s_dt, __pyx_k_dt, sizeof(__pyx_k_dt), 0, 0, 1, 1},
+  {&__pyx_n_s_fitCARMA, __pyx_k_fitCARMA, sizeof(__pyx_k_fitCARMA), 0, 0, 1, 1},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
   {&__pyx_n_s_fracIntrinsicVar, __pyx_k_fracIntrinsicVar, sizeof(__pyx_k_fracIntrinsicVar), 0, 0, 1, 1},
   {&__pyx_n_s_fracSignalToNoise, __pyx_k_fracSignalToNoise, sizeof(__pyx_k_fracSignalToNoise), 0, 0, 1, 1},
+  {&__pyx_n_s_getRandoms, __pyx_k_getRandoms, sizeof(__pyx_k_getRandoms), 0, 0, 1, 1},
+  {&__pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_k_home_vish_code_trunk_cpp_libcar, sizeof(__pyx_k_home_vish_code_trunk_cpp_libcar), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_logical, __pyx_k_logical, sizeof(__pyx_k_logical), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_s_makeIntrinsicLC, __pyx_k_makeIntrinsicLC, sizeof(__pyx_k_makeIntrinsicLC), 0, 0, 1, 1},
+  {&__pyx_n_s_makeObservedLC, __pyx_k_makeObservedLC, sizeof(__pyx_k_makeObservedLC), 0, 0, 1, 1},
   {&__pyx_n_s_mask, __pyx_k_mask, sizeof(__pyx_k_mask), 0, 0, 1, 1},
   {&__pyx_n_s_math, __pyx_k_math, sizeof(__pyx_k_math), 0, 0, 1, 1},
+  {&__pyx_n_s_maxEvals, __pyx_k_maxEvals, sizeof(__pyx_k_maxEvals), 0, 0, 1, 1},
   {&__pyx_n_s_maxSigma, __pyx_k_maxSigma, sizeof(__pyx_k_maxSigma), 0, 0, 1, 1},
   {&__pyx_n_s_maxTimescale, __pyx_k_maxTimescale, sizeof(__pyx_k_maxTimescale), 0, 0, 1, 1},
   {&__pyx_n_s_minTimescale, __pyx_k_minTimescale, sizeof(__pyx_k_minTimescale), 0, 0, 1, 1},
+  {&__pyx_n_s_moveSeed, __pyx_k_moveSeed, sizeof(__pyx_k_moveSeed), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
+  {&__pyx_n_s_noiseSeed, __pyx_k_noiseSeed, sizeof(__pyx_k_noiseSeed), 0, 0, 1, 1},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
+  {&__pyx_n_s_nsteps, __pyx_k_nsteps, sizeof(__pyx_k_nsteps), 0, 0, 1, 1},
+  {&__pyx_n_s_nthreads, __pyx_k_nthreads, sizeof(__pyx_k_nthreads), 0, 0, 1, 1},
   {&__pyx_n_s_numBurn, __pyx_k_numBurn, sizeof(__pyx_k_numBurn), 0, 0, 1, 1},
   {&__pyx_n_s_numCadences, __pyx_k_numCadences, sizeof(__pyx_k_numCadences), 0, 0, 1, 1},
-  {&__pyx_n_s_numThreads, __pyx_k_numThreads, sizeof(__pyx_k_numThreads), 0, 0, 1, 1},
+  {&__pyx_n_s_numRand, __pyx_k_numRand, sizeof(__pyx_k_numRand), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
+  {&__pyx_n_s_nwalkers, __pyx_k_nwalkers, sizeof(__pyx_k_nwalkers), 0, 0, 1, 1},
   {&__pyx_n_s_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 0, 1, 1},
+  {&__pyx_n_s_printSystem, __pyx_k_printSystem, sizeof(__pyx_k_printSystem), 0, 0, 1, 1},
   {&__pyx_n_s_psutil, __pyx_k_psutil, sizeof(__pyx_k_psutil), 0, 0, 1, 1},
   {&__pyx_n_s_q, __pyx_k_q, sizeof(__pyx_k_q), 0, 0, 1, 1},
+  {&__pyx_n_s_randint, __pyx_k_randint, sizeof(__pyx_k_randint), 0, 0, 1, 1},
+  {&__pyx_n_s_random, __pyx_k_random, sizeof(__pyx_k_random), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_n_s_scatterFactor, __pyx_k_scatterFactor, sizeof(__pyx_k_scatterFactor), 0, 0, 1, 1},
+  {&__pyx_n_s_startCadence, __pyx_k_startCadence, sizeof(__pyx_k_startCadence), 0, 0, 1, 1},
+  {&__pyx_n_s_success, __pyx_k_success, sizeof(__pyx_k_success), 0, 0, 1, 1},
   {&__pyx_n_s_t, __pyx_k_t, sizeof(__pyx_k_t), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_threadNum, __pyx_k_threadNum, sizeof(__pyx_k_threadNum), 0, 0, 1, 1},
+  {&__pyx_n_s_testSystem, __pyx_k_testSystem, sizeof(__pyx_k_testSystem), 0, 0, 1, 1},
   {&__pyx_n_s_tolIR, __pyx_k_tolIR, sizeof(__pyx_k_tolIR), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
+  {&__pyx_n_s_walkerSeed, __pyx_k_walkerSeed, sizeof(__pyx_k_walkerSeed), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
+  {&__pyx_n_s_xSeed, __pyx_k_xSeed, sizeof(__pyx_k_xSeed), 0, 0, 1, 1},
+  {&__pyx_n_s_xStart, __pyx_k_xStart, sizeof(__pyx_k_xStart), 0, 0, 1, 1},
+  {&__pyx_n_s_xTol, __pyx_k_xTol, sizeof(__pyx_k_xTol), 0, 0, 1, 1},
   {&__pyx_n_s_y, __pyx_k_y, sizeof(__pyx_k_y), 0, 0, 1, 1},
   {&__pyx_n_s_yerr, __pyx_k_yerr, sizeof(__pyx_k_yerr), 0, 0, 1, 1},
+  {&__pyx_n_s_zSSeed, __pyx_k_zSSeed, sizeof(__pyx_k_zSSeed), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
@@ -6746,6 +8005,102 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__6)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 823; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
+
+  /* "CARMATask.pyx":121
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):             # <<<<<<<<<<<<<<
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ */
+  __pyx_tuple__7 = PyTuple_Pack(3, __pyx_n_s_Randoms, __pyx_n_s_numRand, __pyx_n_s_success); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_getRandoms, 121, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":131
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
+ */
+  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_success); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_testSystem, 131, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":137
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
+ */
+  __pyx_tuple__11 = PyTuple_Pack(5, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_success); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_printSystem, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":143
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):             # <<<<<<<<<<<<<<
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])
+ * 	return success
+ */
+  __pyx_tuple__13 = PyTuple_Pack(16, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_IR, __pyx_n_s_tolIR, __pyx_n_s_numBurn, __pyx_n_s_numCadences, __pyx_n_s_startCadence, __pyx_n_s_burnSeed, __pyx_n_s_distSeed, __pyx_n_s_cadence, __pyx_n_s_mask, __pyx_n_s_t, __pyx_n_s_x, __pyx_n_s_success); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(15, 0, 16, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_makeIntrinsicLC, 143, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":149
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+  __pyx_tuple__15 = PyTuple_Pack(20, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_IR, __pyx_n_s_tolIR, __pyx_n_s_fracIntrinsicVar, __pyx_n_s_fracSignalToNoise, __pyx_n_s_numBurn, __pyx_n_s_numCadences, __pyx_n_s_startCadence, __pyx_n_s_burnSeed, __pyx_n_s_distSeed, __pyx_n_s_noiseSeed, __pyx_n_s_cadence, __pyx_n_s_mask, __pyx_n_s_t, __pyx_n_s_y, __pyx_n_s_yerr, __pyx_n_s_success); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(19, 0, 20, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_makeObservedLC, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":155
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+  __pyx_tuple__17 = PyTuple_Pack(13, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_IR, __pyx_n_s_tolIR, __pyx_n_s_numCadences, __pyx_n_s_cadence, __pyx_n_s_mask, __pyx_n_s_t, __pyx_n_s_y, __pyx_n_s_yerr, __pyx_n_s_success); if (unlikely(!__pyx_tuple__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(12, 0, 13, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_computeLnLikelihood, 155, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":161
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):             # <<<<<<<<<<<<<<
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)
+ * 	return success
+ */
+  __pyx_tuple__19 = PyTuple_Pack(16, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_Theta, __pyx_n_s_IR, __pyx_n_s_tolIR, __pyx_n_s_numCadences, __pyx_n_s_cadence, __pyx_n_s_mask, __pyx_n_s_t, __pyx_n_s_y, __pyx_n_s_yerr, __pyx_n_s_maxSigma, __pyx_n_s_minTimescale, __pyx_n_s_maxTimescale, __pyx_n_s_success); if (unlikely(!__pyx_tuple__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(15, 0, 16, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_computeLnPosterior, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "CARMATask.pyx":167
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):             # <<<<<<<<<<<<<<
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+ * 	return success
+ */
+  __pyx_tuple__21 = PyTuple_Pack(28, __pyx_n_s_dt, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_IR, __pyx_n_s_tolIR, __pyx_n_s_scatterFactor, __pyx_n_s_numCadences, __pyx_n_s_cadence, __pyx_n_s_mask, __pyx_n_s_t, __pyx_n_s_y, __pyx_n_s_yerr, __pyx_n_s_maxSigma, __pyx_n_s_minTimescale, __pyx_n_s_maxTimescale, __pyx_n_s_nthreads, __pyx_n_s_nwalkers, __pyx_n_s_nsteps, __pyx_n_s_maxEvals, __pyx_n_s_xTol, __pyx_n_s_zSSeed, __pyx_n_s_walkerSeed, __pyx_n_s_moveSeed, __pyx_n_s_xSeed, __pyx_n_s_xStart, __pyx_n_s_Chain, __pyx_n_s_LnPosterior, __pyx_n_s_success); if (unlikely(!__pyx_tuple__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(27, 0, 28, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vish_code_trunk_cpp_libcar, __pyx_n_s_fitCARMA, 167, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6763,7 +8118,7 @@ static int __Pyx_InitGlobals(void) {
   __pyx_float_1_0eneg_3 = PyFloat_FromDouble(1.0e-3); if (unlikely(!__pyx_float_1_0eneg_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_float_5_0eneg_1 = PyFloat_FromDouble(5.0e-1); if (unlikely(!__pyx_float_5_0eneg_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_int_1000000 = PyInt_FromLong(1000000L); if (unlikely(!__pyx_int_1000000)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_int_4294967295 = PyInt_FromString((char *)"4294967295", 0, 0); if (unlikely(!__pyx_int_4294967295)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -6856,14 +8211,10 @@ PyMODINIT_FUNC PyInit_CARMATask(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_9CARMATask_lc) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_9CARMATask_lc) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_9CARMATask_lc.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "lc", (PyObject *)&__pyx_type_9CARMATask_lc) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "lc", (PyObject *)&__pyx_type_9CARMATask_lc) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_9CARMATask_lc = &__pyx_type_9CARMATask_lc;
-  if (PyType_Ready(&__pyx_type_9CARMATask_CARMATask) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_9CARMATask_CARMATask.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "CARMATask", (PyObject *)&__pyx_type_9CARMATask_CARMATask) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_9CARMATask_CARMATask = &__pyx_type_9CARMATask_CARMATask;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
   #if CYTHON_COMPILING_IN_PYPY
@@ -6924,7 +8275,7 @@ PyMODINIT_FUNC PyInit_CARMATask(void)
  * from libcpp cimport bool
  * DTYPE = np.float64             # <<<<<<<<<<<<<<
  * ctypedef np.float64_t DTYPE_t
- * 
+ * #DTYPE = np.uint32
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -6932,6 +8283,102 @@ PyMODINIT_FUNC PyInit_CARMATask(void)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_DTYPE, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":121
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def getRandoms(np.ndarray[unsigned int, ndim=1, mode="c"] Randoms not None):             # <<<<<<<<<<<<<<
+ * 	cdef int numRand = Randoms.shape[0]
+ * 	success = getRandomsCARMA(numRand, &Randoms[0])
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_1getRandoms, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_getRandoms, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":131
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def testSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = testSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_3testSystem, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_testSystem, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":137
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def printSystem(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None):             # <<<<<<<<<<<<<<
+ * 	success = printSystemCARMA(dt, p, q, &Theta[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_5printSystem, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_printSystem, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":143
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeIntrinsicLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] x not None):             # <<<<<<<<<<<<<<
+ * 	success = makeIntrinsicLCCARMA(dt, p, q, &Theta[0], IR, tolIR, numBurn, numCadences, startCadence, burnSeed, distSeed, &cadence[0], &mask[0], &t[0], &x[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_7makeIntrinsicLC, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_makeIntrinsicLC, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":149
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def makeObservedLC(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = makeObservedLCCARMA(dt, p, q, &Theta[0], IR, tolIR, fracIntrinsicVar, fracSignalToNoise, numBurn, numCadences, startCadence, burnSeed, distSeed, noiseSeed, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_9makeObservedLC, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_makeObservedLC, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":155
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnLikelihood(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None):             # <<<<<<<<<<<<<<
+ * 	success = computeLnLikelihoodCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_11computeLnLikelihood, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeLnLikelihood, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":161
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def computeLnPosterior(dt, p, q, np.ndarray[double, ndim=1, mode="c"] Theta not None, IR, tolIR, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale):             # <<<<<<<<<<<<<<
+ * 	success = computeLnPosteriorCARMA(dt, p, q, &Theta[0], IR, tolIR, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale)
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_13computeLnPosterior, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeLnPosterior, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "CARMATask.pyx":167
+ * @cython.boundscheck(False)
+ * @cython.wraparound(False)
+ * def fitCARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, np.ndarray[int, ndim=1, mode="c"] cadence not None, np.ndarray[double, ndim=1, mode="c"] mask not None, np.ndarray[double, ndim=1, mode="c"] t not None, np.ndarray[double, ndim=1, mode="c"] y not None, np.ndarray[double, ndim=1, mode="c"] yerr not None, maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode="c"] xStart not None, np.ndarray[double, ndim=1, mode="c"] Chain not None, np.ndarray[double, ndim=1, mode="c"] LnPosterior not None):             # <<<<<<<<<<<<<<
+ * 	success = fitCARMACARMA(dt, p, q, IR, tolIR, scatterFactor, numCadences, &cadence[0], &mask[0], &t[0], &y[0], &yerr[0], maxSigma, minTimescale, maxTimescale, nthreads, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+ * 	return success
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9CARMATask_15fitCARMA, NULL, __pyx_n_s_CARMATask); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fitCARMA, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "CARMATask.pyx":1
@@ -7867,6 +9314,23 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 }
 #endif
 
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(PyObject_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
+}
+
+static void __Pyx_RaiseBufferFallbackError(void) {
+  PyErr_SetString(PyExc_ValueError,
+     "Buffer acquisition failed on assignment; and then reacquiring the old buffer failed too!");
+}
+
 #if PY_MAJOR_VERSION < 3
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
                         CYTHON_UNUSED PyObject *cause) {
@@ -8040,18 +9504,6 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
 
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-}
-
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(PyObject_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
 }
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {

@@ -7,7 +7,7 @@ DTYPE = np.uint32
 ctypedef np.uint32_t DTYPE_t
 
 cdef extern from 'rdrand.hpp':
-	cdef int rdrand_get_n_32(unsigned int n, unsigned int* x);
+	cdef int rdrand_get_n_32(unsigned int n, unsigned int* x)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
