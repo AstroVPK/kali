@@ -36,7 +36,7 @@ res = newTask.printSystem(dt, Theta)
 
 Sigma = np.zeros(p*p)
 
-res = newTask.getSigma(dt, Theta, Sigma)
+res = newTask.get_Sigma(dt, Theta, Sigma)
 
 print 'Sigma[0]: %e'%(np.sqrt(Sigma[0]))
 

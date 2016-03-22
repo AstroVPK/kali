@@ -27,12 +27,14 @@ cdef extern from 'LC.hpp':
 cdef extern from 'Task.hpp':
 	cdef cppclass Task:
 		Task(int p, int q, int numThreads, int numBurn) except+
-		int getNumBurn()
-		void setNumBurn(int numBurn)
+		int get_numBurn()
+		void set_numBurn(int numBurn)
 		int checkParams(double *Theta, int threadNum)
-		void setDT(double dt, int threadNum)
+		double get_dt(int threadNum)
+		void get_ThetaVec(double *Theta, int threadNum)
+		int set_System(double dt, double *Theta, int threadNum)
 		int printSystem(double dt, double *Theta, int threadNum)
-		int getSigma(double dt, double *Theta, double *Sigma, int threadNum)
+		int get_Sigma(double dt, double *Theta, double *Sigma, int threadNum)
 		int makeIntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
 		double getMeanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum)
 		int makeObservedLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum)
@@ -130,10 +132,24 @@ cdef class CARMATask:
 			threadNum = 0
 		return self.thisptr.checkParams(&Theta[0], threadNum)
 
-	def setDT(self, dt, threadNum = None):
+	def get_dt(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		self.thisptr.setDT(dt, threadNum)
+		return self.thisptr.get_dt(threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def get_ThetaVec(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		self.thisptr.get_ThetaVec(&Theta[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def set_System(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		self.thisptr.set_System(dt, &Theta[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
@@ -144,10 +160,10 @@ cdef class CARMATask:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def getSigma(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None, threadNum = None):
+	def get_Sigma(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.getSigma(dt, &Theta[0], &Sigma[0], threadNum);
+		return self.thisptr.get_Sigma(dt, &Theta[0], &Sigma[0], threadNum);
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

@@ -20,29 +20,73 @@ using namespace std;
 		numThreads = numThreadsGiven;
 		numBurn = numBurn;
 		Systems = new CARMA[numThreads];
-		for (int tNum = 0; tNum < numThreads; ++tNum) {
-			Systems[tNum].allocCARMA(p,q);
+		setSystems = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
+		ThetaVec = static_cast<double*>(_mm_malloc(numThreads*(p + q + 1)*sizeof(double),64));
+		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
+			Systems[threadNum].allocCARMA(p,q);
+			setSystems[threadNum] = false;
+			#pragma omp simd
+			for (int i = 0; i < (p + q + 1); ++i) {
+				ThetaVec[i + threadNum*(p + q  +1)] = 0.0;
+				}
 			}
 		}
 
 	Task::~Task() {
+		if (ThetaVec) {
+			_mm_free(ThetaVec);
+			ThetaVec = nullptr;
+			}
+		if (setSystems) {
+			_mm_free(setSystems);
+			setSystems = nullptr;
+			}
 		for (int tNum = 0; tNum < numThreads; ++tNum) {
 			Systems[tNum].deallocCARMA();
 			}
 		delete[] Systems;
+		delete[] setSystems;
 		}
 
-	int Task::getNumBurn() {return numBurn;}
-	void Task::setNumBurn(int numBurn) {numBurn = numBurn;}
+	int Task::get_numBurn() {return numBurn;}
+	void Task::set_numBurn(int numBurn) {numBurn = numBurn;}
 
 	int Task::checkParams(double *Theta, int threadNum) {
 		return Systems[threadNum].checkCARMAParams(Theta);
 		}
 
-	void Task::setDT(double dt, int threadNum) {
-		for (int tNum = 0; tNum < numThreads; ++tNum) {
-			Systems[tNum].set_dt(dt);
+	double Task::get_dt(int threadNum) {return Systems[threadNum].get_dt();}
+
+	void Task::get_ThetaVec(double *Theta, int threadNum) {
+		for (int i = 0; i < (p + q + 1); ++i) {
+			Theta[i] = ThetaVec[i + threadNum*(p + q + 1)];
 			}
+		}
+
+	int Task::set_System(double dt, double *Theta, int threadNum) {
+		bool alreadySet = true;
+		int retVal = -1;
+		if (Systems[threadNum].get_dt() != dt) {
+			alreadySet = false;
+			}
+		for (int i = 0; i < (p + q + 1); ++i) {
+			if (ThetaVec[i + threadNum*(p + q + 1)] != Theta[i]) {
+				alreadySet = false;
+				}
+			}
+		if (alreadySet == false) {
+			int goodYN = Systems[threadNum].checkCARMAParams(Theta);
+			if (goodYN == 1) {
+				double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
+				Systems[threadNum].set_dt(dt);
+				Systems[threadNum].setCARMA(Theta);
+				Systems[threadNum].solveCARMA();
+				Systems[threadNum].resetState();
+				retVal = 0;
+				setSystems[threadNum] = true;
+				}
+			}
+		return retVal;
 		}
 
 	int Task::printSystem(double dt, double *Theta, int threadNum) {
@@ -51,6 +95,8 @@ using namespace std;
 			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 			Systems[threadNum].set_dt(dt);
 			Systems[threadNum].setCARMA(Theta);
+			Systems[threadNum].solveCARMA();
+			Systems[threadNum].resetState();
 
 			printf("A\n");
 			Systems[threadNum].printA();
@@ -67,9 +113,6 @@ using namespace std;
 			printf("C\n");
 			Systems[threadNum].printC();
 			printf("\n");
-
-			Systems[threadNum].solveCARMA();
-
 			printf("expw\n");
 			Systems[threadNum].printexpw();
 			printf("\n");
@@ -85,9 +128,6 @@ using namespace std;
 			printf("Sigma\n");
 			Systems[threadNum].printSigma();
 			printf("\n");
-
-			Systems[threadNum].resetState();
-
 			printf("X\n");
 			Systems[threadNum].printX();
 			printf("\n");
@@ -100,7 +140,7 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::getSigma(double dt, double *Theta, double *Sigma, int threadNum) {
+	int Task::get_Sigma(double dt, double *Theta, double *Sigma, int threadNum) {
 		int goodYN = Systems[threadNum].checkCARMAParams(Theta), retVal = 0;
 		if (goodYN == 1) {
 			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
