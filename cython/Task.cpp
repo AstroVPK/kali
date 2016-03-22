@@ -13,10 +13,10 @@
 
 using namespace std;
 
-	Task::Task(int p, int q, int numThreads, int numBurn) {
-		p = p;
-		q = q;
-		numThreads = numThreads;
+	Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurn) {
+		p = pGiven;
+		q = qGiven;
+		numThreads = numThreadsGiven;
 		numBurn = numBurn;
 		Systems = new CARMA[numThreads];
 		for (int tNum = 0; tNum < numThreads; ++tNum) {
@@ -24,15 +24,11 @@ using namespace std;
 			}
 		}
 
-	/*Task::~Task() {
+	Task::~Task() {
 		for (int tNum = 0; tNum < numThreads; ++tNum) {
 			Systems[tNum].deallocCARMA();
-			delete[] Systems;
 			}
-		}*/
-
-	void Task::guard() {
-		printf("Safe to garbage collect Task!\n");
+		delete[] Systems;
 		}
 
 	int Task::getNumBurn() {return numBurn;}
@@ -97,7 +93,6 @@ using namespace std;
 			printf("P\n");
 			Systems[threadNum].printP();
 			printf("\n");
-
 			} else {
 			retVal = -1;
 			}

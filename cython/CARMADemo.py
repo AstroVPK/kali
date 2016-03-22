@@ -1,6 +1,9 @@
 import numpy as np
+import pdb
+import matplotlib.pyplot as plt
 
 import lc
+import rand
 import CARMATask
 
 numCadences = 1000
@@ -15,8 +18,12 @@ Theta[1] = 1.0
 
 res = newTask.printSystem(0.1, Theta)
 
-res = newTask.makeIntrinsicLC(Theta, numCadences, dt, False, 1.0e-3, 0.15, 0.001, 2.0, 1.0, 100.0, r.t, r.x, r.y, r.yerr, r.mask, 78676897, 78687678)
+randSeeds = np.zeros(2, dtype = 'uint32')
 
-newTask.guard()
+res= rand.rdrand(randSeeds)
 
-print r
+res = newTask.makeIntrinsicLC(Theta, numCadences, dt, False, 1.0e-3, 0.15, 0.001, 2.0, 1.0, 100.0, r.t, r.x, r.y, r.yerr, r.mask, randSeeds[0], randSeeds[1])
+
+plt.figure(1)
+plt.plot(r.t,r.x)
+plt.show()

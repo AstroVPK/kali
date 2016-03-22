@@ -23,8 +23,7 @@ using namespace std;
 	public:
 		Task() = delete;
 		Task(int p, int q, int numThreads, int numBurn);
-		//~Task();
-		void guard();
+		~Task();
 		int getNumBurn();
 		void setNumBurn(int numBurn);
 		int checkParams(double *Theta, int threadNum);
