@@ -32,7 +32,14 @@ cdef extern from 'Task.hpp':
 		int checkParams(double *Theta, int threadNum)
 		void setDT(double dt, int threadNum)
 		int printSystem(double dt, double *Theta, int threadNum)
-		int makeIntrinsicLC(double *Theta, int numCadences, double dt, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
+		int getSigma(double dt, double *Theta, double *Sigma, int threadNum)
+		int makeIntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
+		double getMeanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum)
+		int makeObservedLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum)
+		double computeLnPrior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
+		double computeLnLikelihood(double dt, double *Theta, int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
+		double computeLnPosterior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
+		int fitCARMA(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double scatterFactor, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior)
 
 cdef class lc:
 	cdef LCData *thisptr
@@ -137,7 +144,61 @@ cdef class CARMATask:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def makeIntrinsicLC(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
+	def getSigma(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.makeIntrinsicLC(&Theta[0], numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
+		return self.thisptr.getSigma(dt, &Theta[0], &Sigma[0], threadNum);
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def makeIntrinsicLC(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.makeIntrinsicLC(dt, &Theta[0], numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
+
+	'''@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def makeIntrinsicLC2(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, workingLC, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.makeIntrinsicLC(workingLC.dt, &Theta[0], workingLC.numCadences, workingLC.IR, workingLC.tolIR, workingLC.fracIntrinsicVar, workingLC.fracSignalToNoise, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)'''
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def getMeanFlux(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, fracIntrinsicVar, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.getMeanFlux(dt, &Theta[0], fracIntrinsicVar, threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def makeObservedLC(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, noiseSeed, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.makeObservedLC(dt, &Theta[0], numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, noiseSeed, threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def computeLnPrior(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.computeLnPrior(dt, &Theta[0], numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def computeLnLikelihood(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, IR, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.computeLnLikelihood(dt, &Theta[0], numCadences, IR, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def computeLnPosterior(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.computeLnPosterior(dt, &Theta[0], numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def fitCARMA(self, dt, numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, scatterFactor, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):
+		return self.thisptr.fitCARMA(dt, numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, scatterFactor, &t[0], &x[0], &y[0], &yerr[0], &mask[0], nwalkers, nsteps, maxEvals, xTol, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])

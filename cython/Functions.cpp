@@ -271,10 +271,6 @@ int fitCARMA(double dt, int p, int q, bool IR, double tolIR, double scatterFacto
 	omp_set_num_threads(nthreads);
 	int ndims = p + q + 1;
 	int threadNum = omp_get_thread_num();
-
-	//printf("minTimescale: %+4.3e\n",minTimescale);
-	//printf("maxTimescale: %+4.3e\n",maxTimescale);
-
 	LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.IR = IR;

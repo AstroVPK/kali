@@ -121,8 +121,6 @@ public:
 	const double* getF() const;
 	void printSigma();
 	const double* getSigma() const;
-	//void printD();
-	//const double* getD() const;
 	void printQ();
 	const double* getQ() const;
 	void printT();
@@ -132,15 +130,9 @@ public:
 	void deallocCARMA();
 	int checkCARMAParams(double* ThetaIn); /*!< Function to check the validity of the CARMA parameters. Theta contains \f$p\f$ CAR parameters followed by \f$q+1\f$ CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.*/
 	void setCARMA(double* ThetaIn); /*!< Function to set a CARMA object with the given CARMA parameters. Theta contains p CAR parameters followed by q+1 CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.*/
-	void oldFunctor(const vector<double> &x, vector<double> &dxdt, const double xi);
-	void newFunctor(const vector<double> &x, vector<double> &dxdt, const double xi);
-	void operator()(const vector<double> &x, vector<double> &dxdt, const double xi);
-	void solveCARMA_Old();
 	void solveCARMA();
 	void resetState(double InitUncertainty);
 	void resetState();
-	void computeSigma_Old();
-	void computeSigma();
 	void getCARRoots(complex<double>*& CARoots);
 	void getCMARoots(complex<double>*& CMARoots);
 	double getIntrinsicVar();
