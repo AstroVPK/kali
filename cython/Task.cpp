@@ -20,11 +20,11 @@ using namespace std;
 		numThreads = numThreadsGiven;
 		numBurn = numBurn;
 		Systems = new CARMA[numThreads];
-		setSystems = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
+		setSystemsVec = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
 		ThetaVec = static_cast<double*>(_mm_malloc(numThreads*(p + q + 1)*sizeof(double),64));
 		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
 			Systems[threadNum].allocCARMA(p,q);
-			setSystems[threadNum] = false;
+			setSystemsVec[threadNum] = false;
 			#pragma omp simd
 			for (int i = 0; i < (p + q + 1); ++i) {
 				ThetaVec[i + threadNum*(p + q  +1)] = 0.0;
@@ -37,21 +37,44 @@ using namespace std;
 			_mm_free(ThetaVec);
 			ThetaVec = nullptr;
 			}
-		if (setSystems) {
-			_mm_free(setSystems);
-			setSystems = nullptr;
+		if (setSystemsVec) {
+			_mm_free(setSystemsVec);
+			setSystemsVec = nullptr;
 			}
 		for (int tNum = 0; tNum < numThreads; ++tNum) {
 			Systems[tNum].deallocCARMA();
 			}
 		delete[] Systems;
-		delete[] setSystems;
+		delete[] setSystemsVec;
+		}
+
+	int Task::reset_Task(int pGiven, int qGiven, int numBurn) {
+		int retVal = -1;
+		p = pGiven;
+		q = qGiven;
+		numBurn = numBurn;
+		if (ThetaVec) {
+			_mm_free(ThetaVec);
+			ThetaVec = nullptr;
+			}
+		ThetaVec = static_cast<double*>(_mm_malloc(numThreads*(p + q + 1)*sizeof(double),64));
+		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
+			Systems[threadNum].deallocCARMA();
+			Systems[threadNum].allocCARMA(p,q);
+			setSystemsVec[threadNum] = false;
+			#pragma omp simd
+			for (int i = 0; i < (p + q + 1); ++i) {
+				ThetaVec[i + threadNum*(p + q  +1)] = 0.0;
+				}
+			}
+		retVal = 0;
+		return retVal;
 		}
 
 	int Task::get_numBurn() {return numBurn;}
 	void Task::set_numBurn(int numBurn) {numBurn = numBurn;}
 
-	int Task::checkParams(double *Theta, int threadNum) {
+	int Task::check_Theta(double *Theta, int threadNum) {
 		return Systems[threadNum].checkCARMAParams(Theta);
 		}
 
@@ -66,13 +89,17 @@ using namespace std;
 	int Task::set_System(double dt, double *Theta, int threadNum) {
 		bool alreadySet = true;
 		int retVal = -1;
-		if (Systems[threadNum].get_dt() != dt) {
-			alreadySet = false;
-			}
-		for (int i = 0; i < (p + q + 1); ++i) {
-			if (ThetaVec[i + threadNum*(p + q + 1)] != Theta[i]) {
+		if (setSystemsVec[threadNum] == true) {
+			if (Systems[threadNum].get_dt() != dt) {
 				alreadySet = false;
 				}
+			for (int i = 0; i < (p + q + 1); ++i) {
+				if (ThetaVec[i + threadNum*(p + q + 1)] != Theta[i]) {
+					alreadySet = false;
+					}
+				}
+			} else {
+			alreadySet = false;
 			}
 		if (alreadySet == false) {
 			int goodYN = Systems[threadNum].checkCARMAParams(Theta);
@@ -83,21 +110,24 @@ using namespace std;
 				Systems[threadNum].solveCARMA();
 				Systems[threadNum].resetState();
 				retVal = 0;
-				setSystems[threadNum] = true;
+				setSystemsVec[threadNum] = true;
 				}
+			} else {
+			retVal = 0;
 			}
 		return retVal;
 		}
 
-	int Task::printSystem(double dt, double *Theta, int threadNum) {
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta), retVal = 0;
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+	void Task::get_setSystemsVec(int *setSystems) {
+		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
+			setSystems[threadNum] = static_cast<int>(setSystemsVec[threadNum]);
+			}
+		}
 
+	int Task::print_System(double dt, double *Theta, int threadNum) {
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
 			printf("A\n");
 			Systems[threadNum].printA();
 			printf("\n");
@@ -134,41 +164,28 @@ using namespace std;
 			printf("P\n");
 			Systems[threadNum].printP();
 			printf("\n");
-			} else {
-			retVal = -1;
 			}
 		return retVal;
 		}
 
 	int Task::get_Sigma(double dt, double *Theta, double *Sigma, int threadNum) {
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta), retVal = 0;
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
-
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
 			const double *ptrToSigma = Systems[threadNum].getSigma();
 			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 				for (int colCtr = 0; colCtr < p; ++colCtr) {
 					Sigma[rowCtr + p*colCtr] = ptrToSigma[rowCtr + p*colCtr];
 					}
 				}
-			} else {
-			retVal = -1;
 			}
 		return retVal;
 		}
 
-	int Task::makeIntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta), retVal = 0;
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+	int Task::make_IntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
 
 			double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 			for (int i = 0; i < numBurn*p; i++) {
@@ -190,21 +207,13 @@ using namespace std;
 			LnLikeData *ptr2Data = &Data;
 			Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
 			_mm_free(distRand);
-			} else {
-			retVal = -1;
 			}
 		return retVal;
 		}
 
-	double Task::getMeanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum) {
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta);
+	double Task::get_meanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum) {
 		double meanFlux = -1.0;
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+		if (set_System(dt, Theta, threadNum) == 0) {
 
 			LnLikeData Data;
 			Data.fracIntrinsicVar = fracIntrinsicVar;
@@ -214,14 +223,10 @@ using namespace std;
 		return meanFlux;
 		}
 
-	int Task::makeObservedLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta), retVal = 0;
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+	int Task::make_ObservedLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
 
 			double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 			for (int i = 0; i < numBurn*p; i++) {
@@ -253,21 +258,13 @@ using namespace std;
 				}
 			Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
 			_mm_free(noiseRand);
-			} else {
-			retVal = -1;
 			}
 		return retVal;
 		}
 
-	double Task::computeLnPrior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnPrior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0;
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta);
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+		if (set_System(dt, Theta, threadNum) == 0) {
 
 			LnLikeData Data;
 			Data.numCadences = numCadences;
@@ -286,15 +283,9 @@ using namespace std;
 		return LnPrior;
 		}
 
-	double Task::computeLnLikelihood(double dt, double *Theta, int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnLikelihood(double dt, double *Theta, int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnLikelihood = 0.0;
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta);
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+		if (set_System(dt, Theta, threadNum) == 0) {
 
 			LnLikeData Data;
 			Data.numCadences = numCadences;
@@ -310,15 +301,9 @@ using namespace std;
 		return LnLikelihood;
 		}
 
-	double Task::computeLnPosterior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnPosterior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPosterior = 0.0;
-		int goodYN = Systems[threadNum].checkCARMAParams(Theta);
-		if (goodYN == 1) {
-			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
-			Systems[threadNum].set_dt(dt);
-			Systems[threadNum].setCARMA(Theta);
-			Systems[threadNum].solveCARMA();
-			Systems[threadNum].resetState();
+		if (set_System(dt, Theta, threadNum) == 0) {
 
 			LnLikeData Data;
 			Data.numCadences = numCadences;
@@ -337,7 +322,7 @@ using namespace std;
 		return LnPosterior;
 		}
 
-	int Task::fitCARMA(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double scatterFactor, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+	int Task::fit_CARMAModel(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;
 		int threadNum = omp_get_thread_num();
