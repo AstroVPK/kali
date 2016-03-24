@@ -338,10 +338,6 @@ class plotPSDTask(SuppliedParametersTask):
 			#plt.annotate(r'$\nu^{-%d}$'%(orderVal), xy = (self.freqs[int(self.fNum*self.fFracDenomX)], 1.0/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), xycoords = 'data', xytext = (self.xTextPSDDenom*self.freqs[int(self.fNum*self.fFracDenomX)], self.yTextPSDDenom/self.denomPSD[int(self.fNum*self.fFracDenomY),orderVal/2]), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 		#plt.loglog(self.freqs, 1.0/self.PSDDenominator, linestyle = self.denominatorLine, color = self.denominatorColor, linewidth = self.denominatorLineWidth, zorder =10, label = r'$-\log_{10}D(\nu)$')
 		#plt.loglog(self.freqs, self.PSDNumerator, linestyle = self.numeratorLine, color = self.numeratorColor, linewidth = self.numeratorLineWidth, zorder =10, label = r'$log_{10}N(\nu)$')
-		ax1.plot(np.log10(self.freqs), np.log10(self.PSD), linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD_{\mathrm{DHO}}(\nu)$')
-		ax1.annotate(r'Damped Harmonic Oscillator Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.1)[0][0]]), np.log10(self.PSD[np.where(self.freqs > 0.1)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -16.0), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center',multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
-		#if self.showEqnPSD == True:
-		#	plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
 
 		aListDRW = [0.014375664874500446]
 		bListDRW = [1.725e-9]
@@ -369,7 +365,15 @@ class plotPSDTask(SuppliedParametersTask):
 			PSDDRW[freq] = PSDNumeratorDRW[freq]/PSDDenominatorDRW[freq]
 
 		ax1.plot(np.log10(self.freqs), np.log10(PSDDRW), linestyle = self.PSDLine, color = '#67a9cf', linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD_{\mathrm{DRW}}(\nu)$')
-		ax1.annotate(r'Damped Random Walk Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.1)[0][0]]), np.log10(PSDDRW[np.where(self.freqs > 0.1)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -16.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		ax1.annotate(r'Damped Random Walk Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.5)[0][0]]), np.log10(PSDDRW[np.where(self.freqs > 0.5)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -16.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+		PSDRatio = PSDDRW[0]/self.PSD[0]
+		ax1.plot(np.log10(self.freqs), np.log10(self.PSD*PSDRatio), linestyle = self.PSDLine, color = self.PSDColor, linewidth = self.PSDLineWidth, zorder = 15, label = r'$\log_{10}PSD_{\mathrm{DHO}}(\nu)$')
+		ax1.annotate(r'Damped Harmonic Oscillator Powerspectrum', xy = (np.log10(self.freqs[np.where(self.freqs > 0.5)[0][0]]), np.log10(PSDRatio*self.PSD[np.where(self.freqs > 0.5)[0][0]])), xycoords = 'data', xytext = (math.log10(5.0), -17.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center',multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+		#if self.showEqnPSD == True:
+		#	plt.annotate(self.eqnStr, xy = (0.5, 0.9), xycoords = 'axes fraction', textcoords = 'axes fraction', ha = 'center', va = 'center' ,multialignment = 'center', fontsize = self.EqnPSDFontsize, zorder = 100)
+
+
 
 		if self.showLegendPSD == True:
 			ax1.legend(loc = self.LegendPSDLoc, ncol = 1, fancybox = True, fontsize = self.LegendPSDFontsize)
@@ -481,7 +485,7 @@ class plotPSDTask(SuppliedParametersTask):
 
 		ax1.set_xlim(-4.0,2.0)
 
-		ax1.set_ylim(-20.5,-13.5)
+		ax1.set_ylim(-22.5,-13.5)
 		numYTicks = 4
 		yTicks = np.zeros(numYTicks)
 		for i in xrange(numYTicks):
