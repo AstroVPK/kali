@@ -16,7 +16,8 @@ IR = False
 tolIR = 1.0e-3
 fracIntrinsicVar = 0.15
 fracSignalToNoise = 1.0e-3
-maxSigma = 2.0
+#maxSigma = 2.0
+maxSigma = 1.0e2
 minTimescale = 5.0e-1
 maxTimescale = 2.0
 
