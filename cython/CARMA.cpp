@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
-//#include "boost/numeric/odeint.hpp"
 #include "Constants.hpp"
 #include "CARMA.hpp"
 
@@ -464,7 +463,6 @@ CARMA::CARMA() {
 	I = nullptr;
 	F = nullptr;
 	Sigma = nullptr;
-	//D = nullptr;
 	Q = nullptr;
 	T = nullptr;
 	H = nullptr;
@@ -527,7 +525,6 @@ CARMA::~CARMA() {
 	C = nullptr;
 	I = nullptr;
 	F = nullptr;
-	//D = nullptr;
 	Sigma = nullptr;
 	Q = nullptr;
 	T = nullptr;
@@ -639,7 +636,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	ACopy = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	AScratch2 = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
-	//allocated += 7*pSq*sizeof(complex<double>);
 	allocated += 8*pSq*sizeof(complex<double>);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
@@ -672,7 +668,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	printf("allocDLM - threadNum: %d; Allocating H, K, X, XMinus, VScratch, I, F, Sigma, Q, T, P, PMinus, MScratch Address of System: %p\n",threadNum,this);
 	#endif
 
-	//D = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	H = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	K = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
 	X = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
@@ -692,7 +687,6 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	allocated += 7*pSq*sizeof(double);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		//D[colCtr] = 0.0;
 		H[colCtr] = 0.0;
 		K[colCtr] = 0.0;
 		X[colCtr] = 0.0;
@@ -2192,8 +2186,8 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
-	if (Theta[p] > maxSigma) {
-	//if (sqrt(Sigma[0]) > maxSigma) {
+	//if (Theta[p] > maxSigma) {
+	if (sqrt(Sigma[0]) > maxSigma) {
 		LnPrior = -infiniteVal;
 		}
 	for (int i = 0; i < p; ++i) {
