@@ -9,15 +9,15 @@ import lc
 import rand
 import CARMATask
 
-T = 3500
+T = 3500.0
 dt = 0.1
 numCadences = int(T/dt)
 IR = False
 tolIR = 1.0e-3
 fracIntrinsicVar = 0.15
 fracSignalToNoise = 1.0e-3
-#maxSigma = 2.0
-maxSigma = 1.0e2
+maxSigma = 2.0
+#maxSigma = 1.0e2
 minTimescale = 5.0e-1
 maxTimescale = 2.0
 
@@ -41,7 +41,7 @@ Sigma = np.zeros(p*p)
 
 res = newTask.get_Sigma(dt, Theta, Sigma)
 
-print 'Sigma[0]: %e'%(np.sqrt(Sigma[0]))
+print ' Sigma[0]: %e'%(np.sqrt(Sigma[0]))
 
 randSeeds = np.zeros(3, dtype = 'uint32')
 
@@ -50,6 +50,7 @@ res= rand.rdrand(randSeeds)
 res = newTask.make_IntrinsicLC(dt, Theta, numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, r.t, r.x, r.y, r.yerr, r.mask, randSeeds[0], randSeeds[1])
 
 '''res = newTask.makeIntrinsicLC2(Theta, r, r.t, r.x, r.y, r.yerr, r.mask, randSeeds[0], randSeeds[1])'''
+print 'LC Std Dev: %e'%(np.std(r.x))
 
 meanFlux = newTask.get_meanFlux(dt, Theta, fracIntrinsicVar)
 
@@ -69,11 +70,10 @@ plt.figure(1)
 plt.plot(r.t, r.x + meanFlux, color = '#7570b3', zorder = 5, label = r'Intrinsic LC: $\ln \mathcal{L} = %+e$'%(LnLikelihood))
 plt.errorbar(r.t, r.y + meanFlux, r.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, label = r'Observed LC: $\ln \mathcal{P} = %+e$'%(LnPosterior))
 plt.legend()
-plt.show()
 
 scatterFactor = 1.0e-1
-nwalkers = 100
-nsteps = 1000
+nwalkers = 160
+nsteps = 250
 maxEvals = 1000
 xTol = 0.005
 

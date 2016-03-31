@@ -12,6 +12,8 @@
 #include "LC.hpp"
 #include "Task.hpp"
 
+//#define DEBUG_FIT_CARMAMODEL
+
 using namespace std;
 
 	Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurn) {
@@ -164,6 +166,33 @@ using namespace std;
 			printf("P\n");
 			Systems[threadNum].printP();
 			printf("\n");
+			}
+		return retVal;
+		}
+
+
+	int Task::get_A(double dt, double *Theta, double *Sigma, int threadNum) {
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
+			const double *ptrToA = Systems[threadNum].getA();
+			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+				for (int colCtr = 0; colCtr < p; ++colCtr) {
+					A[rowCtr + p*colCtr] = ptrToA[rowCtr + p*colCtr];
+					}
+				}
+			}
+		return retVal;
+		}
+
+	int Task::get_B(double dt, double *Theta, double *Sigma, int threadNum) {
+		int retVal = -1;
+		if (set_System(dt, Theta, threadNum) == 0) {
+			retVal = 0;
+			const double *ptrToB = Systems[threadNum].getB();
+			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+				B[rowCtr + p*colCtr] = ptrToB[rowCtr + p*colCtr];
+				}
 			}
 		return retVal;
 		}
@@ -364,13 +393,13 @@ using namespace std;
 			optArray[i]->set_maxeval(maxEvals);
 			optArray[i]->set_xtol_rel(xTol);
 			}
-		double *max_LnLike = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
+		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;
-		#pragma omp parallel for default(none) shared(nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnLike)
+		#pragma omp parallel for default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
 			bool goodPoint = false;
-			max_LnLike[threadNum] = 0.0;
+			max_LnPosterior[threadNum] = 0.0;
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 				deltaXTemp[threadNum*ndims + dimCtr] = 0.0;
 				}
@@ -380,7 +409,8 @@ using namespace std;
 					deltaXTemp[threadNum*ndims + dimCtr] += 1.0;
 					deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
 					}
-				if (ptrToSystems[threadNum].checkCARMAParams(&deltaXTemp[threadNum*ndims]) == 1) {
+				if (set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) {
+				//if (ptrToSystems[threadNum].checkCARMAParams(&deltaXTemp[threadNum*ndims]) == 1) {
 					goodPoint = true;
 					} else {
 					goodPoint = false;
@@ -390,7 +420,20 @@ using namespace std;
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 				xVec[threadNum].push_back(deltaXTemp[threadNum*ndims + dimCtr]);
 				}
-			nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnLike[threadNum]);
+			nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
+			#ifdef DEBUG_FIT_CARMAMODEL
+			#pragma omp critical
+			{
+			fflush(0);
+			printf("xVec[%d][%d]: ", walkerNum, threadNum);
+			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+				printf("%e, ", xVec[threadNum][dimNum]);
+				}
+			printf("%e", xVec[threadNum][ndims  - 1]);
+			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+			fflush(0);
+			}
+			#endif
 			for (int dimNum = 0; dimNum < ndims; ++dimNum) {
 				initPos[walkerNum*ndims + dimNum] = xVec[threadNum][dimNum];
 				}
@@ -401,7 +444,7 @@ using namespace std;
 			}
 		_mm_free(xStream);
 		_mm_free(deltaXTemp);
-		_mm_free(max_LnLike);
+		_mm_free(max_LnPosterior);
 		EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, 2.0, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 		newEnsemble.runMCMC(initPos);
 		_mm_free(initPos);

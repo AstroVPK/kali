@@ -2186,8 +2186,8 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
-	if (Theta[p] > maxSigma) {
-	//if (sqrt(Sigma[0]) > maxSigma) {
+	//if (Theta[p] > maxSigma) {
+	if (sqrt(Sigma[0]) > maxSigma) {
 		LnPrior = -infiniteVal;
 		}
 	for (int i = 0; i < p; ++i) {

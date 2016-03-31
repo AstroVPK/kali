@@ -398,7 +398,7 @@ class SuppliedLCTask(Task):
 			logEntry = 'Using suppliedLC to make mask'
 		self.echo(logEntry)
 		self.log(logEntry)
-		if suppliedLC == None:
+		if suppliedLC == None or suppliedLC == '':
 			self.SuppliedLCFile = self.WorkingDirectory + self.prefix + '.lc'
 		else:
 			self.SuppliedLCFile = self.WorkingDirectory + suppliedLC

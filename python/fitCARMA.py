@@ -240,7 +240,7 @@ class fitCARMATask(SuppliedLCTask):
 			self.qMax = self.parser.get('MCMC', 'qMax')
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
 			self.qMax = 'pMax - 1'
-			print str(Err) + '. Using default qMax = %d'%(self.qMax)
+			print str(Err) + '. Using default qMax = %s'%(self.qMax)
 		try:
 			self.qMin = int(self.parser.get('MCMC', 'qMin'))
 		except (CP.NoOptionError, CP.NoSectionError) as Err:
