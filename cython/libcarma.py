@@ -143,7 +143,7 @@ class lc(object):
 		return self._numCadences
 
 	def __repr__(self):
-		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._IR, self._tolIR, self._t_incr, self._fracIntrinsicVar, self._fracSignalToNoise, self._maxSigma, self._minTimescale, self._maxTimescale)
+		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._IR, self._tolIR, self.t_incr, self._fracIntrinsicVar, self._fracSignalToNoise, self._maxSigma, self._minTimescale, self._maxTimescale)
 
 	def __str__(self):
 		line = 'numCadences: %d\n'%(self._numCadences)
