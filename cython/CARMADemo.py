@@ -5,7 +5,7 @@ import pdb
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 
-import lc
+import libcarma
 import rand
 import CARMATask
 
@@ -21,7 +21,7 @@ maxSigma = 2.0
 minTimescale = 5.0e-1
 maxTimescale = 2.0
 
-r = lc.basicLC(numCadences, dt = dt, IR = IR, tolIR = tolIR, fracIntrinsicVar = fracIntrinsicVar, fracSignalToNoise = fracSignalToNoise, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+r = libcarma.basicLC(numCadences, dt = dt, IR = IR, tolIR = tolIR, fracIntrinsicVar = fracIntrinsicVar, fracSignalToNoise = fracSignalToNoise, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
 
 p = 3
 q = 1
@@ -41,7 +41,7 @@ Sigma = np.zeros(p*p)
 
 res = newTask.get_Sigma(dt, Theta, Sigma)
 
-print ' Sigma[0]: %e'%(np.sqrt(Sigma[0]))
+print '   Sigma[0]: %e'%(np.sqrt(Sigma[0]))
 
 randSeeds = np.zeros(3, dtype = 'uint32')
 
@@ -49,7 +49,6 @@ res= rand.rdrand(randSeeds)
 
 res = newTask.make_IntrinsicLC(dt, Theta, numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, r.t, r.x, r.y, r.yerr, r.mask, randSeeds[0], randSeeds[1])
 
-'''res = newTask.makeIntrinsicLC2(Theta, r, r.t, r.x, r.y, r.yerr, r.mask, randSeeds[0], randSeeds[1])'''
 print 'LC Std Dev: %e'%(np.std(r.x))
 
 meanFlux = newTask.get_meanFlux(dt, Theta, fracIntrinsicVar)

@@ -36,6 +36,8 @@ cdef extern from 'Task.hpp':
 		int set_System(double dt, double *Theta, int threadNum)
 		void get_setSystemsVec(int *setSystems)
 		int print_System(double dt, double *Theta, int threadNum)
+		#int get_A(double dt, double *Theta, complex[double] *A, int threadNum)
+		#int get_B(double dt, double *Theta, complex[double] *B, int threadNum)
 		int get_Sigma(double dt, double *Theta, double *Sigma, int threadNum)
 		int make_IntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum)
 		double get_meanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum)
@@ -170,12 +172,26 @@ cdef class CARMATask:
 			threadNum = 0
 		return self.thisptr.print_System(dt, &Theta[0], threadNum)
 
+	'''@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def get_A(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[np.complex128, ndim=1, mode='c'] A not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.get_A(dt, &Theta[0], &A[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def get_B(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[np.complex128, ndim=1, mode='c'] B not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.get_B(dt, &Theta[0], &B[0], threadNum)'''
+
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
 	def get_Sigma(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_Sigma(dt, &Theta[0], &Sigma[0], threadNum);
+		return self.thisptr.get_Sigma(dt, &Theta[0], &Sigma[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
@@ -183,13 +199,6 @@ cdef class CARMATask:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.make_IntrinsicLC(dt, &Theta[0], numCadences, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)
-
-	'''@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def makeIntrinsicLC2(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, workingLC, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, burnSeed, distSeed, threadNum = None):
-		if threadNum == None:
-			threadNum = 0
-		return self.thisptr.makeIntrinsicLC(workingLC.dt, &Theta[0], workingLC.numCadences, workingLC.IR, workingLC.tolIR, workingLC.fracIntrinsicVar, workingLC.fracSignalToNoise, &t[0], &x[0], &y[0], &yerr[0], &mask[0], burnSeed, distSeed, threadNum)'''
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

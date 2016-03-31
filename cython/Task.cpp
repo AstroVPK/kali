@@ -171,11 +171,11 @@ using namespace std;
 		}
 
 
-	int Task::get_A(double dt, double *Theta, double *Sigma, int threadNum) {
+	int Task::get_A(double dt, double *Theta, complex<double> *A, int threadNum) {
 		int retVal = -1;
 		if (set_System(dt, Theta, threadNum) == 0) {
 			retVal = 0;
-			const double *ptrToA = Systems[threadNum].getA();
+			const complex<double> *ptrToA = Systems[threadNum].getA();
 			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 				for (int colCtr = 0; colCtr < p; ++colCtr) {
 					A[rowCtr + p*colCtr] = ptrToA[rowCtr + p*colCtr];
@@ -185,13 +185,13 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_B(double dt, double *Theta, double *Sigma, int threadNum) {
+	int Task::get_B(double dt, double *Theta, complex<double> *B, int threadNum) {
 		int retVal = -1;
 		if (set_System(dt, Theta, threadNum) == 0) {
 			retVal = 0;
-			const double *ptrToB = Systems[threadNum].getB();
+			const complex<double> *ptrToB = Systems[threadNum].getB();
 			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-				B[rowCtr + p*colCtr] = ptrToB[rowCtr + p*colCtr];
+				B[rowCtr] = ptrToB[rowCtr];
 				}
 			}
 		return retVal;
