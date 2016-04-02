@@ -16,11 +16,11 @@
 
 using namespace std;
 
-	Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurn) {
+	Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurnGiven) {
 		p = pGiven;
 		q = qGiven;
 		numThreads = numThreadsGiven;
-		numBurn = numBurn;
+		numBurn = numBurnGiven;
 		Systems = new CARMA[numThreads];
 		setSystemsVec = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
 		ThetaVec = static_cast<double*>(_mm_malloc(numThreads*(p + q + 1)*sizeof(double),64));
@@ -126,228 +126,231 @@ using namespace std;
 			}
 		}
 
-	int Task::print_System(double dt, double *Theta, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-			printf("A\n");
-			Systems[threadNum].printA();
-			printf("\n");
-			printf("w\n");
-			Systems[threadNum].printw();
-			printf("\n");
-			printf("vr\n");
-			Systems[threadNum].printvr();
-			printf("\n");
-			printf("B\n");
-			Systems[threadNum].printB();
-			printf("\n");
-			printf("C\n");
-			Systems[threadNum].printC();
-			printf("\n");
-			printf("expw\n");
-			Systems[threadNum].printexpw();
-			printf("\n");
-			printf("F\n");
-			Systems[threadNum].printF();
-			printf("\n");
-			printf("Q\n");
-			Systems[threadNum].printQ();
-			printf("\n");
-			printf("T\n");
-			Systems[threadNum].printT();
-			printf("\n");
-			printf("Sigma\n");
-			Systems[threadNum].printSigma();
-			printf("\n");
-			printf("X\n");
-			Systems[threadNum].printX();
-			printf("\n");
-			printf("P\n");
-			Systems[threadNum].printP();
-			printf("\n");
-			}
+	int Task::print_System(int threadNum) {
+		int retVal = 0;
+		printf("A\n");
+		Systems[threadNum].printA();
+		printf("\n");
+		printf("w\n");
+		Systems[threadNum].printw();
+		printf("\n");
+		printf("vr\n");
+		Systems[threadNum].printvr();
+		printf("\n");
+		printf("B\n");
+		Systems[threadNum].printB();
+		printf("\n");
+		printf("C\n");
+		Systems[threadNum].printC();
+		printf("\n");
+		printf("expw\n");
+		Systems[threadNum].printexpw();
+		printf("\n");
+		printf("F\n");
+		Systems[threadNum].printF();
+		printf("\n");
+		printf("Q\n");
+		Systems[threadNum].printQ();
+		printf("\n");
+		printf("T\n");
+		Systems[threadNum].printT();
+		printf("\n");
+		printf("Sigma\n");
+		Systems[threadNum].printSigma();
+		printf("\n");
+		printf("X\n");
+		Systems[threadNum].printX();
+		printf("\n");
+		printf("P\n");
+		Systems[threadNum].printP();
+		printf("\n");
 		return retVal;
 		}
 
 
-	int Task::get_A(double dt, double *Theta, complex<double> *A, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-			const complex<double> *ptrToA = Systems[threadNum].getA();
-			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-				for (int colCtr = 0; colCtr < p; ++colCtr) {
-					A[rowCtr + p*colCtr] = ptrToA[rowCtr + p*colCtr];
-					}
+	int Task::get_A(complex<double> *A, int threadNum) {
+		int retVal = 0;
+		const complex<double> *ptrToA = Systems[threadNum].getA();
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			for (int colCtr = 0; colCtr < p; ++colCtr) {
+				A[rowCtr + p*colCtr] = ptrToA[rowCtr + p*colCtr];
 				}
 			}
 		return retVal;
 		}
 
-	int Task::get_B(double dt, double *Theta, complex<double> *B, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-			const complex<double> *ptrToB = Systems[threadNum].getB();
-			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-				B[rowCtr] = ptrToB[rowCtr];
+	int Task::get_B(complex<double> *B, int threadNum) {
+		int retVal = 0;
+		const complex<double> *ptrToB = Systems[threadNum].getB();
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			B[rowCtr] = ptrToB[rowCtr];
+			}
+		return retVal;
+		}
+
+	int Task::get_Sigma(double *Sigma, int threadNum) {
+		int retVal = 0;
+		const double *ptrToSigma = Systems[threadNum].getSigma();
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			for (int colCtr = 0; colCtr < p; ++colCtr) {
+				Sigma[rowCtr + p*colCtr] = ptrToSigma[rowCtr + p*colCtr];
 				}
 			}
 		return retVal;
 		}
 
-	int Task::get_Sigma(double dt, double *Theta, double *Sigma, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-			const double *ptrToSigma = Systems[threadNum].getSigma();
-			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-				for (int colCtr = 0; colCtr < p; ++colCtr) {
-					Sigma[rowCtr + p*colCtr] = ptrToSigma[rowCtr + p*colCtr];
-					}
-				}
+	int Task::make_IntrinsicLC(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+		int retVal = 0;
+		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
+		for (int i = 0; i < numBurn*p; i++) {
+			burnRand[i] = 0.0;
 			}
+		Systems[threadNum].burnSystem(numBurn, burnSeed, burnRand);
+		_mm_free(burnRand);
+		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
+		for (int i = 0; i < numCadences*p; i++) {
+			distRand[i] = 0.0;
+			}
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		LnLikeData *ptr2Data = &Data;
+		Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
+		_mm_free(distRand);
+		Systems[threadNum].resetState();
 		return retVal;
 		}
 
-	int Task::make_IntrinsicLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-
-			double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
-			for (int i = 0; i < numBurn*p; i++) {
-				burnRand[i] = 0.0;
-				}
-			Systems[threadNum].burnSystem(numBurn, burnSeed, burnRand);
-			_mm_free(burnRand);
-			double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
-			for (int i = 0; i < numCadences*p; i++) {
-				distRand[i] = 0.0;
-				}
-			LnLikeData Data;
-			Data.numCadences = numCadences;
-			Data.IR = IR;
-			Data.tolIR = tolIR;
-			Data.t = t;
-			Data.y = x;
-			Data.mask = mask;
-			LnLikeData *ptr2Data = &Data;
-			Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
-			_mm_free(distRand);
-			}
-		return retVal;
-		}
-
-	double Task::get_meanFlux(double dt, double *Theta, double fracIntrinsicVar, int threadNum) {
+	double Task::get_meanFlux(double fracIntrinsicVar, int threadNum) {
 		double meanFlux = -1.0;
-		if (set_System(dt, Theta, threadNum) == 0) {
-
-			LnLikeData Data;
-			Data.fracIntrinsicVar = fracIntrinsicVar;
-			LnLikeData *ptr2Data = &Data;
-			meanFlux = Systems[threadNum].getMeanFlux(ptr2Data);
-			}
+		LnLikeData Data;
+		Data.fracIntrinsicVar = fracIntrinsicVar;
+		LnLikeData *ptr2Data = &Data;
+		meanFlux = Systems[threadNum].getMeanFlux(ptr2Data);
 		return meanFlux;
 		}
 
-	int Task::make_ObservedLC(double dt, double *Theta, int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracSignalToNoise, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
-		int retVal = -1;
-		if (set_System(dt, Theta, threadNum) == 0) {
-			retVal = 0;
-
-			double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
-			for (int i = 0; i < numBurn*p; i++) {
-				burnRand[i] = 0.0;
-				}
-			Systems[threadNum].burnSystem(numBurn, burnSeed, burnRand);
-			_mm_free(burnRand);
-			double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
-			for (int i = 0; i < numCadences*p; i++) {
-				distRand[i] = 0.0;
-				}
-			LnLikeData Data;
-			Data.numCadences = numCadences;
-			Data.IR = IR;
-			Data.tolIR = tolIR;
-			Data.t = t;
-			Data.y = y;
-			Data.yerr = yerr;
-			Data.mask = mask;
-			Data.fracIntrinsicVar = fracIntrinsicVar;
-			Data.fracSignalToNoise = fracSignalToNoise;
-			LnLikeData *ptr2Data = &Data;
-			Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
-			_mm_free(distRand);
-	
-			double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
-			for (int i = 0; i < numCadences; i++) {
-				noiseRand[i] = 0.0;
-				}
-			Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
-			_mm_free(noiseRand);
+	int Task::make_ObservedLC(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
+		int retVal = 0;
+		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
+		for (int i = 0; i < numBurn*p; ++i) {
+			burnRand[i] = 0.0;
 			}
+		Systems[threadNum].burnSystem(numBurn, burnSeed, burnRand);
+		_mm_free(burnRand);
+		double* distRand = static_cast<double*>(_mm_malloc(numCadences*p*sizeof(double),64));
+		for (int i = 0; i < numCadences*p; ++i) {
+			distRand[i] = 0.0;
+			}
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.fracIntrinsicVar = fracIntrinsicVar;
+		Data.fracNoiseToSignal = fracNoiseToSignal;
+		LnLikeData *ptr2Data = &Data;
+		Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
+		_mm_free(distRand);
+		double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+		for (int i = 0; i < numCadences; i++) {
+			noiseRand[i] = 0.0;
+			}
+		Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
+		_mm_free(noiseRand);
+		Systems[threadNum].resetState();
 		return retVal;
 		}
 
-	double Task::compute_LnPrior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
-		double LnPrior = 0.0;
-		if (set_System(dt, Theta, threadNum) == 0) {
-
-			LnLikeData Data;
-			Data.numCadences = numCadences;
-			Data.IR = IR;
-			Data.tolIR = tolIR;
-			Data.t = t;
-			Data.y = y;
-			Data.yerr = yerr;
-			Data.mask = mask;
-			Data.maxSigma = maxSigma;
-			Data.minTimescale = minTimescale;
-			Data.maxTimescale = maxTimescale;
-			LnLikeData *ptr2Data = &Data;
-			LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+	int Task::add_ObservationNoise(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+		int retVal = 0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.fracIntrinsicVar = fracIntrinsicVar;
+		Data.fracNoiseToSignal = fracNoiseToSignal;
+		LnLikeData *ptr2Data = &Data;
+		double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
+		for (int i = 0; i < numCadences; i++) {
+			noiseRand[i] = 0.0;
 			}
+		Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
+		_mm_free(noiseRand);
+		return retVal;
+		}
+
+	double Task::compute_LnPrior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+		double LnPrior = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
+		LnLikeData *ptr2Data = &Data;
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		Systems[threadNum].resetState();
 		return LnPrior;
 		}
 
-	double Task::compute_LnLikelihood(double dt, double *Theta, int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnLikelihood(int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnLikelihood = 0.0;
-		if (set_System(dt, Theta, threadNum) == 0) {
-
-			LnLikeData Data;
-			Data.numCadences = numCadences;
-			Data.IR = IR;
-			Data.tolIR = tolIR;
-			Data.t = t;
-			Data.y = y;
-			Data.yerr = yerr;
-			Data.mask = mask;
-			LnLikeData *ptr2Data = &Data;
-			LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
-			}
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		LnLikeData *ptr2Data = &Data;
+		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		Systems[threadNum].resetState();
 		return LnLikelihood;
 		}
 
-	double Task::compute_LnPosterior(double dt, double *Theta, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
-		double LnPosterior = 0.0;
-		if (set_System(dt, Theta, threadNum) == 0) {
-
-			LnLikeData Data;
-			Data.numCadences = numCadences;
-			Data.IR = IR;
-			Data.tolIR = tolIR;
-			Data.t = t;
-			Data.y = y;
-			Data.yerr = yerr;
-			Data.mask = mask;
-			Data.maxSigma = maxSigma;
-			Data.minTimescale = minTimescale;
-			Data.maxTimescale = maxTimescale;
-			LnLikeData *ptr2Data = &Data;
-			LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
-			}
+	double Task::compute_LnPosterior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.IR = IR;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
+		LnLikeData *ptr2Data = &Data;
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		LnPosterior = LnPrior + LnLikelihood;
+		Systems[threadNum].resetState();
 		return LnPosterior;
 		}
 

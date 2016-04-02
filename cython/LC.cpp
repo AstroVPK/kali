@@ -14,7 +14,7 @@ using namespace std;
 		IR = false;
 		tolIR = 0.0;
 		fracIntrinsicVar = 0.0;
-		fracSignalToNoise = 0.0;
+		fracNoiseToSignal = 0.0;
 		maxSigma = 0.0;
 		minTimescale = 0.0;
 		maxTimescale = 0.0;

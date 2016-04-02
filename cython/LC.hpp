@@ -21,7 +21,7 @@ using namespace std;
 		bool IR;
 		double tolIR;
 		double fracIntrinsicVar;
-		double fracSignalToNoise;
+		double fracNoiseToSignal;
 		double maxSigma;
 		double minTimescale;
 		double maxTimescale;

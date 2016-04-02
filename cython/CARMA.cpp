@@ -1896,7 +1896,6 @@ void CARMA::resetState() {
 	}
 
 void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
-
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream __attribute__((aligned(64)));
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
@@ -1922,7 +1921,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	double tolIR = Data.tolIR;
 	double t_incr = Data.t_incr;
 	double *t = Data.t;
-	double *y = Data.y;
+	double *x = Data.x;
 	double *mask = Data.mask;
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
@@ -1942,7 +1941,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 			cblas_dcopy(p, VScratch, 1, X, 1);
 			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 
-			y[i] = mask[i]*X[0];
+			x[i] = mask[i]*X[0];
 			}
 
 		} else {
@@ -1958,7 +1957,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 		cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 		cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
-		y[0] = X[0];
+		x[0] = X[0];
 
 		for (int i = 1; i < numCadences; ++i) {
 
@@ -1979,7 +1978,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 			cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 			cblas_dcopy(p, VScratch, 1, X, 1);
 			cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
-			y[i] = X[0];
+			x[i] = X[0];
 			}
 
 		}
@@ -2007,8 +2006,9 @@ void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noise
 	bool IR = Data.IR;
 	double t_incr = Data.t_incr;
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
-	double fracSignalToNoise = Data.fracSignalToNoise;
+	double fracNoiseToSignal = Data.fracNoiseToSignal;
 	double *t = Data.t;
+	double *x = Data.x;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
@@ -2021,10 +2021,10 @@ void CARMA::addNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noise
 	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
 	double absFlux = 0.0, noiseLvl = 0.0;
 	for (int i = 0; i < numCadences; ++i) {
-		absFlux = absMeanFlux + y[i];
-		noiseLvl = fracSignalToNoise*absFlux;
+		absFlux = absMeanFlux + x[i];
+		noiseLvl = fracNoiseToSignal*absFlux;
 		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, 1, &noiseRand[i], 0.0, noiseLvl);
-		y[i] += noiseRand[i];
+		y[i] = x[i] + noiseRand[i];
 		yerr[i] = noiseLvl;
 		}
 	vslDeleteStream(&noiseStream);

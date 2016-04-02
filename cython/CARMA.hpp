@@ -24,7 +24,7 @@ struct LnLikeData {
 	double tolIR;
 	double t_incr;
 	double fracIntrinsicVar;
-	double fracSignalToNoise;
+	double fracNoiseToSignal;
 	double maxSigma;
 	double minTimescale;
 	double maxTimescale;

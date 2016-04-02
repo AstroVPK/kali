@@ -13,6 +13,7 @@ import psutil
 import types
 import pdb
 
+import rand
 import CARMATask
 
 class epoch(object):
@@ -45,7 +46,7 @@ class epoch(object):
 
 class lc(object):
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
 		self._numCadences = numCadences
 		self.t = np.zeros(self.numCadences)
 		self.x = np.zeros(self.numCadences)
@@ -53,14 +54,17 @@ class lc(object):
 		self.yerr = np.zeros(self.numCadences)
 		self.mask = np.zeros(self.numCadences)
 		self._dt = dt
+		self._T = self.t[-1] - self.t[0]
 		self._IR = IR
 		self._tolIR = tolIR
 		self._fracIntrinsicVar = fracIntrinsicVar
-		self._fracSignalToNoise = fracSignalToNoise
+		self._fracNoiseToSignal = fracNoiseToSignal
 		self._maxSigma = maxSigma
 		self._minTimescale = minTimescale
 		self._maxTimescale = maxTimescale
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, dt = self.dt, IR = self._IR, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracSignalToNoise = self._fracSignalToNoise, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, dt = self.dt, IR = self._IR, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._mean = np.mean(self.y)
+		self._std = np.std(self.y)
 		if not supplied:
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
@@ -104,20 +108,20 @@ class lc(object):
 		self._lcCython.fracIntrinsicVar = value
 
 	@property
-	def fracSignalToNoise(self):
-		return self._fracSignalToNoise
+	def fracNoiseToSignal(self):
+		return self._fracNoiseToSignal
 
-	@fracSignalToNoise.setter
-	def fracSignalToNoise(self, value):
-		self._fracSignalToNoise = value
-		self._lcCython.fracSignalToNoise = value
+	@fracNoiseToSignal.setter
+	def fracNoiseToSignal(self, value):
+		self._fracNoiseToSignal = value
+		self._lcCython.fracNoiseToSignal = value
 
 	@property
 	def maxSigma(self):
 		return self._maxSigma
 
 	@maxSigma.setter
-	def fracSignalToNoise(self, value):
+	def maxSigma(self, value):
 		self._maxSigma = value
 		self._lcCython.maxSigma = value
 
@@ -150,7 +154,7 @@ class lc(object):
 		line += 'IR (Irregularly sampled): %s\n'%(self._IR)
 		line += 'tolIR (Tolerance for irregularity): %f\n'%(self._tolIR)
 		line += 'fracIntrinsicVar (Intrinsic variability fraction): %f\n'%(self._fracIntrinsicVar)
-		line += 'fracSignalToNoise (Noise to signal fraction): %f\n'%(self._fracSignalToNoise)
+		line += 'fracNoiseToSignal (Noise to signal fraction): %f\n'%(self._fracSignalToNoise)
 		line += 'maxSigma (Maximum allowed sigma multiplier): %f\n'%(self._maxSigma)
 		line += 'minTimescale (Minimum allowed timescale factor): %f\n'%(self._minTimescale)
 		line += 'maxTimescale (Maximum allowed timescale factor): %f\n'%(self._maxTimescale)
@@ -186,8 +190,8 @@ class lc(object):
 		raise NotImplementedError(r'Override readlc!')
 
 class basicLC(lc):
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracSignalToNoise = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
-		super(basicLC, self).__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracSignalToNoise, maxSigma, minTimescale, maxTimescale, supplied)
+	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
+		super(basicLC, self).__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracNoiseToSignal, maxSigma, minTimescale, maxTimescale, supplied)
 
 	def _readlc(self, supplied):
 		data = np.loadtxt(supplied)
@@ -352,6 +356,14 @@ class task(object):
 		except AssertionError as err:
 			raise AttributeError(str(err))
 
+	@property
+	def Chain(self):
+		return np.reshape(self._Chain, newshape = (self._ndims, self._nwalkers, self._nsteps), order = 'F')
+
+	@property
+	def LnPosterior(self):
+		return np.reshape(self._LnPosterior, newshape = (self._nwalkers, self._nsteps), order = 'F')
+
 	def __repr__(self):
 		return "libcarma.task(%d, %d, %d, %d, %d, %d, %f, %d, %f)"%(self._p, self._q, self._nthreads, self._nburn, self._nwalkers, self._nsteps, self._scatterFactor, self._maxEvals, self._xTol)
 
@@ -430,12 +442,12 @@ class task(object):
 		assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
 		self._taskCython.set_System(dt, Theta, tnum)
 
-	def get_dt(self, tnum = None):
+	def dt(self, tnum = None):
 		if tnum is None:
 			tnum = 0
 		return self._taskCython.get_dt(tnum)
 
-	def get_Theta(self, tnum = None):
+	def Theta(self, tnum = None):
 		if tnum is None:
 			tnum = 0
 		Theta = np.zeros(self._ndims)
@@ -447,20 +459,90 @@ class task(object):
 		self._taskCython.get_setSystemsVec(setSystems)
 		return setSystems.astype(np.bool_)
 
-	def show(self, dt, Theta, tnum = None):
+	def show(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		assert dt > 0.0, r'dt must be greater than 0.0'
-		assert type(dt) is types.FloatType, r'dt must be a float'
-		assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
-		self._taskCython.print_System(dt, Theta, tnum)
+		self._taskCython.print_System(tnum)
 
-	def get_A(self, tnum = None):
+	def Sigma(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		A = np.zeros(self._p*self._p)
-		self._taskCython.get_A(dt, Theta, A, tnum)
-		return np.reshape(A, newshape = (self._p, self._p), order = 'F')
+		Sigma = np.zeros(self._p*self._p)
+		self._taskCython.get_Sigma(dt, Theta, Sigma, tnum)
+		return np.reshape(Sigma, newshape = (self._p, self._p), order = 'F')
+
+	def simulate(self, numCadences, dt = 1.0, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, burnSeed = None, distSeed = None, noiseSeed = None, noisy = False, tnum = None):
+		if tnum is None:
+			tnum = 0
+		if noisy == False:
+			intrinsicLC = basicLC(numCadences, dt = dt, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+			randSeed = np.zeros(1, dtype = 'uint32')
+			if burnSeed is None:
+				rand.rdrand(randSeed)
+				burnSeed = randSeed[0]
+			if distSeed is None:
+				rand.rdrand(randSeed)
+				distSeed = randSeed[0]
+			self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.IR, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, burnSeed, distSeed, threadNum = tnum)
+			intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+			return intrinsicLC
+		else:
+			observedLC = basicLC(numCadences, dt = dt, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+			randSeed = np.zeros(1, dtype = 'uint32')
+			if burnSeed is None:
+				rand.rdrand(randSeed)
+				burnSeed = randSeed[0]
+			if distSeed is None:
+				rand.rdrand(randSeed)
+				distSeed = randSeed[0]
+			if noiseSeed is None:
+				rand.rdrand(randSeed)
+				noiseSeed = randSeed[0]
+			self._taskCython.make_ObservedLC(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.fracIntrinsicVar, observedLC.fracNoiseToSignal, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, burnSeed, distSeed, noiseSeed, threadNum = tnum)
+			observedLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+			return observedLC
+
+	def observe(self, intrinsicLC, noiseSeed = None, tnum = None):
+		if tnum is None:
+			tnum = 0
+		randSeed = np.zeros(1, dtype = 'uint32')
+		if noiseSeed is None:
+			rand.rdrand(randSeed)
+			noiseSeed = randSeed[0]
+		self._taskCython.add_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.IR, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
+		intrinsicLC._mean = np.mean(intrinsicLC.y)
+		intrinsicLC._std = np.std(intrinsicLC.y)
+
+	def logPrior(self, observedLC, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+
+	def logLikelihood(self, observedLC, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+
+	def logPosterior(self, observedLC, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.compute_LnPosterior(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+
+	def fit(self, observedLC, xStart, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+		randSeed = np.zeros(1, dtype = 'uint32')
+		if zSSeed is None:
+			rand.rdrand(randSeed)
+			zSSeed = randSeed[0]
+		if walkerSeed is None:
+			rand.rdrand(randSeed)
+			walkerSeed = randSeed[0]
+		if moveSeed is None:
+			rand.rdrand(randSeed)
+			moveSeed = randSeed[0]
+		if xSeed is None:
+			rand.rdrand(randSeed)
+			xSeed = randSeed[0]
+		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, self.scatterFactor, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 
 class basicTask(task):
 	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = False), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = False), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):
