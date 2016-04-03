@@ -69,7 +69,7 @@ xStart = np.zeros(p + q + 1) # This must be guessed but things are not too sensi
 r_1_guess = -0.75+0j
 r_2_guess = -0.01+0j
 r_3_guess = -0.5+0j
-sigma_guess = np.std(newLC.y)
+sigma_guess = 7.0e-9
 m_1_guess = -5.8
 
 ARPoly = np.poly([r_1_guess, r_2_guess, r_3_guess])
@@ -80,6 +80,8 @@ xStart[1] = ARPoly[2]
 xStart[2] = ARPoly[3]
 xStart[3] = MAPoly[0]
 xStart[4] = MAPoly[1]
+
+print "xStart: " + str(xStart)
 
 newTask.fit(newLC, xStart)
 
