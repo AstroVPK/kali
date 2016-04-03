@@ -46,7 +46,7 @@ class epoch(object):
 
 class lc(object):
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
 		self._numCadences = numCadences
 		self.t = np.zeros(self.numCadences)
 		self.x = np.zeros(self.numCadences)
@@ -468,14 +468,14 @@ class task(object):
 		if tnum is None:
 			tnum = 0
 		Sigma = np.zeros(self._p*self._p)
-		self._taskCython.get_Sigma(dt, Theta, Sigma, tnum)
+		self._taskCython.get_Sigma(Sigma, tnum)
 		return np.reshape(Sigma, newshape = (self._p, self._p), order = 'F')
 
-	def simulate(self, numCadences, dt = 1.0, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, burnSeed = None, distSeed = None, noiseSeed = None, noisy = False, tnum = None):
+	def simulate(self, numCadences, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 5.0, burnSeed = None, distSeed = None, noiseSeed = None, noisy = False, tnum = None):
 		if tnum is None:
 			tnum = 0
 		if noisy == False:
-			intrinsicLC = basicLC(numCadences, dt = dt, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+			intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
 			randSeed = np.zeros(1, dtype = 'uint32')
 			if burnSeed is None:
 				rand.rdrand(randSeed)
@@ -484,10 +484,10 @@ class task(object):
 				rand.rdrand(randSeed)
 				distSeed = randSeed[0]
 			self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.IR, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, burnSeed, distSeed, threadNum = tnum)
-			intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+			intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0] 
 			return intrinsicLC
 		else:
-			observedLC = basicLC(numCadences, dt = dt, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+			observedLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), IR = False, tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
 			randSeed = np.zeros(1, dtype = 'uint32')
 			if burnSeed is None:
 				rand.rdrand(randSeed)

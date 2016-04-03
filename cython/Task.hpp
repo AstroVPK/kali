@@ -34,7 +34,6 @@ using namespace std;
 		void get_ThetaVec(double *Theta, int threadNum);
 		int set_System(double dt, double *Theta, int threadNum);
 		void get_setSystemsVec(int *setSystems);
-		//int print_System(double dt, double *Theta, int threadNum);
 		int print_System(int threadNum);
 		int get_A(complex<double> *A, int threadNum);
 		int get_B(complex<double> *B, int threadNum);

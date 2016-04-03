@@ -166,8 +166,6 @@ cdef class CARMATask:
 	def get_setSystemsVec(self, np.ndarray[int, ndim=1, mode='c'] setSystems not None):
 		self.thisptr.get_setSystemsVec(&setSystems[0])
 
-	#@cython.boundscheck(False)
-	#@cython.wraparound(False)
 	def print_System(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0

@@ -78,7 +78,6 @@ private:
 	complex<double> *AScratch2;
 	complex<double> *BScratch;
 	double *Sigma;
-	//double *D;
 	double *Q;
 	double* T;
 	double *H;

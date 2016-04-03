@@ -363,9 +363,18 @@ using namespace std;
 		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
+		Data.x = x;
 		Data.y = y;
 		Data.yerr = yerr;
 		Data.mask = mask;
+		#ifdef DEBUG_FIT_CARMAMODEL
+		#pragma omp critical
+		{
+		printf("fit_CARMAModel - threadNum: %d; maxSigma: %e\n", threadNum, maxSigma);
+		printf("fit_CARMAModel - threadNum: %d; minTimescale: %e\n", threadNum, minTimescale);
+		printf("fit_CARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
+		}
+		#endif
 		Data.maxSigma = maxSigma;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
@@ -413,7 +422,6 @@ using namespace std;
 					deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
 					}
 				if (set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) {
-				//if (ptrToSystems[threadNum].checkCARMAParams(&deltaXTemp[threadNum*ndims]) == 1) {
 					goodPoint = true;
 					} else {
 					goodPoint = false;
