@@ -13,8 +13,8 @@ import psutil
 import types
 import pdb
 
-import lib.rand as rand
-import lib.CARMATask as CARMATask
+import rand as rand
+import CARMATask as CARMATask
 
 class epoch(object):
 	"""!
