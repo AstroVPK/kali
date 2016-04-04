@@ -4,9 +4,12 @@ import platform
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
+import pdb
 
 os.environ['CC'] = 'icpc'
 os.environ['CXX'] = 'icpc'
+
+INCLUDE = os.path.join(os.environ['PWD'], 'include')
 
 VERFLAGS = ['-gxx-name=g++-4.8', '-std=c++11']
 
@@ -30,19 +33,37 @@ elif System == 'Darwin':
 else:
 	MKLLIBS = []
 
-bSMBH_sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
+MKLDIR = MKLLIBS[0][2:-1]
 
-bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython', np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+bSMBH_sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
+bSMBH_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBH_sourceList]
+
+bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 rand_sourceList = ['rand.pyx', 'rdrand.cpp']
+rand_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in rand_sourceList]
 
-rand_ext = Extension(name='rand', sources=rand_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython', np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+rand_ext = Extension(name='rand', sources=rand_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
-#CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'Functions.cpp', 'CARMATask.pyx']
 CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'Task.cpp', 'CARMATask.pyx']
+CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in CARMATask_sourceList]
 
-CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_sourceList, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=['/home/vish/code/trunk/cpp/libcarma/cython', np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'], runtime_library_dirs = ['/opt/intel/compilers_and_libraries_2016.2.181/linux/mkl/lib/intel64'])
+
+CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 setup(
+	name = 'libcarma',
+	version = '1.0.0',
+	author = 'Vishal Pramod Kasliwal',
+	author_email = 'vishal.kasliwal@gmail.com',
+	maintainer = 'Vishal Pramod Kasliwal',
+	maintainer_email = 'vishal.kasliwal@gmail.com',
+	url = 'https://github.com/AstroVPK/libcarma',
+	description = 'Tools to study stochastic light curves',
+	long_description = 'Tools to model stochastic light curves as a C-ARMA process. Tools also include components to model binary SMBHs with relativistic beaming.',
+	download_url = 'https://github.com/AstroVPK/libcarma',
+	classifiers = ['AGN', 'C-ARMA', 'stochastic', 'binary SMBH'],
+	platforms = ['Linux', 'Mac OSX'],
+	license = 'GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
 	ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext])
 )
