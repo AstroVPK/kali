@@ -212,14 +212,14 @@ class lc(object):
 			self.mask[key] = val.mask
 
 	@abc.abstractmethod
-	def _readlc(self, supplied):
+	def read(self, supplied):
 		raise NotImplementedError(r'Override readlc!')
 
 class basicLC(lc):
 	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
 		super(basicLC, self).__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracNoiseToSignal, maxSigma, minTimescale, maxTimescale, supplied)
 
-	def _readlc(self, supplied):
+	def read(self, supplied):
 		data = np.loadtxt(supplied)
 
 class task(object):
