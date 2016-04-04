@@ -52,6 +52,8 @@ class epoch(object):
 	def __eq__(self, other):
 		"""!
 		\brief Check for equality.
+		
+		Check for equality. Two epochs are equal iff the timestamps are equal.
 		"""
 		if type(other) is type(self):
 			return self.t == other.t
@@ -60,6 +62,8 @@ class epoch(object):
 	def __neq__(self, other):
 		"""!
 		\brief Check for inequality.
+		
+		Check for inequality. Two epochs are not equal iff the timestamps are not equal.
 		"""
 		if self == other:
 			return False
