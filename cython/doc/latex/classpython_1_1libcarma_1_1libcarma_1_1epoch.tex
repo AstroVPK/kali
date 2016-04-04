@@ -1,0 +1,225 @@
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch}{\section{python.\-libcarma.\-libcarma.\-epoch Class Reference}
+\label{classpython_1_1libcarma_1_1libcarma_1_1epoch}\index{python.\-libcarma.\-libcarma.\-epoch@{python.\-libcarma.\-libcarma.\-epoch}}
+}
+
+
+Class to hold individual epochs of a light curve.  
+
+
+
+
+Inheritance diagram for python.\-libcarma.\-libcarma.\-epoch\-:
+
+
+Collaboration diagram for python.\-libcarma.\-libcarma.\-epoch\-:
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1f88fa3464ccd95b3ebebeb6a0b0e075}{\-\_\-\-\_\-init\-\_\-\-\_\-}
+\begin{DoxyCompactList}\small\item\em Initialize the epoch. \end{DoxyCompactList}\item 
+def \hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a3538e212898c02622a6d57c770efa4ca}{\-\_\-\-\_\-repr\-\_\-\-\_\-}
+\begin{DoxyCompactList}\small\item\em Return a representation of the epoch such that eval(repr(some\-Epoch)) == some\-Epoch is True. \end{DoxyCompactList}\item 
+def \hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_ab02920b5bb505737f20f21468187f98a}{\-\_\-\-\_\-str\-\_\-\-\_\-}
+\begin{DoxyCompactList}\small\item\em Return a human readable representation of the epoch. \end{DoxyCompactList}\item 
+def \hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1fd52b701f3c509ee5f0bd9f2431db17}{\-\_\-\-\_\-eq\-\_\-\-\_\-}
+\begin{DoxyCompactList}\small\item\em Check for equality. \end{DoxyCompactList}\item 
+def \hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a60115d2de2854aece68302e699ea0aae}{\-\_\-\-\_\-neq\-\_\-\-\_\-}
+\begin{DoxyCompactList}\small\item\em Check for inequality. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_adc45927ca28d3e686fc64dccbe46be0a}{t}
+\item 
+\hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a438579d7a539c50c10f23945f3f61c24}{x}
+\begin{DoxyCompactList}\small\item\em Timestamp. \end{DoxyCompactList}\item 
+\hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a61f3231c84360ba42ed61c0fb8952262}{y}
+\begin{DoxyCompactList}\small\item\em Intrinsic flux. \end{DoxyCompactList}\item 
+\hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a5938ef62a82d0261aad38ddb182e0b9a}{yerr}
+\begin{DoxyCompactList}\small\item\em Observed flux. \end{DoxyCompactList}\item 
+\hyperlink{classpython_1_1libcarma_1_1libcarma_1_1epoch_a045122b8c088225f00b0052f183aac3a}{mask}
+\begin{DoxyCompactList}\small\item\em Error in Observed Flux. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to hold individual epochs of a light curve. 
+
+\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_epoch_}%
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_epoch_}{}%
+ We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same tiemstamp. Later on, we will implement some sort of unit system for the quantities (i.\-e. is the tiumestamp in sec, min, day, M\-J\-D etc...?) 
+
+Definition at line 19 of file libcarma.\-py.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1f88fa3464ccd95b3ebebeb6a0b0e075}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!\-\_\-\-\_\-init\-\_\-\-\_\-@{\-\_\-\-\_\-init\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-init\-\_\-\-\_\-@{\-\_\-\-\_\-init\-\_\-\-\_\-}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{\-\_\-\-\_\-init\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def python.\-libcarma.\-libcarma.\-epoch.\-\_\-\-\_\-init\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{t, }
+\item[{}]{x, }
+\item[{}]{y, }
+\item[{}]{yerr, }
+\item[{}]{mask}
+\end{DoxyParamCaption}
+)}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1f88fa3464ccd95b3ebebeb6a0b0e075}
+
+
+Initialize the epoch. 
+
+Non-\/keyword arguments 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em t} & Timestamp. \\
+\hline
+\mbox{\tt in}  & {\em x} & Intrinsic Flux i.\-e. the theoretical value of the underlying flux in the absence of measurement error. \\
+\hline
+\mbox{\tt in}  & {\em y} & Observed Flux i.\-e. the observed value of the flux given a noise-\/to-\/signal level. \\
+\hline
+\mbox{\tt in}  & {\em yerr} & Error in Observed Flux i.\-e. the measurement error in the flux. \\
+\hline
+\mbox{\tt in}  & {\em mask} & Mask value at this epoch. 0.\-0 means that this epoch has a missing observation. 1.\-0 means that the observation exists. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 27 of file libcarma.\-py.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1fd52b701f3c509ee5f0bd9f2431db17}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!\-\_\-\-\_\-eq\-\_\-\-\_\-@{\-\_\-\-\_\-eq\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-eq\-\_\-\-\_\-@{\-\_\-\-\_\-eq\-\_\-\-\_\-}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{\-\_\-\-\_\-eq\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def python.\-libcarma.\-libcarma.\-epoch.\-\_\-\-\_\-eq\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{other}
+\end{DoxyParamCaption}
+)}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a1fd52b701f3c509ee5f0bd9f2431db17}
+
+
+Check for equality. 
+
+Check for equality. Two epochs are equal iff the timestamps are equal.
+
+Non-\/keyword arguments 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em other} & Another epoch or subclass of epoch. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 59 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a60115d2de2854aece68302e699ea0aae}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!\-\_\-\-\_\-neq\-\_\-\-\_\-@{\-\_\-\-\_\-neq\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-neq\-\_\-\-\_\-@{\-\_\-\-\_\-neq\-\_\-\-\_\-}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{\-\_\-\-\_\-neq\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def python.\-libcarma.\-libcarma.\-epoch.\-\_\-\-\_\-neq\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{other}
+\end{DoxyParamCaption}
+)}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a60115d2de2854aece68302e699ea0aae}
+
+
+Check for inequality. 
+
+Check for inequality. Two epochs are not equal iff the timestamps are not equal.
+
+Non-\/keyword arguments 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em other} & Another epoch or subclass of epoch. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 72 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a3538e212898c02622a6d57c770efa4ca}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!\-\_\-\-\_\-repr\-\_\-\-\_\-@{\-\_\-\-\_\-repr\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-repr\-\_\-\-\_\-@{\-\_\-\-\_\-repr\-\_\-\-\_\-}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{\-\_\-\-\_\-repr\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def python.\-libcarma.\-libcarma.\-epoch.\-\_\-\-\_\-repr\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a3538e212898c02622a6d57c770efa4ca}
+
+
+Return a representation of the epoch such that eval(repr(some\-Epoch)) == some\-Epoch is True. 
+
+
+
+Definition at line 44 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_ab02920b5bb505737f20f21468187f98a}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!\-\_\-\-\_\-str\-\_\-\-\_\-@{\-\_\-\-\_\-str\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-str\-\_\-\-\_\-@{\-\_\-\-\_\-str\-\_\-\-\_\-}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{\-\_\-\-\_\-str\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def python.\-libcarma.\-libcarma.\-epoch.\-\_\-\-\_\-str\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_ab02920b5bb505737f20f21468187f98a}
+
+
+Return a human readable representation of the epoch. 
+
+
+
+Definition at line 50 of file libcarma.\-py.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a045122b8c088225f00b0052f183aac3a}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!mask@{mask}}
+\index{mask@{mask}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{mask}]{\setlength{\rightskip}{0pt plus 5cm}python.\-libcarma.\-libcarma.\-epoch.\-mask}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a045122b8c088225f00b0052f183aac3a}
+
+
+Error in Observed Flux. 
+
+
+
+Definition at line 42 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_adc45927ca28d3e686fc64dccbe46be0a}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!t@{t}}
+\index{t@{t}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{t}]{\setlength{\rightskip}{0pt plus 5cm}python.\-libcarma.\-libcarma.\-epoch.\-t}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_adc45927ca28d3e686fc64dccbe46be0a}
+
+
+Definition at line 38 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a438579d7a539c50c10f23945f3f61c24}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!x@{x}}
+\index{x@{x}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{x}]{\setlength{\rightskip}{0pt plus 5cm}python.\-libcarma.\-libcarma.\-epoch.\-x}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a438579d7a539c50c10f23945f3f61c24}
+
+
+Timestamp. 
+
+
+
+Definition at line 39 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a61f3231c84360ba42ed61c0fb8952262}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!y@{y}}
+\index{y@{y}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{y}]{\setlength{\rightskip}{0pt plus 5cm}python.\-libcarma.\-libcarma.\-epoch.\-y}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a61f3231c84360ba42ed61c0fb8952262}
+
+
+Intrinsic flux. 
+
+
+
+Definition at line 40 of file libcarma.\-py.
+
+\hypertarget{classpython_1_1libcarma_1_1libcarma_1_1epoch_a5938ef62a82d0261aad38ddb182e0b9a}{\index{python\-::libcarma\-::libcarma\-::epoch@{python\-::libcarma\-::libcarma\-::epoch}!yerr@{yerr}}
+\index{yerr@{yerr}!python::libcarma::libcarma::epoch@{python\-::libcarma\-::libcarma\-::epoch}}
+\subsubsection[{yerr}]{\setlength{\rightskip}{0pt plus 5cm}python.\-libcarma.\-libcarma.\-epoch.\-yerr}}\label{classpython_1_1libcarma_1_1libcarma_1_1epoch_a5938ef62a82d0261aad38ddb182e0b9a}
+
+
+Observed flux. 
+
+
+
+Definition at line 41 of file libcarma.\-py.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/cython/python/libcarma/\hyperlink{libcarma_8py}{libcarma.\-py}\end{DoxyCompactItemize}

@@ -1,0 +1,22 @@
+digraph "RdRand_isSupported"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="RdRand_isSupported",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="rdrand_16",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#ac0b6836005a9eeaa7fc22e8ec128da4c",tooltip="Calls rdrand for a 16-bit result. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="rdrand_32",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#ae5322e4aa5e55c40875b980638726001",tooltip="Calls rdrand for a 32-byte result. "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="rdrand_get_n_32",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#a226c1c992d91231a6d0c374b3ccb3f44",tooltip="Calls rdrand to obtain multiple 32-byte results. "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="rdrand_get_bytes",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#a1908b1f4b65c4dabc7cfdff97b488095",tooltip="Calls rdrand to fill a buffer of arbitrary size with random bytes. "];
+  Node3 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="rdrand_64",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#a2982203449ab462050e54165e8f091db",tooltip="Calls rdrand for a 64-byte result. "];
+  Node6 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="rdrand_get_n_64",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$rdrand_8cpp.html#a2e933b7b559d673f1b22a64710b772f7",tooltip="Calls rdrand to obtain multiple 64-byte results. "];
+  Node7 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,321 @@
+\hypertarget{rdrand_8cpp}{\section{/home/vish/code/trunk/cpp/libcarma/cython/src/rdrand.cpp File Reference}
+\label{rdrand_8cpp}\index{/home/vish/code/trunk/cpp/libcarma/cython/src/rdrand.\-cpp@{/home/vish/code/trunk/cpp/libcarma/cython/src/rdrand.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}rdrand.\-hpp\char`\"{}}\\*
+{\ttfamily \#include $<$string.\-h$>$}\\*
+{\ttfamily \#include $<$stdint.\-h$>$}\\*
+Include dependency graph for rdrand.\-cpp\-:
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{rdrand_8cpp_af7b2fee6da8e44ce8d6a0e4a5262d079}{R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K}~0x40000000
+\item 
+\#define \hyperlink{rdrand_8cpp_ad4eba3b0ea03f397bae8792d0f0e4cd4}{R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T}~10
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef uint32\-\_\-t \hyperlink{rdrand_8cpp_acd2b4a4f9b95333d55673ab3b5a879c6}{\-\_\-wordlen\-\_\-t}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{rdrand_8cpp_a092ff5b5cdd0009b9a39bd9a087e5ee8}{Rd\-Rand\-\_\-cpuid} ()
+\begin{DoxyCompactList}\small\item\em Queries cpuid to see if rdrand is supported. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_a53e99256bfc3ab954115658e09ff0b7c}{Rd\-Rand\-\_\-is\-Supported} ()
+\begin{DoxyCompactList}\small\item\em Determines whether or not rdrand is supported by the C\-P\-U. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_ac0b6836005a9eeaa7fc22e8ec128da4c}{rdrand\-\_\-16} (uint16\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 16-\/bit result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_ae5322e4aa5e55c40875b980638726001}{rdrand\-\_\-32} (uint32\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 32-\/byte result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_a2982203449ab462050e54165e8f091db}{rdrand\-\_\-64} (uint64\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 64-\/byte result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_a2e933b7b559d673f1b22a64710b772f7}{rdrand\-\_\-get\-\_\-n\-\_\-64} (unsigned int n, uint64\-\_\-t $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to obtain multiple 64-\/byte results. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_a226c1c992d91231a6d0c374b3ccb3f44}{rdrand\-\_\-get\-\_\-n\-\_\-32} (unsigned int n, uint32\-\_\-t $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to obtain multiple 32-\/byte results. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8cpp_a1908b1f4b65c4dabc7cfdff97b488095}{rdrand\-\_\-get\-\_\-bytes} (unsigned int n, unsigned char $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to fill a buffer of arbitrary size with random bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{rdrand_8cpp_af7b2fee6da8e44ce8d6a0e4a5262d079}{\index{rdrand.\-cpp@{rdrand.\-cpp}!R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K@{R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K@{R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-M\-A\-S\-K~0x40000000}}\label{rdrand_8cpp_af7b2fee6da8e44ce8d6a0e4a5262d079}
+The bit mask used to examine the ecx register returned by cpuid. The 30th bit is set. 
+
+Definition at line 39 of file rdrand.\-cpp.
+
+\hypertarget{rdrand_8cpp_ad4eba3b0ea03f397bae8792d0f0e4cd4}{\index{rdrand.\-cpp@{rdrand.\-cpp}!R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T@{R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T}}
+\index{R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T@{R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-E\-T\-R\-Y\-\_\-\-L\-I\-M\-I\-T~10}}\label{rdrand_8cpp_ad4eba3b0ea03f397bae8792d0f0e4cd4}
+
+
+Definition at line 41 of file rdrand.\-cpp.
+
+
+
+\subsection{Typedef Documentation}
+\hypertarget{rdrand_8cpp_acd2b4a4f9b95333d55673ab3b5a879c6}{\index{rdrand.\-cpp@{rdrand.\-cpp}!\-\_\-wordlen\-\_\-t@{\-\_\-wordlen\-\_\-t}}
+\index{\-\_\-wordlen\-\_\-t@{\-\_\-wordlen\-\_\-t}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{\-\_\-wordlen\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef uint32\-\_\-t {\bf \-\_\-wordlen\-\_\-t}}}\label{rdrand_8cpp_acd2b4a4f9b95333d55673ab3b5a879c6}
+
+
+Definition at line 50 of file rdrand.\-cpp.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{rdrand_8cpp_ac0b6836005a9eeaa7fc22e8ec128da4c}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-16@{rdrand\-\_\-16}}
+\index{rdrand\-\_\-16@{rdrand\-\_\-16}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-16}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-16 (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_ac0b6836005a9eeaa7fc22e8ec128da4c}
+
+
+Calls rdrand for a 16-\/bit result. 
+
+This function calls rdrand requesting a 16-\/bit result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 179 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_ae5322e4aa5e55c40875b980638726001}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-32@{rdrand\-\_\-32}}
+\index{rdrand\-\_\-32@{rdrand\-\_\-32}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-32}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-32 (
+\begin{DoxyParamCaption}
+\item[{uint32\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_ae5322e4aa5e55c40875b980638726001}
+
+
+Calls rdrand for a 32-\/byte result. 
+
+This function calls rdrand requesting a 32-\/bit result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 209 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a2982203449ab462050e54165e8f091db}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-64@{rdrand\-\_\-64}}
+\index{rdrand\-\_\-64@{rdrand\-\_\-64}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-64}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-64 (
+\begin{DoxyParamCaption}
+\item[{uint64\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a2982203449ab462050e54165e8f091db}
+
+
+Calls rdrand for a 64-\/byte result. 
+
+This function calls rdrand requesting a 64-\/byte result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+Calling rdrand\-\_\-64 on a 32-\/bit system is inefficient as it makes two calls to rdrand\-\_\-32 to produce a single 64-\/bit value, using a shift to populate the high bits. The physical construction of the D\-R\-N\-G allows you to do this up to a 128-\/bit value while retaining multiplicative prediction resistance (i.\-e., don't do this to generate numbers larger than 128 bits).
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 239 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a092ff5b5cdd0009b9a39bd9a087e5ee8}{\index{rdrand.\-cpp@{rdrand.\-cpp}!Rd\-Rand\-\_\-cpuid@{Rd\-Rand\-\_\-cpuid}}
+\index{Rd\-Rand\-\_\-cpuid@{Rd\-Rand\-\_\-cpuid}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{Rd\-Rand\-\_\-cpuid}]{\setlength{\rightskip}{0pt plus 5cm}int Rd\-Rand\-\_\-cpuid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a092ff5b5cdd0009b9a39bd9a087e5ee8}
+
+
+Queries cpuid to see if rdrand is supported. 
+
+rdrand support in a C\-P\-U is determined by examining the 30th bit of the ecx register after calling cpuid.
+
+\begin{DoxyReturn}{Returns}
+bool of whether or not rdrand is supported 
+\end{DoxyReturn}
+
+
+Definition at line 129 of file rdrand.\-cpp.
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a1908b1f4b65c4dabc7cfdff97b488095}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-get\-\_\-bytes@{rdrand\-\_\-get\-\_\-bytes}}
+\index{rdrand\-\_\-get\-\_\-bytes@{rdrand\-\_\-get\-\_\-bytes}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-bytes}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-bytes (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{unsigned char $\ast$}]{buffer}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a1908b1f4b65c4dabc7cfdff97b488095}
+
+
+Calls rdrand to fill a buffer of arbitrary size with random bytes. 
+
+This function calls rdrand requesting multiple 64-\/ or 32-\/bit results to fill a buffer of arbitrary size.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & size of the buffer to fill with random bytes \\
+\hline
+{\em buffer} & pointer to memory to store the random result\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 307 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a226c1c992d91231a6d0c374b3ccb3f44}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-get\-\_\-n\-\_\-32@{rdrand\-\_\-get\-\_\-n\-\_\-32}}
+\index{rdrand\-\_\-get\-\_\-n\-\_\-32@{rdrand\-\_\-get\-\_\-n\-\_\-32}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-n\-\_\-32}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-n\-\_\-32 (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{uint32\-\_\-t $\ast$}]{x}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a226c1c992d91231a6d0c374b3ccb3f44}
+
+
+Calls rdrand to obtain multiple 32-\/byte results. 
+
+This function calls rdrand requesting multiple 32-\/byte results. On success, the data is written to memory pointed to by x. This function calls rdrand\-\_\-32 and if any of those invocations fail, this function fails. It returns the same values as rdrand\-\_\-32. 
+
+Definition at line 288 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a2e933b7b559d673f1b22a64710b772f7}{\index{rdrand.\-cpp@{rdrand.\-cpp}!rdrand\-\_\-get\-\_\-n\-\_\-64@{rdrand\-\_\-get\-\_\-n\-\_\-64}}
+\index{rdrand\-\_\-get\-\_\-n\-\_\-64@{rdrand\-\_\-get\-\_\-n\-\_\-64}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-n\-\_\-64}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-n\-\_\-64 (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{uint64\-\_\-t $\ast$}]{x}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a2e933b7b559d673f1b22a64710b772f7}
+
+
+Calls rdrand to obtain multiple 64-\/byte results. 
+
+This function calls rdrand requesting multiple 64-\/byte results. On success, the data is written to memory pointed to by x. This function calls rdrand\-\_\-64 and if any of those invocations fail, this function fails. It returns the same values as rdrand\-\_\-64.
+
+This function is inefficient on 32-\/bit systems. 
+
+Definition at line 269 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8cpp_a53e99256bfc3ab954115658e09ff0b7c}{\index{rdrand.\-cpp@{rdrand.\-cpp}!Rd\-Rand\-\_\-is\-Supported@{Rd\-Rand\-\_\-is\-Supported}}
+\index{Rd\-Rand\-\_\-is\-Supported@{Rd\-Rand\-\_\-is\-Supported}!rdrand.cpp@{rdrand.\-cpp}}
+\subsubsection[{Rd\-Rand\-\_\-is\-Supported}]{\setlength{\rightskip}{0pt plus 5cm}int Rd\-Rand\-\_\-is\-Supported (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8cpp_a53e99256bfc3ab954115658e09ff0b7c}
+
+
+Determines whether or not rdrand is supported by the C\-P\-U. 
+
+This function simply serves as a cache of the result provided by cpuid, since calling cpuid is so expensive. The result is stored in a static variable to save from calling cpuid on each invocation of rdrand.
+
+\begin{DoxyReturn}{Returns}
+bool/int of whether or not rdrand is supported 
+\end{DoxyReturn}
+
+
+Definition at line 164 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+

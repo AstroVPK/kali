@@ -1,0 +1,9 @@
+digraph "CARMA::binarySMBH::binarySMBH"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="CARMA::binarySMBH::\lbinarySMBH",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid"];
+  Node2 [label="CARMA::KeplerEqn",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_c_a_r_m_a.html#abb121c1094fa8828355a1c3240d19706"];
+}

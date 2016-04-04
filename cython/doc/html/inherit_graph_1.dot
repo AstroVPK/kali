@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="CARMA::binarySMBH",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_c_a_r_m_a_1_1binary_s_m_b_h.html"];
+}

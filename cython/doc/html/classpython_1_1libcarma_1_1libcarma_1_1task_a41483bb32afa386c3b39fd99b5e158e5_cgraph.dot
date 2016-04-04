@@ -1,0 +1,15 @@
+digraph "python.libcarma.libcarma.task.fit"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="python.libcarma.libcarma.task.fit",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="python.libcarma.libcarma.task.scatter\lFactor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classpython_1_1libcarma_1_1libcarma_1_1task.html#a93494b990ffb8ca498b6d0d6512a7fa7"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="python.libcarma.libcarma.task.nwalkers",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classpython_1_1libcarma_1_1libcarma_1_1task.html#a136998a257bc82c4df663d46871a7f51"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="python.libcarma.libcarma.task.nsteps",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classpython_1_1libcarma_1_1libcarma_1_1task.html#af6f36241731b24af9e6872106f2d6eab"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="python.libcarma.libcarma.task.max\lEvals",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classpython_1_1libcarma_1_1libcarma_1_1task.html#a54458b7bfc6f1daa4619b3c11709bc28"];
+}

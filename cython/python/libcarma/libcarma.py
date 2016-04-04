@@ -22,17 +22,24 @@ class epoch(object):
 	
 	\brief Class to hold individual epochs of a light curve.
 	
-	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs.
+	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same tiemstamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
 	"""
 	def __init__(self, t, x, y, yerr, mask):
 		"""!
 		\brief Initialize the epoch.
+		
+		Non-keyword arguments
+		\param[in] t:    Timestamp.
+		\param[in] x:    Intrinsic Flux i.e. the theoretical value of the underlying flux in the absence of measurement error.
+		\param[in] y:    Observed Flux i.e. the observed value of the flux given a noise-to-signal level.
+		\param[in] yerr: Error in Observed Flux i.e. the measurement error in the flux.
+		\param[in] mask: Mask value at this epoch. 0.0 means that this epoch has a missing observation. 1.0 means that the observation exists.
 		"""
-		self.t = t
-		self.x = x
-		self.y = y
-		self.yerr = yerr
-		self.mask = mask
+		self.t = t ## Timestamp
+		self.x = x ## Intrinsic flux
+		self.y = y ## Observed flux
+		self.yerr = yerr ## Error in Observed Flux
+		self.mask = mask ## Mask value at this epoch
 
 	def __repr__(self):
 		"""!
@@ -54,6 +61,9 @@ class epoch(object):
 		\brief Check for equality.
 		
 		Check for equality. Two epochs are equal iff the timestamps are equal.
+		
+		Non-keyword arguments
+		\param[in] other: Another epoch or subclass of epoch.
 		"""
 		if type(other) is type(self):
 			return self.t == other.t
@@ -64,6 +74,9 @@ class epoch(object):
 		\brief Check for inequality.
 		
 		Check for inequality. Two epochs are not equal iff the timestamps are not equal.
+		
+		Non-keyword arguments
+		\param[in] other: Another epoch or subclass of epoch.
 		"""
 		if self == other:
 			return False
@@ -71,18 +84,44 @@ class epoch(object):
 			return True
 
 class lc(object):
+	"""!
+	\anchor lc_
+	
+	\brief Class to hold light curve.
+	
+	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
+	"""
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
-		self._numCadences = numCadences
-		self.t = np.zeros(self.numCadences)
-		self.x = np.zeros(self.numCadences)
-		self.y = np.zeros(self.numCadences)
-		self.yerr = np.zeros(self.numCadences)
-		self.mask = np.zeros(self.numCadences)
-		self._dt = dt
-		self._T = self.t[-1] - self.t[0]
-		self._IR = IR
-		self._tolIR = tolIR
+	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
+		"""!
+		\brief Initialize a new light curve
+		
+		The constructor assumes that the light curve to be constructed is regular. There is no option to construct irregular light curves. Irregular light can be obtained by reading in a supplied irregular light curve. The constructor takes an optional keyword argument (supplied = <light curve file>) that is read in using the read method. This supplied light curve can be irregular. Typically, the supplied light curve is irregular either because the user created it that way, or because the survey that produced it sampled the sky at irregular intervals.
+		
+		Non-keyword arguments
+		\param[in] numCadences: The number of cadences in the light curve
+		
+		Keyword arguments
+		\param[in] dt:                The spacing between cadences.
+		\param[in] IR:                Is the light curve irregular?
+		\param[in] tolIR:             The tolerance level at which a given step in the lightcurve should be considered irregular for the purpose of solving the C-ARMA model. The C-ARMA model needs to be re-solved if abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time. If IR  == False, this parameter is not used.
+		\param[in] fracIntrinsicVar:  The fractional variability of the source i.e. fracIntrinsicVar = sqrt(Sigma[0,0])/mean_flux.
+		\param[in] fracNoiseToSignal: The fractional noise level i.e. fracNoiseToSignal = sigma_noise/flux. We assume that this level is fixed. In the future, we may wish to make this value flux dependent to make the noise model more realistic.
+		\param[in] maxSigma:          The maximum allowed value of sqrt(Sigma[0,0]) = maxSigma*stddev(y) when fitting a C-ARMA model. Note that if the observed light curve is shorter than the de-correlation timescale, stddev(y) may be much smaller than sqrt(Sigma[0,0]) and hence maxSigma should be made larger in such cases.
+		\param[in] minTimescale:      The shortest allowed timescale = minTimescale*dt. Note that if the observed light curve is very sparsely sampled, dt may be much larger than the actaul minimum timescale present and hence minTimescale should be made smaller in such cases.
+		\param[in] maxTimescale:      The longest allowed timescale = maxTimescale*T. Note that if the observed light curve is shorter than the longest timescale present, T may be much smaller than the longest timescale and hence maxTimescale should be made larger in such cases.
+		\param[in] supplied:          Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
+		"""
+		self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
+		self.t = np.zeros(self.numCadences) ## Numpy array of timestamps.
+		self.x = np.zeros(self.numCadences) ## Numpy array of intrinsic fluxes.
+		self.y = np.zeros(self.numCadences) ## Numpy array of observed fluxes.
+		self.yerr = np.zeros(self.numCadences) ## Numpy array of observed flux errors.
+		self.mask = np.zeros(self.numCadences) ## Numpy array of mask values.
+		self._dt = dt ## Increment between epochs.
+		self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
+		self._IR = IR ## Is the light curve irregular?
+		self._tolIR = tolIR ## Tolerance on the irregularity. If IR == False, this parameter is not used. Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time.
 		self._fracIntrinsicVar = fracIntrinsicVar
 		self._fracNoiseToSignal = fracNoiseToSignal
 		self._maxSigma = maxSigma
@@ -96,7 +135,7 @@ class lc(object):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
 		else:
-			self._readlc(supplied)
+			self.read(supplied)
 
 	@property
 	def numCadences(self):
@@ -173,9 +212,15 @@ class lc(object):
 		return self._numCadences
 
 	def __repr__(self):
+		"""!
+		\brief Return a representation of the lc such that eval(repr(someLC)) == someLC is True.
+		"""
 		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._IR, self._tolIR, self.t_incr, self._fracIntrinsicVar, self._fracSignalToNoise, self._maxSigma, self._minTimescale, self._maxTimescale)
 
 	def __str__(self):
+		"""!
+		\brief Return a human readable representation of the light curve.
+		"""
 		line = 'numCadences: %d\n'%(self._numCadences)
 		line += 'IR (Irregularly sampled): %s\n'%(self._IR)
 		line += 'tolIR (Tolerance for irregularity): %f\n'%(self._tolIR)
@@ -190,11 +235,27 @@ class lc(object):
 		return line
 
 	def __eq__(self, other):
+		"""!
+		\brief Check for equality.
+		
+		Check for equality. Two light curves are equal only iff all thier attributes are the same.
+		
+		Non-keyword arguments
+		\param[in] other: Another lc or subclass of lc.
+		"""
 		if type(other) is type(self):
 			return self.__dict__ == other.__dict__
 		return False
 
 	def __neq__(self, other):
+		"""!
+		\brief Check for inequality.
+		
+		Check for inequality. Two light curves are in-equal only iff all thier attributes are not the same.
+		
+		Non-keyword arguments
+		\param[in] other: Another lc or subclass of lc.
+		"""
 		if self == other:
 			return False
 		else:

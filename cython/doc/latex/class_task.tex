@@ -1,0 +1,436 @@
+\hypertarget{class_task}{\section{Task Class Reference}
+\label{class_task}\index{Task@{Task}}
+}
+
+
+{\ttfamily \#include $<$Task.\-hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_task_a566e792c22b9a02dd018246dfd4f2c8c}{Task} ()=delete
+\item 
+\hyperlink{class_task_ae64b05231261ab364ebb22e17f17749d}{Task} (int p\-Given, int q\-Given, int num\-Threads\-Given, int num\-Burn\-Given)
+\item 
+\hyperlink{class_task_a3ecf499ea35fb4a96853969a1e1cbbce}{$\sim$\-Task} ()
+\item 
+int \hyperlink{class_task_a57acc41093d637b76445e8c3b0c16d85}{reset\-\_\-\-Task} (int p\-Given, int q\-Given, int num\-Burn)
+\item 
+int \hyperlink{class_task_ad8e737c998840996dac1618f78bd30f8}{get\-\_\-num\-Burn} ()
+\item 
+void \hyperlink{class_task_a957aca6b2ed739372947eec535a152f0}{set\-\_\-num\-Burn} (int num\-Burn)
+\item 
+int \hyperlink{class_task_a41f8fe9b59b4646004130845d7c6b23c}{check\-\_\-\-Theta} (double $\ast$Theta, int thread\-Num)
+\item 
+double \hyperlink{class_task_a5d98307b92b46ba1b5e86e766414b3ac}{get\-\_\-dt} (int thread\-Num)
+\item 
+void \hyperlink{class_task_acc99a8a705981e3b7a84f0a0ee896c80}{get\-\_\-\-Theta\-Vec} (double $\ast$Theta, int thread\-Num)
+\item 
+int \hyperlink{class_task_a3a96c9759fc036506571a1374aa0e79c}{set\-\_\-\-System} (double dt, double $\ast$Theta, int thread\-Num)
+\item 
+void \hyperlink{class_task_aa841a5c8cf5accf00d3b9717e493bf1d}{get\-\_\-set\-Systems\-Vec} (int $\ast$set\-Systems)
+\item 
+int \hyperlink{class_task_a29f9ab809fb5692ae2fd8814815f8b64}{print\-\_\-\-System} (int thread\-Num)
+\item 
+int \hyperlink{class_task_a31db79de0a756c47b7211af91639306b}{get\-\_\-\-A} (complex$<$ double $>$ $\ast$A, int thread\-Num)
+\item 
+int \hyperlink{class_task_a7b9ac1aba53d3c22158fe9f156fcaecd}{get\-\_\-\-B} (complex$<$ double $>$ $\ast$B, int thread\-Num)
+\item 
+int \hyperlink{class_task_a8fd8196de0aa7d4e48d23a6f665903f8}{get\-\_\-\-Sigma} (double $\ast$Sigma, int thread\-Num)
+\item 
+int \hyperlink{class_task_a10c759df8c4bae272f4212c1f0f79134}{make\-\_\-\-Intrinsic\-L\-C} (int num\-Cadences, bool I\-R, double tol\-I\-R, double frac\-Intrinsic\-Var, double frac\-Noise\-To\-Signal, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, unsigned int burn\-Seed, unsigned int dist\-Seed, int thread\-Num)
+\item 
+double \hyperlink{class_task_add737444d615a0dbfee7505581de5561}{get\-\_\-mean\-Flux} (double frac\-Intrinsic\-Var, int thread\-Num)
+\item 
+int \hyperlink{class_task_ab885ea064a7974c4630a326f810700bd}{make\-\_\-\-Observed\-L\-C} (int num\-Cadences, bool I\-R, double tol\-I\-R, double frac\-Intrinsic\-Var, double frac\-Noise\-To\-Signal, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, unsigned int burn\-Seed, unsigned int dist\-Seed, unsigned int noise\-Seed, int thread\-Num)
+\item 
+int \hyperlink{class_task_a80d246fe29fbecd58a3cbe687bbf50c1}{add\-\_\-\-Observation\-Noise} (int num\-Cadences, bool I\-R, double tol\-I\-R, double frac\-Intrinsic\-Var, double frac\-Noise\-To\-Signal, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, unsigned int noise\-Seed, int thread\-Num)
+\item 
+double \hyperlink{class_task_aa7ba4cfa9ada40fd3e3399fce88fe6df}{compute\-\_\-\-Ln\-Prior} (int num\-Cadences, bool I\-R, double tol\-I\-R, double max\-Sigma, double min\-Timescale, double max\-Timescale, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, int thread\-Num)
+\item 
+double \hyperlink{class_task_a370aa8207ebf85de80f5e0a4aa7a5fd8}{compute\-\_\-\-Ln\-Likelihood} (int num\-Cadences, bool I\-R, double tol\-I\-R, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, int thread\-Num)
+\item 
+double \hyperlink{class_task_abd5c94a0e5d4d4e29bd81294d5bc0d30}{compute\-\_\-\-Ln\-Posterior} (int num\-Cadences, bool I\-R, double tol\-I\-R, double max\-Sigma, double min\-Timescale, double max\-Timescale, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, int thread\-Num)
+\item 
+int \hyperlink{class_task_a35b8004ec5a98d8a13ad1f800017a6a3}{fit\-\_\-\-C\-A\-R\-M\-A\-Model} (double dt, int num\-Cadences, bool I\-R, double tol\-I\-R, double max\-Sigma, double min\-Timescale, double max\-Timescale, double $\ast$t, double $\ast$x, double $\ast$y, double $\ast$yerr, double $\ast$mask, double scatter\-Factor, int nwalkers, int nsteps, int max\-Evals, double x\-Tol, unsigned int z\-S\-Seed, unsigned int walker\-Seed, unsigned int move\-Seed, unsigned int x\-Seed, double $\ast$x\-Start, double $\ast$Chain, double $\ast$Ln\-Posterior)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 16 of file Task.\-hpp.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_task_a566e792c22b9a02dd018246dfd4f2c8c}{\index{Task@{Task}!Task@{Task}}
+\index{Task@{Task}!Task@{Task}}
+\subsubsection[{Task}]{\setlength{\rightskip}{0pt plus 5cm}Task\-::\-Task (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [delete]}}}\label{class_task_a566e792c22b9a02dd018246dfd4f2c8c}
+\hypertarget{class_task_ae64b05231261ab364ebb22e17f17749d}{\index{Task@{Task}!Task@{Task}}
+\index{Task@{Task}!Task@{Task}}
+\subsubsection[{Task}]{\setlength{\rightskip}{0pt plus 5cm}Task\-::\-Task (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Given, }
+\item[{int}]{q\-Given, }
+\item[{int}]{num\-Threads\-Given, }
+\item[{int}]{num\-Burn\-Given}
+\end{DoxyParamCaption}
+)}}\label{class_task_ae64b05231261ab364ebb22e17f17749d}
+
+
+Definition at line 19 of file Task.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{class_task_a3ecf499ea35fb4a96853969a1e1cbbce}{\index{Task@{Task}!$\sim$\-Task@{$\sim$\-Task}}
+\index{$\sim$\-Task@{$\sim$\-Task}!Task@{Task}}
+\subsubsection[{$\sim$\-Task}]{\setlength{\rightskip}{0pt plus 5cm}Task\-::$\sim$\-Task (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_task_a3ecf499ea35fb4a96853969a1e1cbbce}
+
+
+Definition at line 37 of file Task.\-cpp.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_task_a80d246fe29fbecd58a3cbe687bbf50c1}{\index{Task@{Task}!add\-\_\-\-Observation\-Noise@{add\-\_\-\-Observation\-Noise}}
+\index{add\-\_\-\-Observation\-Noise@{add\-\_\-\-Observation\-Noise}!Task@{Task}}
+\subsubsection[{add\-\_\-\-Observation\-Noise}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::add\-\_\-\-Observation\-Noise (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{frac\-Intrinsic\-Var, }
+\item[{double}]{frac\-Noise\-To\-Signal, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{unsigned int}]{noise\-Seed, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a80d246fe29fbecd58a3cbe687bbf50c1}
+
+
+Definition at line 275 of file Task.\-cpp.
+
+\hypertarget{class_task_a41f8fe9b59b4646004130845d7c6b23c}{\index{Task@{Task}!check\-\_\-\-Theta@{check\-\_\-\-Theta}}
+\index{check\-\_\-\-Theta@{check\-\_\-\-Theta}!Task@{Task}}
+\subsubsection[{check\-\_\-\-Theta}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::check\-\_\-\-Theta (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Theta, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a41f8fe9b59b4646004130845d7c6b23c}
+
+
+Definition at line 79 of file Task.\-cpp.
+
+\hypertarget{class_task_a370aa8207ebf85de80f5e0a4aa7a5fd8}{\index{Task@{Task}!compute\-\_\-\-Ln\-Likelihood@{compute\-\_\-\-Ln\-Likelihood}}
+\index{compute\-\_\-\-Ln\-Likelihood@{compute\-\_\-\-Ln\-Likelihood}!Task@{Task}}
+\subsubsection[{compute\-\_\-\-Ln\-Likelihood}]{\setlength{\rightskip}{0pt plus 5cm}double Task\-::compute\-\_\-\-Ln\-Likelihood (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a370aa8207ebf85de80f5e0a4aa7a5fd8}
+
+
+Definition at line 318 of file Task.\-cpp.
+
+\hypertarget{class_task_abd5c94a0e5d4d4e29bd81294d5bc0d30}{\index{Task@{Task}!compute\-\_\-\-Ln\-Posterior@{compute\-\_\-\-Ln\-Posterior}}
+\index{compute\-\_\-\-Ln\-Posterior@{compute\-\_\-\-Ln\-Posterior}!Task@{Task}}
+\subsubsection[{compute\-\_\-\-Ln\-Posterior}]{\setlength{\rightskip}{0pt plus 5cm}double Task\-::compute\-\_\-\-Ln\-Posterior (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{max\-Sigma, }
+\item[{double}]{min\-Timescale, }
+\item[{double}]{max\-Timescale, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_abd5c94a0e5d4d4e29bd81294d5bc0d30}
+
+
+Definition at line 335 of file Task.\-cpp.
+
+\hypertarget{class_task_aa7ba4cfa9ada40fd3e3399fce88fe6df}{\index{Task@{Task}!compute\-\_\-\-Ln\-Prior@{compute\-\_\-\-Ln\-Prior}}
+\index{compute\-\_\-\-Ln\-Prior@{compute\-\_\-\-Ln\-Prior}!Task@{Task}}
+\subsubsection[{compute\-\_\-\-Ln\-Prior}]{\setlength{\rightskip}{0pt plus 5cm}double Task\-::compute\-\_\-\-Ln\-Prior (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{max\-Sigma, }
+\item[{double}]{min\-Timescale, }
+\item[{double}]{max\-Timescale, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_aa7ba4cfa9ada40fd3e3399fce88fe6df}
+
+
+Definition at line 298 of file Task.\-cpp.
+
+\hypertarget{class_task_a35b8004ec5a98d8a13ad1f800017a6a3}{\index{Task@{Task}!fit\-\_\-\-C\-A\-R\-M\-A\-Model@{fit\-\_\-\-C\-A\-R\-M\-A\-Model}}
+\index{fit\-\_\-\-C\-A\-R\-M\-A\-Model@{fit\-\_\-\-C\-A\-R\-M\-A\-Model}!Task@{Task}}
+\subsubsection[{fit\-\_\-\-C\-A\-R\-M\-A\-Model}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::fit\-\_\-\-C\-A\-R\-M\-A\-Model (
+\begin{DoxyParamCaption}
+\item[{double}]{dt, }
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{max\-Sigma, }
+\item[{double}]{min\-Timescale, }
+\item[{double}]{max\-Timescale, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{double}]{scatter\-Factor, }
+\item[{int}]{nwalkers, }
+\item[{int}]{nsteps, }
+\item[{int}]{max\-Evals, }
+\item[{double}]{x\-Tol, }
+\item[{unsigned int}]{z\-S\-Seed, }
+\item[{unsigned int}]{walker\-Seed, }
+\item[{unsigned int}]{move\-Seed, }
+\item[{unsigned int}]{x\-Seed, }
+\item[{double $\ast$}]{x\-Start, }
+\item[{double $\ast$}]{Chain, }
+\item[{double $\ast$}]{Ln\-Posterior}
+\end{DoxyParamCaption}
+)}}\label{class_task_a35b8004ec5a98d8a13ad1f800017a6a3}
+
+
+Definition at line 357 of file Task.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{class_task_a31db79de0a756c47b7211af91639306b}{\index{Task@{Task}!get\-\_\-\-A@{get\-\_\-\-A}}
+\index{get\-\_\-\-A@{get\-\_\-\-A}!Task@{Task}}
+\subsubsection[{get\-\_\-\-A}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::get\-\_\-\-A (
+\begin{DoxyParamCaption}
+\item[{complex$<$ double $>$ $\ast$}]{A, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a31db79de0a756c47b7211af91639306b}
+
+
+Definition at line 171 of file Task.\-cpp.
+
+\hypertarget{class_task_a7b9ac1aba53d3c22158fe9f156fcaecd}{\index{Task@{Task}!get\-\_\-\-B@{get\-\_\-\-B}}
+\index{get\-\_\-\-B@{get\-\_\-\-B}!Task@{Task}}
+\subsubsection[{get\-\_\-\-B}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::get\-\_\-\-B (
+\begin{DoxyParamCaption}
+\item[{complex$<$ double $>$ $\ast$}]{B, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a7b9ac1aba53d3c22158fe9f156fcaecd}
+
+
+Definition at line 182 of file Task.\-cpp.
+
+\hypertarget{class_task_a5d98307b92b46ba1b5e86e766414b3ac}{\index{Task@{Task}!get\-\_\-dt@{get\-\_\-dt}}
+\index{get\-\_\-dt@{get\-\_\-dt}!Task@{Task}}
+\subsubsection[{get\-\_\-dt}]{\setlength{\rightskip}{0pt plus 5cm}double Task\-::get\-\_\-dt (
+\begin{DoxyParamCaption}
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a5d98307b92b46ba1b5e86e766414b3ac}
+
+
+Definition at line 83 of file Task.\-cpp.
+
+\hypertarget{class_task_add737444d615a0dbfee7505581de5561}{\index{Task@{Task}!get\-\_\-mean\-Flux@{get\-\_\-mean\-Flux}}
+\index{get\-\_\-mean\-Flux@{get\-\_\-mean\-Flux}!Task@{Task}}
+\subsubsection[{get\-\_\-mean\-Flux}]{\setlength{\rightskip}{0pt plus 5cm}double Task\-::get\-\_\-mean\-Flux (
+\begin{DoxyParamCaption}
+\item[{double}]{frac\-Intrinsic\-Var, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_add737444d615a0dbfee7505581de5561}
+
+
+Definition at line 230 of file Task.\-cpp.
+
+\hypertarget{class_task_ad8e737c998840996dac1618f78bd30f8}{\index{Task@{Task}!get\-\_\-num\-Burn@{get\-\_\-num\-Burn}}
+\index{get\-\_\-num\-Burn@{get\-\_\-num\-Burn}!Task@{Task}}
+\subsubsection[{get\-\_\-num\-Burn}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::get\-\_\-num\-Burn (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_task_ad8e737c998840996dac1618f78bd30f8}
+
+
+Definition at line 76 of file Task.\-cpp.
+
+\hypertarget{class_task_aa841a5c8cf5accf00d3b9717e493bf1d}{\index{Task@{Task}!get\-\_\-set\-Systems\-Vec@{get\-\_\-set\-Systems\-Vec}}
+\index{get\-\_\-set\-Systems\-Vec@{get\-\_\-set\-Systems\-Vec}!Task@{Task}}
+\subsubsection[{get\-\_\-set\-Systems\-Vec}]{\setlength{\rightskip}{0pt plus 5cm}void Task\-::get\-\_\-set\-Systems\-Vec (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{set\-Systems}
+\end{DoxyParamCaption}
+)}}\label{class_task_aa841a5c8cf5accf00d3b9717e493bf1d}
+
+
+Definition at line 123 of file Task.\-cpp.
+
+\hypertarget{class_task_a8fd8196de0aa7d4e48d23a6f665903f8}{\index{Task@{Task}!get\-\_\-\-Sigma@{get\-\_\-\-Sigma}}
+\index{get\-\_\-\-Sigma@{get\-\_\-\-Sigma}!Task@{Task}}
+\subsubsection[{get\-\_\-\-Sigma}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::get\-\_\-\-Sigma (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Sigma, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a8fd8196de0aa7d4e48d23a6f665903f8}
+
+
+Definition at line 191 of file Task.\-cpp.
+
+\hypertarget{class_task_acc99a8a705981e3b7a84f0a0ee896c80}{\index{Task@{Task}!get\-\_\-\-Theta\-Vec@{get\-\_\-\-Theta\-Vec}}
+\index{get\-\_\-\-Theta\-Vec@{get\-\_\-\-Theta\-Vec}!Task@{Task}}
+\subsubsection[{get\-\_\-\-Theta\-Vec}]{\setlength{\rightskip}{0pt plus 5cm}void Task\-::get\-\_\-\-Theta\-Vec (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Theta, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_acc99a8a705981e3b7a84f0a0ee896c80}
+
+
+Definition at line 85 of file Task.\-cpp.
+
+\hypertarget{class_task_a10c759df8c4bae272f4212c1f0f79134}{\index{Task@{Task}!make\-\_\-\-Intrinsic\-L\-C@{make\-\_\-\-Intrinsic\-L\-C}}
+\index{make\-\_\-\-Intrinsic\-L\-C@{make\-\_\-\-Intrinsic\-L\-C}!Task@{Task}}
+\subsubsection[{make\-\_\-\-Intrinsic\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::make\-\_\-\-Intrinsic\-L\-C (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{frac\-Intrinsic\-Var, }
+\item[{double}]{frac\-Noise\-To\-Signal, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{unsigned int}]{burn\-Seed, }
+\item[{unsigned int}]{dist\-Seed, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a10c759df8c4bae272f4212c1f0f79134}
+
+
+Definition at line 202 of file Task.\-cpp.
+
+\hypertarget{class_task_ab885ea064a7974c4630a326f810700bd}{\index{Task@{Task}!make\-\_\-\-Observed\-L\-C@{make\-\_\-\-Observed\-L\-C}}
+\index{make\-\_\-\-Observed\-L\-C@{make\-\_\-\-Observed\-L\-C}!Task@{Task}}
+\subsubsection[{make\-\_\-\-Observed\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::make\-\_\-\-Observed\-L\-C (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Cadences, }
+\item[{bool}]{I\-R, }
+\item[{double}]{tol\-I\-R, }
+\item[{double}]{frac\-Intrinsic\-Var, }
+\item[{double}]{frac\-Noise\-To\-Signal, }
+\item[{double $\ast$}]{t, }
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{y, }
+\item[{double $\ast$}]{yerr, }
+\item[{double $\ast$}]{mask, }
+\item[{unsigned int}]{burn\-Seed, }
+\item[{unsigned int}]{dist\-Seed, }
+\item[{unsigned int}]{noise\-Seed, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_ab885ea064a7974c4630a326f810700bd}
+
+
+Definition at line 239 of file Task.\-cpp.
+
+\hypertarget{class_task_a29f9ab809fb5692ae2fd8814815f8b64}{\index{Task@{Task}!print\-\_\-\-System@{print\-\_\-\-System}}
+\index{print\-\_\-\-System@{print\-\_\-\-System}!Task@{Task}}
+\subsubsection[{print\-\_\-\-System}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::print\-\_\-\-System (
+\begin{DoxyParamCaption}
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a29f9ab809fb5692ae2fd8814815f8b64}
+
+
+Definition at line 129 of file Task.\-cpp.
+
+\hypertarget{class_task_a57acc41093d637b76445e8c3b0c16d85}{\index{Task@{Task}!reset\-\_\-\-Task@{reset\-\_\-\-Task}}
+\index{reset\-\_\-\-Task@{reset\-\_\-\-Task}!Task@{Task}}
+\subsubsection[{reset\-\_\-\-Task}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::reset\-\_\-\-Task (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Given, }
+\item[{int}]{q\-Given, }
+\item[{int}]{num\-Burn}
+\end{DoxyParamCaption}
+)}}\label{class_task_a57acc41093d637b76445e8c3b0c16d85}
+
+
+Definition at line 53 of file Task.\-cpp.
+
+\hypertarget{class_task_a957aca6b2ed739372947eec535a152f0}{\index{Task@{Task}!set\-\_\-num\-Burn@{set\-\_\-num\-Burn}}
+\index{set\-\_\-num\-Burn@{set\-\_\-num\-Burn}!Task@{Task}}
+\subsubsection[{set\-\_\-num\-Burn}]{\setlength{\rightskip}{0pt plus 5cm}void Task\-::set\-\_\-num\-Burn (
+\begin{DoxyParamCaption}
+\item[{int}]{num\-Burn}
+\end{DoxyParamCaption}
+)}}\label{class_task_a957aca6b2ed739372947eec535a152f0}
+
+
+Definition at line 77 of file Task.\-cpp.
+
+\hypertarget{class_task_a3a96c9759fc036506571a1374aa0e79c}{\index{Task@{Task}!set\-\_\-\-System@{set\-\_\-\-System}}
+\index{set\-\_\-\-System@{set\-\_\-\-System}!Task@{Task}}
+\subsubsection[{set\-\_\-\-System}]{\setlength{\rightskip}{0pt plus 5cm}int Task\-::set\-\_\-\-System (
+\begin{DoxyParamCaption}
+\item[{double}]{dt, }
+\item[{double $\ast$}]{Theta, }
+\item[{int}]{thread\-Num}
+\end{DoxyParamCaption}
+)}}\label{class_task_a3a96c9759fc036506571a1374aa0e79c}
+
+
+Definition at line 91 of file Task.\-cpp.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/cython/include/\hyperlink{_task_8hpp}{Task.\-hpp}\item 
+/home/vish/code/trunk/cpp/libcarma/cython/src/\hyperlink{_task_8cpp}{Task.\-cpp}\end{DoxyCompactItemize}

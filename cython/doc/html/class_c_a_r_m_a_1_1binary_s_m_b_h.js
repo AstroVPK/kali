@@ -1,0 +1,28 @@
+var class_c_a_r_m_a_1_1binary_s_m_b_h =
+[
+    [ "binarySMBH", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a6cf6e0bede1d58f798da6273750cd90d", null ],
+    [ "binarySMBH", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a9c99af3de599e42901364675ecebe49f", null ],
+    [ "aGW", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#ad32a6f86c4460c3da82789d7dae279c5", null ],
+    [ "aH", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a995de52ad3a5d55aca2d19c21212aaa8", null ],
+    [ "durationInHardState", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#ae3051e9ddfe8d12a84890e1ffbd3eaa4", null ],
+    [ "ejectedMass", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a48d5ce9b2c219dc6dd8321f036995829", null ],
+    [ "getA1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#aef1e3cff1cda9422fc084d86a5adfa86", null ],
+    [ "getA2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a87651fd455460ce8bf9772235bf85f4a", null ],
+    [ "getBeamingFactor1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5926c403ec8c60ca7720d9bdd34c6947", null ],
+    [ "getBeamingFactor2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a20ea2af36378b3edcacb312bada6a684", null ],
+    [ "getBeta1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a6d011db33094577d466ac69545354224", null ],
+    [ "getBeta2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5c25dcd9bc20f4412c12bd35918c4eab", null ],
+    [ "getDopplerFactor1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a3bb857ed74e47c47abfe60827ad58cdf", null ],
+    [ "getDopplerFactor2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a017176138c74d45941d4043c2dfef5d7", null ],
+    [ "getEllipticity", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a0d9cafe27bed9985305b84a083260811", null ],
+    [ "getEpoch", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a2e9d415057dcb192310a68bf3db1d742", null ],
+    [ "getPeriod", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#aae338bc630a93fbcbb0c1623021e726f", null ],
+    [ "getR1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a35203f4c1e7fc0d68f4eb0fbbd9112e4", null ],
+    [ "getR2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#ac992c6780ae47e6451fb8f6dd04b5c09", null ],
+    [ "getRadialBeta1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a4b5e37cd3bf650fd9323cbf1618fce7b", null ],
+    [ "getRadialBeta2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a7a34ee1208184f17376ce2ce35faa80a", null ],
+    [ "getTheta1", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#addb75e48c8ad6c591573723cd769b547", null ],
+    [ "getTheta2", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a8edb8fb9e1b5a8dc38358e083c46dbdf", null ],
+    [ "operator()", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a4a055846bd801871127d5d480bdd568e", null ],
+    [ "setEpoch", "class_c_a_r_m_a_1_1binary_s_m_b_h.html#a29b72b2cf6d548d1e434c9d68c56a6d7", null ]
+];

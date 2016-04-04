@@ -1,0 +1,10 @@
+digraph "python.libcarma.libcarma.task.nwalkers"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="python.libcarma.libcarma.task.nwalkers",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node2 [label="python.libcarma.libcarma.task.fit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classpython_1_1libcarma_1_1libcarma_1_1task.html#a41483bb32afa386c3b39fd99b5e158e5"];
+}

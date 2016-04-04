@@ -1,0 +1,26 @@
+var class_task =
+[
+    [ "Task", "class_task.html#a566e792c22b9a02dd018246dfd4f2c8c", null ],
+    [ "Task", "class_task.html#ae64b05231261ab364ebb22e17f17749d", null ],
+    [ "~Task", "class_task.html#a3ecf499ea35fb4a96853969a1e1cbbce", null ],
+    [ "add_ObservationNoise", "class_task.html#a80d246fe29fbecd58a3cbe687bbf50c1", null ],
+    [ "check_Theta", "class_task.html#a41f8fe9b59b4646004130845d7c6b23c", null ],
+    [ "compute_LnLikelihood", "class_task.html#a370aa8207ebf85de80f5e0a4aa7a5fd8", null ],
+    [ "compute_LnPosterior", "class_task.html#abd5c94a0e5d4d4e29bd81294d5bc0d30", null ],
+    [ "compute_LnPrior", "class_task.html#aa7ba4cfa9ada40fd3e3399fce88fe6df", null ],
+    [ "fit_CARMAModel", "class_task.html#a35b8004ec5a98d8a13ad1f800017a6a3", null ],
+    [ "get_A", "class_task.html#a31db79de0a756c47b7211af91639306b", null ],
+    [ "get_B", "class_task.html#a7b9ac1aba53d3c22158fe9f156fcaecd", null ],
+    [ "get_dt", "class_task.html#a5d98307b92b46ba1b5e86e766414b3ac", null ],
+    [ "get_meanFlux", "class_task.html#add737444d615a0dbfee7505581de5561", null ],
+    [ "get_numBurn", "class_task.html#ad8e737c998840996dac1618f78bd30f8", null ],
+    [ "get_setSystemsVec", "class_task.html#aa841a5c8cf5accf00d3b9717e493bf1d", null ],
+    [ "get_Sigma", "class_task.html#a8fd8196de0aa7d4e48d23a6f665903f8", null ],
+    [ "get_ThetaVec", "class_task.html#acc99a8a705981e3b7a84f0a0ee896c80", null ],
+    [ "make_IntrinsicLC", "class_task.html#a10c759df8c4bae272f4212c1f0f79134", null ],
+    [ "make_ObservedLC", "class_task.html#ab885ea064a7974c4630a326f810700bd", null ],
+    [ "print_System", "class_task.html#a29f9ab809fb5692ae2fd8814815f8b64", null ],
+    [ "reset_Task", "class_task.html#a57acc41093d637b76445e8c3b0c16d85", null ],
+    [ "set_numBurn", "class_task.html#a957aca6b2ed739372947eec535a152f0", null ],
+    [ "set_System", "class_task.html#a3a96c9759fc036506571a1374aa0e79c", null ]
+];

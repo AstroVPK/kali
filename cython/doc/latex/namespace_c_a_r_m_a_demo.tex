@@ -1,0 +1,297 @@
+\hypertarget{namespace_c_a_r_m_a_demo}{\section{C\-A\-R\-M\-A\-Demo Namespace Reference}
+\label{namespace_c_a_r_m_a_demo}\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}}
+}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a1fd1c8854d7c66e2b19f47d6aad706ef}{parser} = argparse.\-Argument\-Parser()
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_ad48924984a4bff8b24fbada6f1e04893}{T} = 3500.\-0
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a8de741bff9b4acb1631129ec80ee8306}{dt} = 0.\-1
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a0bf150d4bd0d4b119fbe66ea9a3f5ebc}{num\-Cadences} = int(\hyperlink{namespace_c_a_r_m_a_demo_ad48924984a4bff8b24fbada6f1e04893}{T}/\hyperlink{namespace_c_a_r_m_a_demo_a8de741bff9b4acb1631129ec80ee8306}{dt})
+\item 
+\hyperlink{namespace_c_a_r_m_a_demo_a856e080e332bfee8400432bcbddadcf4}{I\-R} = False
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a8aa45a54b335d65f54192bc3fa3ba82d}{tol\-I\-R} = 1.\-0e-\/3
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a5054753a3c9b970a8bfd2e6cc5f7ff7d}{frac\-Intrinsic\-Var} = 0.\-1
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a057d9699c5c2efec1048479312949b9c}{frac\-Noise\-To\-Signal} = 1.\-0e-\/18
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a39978964538dce54fa826abcdd34836f}{max\-Sigma} = 2.\-0
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a0168215deb3ab933fe96dc4b55388cee}{min\-Timescale} = 5.\-0e-\/1
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a51a36b647ad9d55160c4fd3ebf5bb629}{max\-Timescale} = 2.\-0
+\item 
+int \hyperlink{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}{p} = 3
+\item 
+int \hyperlink{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}{q} = 1
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a5110720bf5a6c1cf9a737c7ffac9774e}{Theta} = np.\-zeros(\hyperlink{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}{p} + \hyperlink{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}{q} + 1)
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_aa32ceb76d602a0d157916cf91ad6377c}{r\-\_\-1} = -\/0.\-73642081
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_aac6267bad07ea88a21753363b78d8153}{r\-\_\-2} = -\/0.\-01357919
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a514fd8674af7ed60c5c647977b726159}{r\-\_\-3} = -\/0.\-52329875
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a9784ff8e7b9633d4c1cf8d882bf51c9d}{sigma} = 7.\-0e-\/9
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_abc098662555c536fb138b929ca6217fe}{m\-\_\-1} = -\/5.\-83333333
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a0bd7421159653b05873148bf10b1e507}{A\-R\-Poly} = np.\-poly(\mbox{[}\hyperlink{namespace_c_a_r_m_a_demo_aa32ceb76d602a0d157916cf91ad6377c}{r\-\_\-1}, \hyperlink{namespace_c_a_r_m_a_demo_aac6267bad07ea88a21753363b78d8153}{r\-\_\-2}, \hyperlink{namespace_c_a_r_m_a_demo_a514fd8674af7ed60c5c647977b726159}{r\-\_\-3}\mbox{]})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a75c9618722e8c9ed0413797b6ec304eb}{M\-A\-Poly} = \hyperlink{namespace_c_a_r_m_a_demo_a9784ff8e7b9633d4c1cf8d882bf51c9d}{sigma}/np.\-poly(\mbox{[}\hyperlink{namespace_c_a_r_m_a_demo_abc098662555c536fb138b929ca6217fe}{m\-\_\-1}\mbox{]})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a8303626832dad7b21c7f02d3bcd0f092}{new\-Task} = libcarma.\-basic\-Task(\hyperlink{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}{p}, \hyperlink{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}{q}, nwalkers = 20, nsteps = 5)
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}{new\-L\-C} = new\-Task.\-simulate(\hyperlink{namespace_c_a_r_m_a_demo_a0bf150d4bd0d4b119fbe66ea9a3f5ebc}{num\-Cadences})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a4f81958bf384b1670f402eea57d64ebb}{ln\-Prior} = new\-Task.\-log\-Prior(\hyperlink{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}{new\-L\-C})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_adb10228a4680a9d3c21526a3b3255882}{ln\-Likelihood} = new\-Task.\-log\-Likelihood(\hyperlink{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}{new\-L\-C})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_aac99121f005f33a0a43e2daf6480c639}{ln\-Posterior} = new\-Task.\-log\-Posterior(\hyperlink{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}{new\-L\-C})
+\item 
+tuple \hyperlink{namespace_c_a_r_m_a_demo_a4a968eb0ebec9a8a1dd2e0beb557ee70}{x\-Start} = np.\-zeros(\hyperlink{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}{p} + \hyperlink{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}{q} + 1)
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a8b7943e46d7401e7e312db8d3a353363}{r\-\_\-1\-\_\-guess} = -\/0.\-75
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a845035ed251a896d63845939de16a0a6}{r\-\_\-2\-\_\-guess} = -\/0.\-01
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a2e51a245e221cda099201dff37dd968a}{r\-\_\-3\-\_\-guess} = -\/0.\-5
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a00552ce8d2ff001c98731086d3221a4b}{sigma\-\_\-guess} = 7.\-5e-\/9
+\item 
+float \hyperlink{namespace_c_a_r_m_a_demo_a5734b5874a86b8f0eda0a44a74a30fed}{m\-\_\-1\-\_\-guess} = -\/5.\-8
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespace_c_a_r_m_a_demo_a0bd7421159653b05873148bf10b1e507}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!A\-R\-Poly@{A\-R\-Poly}}
+\index{A\-R\-Poly@{A\-R\-Poly}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{A\-R\-Poly}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-A\-R\-Poly = np.\-poly(\mbox{[}{\bf r\-\_\-1}, {\bf r\-\_\-2}, {\bf r\-\_\-3}\mbox{]})}}\label{namespace_c_a_r_m_a_demo_a0bd7421159653b05873148bf10b1e507}
+
+
+Definition at line 36 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a8de741bff9b4acb1631129ec80ee8306}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!dt@{dt}}
+\index{dt@{dt}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{dt}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-dt = 0.\-1}}\label{namespace_c_a_r_m_a_demo_a8de741bff9b4acb1631129ec80ee8306}
+
+
+Definition at line 15 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a5054753a3c9b970a8bfd2e6cc5f7ff7d}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!frac\-Intrinsic\-Var@{frac\-Intrinsic\-Var}}
+\index{frac\-Intrinsic\-Var@{frac\-Intrinsic\-Var}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{frac\-Intrinsic\-Var}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-frac\-Intrinsic\-Var = 0.\-1}}\label{namespace_c_a_r_m_a_demo_a5054753a3c9b970a8bfd2e6cc5f7ff7d}
+
+
+Definition at line 19 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a057d9699c5c2efec1048479312949b9c}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!frac\-Noise\-To\-Signal@{frac\-Noise\-To\-Signal}}
+\index{frac\-Noise\-To\-Signal@{frac\-Noise\-To\-Signal}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{frac\-Noise\-To\-Signal}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-frac\-Noise\-To\-Signal = 1.\-0e-\/18}}\label{namespace_c_a_r_m_a_demo_a057d9699c5c2efec1048479312949b9c}
+
+
+Definition at line 20 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a856e080e332bfee8400432bcbddadcf4}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!I\-R@{I\-R}}
+\index{I\-R@{I\-R}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{I\-R}]{\setlength{\rightskip}{0pt plus 5cm}C\-A\-R\-M\-A\-Demo.\-I\-R = False}}\label{namespace_c_a_r_m_a_demo_a856e080e332bfee8400432bcbddadcf4}
+
+
+Definition at line 17 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_adb10228a4680a9d3c21526a3b3255882}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!ln\-Likelihood@{ln\-Likelihood}}
+\index{ln\-Likelihood@{ln\-Likelihood}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{ln\-Likelihood}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-ln\-Likelihood = new\-Task.\-log\-Likelihood({\bf new\-L\-C})}}\label{namespace_c_a_r_m_a_demo_adb10228a4680a9d3c21526a3b3255882}
+
+
+Definition at line 59 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_aac99121f005f33a0a43e2daf6480c639}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!ln\-Posterior@{ln\-Posterior}}
+\index{ln\-Posterior@{ln\-Posterior}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{ln\-Posterior}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-ln\-Posterior = new\-Task.\-log\-Posterior({\bf new\-L\-C})}}\label{namespace_c_a_r_m_a_demo_aac99121f005f33a0a43e2daf6480c639}
+
+
+Definition at line 61 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a4f81958bf384b1670f402eea57d64ebb}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!ln\-Prior@{ln\-Prior}}
+\index{ln\-Prior@{ln\-Prior}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{ln\-Prior}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-ln\-Prior = new\-Task.\-log\-Prior({\bf new\-L\-C})}}\label{namespace_c_a_r_m_a_demo_a4f81958bf384b1670f402eea57d64ebb}
+
+
+Definition at line 57 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_abc098662555c536fb138b929ca6217fe}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!m\-\_\-1@{m\-\_\-1}}
+\index{m\-\_\-1@{m\-\_\-1}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{m\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-m\-\_\-1 = -\/5.\-83333333}}\label{namespace_c_a_r_m_a_demo_abc098662555c536fb138b929ca6217fe}
+
+
+Definition at line 34 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a5734b5874a86b8f0eda0a44a74a30fed}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!m\-\_\-1\-\_\-guess@{m\-\_\-1\-\_\-guess}}
+\index{m\-\_\-1\-\_\-guess@{m\-\_\-1\-\_\-guess}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{m\-\_\-1\-\_\-guess}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-m\-\_\-1\-\_\-guess = -\/5.\-8}}\label{namespace_c_a_r_m_a_demo_a5734b5874a86b8f0eda0a44a74a30fed}
+
+
+Definition at line 75 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a75c9618722e8c9ed0413797b6ec304eb}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!M\-A\-Poly@{M\-A\-Poly}}
+\index{M\-A\-Poly@{M\-A\-Poly}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{M\-A\-Poly}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-M\-A\-Poly = {\bf sigma}/np.\-poly(\mbox{[}{\bf m\-\_\-1}\mbox{]})}}\label{namespace_c_a_r_m_a_demo_a75c9618722e8c9ed0413797b6ec304eb}
+
+
+Definition at line 37 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a39978964538dce54fa826abcdd34836f}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!max\-Sigma@{max\-Sigma}}
+\index{max\-Sigma@{max\-Sigma}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{max\-Sigma}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-max\-Sigma = 2.\-0}}\label{namespace_c_a_r_m_a_demo_a39978964538dce54fa826abcdd34836f}
+
+
+Definition at line 21 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a51a36b647ad9d55160c4fd3ebf5bb629}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!max\-Timescale@{max\-Timescale}}
+\index{max\-Timescale@{max\-Timescale}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{max\-Timescale}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-max\-Timescale = 2.\-0}}\label{namespace_c_a_r_m_a_demo_a51a36b647ad9d55160c4fd3ebf5bb629}
+
+
+Definition at line 23 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a0168215deb3ab933fe96dc4b55388cee}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!min\-Timescale@{min\-Timescale}}
+\index{min\-Timescale@{min\-Timescale}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{min\-Timescale}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-min\-Timescale = 5.\-0e-\/1}}\label{namespace_c_a_r_m_a_demo_a0168215deb3ab933fe96dc4b55388cee}
+
+
+Definition at line 22 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!new\-L\-C@{new\-L\-C}}
+\index{new\-L\-C@{new\-L\-C}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{new\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-new\-L\-C = new\-Task.\-simulate({\bf num\-Cadences})}}\label{namespace_c_a_r_m_a_demo_a00f90358447346616f81cdf0ba8454e2}
+
+
+Definition at line 53 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a8303626832dad7b21c7f02d3bcd0f092}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!new\-Task@{new\-Task}}
+\index{new\-Task@{new\-Task}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{new\-Task}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-new\-Task = libcarma.\-basic\-Task({\bf p}, {\bf q}, nwalkers = 20, nsteps = 5)}}\label{namespace_c_a_r_m_a_demo_a8303626832dad7b21c7f02d3bcd0f092}
+
+
+Definition at line 47 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a0bf150d4bd0d4b119fbe66ea9a3f5ebc}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!num\-Cadences@{num\-Cadences}}
+\index{num\-Cadences@{num\-Cadences}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{num\-Cadences}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-num\-Cadences = int({\bf T}/{\bf dt})}}\label{namespace_c_a_r_m_a_demo_a0bf150d4bd0d4b119fbe66ea9a3f5ebc}
+
+
+Definition at line 16 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!p@{p}}
+\index{p@{p}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{p}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-Demo.\-p = 3}}\label{namespace_c_a_r_m_a_demo_adf3b3082a9cb9203add8b494f5932ba8}
+
+
+Definition at line 25 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a1fd1c8854d7c66e2b19f47d6aad706ef}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!parser@{parser}}
+\index{parser@{parser}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-parser = argparse.\-Argument\-Parser()}}\label{namespace_c_a_r_m_a_demo_a1fd1c8854d7c66e2b19f47d6aad706ef}
+
+
+Definition at line 11 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!q@{q}}
+\index{q@{q}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{q}]{\setlength{\rightskip}{0pt plus 5cm}int C\-A\-R\-M\-A\-Demo.\-q = 1}}\label{namespace_c_a_r_m_a_demo_a71450e798960cbdb932b7f4721305832}
+
+
+Definition at line 26 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_aa32ceb76d602a0d157916cf91ad6377c}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-1@{r\-\_\-1}}
+\index{r\-\_\-1@{r\-\_\-1}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-1 = -\/0.\-73642081}}\label{namespace_c_a_r_m_a_demo_aa32ceb76d602a0d157916cf91ad6377c}
+
+
+Definition at line 30 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a8b7943e46d7401e7e312db8d3a353363}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-1\-\_\-guess@{r\-\_\-1\-\_\-guess}}
+\index{r\-\_\-1\-\_\-guess@{r\-\_\-1\-\_\-guess}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-1\-\_\-guess}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-1\-\_\-guess = -\/0.\-75}}\label{namespace_c_a_r_m_a_demo_a8b7943e46d7401e7e312db8d3a353363}
+
+
+Definition at line 71 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_aac6267bad07ea88a21753363b78d8153}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-2@{r\-\_\-2}}
+\index{r\-\_\-2@{r\-\_\-2}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-2 = -\/0.\-01357919}}\label{namespace_c_a_r_m_a_demo_aac6267bad07ea88a21753363b78d8153}
+
+
+Definition at line 31 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a845035ed251a896d63845939de16a0a6}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-2\-\_\-guess@{r\-\_\-2\-\_\-guess}}
+\index{r\-\_\-2\-\_\-guess@{r\-\_\-2\-\_\-guess}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-2\-\_\-guess}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-2\-\_\-guess = -\/0.\-01}}\label{namespace_c_a_r_m_a_demo_a845035ed251a896d63845939de16a0a6}
+
+
+Definition at line 72 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a514fd8674af7ed60c5c647977b726159}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-3@{r\-\_\-3}}
+\index{r\-\_\-3@{r\-\_\-3}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-3}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-3 = -\/0.\-52329875}}\label{namespace_c_a_r_m_a_demo_a514fd8674af7ed60c5c647977b726159}
+
+
+Definition at line 32 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a2e51a245e221cda099201dff37dd968a}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!r\-\_\-3\-\_\-guess@{r\-\_\-3\-\_\-guess}}
+\index{r\-\_\-3\-\_\-guess@{r\-\_\-3\-\_\-guess}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{r\-\_\-3\-\_\-guess}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-r\-\_\-3\-\_\-guess = -\/0.\-5}}\label{namespace_c_a_r_m_a_demo_a2e51a245e221cda099201dff37dd968a}
+
+
+Definition at line 73 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a9784ff8e7b9633d4c1cf8d882bf51c9d}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!sigma@{sigma}}
+\index{sigma@{sigma}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{sigma}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-sigma = 7.\-0e-\/9}}\label{namespace_c_a_r_m_a_demo_a9784ff8e7b9633d4c1cf8d882bf51c9d}
+
+
+Definition at line 33 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a00552ce8d2ff001c98731086d3221a4b}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!sigma\-\_\-guess@{sigma\-\_\-guess}}
+\index{sigma\-\_\-guess@{sigma\-\_\-guess}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{sigma\-\_\-guess}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-sigma\-\_\-guess = 7.\-5e-\/9}}\label{namespace_c_a_r_m_a_demo_a00552ce8d2ff001c98731086d3221a4b}
+
+
+Definition at line 74 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_ad48924984a4bff8b24fbada6f1e04893}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!T@{T}}
+\index{T@{T}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{T}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-T = 3500.\-0}}\label{namespace_c_a_r_m_a_demo_ad48924984a4bff8b24fbada6f1e04893}
+
+
+Definition at line 14 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a5110720bf5a6c1cf9a737c7ffac9774e}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!Theta@{Theta}}
+\index{Theta@{Theta}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{Theta}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-Theta = np.\-zeros({\bf p} + {\bf q} + 1)}}\label{namespace_c_a_r_m_a_demo_a5110720bf5a6c1cf9a737c7ffac9774e}
+
+
+Definition at line 28 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a8aa45a54b335d65f54192bc3fa3ba82d}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!tol\-I\-R@{tol\-I\-R}}
+\index{tol\-I\-R@{tol\-I\-R}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{tol\-I\-R}]{\setlength{\rightskip}{0pt plus 5cm}float C\-A\-R\-M\-A\-Demo.\-tol\-I\-R = 1.\-0e-\/3}}\label{namespace_c_a_r_m_a_demo_a8aa45a54b335d65f54192bc3fa3ba82d}
+
+
+Definition at line 18 of file C\-A\-R\-M\-A\-Demo.\-py.
+
+\hypertarget{namespace_c_a_r_m_a_demo_a4a968eb0ebec9a8a1dd2e0beb557ee70}{\index{C\-A\-R\-M\-A\-Demo@{C\-A\-R\-M\-A\-Demo}!x\-Start@{x\-Start}}
+\index{x\-Start@{x\-Start}!CARMADemo@{C\-A\-R\-M\-A\-Demo}}
+\subsubsection[{x\-Start}]{\setlength{\rightskip}{0pt plus 5cm}tuple C\-A\-R\-M\-A\-Demo.\-x\-Start = np.\-zeros({\bf p} + {\bf q} + 1)}}\label{namespace_c_a_r_m_a_demo_a4a968eb0ebec9a8a1dd2e0beb557ee70}
+
+
+Definition at line 69 of file C\-A\-R\-M\-A\-Demo.\-py.
+

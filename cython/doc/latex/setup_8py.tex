@@ -1,0 +1,79 @@
+\hypertarget{setup_8py}{\section{/home/vish/code/trunk/cpp/libcarma/cython/setup.py File Reference}
+\label{setup_8py}\index{/home/vish/code/trunk/cpp/libcarma/cython/setup.\-py@{/home/vish/code/trunk/cpp/libcarma/cython/setup.\-py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacesetup}{setup}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+tuple \hyperlink{namespacesetup_acf0d303c559d8ca52f78fb7970b2de4d}{setup.\-I\-N\-C\-L\-U\-D\-E} = os.\-path.\-join(os.\-environ\mbox{[}'P\-W\-D'\mbox{]}, 'include')
+\item 
+list \hyperlink{namespacesetup_a4b1725ffabf7e972e9416fc047daa758}{setup.\-V\-E\-R\-F\-L\-A\-G\-S} = \mbox{[}'-\/gxx-\/name=g++-\/4.\-8', '-\/std=\hyperlink{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{c}++11'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a94afbb2834cc36eb3a362aec00c4f0bb}{setup.\-C\-P\-P\-F\-L\-A\-G\-S} = \mbox{[}'-\/O3', '-\/x\-Host', '-\/ip', '-\/parallel', '-\/funroll-\/loops', '-\/fno-\/alias', '-\/fno-\/fnalias', '-\/fargument-\/noalias', '-\/fstrict-\/aliasing', '-\/ansi-\/alias', '-\/fno-\/stack-\/protector-\/all', '-\/Wall'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_ad6de2d2793e8dad016a00e201563ff15}{setup.\-A\-L\-I\-G\-H\-F\-L\-A\-G\-S} = \mbox{[}'-\/falign-\/functions'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a356d52830aa81f3e0cfda1095f3162f8}{setup.\-M\-K\-L\-F\-L\-A\-G\-S} = \mbox{[}'-\/qopenmp', '-\/I\$\-M\-K\-L\-R\-O\-O\-T/include', '-\/limf'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_aa0d1a93d0a5a5a10a02c0cac8dbcaa02}{setup.\-O\-M\-P\-F\-L\-A\-G\-S} = \mbox{[}'-\/qopenmp', '-\/qopenmp-\/simd'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_aad0176b2380288a025c0c71db934ee2d}{setup.\-O\-M\-P\-L\-I\-B\-S} = \mbox{[}'-\/liomp5'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_ae8e55c011b0f75d872a51166b37395ae}{setup.\-N\-L\-O\-P\-T\-L\-I\-B\-S} = \mbox{[}'-\/lnlopt'\mbox{]}
+\item 
+tuple \hyperlink{namespacesetup_a09d66ddf3e3c0276fcc930fa2ec73ab2}{setup.\-System} = platform.\-system()
+\item 
+list \hyperlink{namespacesetup_a3ecd92f8e1e53dd6528359a08aee59e9}{setup.\-M\-K\-L\-L\-I\-B\-S} = \mbox{[}'-\/L\$\-M\-K\-L\-R\-O\-O\-T/lib/intel64', '-\/lmkl\-\_\-rt', '-\/lpthread', '-\/lm', '-\/ldl'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a71664edfdcf98a1ed2159a5cb4a7d196}{setup.\-M\-K\-L\-D\-I\-R} = M\-K\-L\-L\-I\-B\-S\mbox{[}0\mbox{]}
+\item 
+list \hyperlink{namespacesetup_aaae7fa8a3db10577b6550c7b841e4669}{setup.\-b\-S\-M\-B\-H\-\_\-source\-List} = \mbox{[}'b\-S\-M\-B\-H.\-pyx', 'binary\-S\-M\-B\-H.\-cpp', 'Constants.\-cpp'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a8e78a501073cfe941c05b388c2e7956e}{setup.\-b\-S\-M\-B\-H\-\_\-\-List} = \mbox{[}os.\-path.\-join(os.\-environ\mbox{[}'P\-W\-D'\mbox{]}, 'src', src\-File) for src\-File in b\-S\-M\-B\-H\-\_\-source\-List\mbox{]}
+\item 
+tuple \hyperlink{namespacesetup_a91a3cd768577c74b324ef9e0fdc8ae24}{setup.\-b\-S\-M\-B\-H\-\_\-ext} = Extension(name='b\-S\-M\-B\-H', sources=b\-S\-M\-B\-H\-\_\-\-List, language='\hyperlink{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{c}++', extra\-\_\-compile\-\_\-args = V\-E\-R\-F\-L\-A\-G\-S + C\-P\-P\-F\-L\-A\-G\-S + A\-L\-I\-G\-H\-F\-L\-A\-G\-S + M\-K\-L\-F\-L\-A\-G\-S + O\-M\-P\-F\-L\-A\-G\-S, include\-\_\-dirs=\mbox{[}I\-N\-C\-L\-U\-D\-E, np.\-get\-\_\-include()\mbox{]}, extra\-\_\-link\-\_\-args = M\-K\-L\-L\-I\-B\-S + N\-L\-O\-P\-T\-L\-I\-B\-S, library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]}, runtime\-\_\-library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]})
+\item 
+list \hyperlink{namespacesetup_a79e06cfe494233c86ded36a5f7852f95}{setup.\-rand\-\_\-source\-List} = \mbox{[}'rand.\-pyx', 'rdrand.\-cpp'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a7c78e16e81c92c4cb8ed8c293b885193}{setup.\-rand\-\_\-\-List} = \mbox{[}os.\-path.\-join(os.\-environ\mbox{[}'P\-W\-D'\mbox{]}, 'src', src\-File) for src\-File in rand\-\_\-source\-List\mbox{]}
+\item 
+tuple \hyperlink{namespacesetup_a72a912c8df91f65b2a80db002d55f4ff}{setup.\-rand\-\_\-ext} = Extension(name='rand', sources=rand\-\_\-\-List, language='\hyperlink{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{c}++', extra\-\_\-compile\-\_\-args = V\-E\-R\-F\-L\-A\-G\-S + C\-P\-P\-F\-L\-A\-G\-S + A\-L\-I\-G\-H\-F\-L\-A\-G\-S + M\-K\-L\-F\-L\-A\-G\-S + O\-M\-P\-F\-L\-A\-G\-S, include\-\_\-dirs=\mbox{[}I\-N\-C\-L\-U\-D\-E, np.\-get\-\_\-include()\mbox{]}, extra\-\_\-link\-\_\-args = M\-K\-L\-L\-I\-B\-S + N\-L\-O\-P\-T\-L\-I\-B\-S, library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]}, runtime\-\_\-library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]})
+\item 
+list \hyperlink{namespacesetup_a76df4fd83158e36d10a07aced7b11e8f}{setup.\-C\-A\-R\-M\-A\-Task\-\_\-source\-List} = \mbox{[}'rdrand.\-cpp', 'Constants.\-cpp', 'L\-C.\-cpp', 'M\-C\-M\-C.\-cpp', 'C\-A\-R\-M\-A.\-cpp', 'Task.\-cpp', 'C\-A\-R\-M\-A\-Task.\-pyx'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_aae98c7021359c0fe9ff337761d5c1dc5}{setup.\-C\-A\-R\-M\-A\-Task\-\_\-\-List} = \mbox{[}os.\-path.\-join(os.\-environ\mbox{[}'P\-W\-D'\mbox{]}, 'src', src\-File) for src\-File in C\-A\-R\-M\-A\-Task\-\_\-source\-List\mbox{]}
+\item 
+tuple \hyperlink{namespacesetup_ab526aa988f441f3a58795affc1d3b7de}{setup.\-C\-A\-R\-M\-A\-Task\-\_\-ext} = Extension(name='C\-A\-R\-M\-A\-Task', sources=C\-A\-R\-M\-A\-Task\-\_\-\-List, language='\hyperlink{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{c}++', extra\-\_\-compile\-\_\-args = V\-E\-R\-F\-L\-A\-G\-S + C\-P\-P\-F\-L\-A\-G\-S + A\-L\-I\-G\-H\-F\-L\-A\-G\-S + M\-K\-L\-F\-L\-A\-G\-S + O\-M\-P\-F\-L\-A\-G\-S, include\-\_\-dirs=\mbox{[}I\-N\-C\-L\-U\-D\-E, np.\-get\-\_\-include()\mbox{]}, extra\-\_\-link\-\_\-args = O\-M\-P\-L\-I\-B\-S + M\-K\-L\-L\-I\-B\-S + N\-L\-O\-P\-T\-L\-I\-B\-S, library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]}, runtime\-\_\-library\-\_\-dirs = \mbox{[}M\-K\-L\-D\-I\-R\mbox{]})
+\item 
+string \hyperlink{namespacesetup_a61de3710bf6c9d78c0afa352263f8b09}{setup.\-name} = 'libcarma'
+\item 
+string \hyperlink{namespacesetup_ab177531e7a80674a3db3de2d79eb8be7}{setup.\-version} = '1.\-0.\-0'
+\item 
+string \hyperlink{namespacesetup_ac83393287a89728d636e4ae9f4ac914f}{setup.\-author} = 'Vishal Pramod Kasliwal'
+\item 
+string \hyperlink{namespacesetup_aa144ac52ed417d5c65d7377e0e75673e}{setup.\-author\-\_\-email} = 'vishal.\-kasliwal@gmail.\-com'
+\item 
+string \hyperlink{namespacesetup_a2d2b97e05b2ec934a59e56cfc0566e8b}{setup.\-maintainer} = 'Vishal Pramod Kasliwal'
+\item 
+string \hyperlink{namespacesetup_a722cbcdb0d00c919cbbdd9ffafc96e74}{setup.\-maintainer\-\_\-email} = 'vishal.\-kasliwal@gmail.\-com'
+\item 
+string \hyperlink{namespacesetup_a3376e8b9735800b5b9e455914cee908d}{setup.\-url} = 'https\-://github.\-com/Astro\-V\-P\-K/libcarma'
+\item 
+string \hyperlink{namespacesetup_ade8aa54df2083113a10326ea2fe7934b}{setup.\-description} = 'Tools to study stochastic light curves'
+\item 
+string \hyperlink{namespacesetup_a005c7e45ae91a23fbf155fca8b6a99d0}{setup.\-long\-\_\-description} = 'Tools to model stochastic light curves as a C-\/A\-R\-M\-A process. Tools also include components to model binary S\-M\-B\-Hs with relativistic beaming.'
+\item 
+string \hyperlink{namespacesetup_ace7471dbb37081610d405f437793b251}{setup.\-download\-\_\-url} = 'https\-://github.\-com/Astro\-V\-P\-K/libcarma'
+\item 
+list \hyperlink{namespacesetup_a2d96dddd66b7833bbb2db38dbbe55a02}{setup.\-classifiers} = \mbox{[}'A\-G\-N', 'C-\/A\-R\-M\-A', 'stochastic', 'binary S\-M\-B\-H'\mbox{]}
+\item 
+list \hyperlink{namespacesetup_a5d7dbf5376a220cd300d93e9a0f48ea4}{setup.\-platforms} = \mbox{[}'Linux', 'Mac O\-S\-X'\mbox{]}
+\item 
+string \hyperlink{namespacesetup_aae5aa7c9d1cf462778a54e8f6a874c6f}{setup.\-license} = 'G\-N\-U G\-E\-N\-E\-R\-A\-L P\-U\-B\-L\-I\-C L\-I\-C\-E\-N\-S\-E, Version 2, June 1991'
+\item 
+tuple \hyperlink{namespacesetup_af330bcdd4c9a596a47b19a6b99efbd53}{setup.\-ext\-\_\-modules} = cythonize(\mbox{[}b\-S\-M\-B\-H\-\_\-ext, rand\-\_\-ext, C\-A\-R\-M\-A\-Task\-\_\-ext\mbox{]})
+\end{DoxyCompactItemize}

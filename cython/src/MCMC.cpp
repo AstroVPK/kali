@@ -491,14 +491,9 @@ void EnsembleSampler::getLnLike(double *LnLikePtr) {
 		}
 	}
 
-void EnsembleSampler::writeChain(string filePath, int mode = 0) {
+/*void EnsembleSampler::writeChain(string filePath, int mode = 0) {
 	ofstream outFile;
 	if (mode == 0) {
-		/*outFile.open(filePath, ios::out | ios::binary | ios::ate);
-		outFile.write(&numDims, 1*sizeof(int));
-		outFile.write(&numWalkers, 1*sizeof(int));
-		outFile.write(&numSteps, 1*sizeof(int));
-		outFile.write(&Chain, sizeChain*sizeof(double));*/
 		} else {
 		outFile.open(filePath);
 		outFile.precision(16);
@@ -517,4 +512,4 @@ void EnsembleSampler::writeChain(string filePath, int mode = 0) {
 			}
 		}
 	outFile.close();
-	}
+	}*/

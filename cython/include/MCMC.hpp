@@ -24,7 +24,7 @@ public:
 	void runMCMC(double* initPos);
 	void getChain(double *ChainPtr);
 	void getLnLike(double *LnLikePtr);
-	void writeChain(string filePath, int mode);
+	//void writeChain(string filePath, int mode);
 	};
 
 #endif

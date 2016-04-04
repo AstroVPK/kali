@@ -1,0 +1,170 @@
+\hypertarget{class_ensemble_sampler}{\section{Ensemble\-Sampler Class Reference}
+\label{class_ensemble_sampler}\index{Ensemble\-Sampler@{Ensemble\-Sampler}}
+}
+
+
+{\ttfamily \#include $<$M\-C\-M\-C.\-hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_ensemble_sampler_a2c9b3046553b31fe5b39792404c8431d}{Ensemble\-Sampler} (int ndims, int nwalkers, int nsteps, int nthreads, double a, double($\ast$func)(double $\ast$x, void $\ast$func\-Args), void $\ast$func\-Args, unsigned int z\-Seed, unsigned int bernoulli\-Seed, unsigned int walker\-Seed)
+\item 
+\hyperlink{class_ensemble_sampler_a3c74a117a85a6230bb48533e88a4cec4}{$\sim$\-Ensemble\-Sampler} ()
+\item 
+void \hyperlink{class_ensemble_sampler_a7673dd0aeca4848f3c4b3591192b606a}{run\-M\-C\-M\-C} (double $\ast$init\-Pos)
+\item 
+void \hyperlink{class_ensemble_sampler_a2d77cd48679a151922838dccf1a0c94f}{get\-Chain} (double $\ast$Chain\-Ptr)
+\item 
+void \hyperlink{class_ensemble_sampler_a008a737b429ec693608968b3b539ddad}{get\-Ln\-Like} (double $\ast$Ln\-Like\-Ptr)
+\item 
+void \hyperlink{class_ensemble_sampler_a653fe4e94639dd1f09883bb5701d9809}{write\-Chain} (string file\-Path, int mode)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 9 of file M\-C\-M\-C.\-hpp.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_ensemble_sampler_a2c9b3046553b31fe5b39792404c8431d}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!Ensemble\-Sampler@{Ensemble\-Sampler}}
+\index{Ensemble\-Sampler@{Ensemble\-Sampler}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{Ensemble\-Sampler}]{\setlength{\rightskip}{0pt plus 5cm}Ensemble\-Sampler\-::\-Ensemble\-Sampler (
+\begin{DoxyParamCaption}
+\item[{int}]{ndims, }
+\item[{int}]{nwalkers, }
+\item[{int}]{nsteps, }
+\item[{int}]{nthreads, }
+\item[{double}]{a, }
+\item[{double($\ast$)(double $\ast$x, void $\ast$func\-Args)}]{func, }
+\item[{void $\ast$}]{func\-Args, }
+\item[{unsigned int}]{z\-Seed, }
+\item[{unsigned int}]{bernoulli\-Seed, }
+\item[{unsigned int}]{walker\-Seed}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a2c9b3046553b31fe5b39792404c8431d}
+First, we make sure we have an even number of walkers. If not, we (silently!) increase the number of walkers by 1. Later, we will add code to make sure we have atleast twice the number of walkers as we have dimensions.
+
+We will store the M\-C\-M\-C result in Chain. Chain is laid out as follows -\/ for each step, we store each dimension of each walker. Chain\mbox{[}dim\-Num + walker\-Num$\ast$num\-Dims + step\-Num$\ast$num\-Dims$\ast$num\-Walkers\mbox{]} contains the value of dimension dim\-Num of walker walker\-Num at step step\-Num. We calculate the size of the Chain required, size\-Chain = num\-Dims$\ast$num\-Walkers$\ast$num\-Steps, and then allocate space to hold Chain.
+
+We need num\-Zs = num\-Walkers$\ast$num\-Steps stretch factors, Z, to move num\-Walkers walkers over num\-Steps steps. After allocating the space required to hold Z, we use the vd\-Rng\-Beta function from the Intel M\-K\-L V\-S\-L to populate Z. To use vd\-Rng\-Beta, we create a V\-S\-L\-\_\-\-B\-R\-N\-G\-\_\-\-S\-F\-M\-T19937 basic random stream and then run vd\-Rng\-Beta with p = 0.\-5, q = 1.\-0, a = 1/a, Beta = (a$^\wedge$2-\/1.0)/a.
+
+If the preprocessor macro W\-R\-I\-T\-E\-\_\-\-Z\-S is set in \hyperlink{_m_c_m_c_8cpp}{M\-C\-M\-C.\-cpp}, we write the Zs out.
+
+If the preprocessor macro W\-R\-I\-T\-E\-\_\-\-W\-A\-L\-K\-E\-R\-S is set in \hyperlink{_m_c_m_c_8cpp}{M\-C\-M\-C.\-cpp}, we write the Walker\-Choices out.
+
+We will have to pick 1 walker from the complimentary ensemble to move each walker from the current ensemble. We allocate an array, walker\-Choice, to hold the indices of the random walkers picked from the complimentary ensemble. We also initialize a random stream that we shall later use to pick our walkers. We will have to make a decision about whether to move the current walker or not. We allocate move\-Yes\-No to hold the result of the decision. We also initialize a random stream that we shall later use to make our choices.
+
+We will store the log likelihoods in an array called Ln\-Like. This way we do not have to re-\/compute the Ln\-Like multiple times for the same point. Ln\-Like\mbox{[}walker\-Num + step\-Num$\ast$num\-Walkers\mbox{]} holds the Ln\-Like of walker walker\-Num at step step\-Num.
+
+We will use num\-Threads number of pointers to access the old and new positions of the current walker(s) and the old position of the complimentary walker.
+
+Definition at line 32 of file M\-C\-M\-C.\-cpp.
+
+\hypertarget{class_ensemble_sampler_a3c74a117a85a6230bb48533e88a4cec4}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!$\sim$\-Ensemble\-Sampler@{$\sim$\-Ensemble\-Sampler}}
+\index{$\sim$\-Ensemble\-Sampler@{$\sim$\-Ensemble\-Sampler}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{$\sim$\-Ensemble\-Sampler}]{\setlength{\rightskip}{0pt plus 5cm}Ensemble\-Sampler\-::$\sim$\-Ensemble\-Sampler (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a3c74a117a85a6230bb48533e88a4cec4}
+
+
+Definition at line 137 of file M\-C\-M\-C.\-cpp.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_ensemble_sampler_a2d77cd48679a151922838dccf1a0c94f}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!get\-Chain@{get\-Chain}}
+\index{get\-Chain@{get\-Chain}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{get\-Chain}]{\setlength{\rightskip}{0pt plus 5cm}void Ensemble\-Sampler\-::get\-Chain (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Chain\-Ptr}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a2d77cd48679a151922838dccf1a0c94f}
+
+
+Definition at line 470 of file M\-C\-M\-C.\-cpp.
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{class_ensemble_sampler_a008a737b429ec693608968b3b539ddad}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!get\-Ln\-Like@{get\-Ln\-Like}}
+\index{get\-Ln\-Like@{get\-Ln\-Like}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{get\-Ln\-Like}]{\setlength{\rightskip}{0pt plus 5cm}void Ensemble\-Sampler\-::get\-Ln\-Like (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{Ln\-Like\-Ptr}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a008a737b429ec693608968b3b539ddad}
+
+
+Definition at line 482 of file M\-C\-M\-C.\-cpp.
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{class_ensemble_sampler_a7673dd0aeca4848f3c4b3591192b606a}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!run\-M\-C\-M\-C@{run\-M\-C\-M\-C}}
+\index{run\-M\-C\-M\-C@{run\-M\-C\-M\-C}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{run\-M\-C\-M\-C}]{\setlength{\rightskip}{0pt plus 5cm}void Ensemble\-Sampler\-::run\-M\-C\-M\-C (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{init\-Pos}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a7673dd0aeca4848f3c4b3591192b606a}
+We begin by computing the Ln\-Like values for our initial walker positions.
+
+We first run a loop over all the steps. Recall that the 0th step is the starting step and we don't want to do anything for that step. As before, k keeps track of the current step.
+
+To enable parallelization, we split our walkers into two subsets indexed by 0 and 1. We will move all the walkers in the current subset, curr\-Sub\-Set, based on randomly chosen walkers in the complimentary subset, comp\-Sub\-Set. We index the subsets using l.
+
+We set curr\-Sub\-Set to point to the current subset and set comp\-Sub\-Set to point to the complimentary subset. If sub\-Set\-Num = 0, we want 1$\ast$size\-Half\-Step. If sub\-Set\-Num = 1, we want 0$\ast$size\-Half\-Step. Use ((l+1)\%2).
+
+Move over walkers in current sub-\/chain
+
+First we get the old position of the current walker.
+
+Pick walker from complimentary ensemble and get the old position of that walker.
+
+Now we get the location of the new position of the current walker.
+
+Calculate the (tentative) new location to walk to.
+
+Now compute the log\-Like at the new location and fetch the Ln\-Like at the old location.
+
+Calculate likelihood of accepting proposal. If both log likelihoods are non-\/neg infinity, calculate it. If the new likelihood is
+
+Actually do a coin toss to test the proposal.
+
+Check the result of the coin toss. Based on the result, either move the walker, or leave it alone. Write out the Ln\-Like to the correct location.
+
+Definition at line 168 of file M\-C\-M\-C.\-cpp.
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{class_ensemble_sampler_a653fe4e94639dd1f09883bb5701d9809}{\index{Ensemble\-Sampler@{Ensemble\-Sampler}!write\-Chain@{write\-Chain}}
+\index{write\-Chain@{write\-Chain}!EnsembleSampler@{Ensemble\-Sampler}}
+\subsubsection[{write\-Chain}]{\setlength{\rightskip}{0pt plus 5cm}void Ensemble\-Sampler\-::write\-Chain (
+\begin{DoxyParamCaption}
+\item[{string}]{file\-Path, }
+\item[{int}]{mode = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{class_ensemble_sampler_a653fe4e94639dd1f09883bb5701d9809}
+
+
+Definition at line 494 of file M\-C\-M\-C.\-cpp.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/vish/code/trunk/cpp/libcarma/cython/include/\hyperlink{_m_c_m_c_8hpp}{M\-C\-M\-C.\-hpp}\item 
+/home/vish/code/trunk/cpp/libcarma/cython/src/\hyperlink{_m_c_m_c_8cpp}{M\-C\-M\-C.\-cpp}\end{DoxyCompactItemize}

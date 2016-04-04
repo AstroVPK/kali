@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['zeromatrix',['zeroMatrix',['../_c_a_r_m_a_8hpp.html#a52e65b8de02410a2382d1c0858c43b25',1,'zeroMatrix(int nRows, int nCols, int *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#acbdde1f5b60f8f09a2561e877f8279e5',1,'zeroMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#aff867598dfd07c509cec6da77c33fb98',1,'zeroMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#a52e65b8de02410a2382d1c0858c43b25',1,'zeroMatrix(int nRows, int nCols, int *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#acbdde1f5b60f8f09a2561e877f8279e5',1,'zeroMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#aff867598dfd07c509cec6da77c33fb98',1,'zeroMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp']]]
+];

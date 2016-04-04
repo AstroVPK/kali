@@ -1,0 +1,273 @@
+\hypertarget{rdrand_8hpp}{\section{/home/vish/code/trunk/cpp/libcarma/cython/include/rdrand.hpp File Reference}
+\label{rdrand_8hpp}\index{/home/vish/code/trunk/cpp/libcarma/cython/include/rdrand.\-hpp@{/home/vish/code/trunk/cpp/libcarma/cython/include/rdrand.\-hpp}}
+}
+{\ttfamily \#include $<$stdint.\-h$>$}\\*
+Include dependency graph for rdrand.\-hpp\-:
+This graph shows which files directly or indirectly include this file\-:
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{rdrand_8hpp_a8e20c349766b3e174dc5e27bd0db79fc}{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S}~1
+\item 
+\#define \hyperlink{rdrand_8hpp_a1dd7849babc67ef0652c6fb0290e1004}{R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y}~-\/1
+\item 
+\#define \hyperlink{rdrand_8hpp_ad131f54060ea28be27c3c7bad0690e78}{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D}~-\/2
+\item 
+\#define \hyperlink{rdrand_8hpp_a9575c78908cc2224ce4413cbd965640c}{R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D}~-\/3
+\item 
+\#define \hyperlink{rdrand_8hpp_a5c08b02f43bf40a193fdfcc838c185cd}{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N}~-\/4
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{rdrand_8hpp_ac0b6836005a9eeaa7fc22e8ec128da4c}{rdrand\-\_\-16} (uint16\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 16-\/bit result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8hpp_ae5322e4aa5e55c40875b980638726001}{rdrand\-\_\-32} (uint32\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 32-\/byte result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8hpp_a2982203449ab462050e54165e8f091db}{rdrand\-\_\-64} (uint64\-\_\-t $\ast$x, int retry)
+\begin{DoxyCompactList}\small\item\em Calls rdrand for a 64-\/byte result. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8hpp_af3417f8f6b25ffb090aa102e4d223c05}{rdrand\-\_\-get\-\_\-n\-\_\-64} (unsigned int n, uint64\-\_\-t $\ast$x)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to obtain multiple 64-\/byte results. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8hpp_a274f8a8206b8113d441df7f4df5f00de}{rdrand\-\_\-get\-\_\-n\-\_\-32} (unsigned int n, uint32\-\_\-t $\ast$x)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to obtain multiple 32-\/byte results. \end{DoxyCompactList}\item 
+int \hyperlink{rdrand_8hpp_a1a468804afabc5a50899235998bd23d6}{rdrand\-\_\-get\-\_\-bytes} (unsigned int n, unsigned char $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Calls rdrand to fill a buffer of arbitrary size with random bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{rdrand_8hpp_a1dd7849babc67ef0652c6fb0290e1004}{\index{rdrand.\-hpp@{rdrand.\-hpp}!R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y@{R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y@{R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-N\-O\-T\-\_\-\-R\-E\-A\-D\-Y~-\/1}}\label{rdrand_8hpp_a1dd7849babc67ef0652c6fb0290e1004}
+The rdrand call was unsuccessful, the hardware was not ready, and a random number was not returned. 
+
+Definition at line 61 of file rdrand.\-hpp.
+
+\hypertarget{rdrand_8hpp_a8e20c349766b3e174dc5e27bd0db79fc}{\index{rdrand.\-hpp@{rdrand.\-hpp}!R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-C\-C\-E\-S\-S~1}}\label{rdrand_8hpp_a8e20c349766b3e174dc5e27bd0db79fc}
+The rdrand call was successful, the hardware was ready, and a random number was returned. 
+
+Definition at line 55 of file rdrand.\-hpp.
+
+\hypertarget{rdrand_8hpp_a5c08b02f43bf40a193fdfcc838c185cd}{\index{rdrand.\-hpp@{rdrand.\-hpp}!R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-\_\-\-U\-N\-K\-N\-O\-W\-N~-\/4}}\label{rdrand_8hpp_a5c08b02f43bf40a193fdfcc838c185cd}
+Whether or not the hardware supports the rdrand instruction is unknown 
+
+Definition at line 76 of file rdrand.\-hpp.
+
+\hypertarget{rdrand_8hpp_ad131f54060ea28be27c3c7bad0690e78}{\index{rdrand.\-hpp@{rdrand.\-hpp}!R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D@{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-S\-U\-P\-P\-O\-R\-T\-E\-D~-\/2}}\label{rdrand_8hpp_ad131f54060ea28be27c3c7bad0690e78}
+The rdrand instruction is supported by the host hardware. 
+
+Definition at line 66 of file rdrand.\-hpp.
+
+\hypertarget{rdrand_8hpp_a9575c78908cc2224ce4413cbd965640c}{\index{rdrand.\-hpp@{rdrand.\-hpp}!R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D@{R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D}}
+\index{R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D@{R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-D\-R\-A\-N\-D\-\_\-\-U\-N\-S\-U\-P\-P\-O\-R\-T\-E\-D~-\/3}}\label{rdrand_8hpp_a9575c78908cc2224ce4413cbd965640c}
+The rdrand instruction is unsupported by the host hardware. 
+
+Definition at line 71 of file rdrand.\-hpp.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{rdrand_8hpp_ac0b6836005a9eeaa7fc22e8ec128da4c}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-16@{rdrand\-\_\-16}}
+\index{rdrand\-\_\-16@{rdrand\-\_\-16}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-16}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-16 (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_ac0b6836005a9eeaa7fc22e8ec128da4c}
+
+
+Calls rdrand for a 16-\/bit result. 
+
+This function calls rdrand requesting a 16-\/bit result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 179 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{rdrand_8hpp_ae5322e4aa5e55c40875b980638726001}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-32@{rdrand\-\_\-32}}
+\index{rdrand\-\_\-32@{rdrand\-\_\-32}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-32}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-32 (
+\begin{DoxyParamCaption}
+\item[{uint32\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_ae5322e4aa5e55c40875b980638726001}
+
+
+Calls rdrand for a 32-\/byte result. 
+
+This function calls rdrand requesting a 32-\/bit result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 209 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8hpp_a2982203449ab462050e54165e8f091db}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-64@{rdrand\-\_\-64}}
+\index{rdrand\-\_\-64@{rdrand\-\_\-64}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-64}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-64 (
+\begin{DoxyParamCaption}
+\item[{uint64\-\_\-t $\ast$}]{x, }
+\item[{int}]{retry}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_a2982203449ab462050e54165e8f091db}
+
+
+Calls rdrand for a 64-\/byte result. 
+
+This function calls rdrand requesting a 64-\/byte result. By default, it will perform only a single call to rdrand, returning success or failure. On success, the data is written to memory pointed to by x. If the int retry is true (non-\/zero), the function will enter a loop with count=10 until rdrand succeeds, at which point it write the random data and return success, or fails This function also ensures that rdrand is supported by the cpu or fails gracefully.
+
+Calling rdrand\-\_\-64 on a 32-\/bit system is inefficient as it makes two calls to rdrand\-\_\-32 to produce a single 64-\/bit value, using a shift to populate the high bits. The physical construction of the D\-R\-N\-G allows you to do this up to a 128-\/bit value while retaining multiplicative prediction resistance (i.\-e., don't do this to generate numbers larger than 128 bits).
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & pointer to memory to store the random result \\
+\hline
+{\em retry} & int to determine whether or not to loop until rdrand succeeds or until 10 failed attempts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 239 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8hpp_a1a468804afabc5a50899235998bd23d6}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-get\-\_\-bytes@{rdrand\-\_\-get\-\_\-bytes}}
+\index{rdrand\-\_\-get\-\_\-bytes@{rdrand\-\_\-get\-\_\-bytes}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-bytes}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-bytes (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{unsigned char $\ast$}]{buffer}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_a1a468804afabc5a50899235998bd23d6}
+
+
+Calls rdrand to fill a buffer of arbitrary size with random bytes. 
+
+This function calls rdrand requesting multiple 64-\/ or 32-\/bit results to fill a buffer of arbitrary size.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & size of the buffer to fill with random bytes \\
+\hline
+{\em buffer} & pointer to memory to store the random result\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+whether or not the call was successful, or supported at all 
+\end{DoxyReturn}
+
+
+Definition at line 307 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+\hypertarget{rdrand_8hpp_a274f8a8206b8113d441df7f4df5f00de}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-get\-\_\-n\-\_\-32@{rdrand\-\_\-get\-\_\-n\-\_\-32}}
+\index{rdrand\-\_\-get\-\_\-n\-\_\-32@{rdrand\-\_\-get\-\_\-n\-\_\-32}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-n\-\_\-32}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-n\-\_\-32 (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{uint32\-\_\-t $\ast$}]{x}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_a274f8a8206b8113d441df7f4df5f00de}
+
+
+Calls rdrand to obtain multiple 32-\/byte results. 
+
+This function calls rdrand requesting multiple 32-\/byte results. On success, the data is written to memory pointed to by x. This function calls rdrand\-\_\-32 and if any of those invocations fail, this function fails. It returns the same values as rdrand\-\_\-32. 
+
+Definition at line 288 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+
+\hypertarget{rdrand_8hpp_af3417f8f6b25ffb090aa102e4d223c05}{\index{rdrand.\-hpp@{rdrand.\-hpp}!rdrand\-\_\-get\-\_\-n\-\_\-64@{rdrand\-\_\-get\-\_\-n\-\_\-64}}
+\index{rdrand\-\_\-get\-\_\-n\-\_\-64@{rdrand\-\_\-get\-\_\-n\-\_\-64}!rdrand.hpp@{rdrand.\-hpp}}
+\subsubsection[{rdrand\-\_\-get\-\_\-n\-\_\-64}]{\setlength{\rightskip}{0pt plus 5cm}int rdrand\-\_\-get\-\_\-n\-\_\-64 (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{n, }
+\item[{uint64\-\_\-t $\ast$}]{x}
+\end{DoxyParamCaption}
+)}}\label{rdrand_8hpp_af3417f8f6b25ffb090aa102e4d223c05}
+
+
+Calls rdrand to obtain multiple 64-\/byte results. 
+
+This function calls rdrand requesting multiple 64-\/byte results. On success, the data is written to memory pointed to by x. This function calls rdrand\-\_\-64 and if any of those invocations fail, this function fails. It returns the same values as rdrand\-\_\-64.
+
+This function is inefficient on 32-\/bit systems. 
+
+Definition at line 269 of file rdrand.\-cpp.
+
+
+
+Here is the call graph for this function\-:
+
+
+
+
+Here is the caller graph for this function\-:
+
+

@@ -1,0 +1,212 @@
+\hypertarget{_constants_8cpp}{\section{/home/vish/code/trunk/cpp/libcarma/cython/src/\-Constants.cpp File Reference}
+\label{_constants_8cpp}\index{/home/vish/code/trunk/cpp/libcarma/cython/src/\-Constants.\-cpp@{/home/vish/code/trunk/cpp/libcarma/cython/src/\-Constants.\-cpp}}
+}
+{\ttfamily \#include $<$cmath$>$}\\*
+{\ttfamily \#include $<$mathimf.\-h$>$}\\*
+{\ttfamily \#include $<$complex$>$}\\*
+{\ttfamily \#include \char`\"{}Constants.\-hpp\char`\"{}}\\*
+Include dependency graph for Constants.\-cpp\-:
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+complex$<$ double $>$ \hyperlink{_constants_8cpp_a60965ce7302347a2e697391416a29cca}{complex\-Zero} (0.\-0, 0.\-0)
+\item 
+complex$<$ double $>$ \hyperlink{_constants_8cpp_aa8578dabbff8c9dad78c162665c32af8}{complex\-One} (1.\-0, 0.\-0)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{_constants_8cpp_a31c17cc321db72d5ab448b71ea92792f}{pi} = 3.\-1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+\item 
+double \hyperlink{_constants_8cpp_a18bbe41d56bab00212fd0e8e733e9f1f}{pi\-Sq} = pow(\hyperlink{_constants_8cpp_a31c17cc321db72d5ab448b71ea92792f}{pi}, 2.\-0)
+\item 
+double \hyperlink{_constants_8cpp_ab17e17fb32b792781b807505e7f60c9c}{e} = 2.\-71828182845904523536028747135266249775724709369995
+\item 
+double \hyperlink{_constants_8cpp_a5ce1018aef28e71271ae3b4431210720}{infinite\-Val} = H\-U\-G\-E\-\_\-\-V\-A\-L
+\item 
+double \hyperlink{_constants_8cpp_a67783a2c4f670ee5a9dadcf428324d32}{G} = 6.\-67408e-\/11
+\item 
+double \hyperlink{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{c} = 299792458.\-0
+\item 
+double \hyperlink{_constants_8cpp_a8497a2d27908c87901466c9de72ff8d8}{A\-U} = 1.\-4960e11
+\item 
+double \hyperlink{_constants_8cpp_a2e08042cd1e7eb1861e7115f34fa3acb}{Parsec} = 3.\-0857e16
+\item 
+double \hyperlink{_constants_8cpp_a187ad5035a30f1230f63152e677791ba}{Day} = 86164.\-090530833
+\item 
+double \hyperlink{_constants_8cpp_aa2047f98d2c2eecb4bfe0d2bd43ac10e}{Year} = 31557600.\-0
+\item 
+double \hyperlink{_constants_8cpp_ade81fa2dde12779958f5cafad2d62a6f}{kms} = 1.\-0e3
+\item 
+double \hyperlink{_constants_8cpp_ada9035453156e0ae346332fde905c274}{Solar\-Mass} = 1.\-98855e30
+\item 
+double \hyperlink{_constants_8cpp_a798a374e513280a7d37661626aab93d5}{Solar\-Mass\-Per\-Cubic\-Parsec} = \hyperlink{_constants_8cpp_ada9035453156e0ae346332fde905c274}{Solar\-Mass}/pow(\hyperlink{_constants_8cpp_a2e08042cd1e7eb1861e7115f34fa3acb}{Parsec}, 3.\-0)
+\item 
+double \hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time} = 6.\-019802903
+\item 
+double \hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time} = 0.\-5189485261
+\item 
+int \hyperlink{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}{num\-Integrations\-S\-C} = 9
+\item 
+int \hyperlink{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}{num\-Integrations\-L\-C} = 270
+\item 
+double \hyperlink{_constants_8cpp_a3b68866972010d697c2f9e3def43a8c4}{sampling\-Interval\-S\-C} = (\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}{num\-Integrations\-S\-C}
+\item 
+double \hyperlink{_constants_8cpp_a7eec0eac1517df1522a3775fc44ddf7d}{sampling\-Interval\-L\-C} = (\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}{num\-Integrations\-L\-C}
+\item 
+double \hyperlink{_constants_8cpp_abae737372bcd2caafbf77434f3b0ed97}{sampling\-Frequency\-S\-C} = 1.\-0/((\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}{num\-Integrations\-S\-C})
+\item 
+double \hyperlink{_constants_8cpp_a102f4d453dc44d0a812bde4a0c8c19c8}{sampling\-Frequency\-L\-C} = 1.\-0/((\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}{num\-Integrations\-L\-C})
+\item 
+double \hyperlink{_constants_8cpp_a29c58ec25452277c1661f674327a77a4}{Nyquist\-Frequency\-S\-C} = \hyperlink{_constants_8cpp_abae737372bcd2caafbf77434f3b0ed97}{sampling\-Frequency\-S\-C}/2.\-0
+\item 
+double \hyperlink{_constants_8cpp_a598be37cc4a0d559305212b7e8c21045}{Nyquist\-Frequency\-L\-C} = \hyperlink{_constants_8cpp_a102f4d453dc44d0a812bde4a0c8c19c8}{sampling\-Frequency\-L\-C}/2.\-0
+\item 
+double \hyperlink{_constants_8cpp_ad273a878a46f52a8c720ef7eae03ae4f}{sec\-Per\-Sidereal\-Day} = 86164.\-090530833
+\item 
+double \hyperlink{_constants_8cpp_ad55d7bc1d7b5c686f6197b02498e4eaf}{sc\-Cadence} = (\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}{num\-Integrations\-S\-C}
+\item 
+double \hyperlink{_constants_8cpp_ac18142dbc207474c073432f4b28424b9}{lc\-Cadence} = (\hyperlink{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{integration\-Time}+\hyperlink{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{read\-Time})$\ast$\hyperlink{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}{num\-Integrations\-L\-C}
+\item 
+double \hyperlink{_constants_8cpp_a6a5210c2bcb5149c1073568e5c8d6599}{log2\-Of\-E} = log2(\hyperlink{_constants_8cpp_ab17e17fb32b792781b807505e7f60c9c}{e})
+\item 
+double \hyperlink{_constants_8cpp_a2b27190acf3cc471e389bb8173544658}{log2\-Pi} = log2(2.\-0$\ast$\hyperlink{_constants_8cpp_a31c17cc321db72d5ab448b71ea92792f}{pi})/\hyperlink{_constants_8cpp_a6a5210c2bcb5149c1073568e5c8d6599}{log2\-Of\-E}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{_constants_8cpp_aa8578dabbff8c9dad78c162665c32af8}{\index{Constants.\-cpp@{Constants.\-cpp}!complex\-One@{complex\-One}}
+\index{complex\-One@{complex\-One}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{complex\-One}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$ complex\-One (
+\begin{DoxyParamCaption}
+\item[{1.}]{0, }
+\item[{0.}]{0}
+\end{DoxyParamCaption}
+)}}\label{_constants_8cpp_aa8578dabbff8c9dad78c162665c32af8}
+\hypertarget{_constants_8cpp_a60965ce7302347a2e697391416a29cca}{\index{Constants.\-cpp@{Constants.\-cpp}!complex\-Zero@{complex\-Zero}}
+\index{complex\-Zero@{complex\-Zero}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{complex\-Zero}]{\setlength{\rightskip}{0pt plus 5cm}complex$<$double$>$ complex\-Zero (
+\begin{DoxyParamCaption}
+\item[{0.}]{0, }
+\item[{0.}]{0}
+\end{DoxyParamCaption}
+)}}\label{_constants_8cpp_a60965ce7302347a2e697391416a29cca}
+
+
+\subsection{Variable Documentation}
+\hypertarget{_constants_8cpp_a8497a2d27908c87901466c9de72ff8d8}{\index{Constants.\-cpp@{Constants.\-cpp}!A\-U@{A\-U}}
+\index{A\-U@{A\-U}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{A\-U}]{\setlength{\rightskip}{0pt plus 5cm}double A\-U = 1.\-4960e11}}\label{_constants_8cpp_a8497a2d27908c87901466c9de72ff8d8}
+
+
+Definition at line 27 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}{\index{Constants.\-cpp@{Constants.\-cpp}!c@{c}}
+\index{c@{c}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{c}]{\setlength{\rightskip}{0pt plus 5cm}double c = 299792458.\-0}}\label{_constants_8cpp_a2c09e929a6ea340fc9653cca414b11d3}
+
+
+Definition at line 26 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_a187ad5035a30f1230f63152e677791ba}{\index{Constants.\-cpp@{Constants.\-cpp}!Day@{Day}}
+\index{Day@{Day}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Day}]{\setlength{\rightskip}{0pt plus 5cm}double Day = 86164.\-090530833}}\label{_constants_8cpp_a187ad5035a30f1230f63152e677791ba}
+
+
+Definition at line 30 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_ab17e17fb32b792781b807505e7f60c9c}{\index{Constants.\-cpp@{Constants.\-cpp}!e@{e}}
+\index{e@{e}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{e}]{\setlength{\rightskip}{0pt plus 5cm}double e = 2.\-71828182845904523536028747135266249775724709369995}}\label{_constants_8cpp_ab17e17fb32b792781b807505e7f60c9c}
+\hypertarget{_constants_8cpp_a67783a2c4f670ee5a9dadcf428324d32}{\index{Constants.\-cpp@{Constants.\-cpp}!G@{G}}
+\index{G@{G}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{G}]{\setlength{\rightskip}{0pt plus 5cm}double G = 6.\-67408e-\/11}}\label{_constants_8cpp_a67783a2c4f670ee5a9dadcf428324d32}
+
+
+Definition at line 25 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_a5ce1018aef28e71271ae3b4431210720}{\index{Constants.\-cpp@{Constants.\-cpp}!infinite\-Val@{infinite\-Val}}
+\index{infinite\-Val@{infinite\-Val}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{infinite\-Val}]{\setlength{\rightskip}{0pt plus 5cm}double infinite\-Val = H\-U\-G\-E\-\_\-\-V\-A\-L}}\label{_constants_8cpp_a5ce1018aef28e71271ae3b4431210720}
+\hypertarget{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}{\index{Constants.\-cpp@{Constants.\-cpp}!integration\-Time@{integration\-Time}}
+\index{integration\-Time@{integration\-Time}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{integration\-Time}]{\setlength{\rightskip}{0pt plus 5cm}double integration\-Time = 6.\-019802903}}\label{_constants_8cpp_a6a9e5bbdf108936466078a267b5acd51}
+\hypertarget{_constants_8cpp_ade81fa2dde12779958f5cafad2d62a6f}{\index{Constants.\-cpp@{Constants.\-cpp}!kms@{kms}}
+\index{kms@{kms}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{kms}]{\setlength{\rightskip}{0pt plus 5cm}double kms = 1.\-0e3}}\label{_constants_8cpp_ade81fa2dde12779958f5cafad2d62a6f}
+\hypertarget{_constants_8cpp_ac18142dbc207474c073432f4b28424b9}{\index{Constants.\-cpp@{Constants.\-cpp}!lc\-Cadence@{lc\-Cadence}}
+\index{lc\-Cadence@{lc\-Cadence}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{lc\-Cadence}]{\setlength{\rightskip}{0pt plus 5cm}double lc\-Cadence = ({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-L\-C}}}\label{_constants_8cpp_ac18142dbc207474c073432f4b28424b9}
+\hypertarget{_constants_8cpp_a6a5210c2bcb5149c1073568e5c8d6599}{\index{Constants.\-cpp@{Constants.\-cpp}!log2\-Of\-E@{log2\-Of\-E}}
+\index{log2\-Of\-E@{log2\-Of\-E}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{log2\-Of\-E}]{\setlength{\rightskip}{0pt plus 5cm}double log2\-Of\-E = log2({\bf e})}}\label{_constants_8cpp_a6a5210c2bcb5149c1073568e5c8d6599}
+\hypertarget{_constants_8cpp_a2b27190acf3cc471e389bb8173544658}{\index{Constants.\-cpp@{Constants.\-cpp}!log2\-Pi@{log2\-Pi}}
+\index{log2\-Pi@{log2\-Pi}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{log2\-Pi}]{\setlength{\rightskip}{0pt plus 5cm}double log2\-Pi = log2(2.\-0$\ast${\bf pi})/{\bf log2\-Of\-E}}}\label{_constants_8cpp_a2b27190acf3cc471e389bb8173544658}
+\hypertarget{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}{\index{Constants.\-cpp@{Constants.\-cpp}!num\-Integrations\-L\-C@{num\-Integrations\-L\-C}}
+\index{num\-Integrations\-L\-C@{num\-Integrations\-L\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{num\-Integrations\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}int num\-Integrations\-L\-C = 270}}\label{_constants_8cpp_a045a70c6ff8d3041c66cb29263a0f815}
+\hypertarget{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}{\index{Constants.\-cpp@{Constants.\-cpp}!num\-Integrations\-S\-C@{num\-Integrations\-S\-C}}
+\index{num\-Integrations\-S\-C@{num\-Integrations\-S\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{num\-Integrations\-S\-C}]{\setlength{\rightskip}{0pt plus 5cm}int num\-Integrations\-S\-C = 9}}\label{_constants_8cpp_aeab23e8ce3743c4e554e657ce55c5305}
+\hypertarget{_constants_8cpp_a598be37cc4a0d559305212b7e8c21045}{\index{Constants.\-cpp@{Constants.\-cpp}!Nyquist\-Frequency\-L\-C@{Nyquist\-Frequency\-L\-C}}
+\index{Nyquist\-Frequency\-L\-C@{Nyquist\-Frequency\-L\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Nyquist\-Frequency\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}double Nyquist\-Frequency\-L\-C = {\bf sampling\-Frequency\-L\-C}/2.\-0}}\label{_constants_8cpp_a598be37cc4a0d559305212b7e8c21045}
+\hypertarget{_constants_8cpp_a29c58ec25452277c1661f674327a77a4}{\index{Constants.\-cpp@{Constants.\-cpp}!Nyquist\-Frequency\-S\-C@{Nyquist\-Frequency\-S\-C}}
+\index{Nyquist\-Frequency\-S\-C@{Nyquist\-Frequency\-S\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Nyquist\-Frequency\-S\-C}]{\setlength{\rightskip}{0pt plus 5cm}double Nyquist\-Frequency\-S\-C = {\bf sampling\-Frequency\-S\-C}/2.\-0}}\label{_constants_8cpp_a29c58ec25452277c1661f674327a77a4}
+\hypertarget{_constants_8cpp_a2e08042cd1e7eb1861e7115f34fa3acb}{\index{Constants.\-cpp@{Constants.\-cpp}!Parsec@{Parsec}}
+\index{Parsec@{Parsec}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Parsec}]{\setlength{\rightskip}{0pt plus 5cm}double Parsec = 3.\-0857e16}}\label{_constants_8cpp_a2e08042cd1e7eb1861e7115f34fa3acb}
+
+
+Definition at line 28 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_a31c17cc321db72d5ab448b71ea92792f}{\index{Constants.\-cpp@{Constants.\-cpp}!pi@{pi}}
+\index{pi@{pi}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{pi}]{\setlength{\rightskip}{0pt plus 5cm}double pi = 3.\-1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679}}\label{_constants_8cpp_a31c17cc321db72d5ab448b71ea92792f}
+\hypertarget{_constants_8cpp_a18bbe41d56bab00212fd0e8e733e9f1f}{\index{Constants.\-cpp@{Constants.\-cpp}!pi\-Sq@{pi\-Sq}}
+\index{pi\-Sq@{pi\-Sq}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{pi\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}double pi\-Sq = pow({\bf pi}, 2.\-0)}}\label{_constants_8cpp_a18bbe41d56bab00212fd0e8e733e9f1f}
+\hypertarget{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}{\index{Constants.\-cpp@{Constants.\-cpp}!read\-Time@{read\-Time}}
+\index{read\-Time@{read\-Time}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{read\-Time}]{\setlength{\rightskip}{0pt plus 5cm}double read\-Time = 0.\-5189485261}}\label{_constants_8cpp_abd52f1ed1ece35cffe3fc3e4180ca0f3}
+\hypertarget{_constants_8cpp_a102f4d453dc44d0a812bde4a0c8c19c8}{\index{Constants.\-cpp@{Constants.\-cpp}!sampling\-Frequency\-L\-C@{sampling\-Frequency\-L\-C}}
+\index{sampling\-Frequency\-L\-C@{sampling\-Frequency\-L\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sampling\-Frequency\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}double sampling\-Frequency\-L\-C = 1.\-0/(({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-L\-C})}}\label{_constants_8cpp_a102f4d453dc44d0a812bde4a0c8c19c8}
+\hypertarget{_constants_8cpp_abae737372bcd2caafbf77434f3b0ed97}{\index{Constants.\-cpp@{Constants.\-cpp}!sampling\-Frequency\-S\-C@{sampling\-Frequency\-S\-C}}
+\index{sampling\-Frequency\-S\-C@{sampling\-Frequency\-S\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sampling\-Frequency\-S\-C}]{\setlength{\rightskip}{0pt plus 5cm}double sampling\-Frequency\-S\-C = 1.\-0/(({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-S\-C})}}\label{_constants_8cpp_abae737372bcd2caafbf77434f3b0ed97}
+\hypertarget{_constants_8cpp_a7eec0eac1517df1522a3775fc44ddf7d}{\index{Constants.\-cpp@{Constants.\-cpp}!sampling\-Interval\-L\-C@{sampling\-Interval\-L\-C}}
+\index{sampling\-Interval\-L\-C@{sampling\-Interval\-L\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sampling\-Interval\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}double sampling\-Interval\-L\-C = ({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-L\-C}}}\label{_constants_8cpp_a7eec0eac1517df1522a3775fc44ddf7d}
+\hypertarget{_constants_8cpp_a3b68866972010d697c2f9e3def43a8c4}{\index{Constants.\-cpp@{Constants.\-cpp}!sampling\-Interval\-S\-C@{sampling\-Interval\-S\-C}}
+\index{sampling\-Interval\-S\-C@{sampling\-Interval\-S\-C}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sampling\-Interval\-S\-C}]{\setlength{\rightskip}{0pt plus 5cm}double sampling\-Interval\-S\-C = ({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-S\-C}}}\label{_constants_8cpp_a3b68866972010d697c2f9e3def43a8c4}
+\hypertarget{_constants_8cpp_ad55d7bc1d7b5c686f6197b02498e4eaf}{\index{Constants.\-cpp@{Constants.\-cpp}!sc\-Cadence@{sc\-Cadence}}
+\index{sc\-Cadence@{sc\-Cadence}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sc\-Cadence}]{\setlength{\rightskip}{0pt plus 5cm}double sc\-Cadence = ({\bf integration\-Time}+{\bf read\-Time})$\ast${\bf num\-Integrations\-S\-C}}}\label{_constants_8cpp_ad55d7bc1d7b5c686f6197b02498e4eaf}
+\hypertarget{_constants_8cpp_ad273a878a46f52a8c720ef7eae03ae4f}{\index{Constants.\-cpp@{Constants.\-cpp}!sec\-Per\-Sidereal\-Day@{sec\-Per\-Sidereal\-Day}}
+\index{sec\-Per\-Sidereal\-Day@{sec\-Per\-Sidereal\-Day}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{sec\-Per\-Sidereal\-Day}]{\setlength{\rightskip}{0pt plus 5cm}double sec\-Per\-Sidereal\-Day = 86164.\-090530833}}\label{_constants_8cpp_ad273a878a46f52a8c720ef7eae03ae4f}
+\hypertarget{_constants_8cpp_ada9035453156e0ae346332fde905c274}{\index{Constants.\-cpp@{Constants.\-cpp}!Solar\-Mass@{Solar\-Mass}}
+\index{Solar\-Mass@{Solar\-Mass}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Solar\-Mass}]{\setlength{\rightskip}{0pt plus 5cm}double Solar\-Mass = 1.\-98855e30}}\label{_constants_8cpp_ada9035453156e0ae346332fde905c274}
+
+
+Definition at line 32 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_a798a374e513280a7d37661626aab93d5}{\index{Constants.\-cpp@{Constants.\-cpp}!Solar\-Mass\-Per\-Cubic\-Parsec@{Solar\-Mass\-Per\-Cubic\-Parsec}}
+\index{Solar\-Mass\-Per\-Cubic\-Parsec@{Solar\-Mass\-Per\-Cubic\-Parsec}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Solar\-Mass\-Per\-Cubic\-Parsec}]{\setlength{\rightskip}{0pt plus 5cm}double Solar\-Mass\-Per\-Cubic\-Parsec = {\bf Solar\-Mass}/pow({\bf Parsec}, 3.\-0)}}\label{_constants_8cpp_a798a374e513280a7d37661626aab93d5}
+
+
+Definition at line 34 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
+\hypertarget{_constants_8cpp_aa2047f98d2c2eecb4bfe0d2bd43ac10e}{\index{Constants.\-cpp@{Constants.\-cpp}!Year@{Year}}
+\index{Year@{Year}!Constants.cpp@{Constants.\-cpp}}
+\subsubsection[{Year}]{\setlength{\rightskip}{0pt plus 5cm}double Year = 31557600.\-0}}\label{_constants_8cpp_aa2047f98d2c2eecb4bfe0d2bd43ac10e}
+
+
+Definition at line 29 of file binary\-S\-M\-B\-H\-Demo.\-py.
+
