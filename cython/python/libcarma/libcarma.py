@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""	Module to implement a class that holds light curves.
+"""	Module to perform basic C-ARMA modelling.
 
 	For a demonstration of the module, please run the module as a command line program eg.
-	bash-prompt$ python lc.py --help
+	bash-prompt$ python libcarma.py --help
 	and
-	bash-prompt$ python lc.py
+	bash-prompt$ python libcarma.py
 """
 
 import numpy as np
@@ -17,7 +17,17 @@ import lib.rand as rand
 import lib.CARMATask as CARMATask
 
 class epoch(object):
+	"""!
+	\anchor epoch_
+	
+	\brief Class to hold individual epochs of a light curve.
+	
+	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs.
+	"""
 	def __init__(self, t, x, y, yerr, mask):
+		"""!
+		\brief Initialize the epoch.
+		"""
 		self.t = t
 		self.x = x
 		self.y = y
@@ -25,20 +35,32 @@ class epoch(object):
 		self.mask = mask
 
 	def __repr__(self):
+		"""!
+		\brief Return a representation of the epoch such that eval(repr(someEpoch)) == someEpoch is True.
+		"""
 		return u"libcarma.epoch(%f, %f, %f, %f, %f)"%(self.t, self.x, self.y, self.yerr, self.mask)
 
 	def __str__(self):
+		"""!
+		\brief Return a human readable representation of the epoch.
+		"""
 		if self.mask == 1.0:
 			return r't = %f MJD; intrinsic flux = %+f; observed flux = %+f; observed flux error = %+f'%(self.t, self.x, self.y, self.yerr)
 		else:
 			return r't = %f MJD; no data!'%(self.t)
 
 	def __eq__(self, other):
+		"""!
+		\brief Check for equality.
+		"""
 		if type(other) is type(self):
 			return self.__dict__ == other.__dict__
 		return False
 
 	def __neq__(self, other):
+		"""!
+		\brief Check for inequality.
+		"""
 		if self == other:
 			return False
 		else:
