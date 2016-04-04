@@ -54,7 +54,7 @@ class epoch(object):
 		\brief Check for equality.
 		"""
 		if type(other) is type(self):
-			return self.__dict__ == other.__dict__
+			return self.t == other.t
 		return False
 
 	def __neq__(self, other):
