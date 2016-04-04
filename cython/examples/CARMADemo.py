@@ -4,10 +4,13 @@ import time
 import pdb
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
+import argparse as argparse
 
-import libcarma
-import rand
-import CARMATask
+import python.libcarma.libcarma as libcarma
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
+
 
 T = 3500.0
 dt = 0.1
@@ -42,7 +45,7 @@ Theta[4] = MAPoly[1]
 
 print "Theta: " + str(Theta)
 
-newTask = libcarma.basicTask(p,q)#, nwalkers = 20, nsteps = 5)
+newTask = libcarma.basicTask(p, q, nwalkers = 20, nsteps = 5)
 
 newTask.set(dt, Theta)
 
@@ -69,7 +72,7 @@ xStart = np.zeros(p + q + 1) # This must be guessed but things are not too sensi
 r_1_guess = -0.75+0j
 r_2_guess = -0.01+0j
 r_3_guess = -0.5+0j
-sigma_guess = np.std(newLC.y)
+sigma_guess = 7.5e-9
 m_1_guess = -5.8
 
 ARPoly = np.poly([r_1_guess, r_2_guess, r_3_guess])
@@ -93,4 +96,5 @@ plt.scatter(newTask.Chain[0,:,newTask.nsteps/2:newTask.nsteps], newTask.Chain[1,
 
 plt.show()
 
-pdb.set_trace()
+if args.pdb:
+	pdb.set_trace()

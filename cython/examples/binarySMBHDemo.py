@@ -14,7 +14,7 @@ import scipy.optimize as opt
 import pdb
 
 from python.util.mpl_settings import *
-import bSMBH
+import lib.bSMBH as bSMBH
 
 LabelSize = plot_params['LabelXLarge']
 AxisSize = plot_params['AxisLarge']
