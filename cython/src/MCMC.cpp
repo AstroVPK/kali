@@ -490,26 +490,3 @@ void EnsembleSampler::getLnLike(double *LnLikePtr) {
 		LnLikePtr[i] = Ptr2LnLike[i];
 		}
 	}
-
-/*void EnsembleSampler::writeChain(string filePath, int mode = 0) {
-	ofstream outFile;
-	if (mode == 0) {
-		} else {
-		outFile.open(filePath);
-		outFile.precision(16);
-		outFile << "nsteps: " << numSteps << endl;
-		outFile << "nwalkers: " << numWalkers << endl;
-		outFile << "ndim: " << numDims << endl;
-		for (int stepNum = 0; stepNum < numSteps; stepNum++) {
-			for (int walkerNum = 0; walkerNum < numWalkers; walkerNum++) {
-				outFile << noshowpos << scientific << "stepNum: " << stepNum << "; walkerNum: " << walkerNum << "; ";
-				for (int dimNum = 0; dimNum < numDims; dimNum++) {
-					outFile << showpos << scientific << Chain[dimNum + walkerNum*numDims + stepNum*numWalkers*numDims] << " ";
-					}
-				outFile << showpos << scientific << LnLike[walkerNum + stepNum*numWalkers];
-				outFile << endl;
-				}
-			}
-		}
-	outFile.close();
-	}*/
