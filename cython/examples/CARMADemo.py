@@ -10,6 +10,7 @@ import libcarma
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
+args = parser.parse_args()
 
 T = 3500.0
 dt = 0.1
