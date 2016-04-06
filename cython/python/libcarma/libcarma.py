@@ -215,7 +215,7 @@ class lc(object):
 		"""!
 		\brief Return a representation of the lc such that eval(repr(someLC)) == someLC is True.
 		"""
-		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._IR, self._tolIR, self.t_incr, self._fracIntrinsicVar, self._fracSignalToNoise, self._maxSigma, self._minTimescale, self._maxTimescale)
+		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._dt, self._IR, self._tolIR, self._fracIntrinsicVar, self._fracNoiseToSignal, self._maxSigma, self._minTimescale, self._maxTimescale)
 
 	def __str__(self):
 		"""!
@@ -225,7 +225,7 @@ class lc(object):
 		line += 'IR (Irregularly sampled): %s\n'%(self._IR)
 		line += 'tolIR (Tolerance for irregularity): %f\n'%(self._tolIR)
 		line += 'fracIntrinsicVar (Intrinsic variability fraction): %f\n'%(self._fracIntrinsicVar)
-		line += 'fracNoiseToSignal (Noise to signal fraction): %f\n'%(self._fracSignalToNoise)
+		line += 'fracNoiseToSignal (Noise to signal fraction): %f\n'%(self._fracNoiseToSignal)
 		line += 'maxSigma (Maximum allowed sigma multiplier): %f\n'%(self._maxSigma)
 		line += 'minTimescale (Minimum allowed timescale factor): %f\n'%(self._minTimescale)
 		line += 'maxTimescale (Maximum allowed timescale factor): %f\n'%(self._maxTimescale)
