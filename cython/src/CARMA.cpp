@@ -1417,16 +1417,16 @@ void CARMA::setCARMA(double *ThetaIn) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			A[rowCtr + colCtr*p].real(0.0);
-			A[rowCtr + colCtr*p].imag(0.0);
+			A[rowCtr + colCtr*p] = complexZero;
+			//A[rowCtr + colCtr*p].imag(0.0);
 			}
 		}
 
-	A[0].real(-1.0*Theta[0]);
+	A[0] = -1.0*complexOne*Theta[0];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i].real(-1.0*Theta[i]);
-		A[i*p + (i - 1)].real(1.0);
+		A[i] = -1.0*complexOne*Theta[i];
+		A[i*p + (i - 1)] = complexOne;
 		}
 
 	cblas_zcopy(pSq, A, 1, ACopy, 1); // Copy A into ACopy so that we can keep a clean working version of it.
