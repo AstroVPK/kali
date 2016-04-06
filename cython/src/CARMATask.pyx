@@ -46,6 +46,7 @@ cdef extern from 'Task.hpp':
 		double compute_LnPrior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
 		double compute_LnLikelihood(int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
 		double compute_LnPosterior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
+		void compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum)
 		int fit_CARMAModel(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior)
 
 cdef class lc:
@@ -240,6 +241,13 @@ cdef class CARMATask:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.compute_LnPosterior(numCadences, IR, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_ACVF(self, numLags, np.ndarray[double, ndim=1, mode='c'] Lags not None, np.ndarray[double, ndim=1, mode='c'] ACVF not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		self.thisptr.compute_ACVF(numLags, &Lags[0], &ACVF[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

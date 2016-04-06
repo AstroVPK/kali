@@ -142,6 +142,7 @@ public:
 	void addNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
+	void computeACVF(int numLags, double *Lags, double* ACVF);
 	};
 
 struct LnLikeArgs {

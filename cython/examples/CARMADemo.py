@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import argparse as argparse
 
-import python.libcarma.libcarma as libcarma
+import libcarma
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
@@ -50,6 +50,11 @@ newTask.set(dt, Theta)
 
 print "Sigma[0]: %e"%(math.sqrt(newTask.Sigma()[0,0]))
 
+Lags, ACVF = newTask.acvf(1.0e-4, 1.0e4, 10000, spacing = 'log')
+
+plt.figure(1)
+plt.plot(np.log10(Lags), ACVF)
+
 newLC = newTask.simulate(numCadences)
 
 newTask.observe(newLC)
@@ -87,12 +92,12 @@ print "xStart: " + str(xStart)
 
 newTask.fit(newLC, xStart)
 
-plt.figure(1)
+plt.figure(2)
 plt.plot(newLC.t, newLC.x, color = '#7570b3', zorder = 5, label = r'Intrinsic LC: $\ln \mathcal{L} = %+e$'%(lnLikelihood))
 plt.errorbar(newLC.t, newLC.y, newLC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, label = r'Observed LC: $\ln \mathcal{P} = %+e$'%(lnPosterior))
 plt.legend()
 
-plt.figure(2)
+plt.figure(3)
 plt.scatter(newTask.Chain[0,:,newTask.nsteps/2:newTask.nsteps], newTask.Chain[1,:,newTask.nsteps/2:newTask.nsteps], c = np.max(newTask.LnPosterior[:,newTask.nsteps/2:newTask.nsteps]) - newTask.LnPosterior[:,newTask.nsteps/2:newTask.nsteps], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
 
 plt.show()

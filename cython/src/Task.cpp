@@ -354,6 +354,10 @@ using namespace std;
 		return LnPosterior;
 		}
 
+	void Task::compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum) {
+		Systems[threadNum].computeACVF(numLags, Lags, ACVF);
+		}
+
 	int Task::fit_CARMAModel(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;

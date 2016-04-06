@@ -615,6 +615,17 @@ class task(object):
 			tnum = 0
 		return self._taskCython.compute_LnPosterior(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 
+	def acvf(self, start = 0.0, stop = 100.0, num = 100, endpoint = True, base  = 10.0, spacing = 'linear'):
+		if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:
+			lags = np.logspace(np.log10(start)/np.log10(base), np.log10(stop)/np.log10(base), num  = num, endpoint = endpoint, base = base)
+		elif spacing.lower() in ['linear', 'lin']:
+			lags = np.linspace(start, stop, num  = num, endpoint = endpoint)
+		else:
+			raise RuntimeError('Unable to parse spacing')
+		acvfs = np.zeros(num)
+		self._taskCython.compute_ACVF(num, lags, acvfs)
+		return lags, acvfs
+
 	def fit(self, observedLC, xStart, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:

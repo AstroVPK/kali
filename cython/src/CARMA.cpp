@@ -48,6 +48,7 @@
 //#define DEBUG_CALCLNPOSTERIOR2
 //#define DEBUG_CALCCARMALNLIKE
 //#define DEBUG_COMPUTELNPRIOR
+//#define DEBUG_COMPUTEACVF
 
 using namespace std;
 
@@ -2219,4 +2220,209 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		#endif
 
 	return LnPrior;
+	}
+
+void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
+	#ifdef DEBUG_COMPUTEACVF
+	int threadNum = omp_get_thread_num();
+	#endif
+	complex<double> alpha = complexOne, beta = complexZero;
+	complex<double> *expw_acvf = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>), 64));
+	double T = 0.0, *F_acvf = static_cast<double*>(_mm_malloc(pSq*sizeof(double), 64));
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			expw_acvf[rowCtr + p*colCtr] = complexZero;
+			F_acvf[rowCtr + p*colCtr] = 0.0;
+			}
+		}
+
+	#ifdef DEBUG_COMPUTEACVF
+	printf("computeACVF - threadNum: %d; Address of System: %p\n",threadNum,this);
+	printf("\n");
+	#endif
+
+	for (int lagNum = 0; lagNum < numLags; ++lagNum) {
+
+		T = Lags[lagNum];
+
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("T: %+8.7e", T);
+		#endif
+	
+		#pragma omp simd
+		for (int i = 0; i < p; ++i) {
+			expw_acvf[i + i*p] = exp(T*w[i]);
+			}
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; expw_acvf = exp(w*T)\n",threadNum);
+		viewMatrix(p,p,expw_acvf);
+		printf("\n");
+		#endif
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; vr (Before)\n",threadNum);
+		viewMatrix(p,p,vr);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; expw_acvf (Before)\n",threadNum);
+		viewMatrix(p,p,expw);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; ACopy = vr*expw_acvf (Before)\n",threadNum);
+		viewMatrix(p,p,ACopy);
+		printf("\n");
+		#endif
+	
+		cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw_acvf, p, &beta, ACopy, p);
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; vr (After)\n",threadNum);
+		viewMatrix(p,p,vr);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; expw_acvf (After)\n",threadNum);
+		viewMatrix(p,p,expw_acvf);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; ACopy = vr*expw_acvf (After)\n",threadNum);
+		viewMatrix(p,p,ACopy);
+		printf("\n");
+		#endif
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; ACopy (Before)\n",threadNum);
+		viewMatrix(p,p,ACopy);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; vrInv (Before)\n",threadNum);
+		viewMatrix(p,p,vrInv);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; AScratch = ACopy*vrInv (Before)\n",threadNum);
+		viewMatrix(p,p,AScratch);
+		printf("\n");
+		#endif
+	
+		cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; ACopy (After)\n",threadNum);
+		viewMatrix(p,p,ACopy);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; vrInv (After)\n",threadNum);
+		viewMatrix(p,p,vrInv);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; AScratch = aCopy*vrInv (After)\n",threadNum);
+		viewMatrix(p,p,AScratch);
+		printf("\n");
+		#endif
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; AScratch (Before)\n",threadNum);
+		viewMatrix(p,p,AScratch);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; F_acvf = AScratch.real() (Before)\n",threadNum);
+		viewMatrix(p,p,F_acvf);
+		printf("\n");
+		#endif
+	
+		for (int colCtr = 0; colCtr < p; ++colCtr) {
+			#pragma omp simd
+			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+				F_acvf[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
+				}
+			}
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; AScratch (After)\n",threadNum);
+		viewMatrix(p,p,AScratch);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; F_acvf = AScratch.real() (After)\n",threadNum);
+		viewMatrix(p,p,F_acvf);
+		printf("\n");
+		#endif
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; F_acvf (Before)\n",threadNum);
+		viewMatrix(p,p,F_acvf);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; Sigma (Before)\n",threadNum);
+		viewMatrix(p,p,Sigma);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; MScratch = F_acvf*Sigma (Before)\n",threadNum);
+		viewMatrix(p,p,MScratch);
+		printf("\n");
+		#endif
+	
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F_acvf, p, Sigma, p, 0.0, MScratch, p);
+	
+		#ifdef DEBUG_COMPUTEACVF
+		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
+		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			printf("%+8.7e ",Theta[dimNum]);
+			}
+		printf("\n");
+		printf("computeACVF - threadNum: %d; F_acvf (After)\n",threadNum);
+		viewMatrix(p,p,F_acvf);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; Sigma (After)\n",threadNum);
+		viewMatrix(p,p,Sigma);
+		printf("\n");
+		printf("computeACVF - threadNum: %d; MScratch = F_acvf*Sigma (After)\n",threadNum);
+		viewMatrix(p,p,MScratch);
+		printf("\n");
+		#endif
+
+		ACVF[lagNum] = MScratch[0];
+		}
+	if (expw_acvf) {
+		_mm_free(expw_acvf);
+		expw_acvf = nullptr;
+		}
+	if (F_acvf) {
+		_mm_free(F_acvf);
+		F_acvf = nullptr;
+		}
 	}
