@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: Namespace Members</title>
+<title>libcarma: Namespace Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -106,7 +101,7 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -117,54 +112,22 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html','');});
 
 <div class="contents">
 &#160;<ul>
-<li>burnSystem()
-: <a class="el" href="namespace_kalman_fast.html#a773a341412a385d39ed10ce68dd87bb0">KalmanFast</a>
+<li>animate()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#aaa2c7ffa13452e185262237c6242e2cc">binarySMBHDemo</a>
 </li>
-<li>burnSystemFixed()
-: <a class="el" href="namespace_kalman_fast.html#aa3688eda0919f31279971be1007f5ceb">KalmanFast</a>
+<li>d2r()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3c9dabd3a2711aba2cebebc9d48b7e25">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a.html#a996a0d2fc3d77e9708ee4371edc12353">CARMA</a>
 </li>
-<li>checkParams()
-: <a class="el" href="namespace_kalman_fast.html#a93baa236856614fff1114e942663c940">KalmanFast</a>
+<li>init()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a33ff1bc707fd0b6d5c62b03c5db2eaf0">binarySMBHDemo</a>
 </li>
-<li>fixedIntervalSmoother()
-: <a class="el" href="namespace_kalman_fast.html#a4becb61d8d27132af8940ddf2717f13a">KalmanFast</a>
+<li>KeplerEqn()
+: <a class="el" href="namespace_c_a_r_m_a.html#abb121c1094fa8828355a1c3240d19706">CARMA</a>
 </li>
-<li>getLnLike()
-: <a class="el" href="namespace_kalman_fast.html#aff10a690431ea74c678c101767811865">KalmanFast</a>
-</li>
-<li>getLnLikeMissing()
-: <a class="el" href="namespace_kalman_fast.html#aa58a01d0dc5d786acd10e70f29572750">KalmanFast</a>
-</li>
-<li>getResiduals()
-: <a class="el" href="namespace_kalman_fast.html#a9bd7e9be6130240320b671d5b4926a23">KalmanFast</a>
-</li>
-<li>MAD()
-: <a class="el" href="namespace_final_analysis.html#aa2936d2049a535da38d4b9777acc0e22">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#ab8d32e5943f6391d1de1d360f78a4e1c">PlotARMARegions</a>
-</li>
-<li>makeSystem()
-: <a class="el" href="namespace_kalman_fast.html#a2e58cd85931f067069622355623d60f7">KalmanFast</a>
-</li>
-<li>obsSystem()
-: <a class="el" href="namespace_kalman_fast.html#acf131e0bf3988ca746748906158dc85f">KalmanFast</a>
-</li>
-<li>obsSystemFixed()
-: <a class="el" href="namespace_kalman_fast.html#a2ca9007cfa54c66b77cabd70e599395e">KalmanFast</a>
-</li>
-<li>obsSystemFixedMissing()
-: <a class="el" href="namespace_kalman_fast.html#ab15297ce7c869d9c749f8ac170fc091e">KalmanFast</a>
-</li>
-<li>obsSystemMissing()
-: <a class="el" href="namespace_kalman_fast.html#a742169bce77d3a99ff5806e4bff223ee">KalmanFast</a>
-</li>
-<li>set_plot_params()
-: <a class="el" href="namespacempl__settings.html#a0d7883b3b39d3ab7ed7382a9688ac9e3">mpl_settings</a>
-</li>
-<li>setSystem()
-: <a class="el" href="namespace_kalman_fast.html#a599ed523e7fcf7ac22112248d8a31c4d">KalmanFast</a>
-</li>
-<li>setSystemDiffuse()
-: <a class="el" href="namespace_kalman_fast.html#a308c13060d7fef2e08c668baa4f5c3fb">KalmanFast</a>
+<li>r2d()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#af52a3980407a0804ce8abebc7d68f63f">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a.html#aad8874276a3916cd43ace9c2d7a6321a">CARMA</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -172,7 +135,7 @@ $(document).ready(function(){initNavTree('namespacemembers_func.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

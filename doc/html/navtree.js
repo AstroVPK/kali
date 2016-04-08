@@ -1,8 +1,6 @@
 var NAVTREE =
 [
-  [ "CARMA Analysis", "index.html", [
-    [ "libcarma", "md__home_vish_code_trunk_cpp_libcarma__r_e_a_d_m_e.html", null ],
-    [ "Bug List", "bug.html", null ],
+  [ "libcarma", "index.html", [
     [ "Namespaces", null, [
       [ "Namespace List", "namespaces.html", "namespaces" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -16,10 +14,9 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ],
-        [ "Related Functions", "functions_rela.html", null ]
+        [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -28,6 +25,7 @@ var NAVTREE =
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
         [ "Variables", "globals_vars.html", null ],
+        [ "Typedefs", "globals_type.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -36,9 +34,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_acquire_8cpp.html",
-"_kalman_fast_8py.html#a4becb61d8d27132af8940ddf2717f13a",
-"class_universe.html#ad2f27b03dcb666cb1e5f00840f3cffe2"
+"_c_a_r_m_a_8cpp.html",
+"class_c_a_r_m_a.html#a8dab0a97d457c89d11727fcc664fd3f3",
+"rand_8cpp.html#ac9efdaac9411d0868b715edccca3269d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

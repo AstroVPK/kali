@@ -1,12 +1,14 @@
 var searchData=
 [
-  ['e',['e',['../_constants_8hpp.html#ab17e17fb32b792781b807505e7f60c9c',1,'e():&#160;Constants.hpp'],['../_constants_8cpp.html#ab17e17fb32b792781b807505e7f60c9c',1,'e():&#160;Constants.cpp']]],
-  ['elfile',['eLFile',['../namespace_get_all_data.html#aaf35a1611b07a1bc49bb090dccfaef8e',1,'GetAllData']]],
-  ['elfileline',['eLFileLine',['../namespace_get_all_data.html#acc2308c98b84b6b6eebcc695fff211ef',1,'GetAllData']]],
-  ['ensemblesampler',['EnsembleSampler',['../class_ensemble_sampler.html',1,'EnsembleSampler'],['../class_ensemble_sampler.html#a2c9b3046553b31fe5b39792404c8431d',1,'EnsembleSampler::EnsembleSampler()']]],
-  ['epochlistfile',['epochListFile',['../namespace_get_all_data.html#ac9174f2a0b0215a84e06e5f8a4f5e5e6',1,'GetAllData']]],
-  ['epochtoindex',['epochToindex',['../class_kepler_obj.html#ac57d999ff4bdb6cbcfc710803d034cc1',1,'KeplerObj::epochToindex(double epoch)'],['../class_kepler_obj.html#a707be7b6de877f1d4a66f022f5f7b08e',1,'KeplerObj::epochToindex(vector&lt; double &gt; epochList)']]],
-  ['equatorial',['Equatorial',['../class_equatorial.html',1,'Equatorial'],['../class_universe.html#a0480ccbf91fcb415696ba466a7ae1401',1,'Universe::Equatorial()'],['../class_equatorial.html#a8310993e702bce92cfd908751fb6d17c',1,'Equatorial::Equatorial()=default'],['../class_equatorial.html#a559465c0a50bd1d463a394eeb834bf04',1,'Equatorial::Equatorial(array&lt; double, 3 &gt; pos)']]],
-  ['exists',['exists',['../_utilities_8hpp.html#a93b1964ec39c086d2cbca290ae8b53d2',1,'exists(const string &amp;filename):&#160;Utilities.cpp'],['../_utilities_8cpp.html#a93b1964ec39c086d2cbca290ae8b53d2',1,'exists(const string &amp;filename):&#160;Utilities.cpp']]],
-  ['expm',['expm',['../_c_a_r_m_a_8hpp.html#ad5f1fe67cce97ae78b89def2e0f76da7',1,'expm(double xi, double *out):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#ad5f1fe67cce97ae78b89def2e0f76da7',1,'expm(double xi, double *out):&#160;CARMA.cpp']]]
+  ['d2r',['d2r',['../namespacebinary_s_m_b_h_demo.html#a3c9dabd3a2711aba2cebebc9d48b7e25',1,'binarySMBHDemo.d2r()'],['../namespace_c_a_r_m_a.html#a996a0d2fc3d77e9708ee4371edc12353',1,'CARMA::d2r()']]],
+  ['data',['Data',['../struct_ln_like_args.html#a33ec0460f0aa72e9ad2f044780005dcf',1,'LnLikeArgs']]],
+  ['day',['Day',['../namespacebinary_s_m_b_h_demo.html#a3027d7c41b68c3e159cd590cfd049a3b',1,'binarySMBHDemo.Day()'],['../_constants_8hpp.html#a187ad5035a30f1230f63152e677791ba',1,'Day():&#160;binarySMBHDemo.py'],['../_constants_8cpp.html#a187ad5035a30f1230f63152e677791ba',1,'Day():&#160;binarySMBHDemo.py']]],
+  ['dealloccarma',['deallocCARMA',['../class_c_a_r_m_a.html#af850b7e2ba5af3ae028aacfc0891b830',1,'CARMA']]],
+  ['description',['description',['../namespacesetup.html#ade8aa54df2083113a10326ea2fe7934b',1,'setup']]],
+  ['df1',['dF1',['../namespacebinary_s_m_b_h_demo.html#ab815347908d059a21ee85559443c6f13',1,'binarySMBHDemo']]],
+  ['df2',['dF2',['../namespacebinary_s_m_b_h_demo.html#acc3053039cda3bee07fd61431f0ff2d6',1,'binarySMBHDemo']]],
+  ['download_5furl',['download_url',['../namespacesetup.html#ace7471dbb37081610d405f437793b251',1,'setup']]],
+  ['dt',['dt',['../class_l_c_data.html#ad53e36c32c3fa363ef1f3d79e51f0bbf',1,'LCData::dt()'],['../classpython_1_1libcarma_1_1libcarma_1_1lc.html#a6c3bde750b398c74442d76d89844378c',1,'python.libcarma.libcarma.lc.dt()'],['../classpython_1_1libcarma_1_1libcarma_1_1task.html#af21382fcabf13ecdbd3837509ab82f3d',1,'python.libcarma.libcarma.task.dt()'],['../namespacebinary_s_m_b_h_demo.html#a0e8710373f07d4050517407141858465',1,'binarySMBHDemo.dt()'],['../namespace_c_a_r_m_a_demo.html#a8de741bff9b4acb1631129ec80ee8306',1,'CARMADemo.dt()']]],
+  ['dtime',['dtime',['../_c_a_r_m_a_8hpp.html#a7a7718261954382ab26f32dae64bf3f4',1,'dtime():&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#a7a7718261954382ab26f32dae64bf3f4',1,'dtime():&#160;CARMA.cpp']]],
+  ['durationinhardstate',['durationInHardState',['../class_c_a_r_m_a_1_1binary_s_m_b_h.html#ae3051e9ddfe8d12a84890e1ffbd3eaa4',1,'CARMA::binarySMBH']]]
 ];

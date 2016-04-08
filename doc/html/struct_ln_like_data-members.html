@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: Member List</title>
+<title>libcarma: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -101,7 +96,7 @@ $(document).ready(function(){initNavTree('struct_ln_like_data.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -118,8 +113,18 @@ $(document).ready(function(){initNavTree('struct_ln_like_data.html','');});
 
 <p>This is the complete list of members for <a class="el" href="struct_ln_like_data.html">LnLikeData</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#a51c6e3bd71666d529910318735f0df21">mask</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#a06edae26098d8ccd31a18fa0995fed86">numPts</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#a883ba357c5e5a7eff7fb9a25f130a0e7">fracIntrinsicVar</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#a9d90bcfebe1eec966719b8c0febb7dc7">fracNoiseToSignal</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#af49dc41383840c47d9e03c154c510912">IR</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#a51c6e3bd71666d529910318735f0df21">mask</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#ae30e91660af267721f78434f5e771293">maxSigma</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#ab1c1eb4d8e84c78b1b76849adfd0aeb8">maxTimescale</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#a429a07a037a45e99a52c0c9e6193b23d">minTimescale</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#a825ffbe1d96bd9f1c913ed95c83fd8de">numCadences</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#a5b1bf48c4b998b85df9c381974e65f93">t</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#acbb8573027fb54b1d207c126a64c49c9">t_incr</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#a0fcbb2527d414cc2b0fe576a7a61f45c">tolIR</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#afd71e6e5c9f90880038586d6f4e705fe">x</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="struct_ln_like_data.html#ac75cc1e68fffac23d841e09f927a0a53">y</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="struct_ln_like_data.html#a54330ef049f623a902d04f58e5aee208">yerr</a></td><td class="entry"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
@@ -127,7 +132,7 @@ $(document).ready(function(){initNavTree('struct_ln_like_data.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

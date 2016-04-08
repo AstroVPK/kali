@@ -1,11 +1,20 @@
 var searchData=
 [
-  ['basepath',['basePath',['../namespace_initial_analysis.html#a462d97ae58744d7f39a0a11f5a4f7642',1,'InitialAnalysis']]],
-  ['bestfile',['bestFile',['../namespace_final_analysis.html#a2990113fcd9a31e44606ce17d678f9fb',1,'FinalAnalysis']]],
-  ['bestfilepath',['bestFilePath',['../namespace_final_analysis.html#a8286808e6828d6957c0b9b9159314b08',1,'FinalAnalysis']]],
-  ['binmax',['binMax',['../namespace_final_analysis.html#ae53b90e1254d309f41585c93c7d59100',1,'FinalAnalysis']]],
-  ['binwidth',['binWidth',['../namespace_final_analysis.html#ac252eee289b29b77df2090f24e7f6dfb',1,'FinalAnalysis']]],
-  ['bug_20list',['Bug List',['../bug.html',1,'']]],
-  ['burnsystem',['burnSystem',['../class_c_a_r_m_a.html#a684661827088a58ccc3131184e7506ba',1,'CARMA::burnSystem()'],['../namespace_kalman_fast.html#a773a341412a385d39ed10ce68dd87bb0',1,'KalmanFast.burnSystem()']]],
-  ['burnsystemfixed',['burnSystemFixed',['../namespace_kalman_fast.html#aa3688eda0919f31279971be1007f5ceb',1,'KalmanFast']]]
+  ['a',['A',['../namespacebinary_s_m_b_h_demo.html#a701565d4b7826c9a6c79feb760267d69',1,'binarySMBHDemo.A()'],['../namespacerand_demo.html#a473eba4c6c70e86ff3527361c634c491',1,'randDemo.A()']]],
+  ['add_5fobservationnoise',['add_ObservationNoise',['../class_task.html#a80d246fe29fbecd58a3cbe687bbf50c1',1,'Task']]],
+  ['addnoise',['addNoise',['../class_c_a_r_m_a.html#a8dab0a97d457c89d11727fcc664fd3f3',1,'CARMA']]],
+  ['agw',['aGW',['../class_c_a_r_m_a_1_1binary_s_m_b_h.html#ad32a6f86c4460c3da82789d7dae279c5',1,'CARMA::binarySMBH']]],
+  ['ah',['aH',['../class_c_a_r_m_a_1_1binary_s_m_b_h.html#a995de52ad3a5d55aca2d19c21212aaa8',1,'CARMA::binarySMBH']]],
+  ['alighflags',['ALIGHFLAGS',['../namespacesetup.html#ad6de2d2793e8dad016a00e201563ff15',1,'setup']]],
+  ['alloccarma',['allocCARMA',['../class_c_a_r_m_a.html#a6f96e596ba4a66b3f9eb7234292ad1d0',1,'CARMA']]],
+  ['anim',['anim',['../namespacebinary_s_m_b_h_demo.html#af404de73f4c2e94eb4a0a3253e350e56',1,'binarySMBHDemo']]],
+  ['animate',['animate',['../namespacebinary_s_m_b_h_demo.html#aaa2c7ffa13452e185262237c6242e2cc',1,'binarySMBHDemo']]],
+  ['annotatesize',['AnnotateSize',['../namespacebinary_s_m_b_h_demo.html#a3ab3ad088d56421712dc63fcecbbd080',1,'binarySMBHDemo']]],
+  ['args',['args',['../namespacebinary_s_m_b_h_demo.html#a0681eb689082a253783319c9ad29abc6',1,'binarySMBHDemo.args()'],['../namespacerand_demo.html#a8fff5e177582984d2e62972f20ae502c',1,'randDemo.args()']]],
+  ['arpoly',['ARPoly',['../namespace_c_a_r_m_a_demo.html#a0bd7421159653b05873148bf10b1e507',1,'CARMADemo']]],
+  ['au',['AU',['../namespacebinary_s_m_b_h_demo.html#a2ad6e51c36a32ffe33b3384e27ebe378',1,'binarySMBHDemo.AU()'],['../_constants_8hpp.html#a8497a2d27908c87901466c9de72ff8d8',1,'AU():&#160;binarySMBHDemo.py'],['../_constants_8cpp.html#a8497a2d27908c87901466c9de72ff8d8',1,'AU():&#160;binarySMBHDemo.py']]],
+  ['author',['author',['../namespacesetup.html#ac83393287a89728d636e4ae9f4ac914f',1,'setup']]],
+  ['author_5femail',['author_email',['../namespacesetup.html#aa144ac52ed417d5c65d7377e0e75673e',1,'setup']]],
+  ['ax1',['ax1',['../namespacebinary_s_m_b_h_demo.html#ab1c5e5f1ec42e9833566bac273380470',1,'binarySMBHDemo']]],
+  ['axissize',['AxisSize',['../namespacebinary_s_m_b_h_demo.html#ab529335bcc305d4d0e7f0af5059c8d6b',1,'binarySMBHDemo']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: Class Members - Functions</title>
+<title>libcarma: Class Members - Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -86,11 +81,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
-      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
+      <li><a href="#index__"><span>_</span></a></li>
       <li><a href="#index_a"><span>a</span></a></li>
       <li><a href="#index_b"><span>b</span></a></li>
       <li><a href="#index_c"><span>c</span></a></li>
@@ -99,14 +94,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_f"><span>f</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
       <li><a href="#index_i"><span>i</span></a></li>
-      <li><a href="#index_k"><span>k</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
+      <li><a href="#index_m"><span>m</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
       <li><a href="#index_o"><span>o</span></a></li>
+      <li><a href="#index_p"><span>p</span></a></li>
+      <li><a href="#index_q"><span>q</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
       <li><a href="#index_s"><span>s</span></a></li>
       <li><a href="#index_t"><span>t</span></a></li>
-      <li><a href="#index_u"><span>u</span></a></li>
       <li><a href="#index_w"><span>w</span></a></li>
+      <li><a href="#index_x"><span>x</span></a></li>
       <li class="current"><a href="#index_~"><span>~</span></a></li>
     </ul>
   </div>
@@ -130,7 +128,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -142,21 +140,69 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <div class="contents">
 &#160;
 
+<h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
+<li>__eq__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1epoch.html#a1fd52b701f3c509ee5f0bd9f2431db17">python.libcarma.libcarma.epoch</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a0bd6ef26a6db8d90d6feb317f7478b92">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#af41200b3fedc615736fa2efdc0e9fead">python.libcarma.libcarma.task</a>
+</li>
+<li>__getitem__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a02254d5c689328df4270e68a16db8d96">python.libcarma.libcarma.lc</a>
+</li>
+<li>__init__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1basic_l_c.html#a8ca92acb17f4331e03d78a24e868c780">python.libcarma.libcarma.basicLC</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1basic_task.html#a442350c5cae67ce03f951b98f2924cae">python.libcarma.libcarma.basicTask</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1epoch.html#a1f88fa3464ccd95b3ebebeb6a0b0e075">python.libcarma.libcarma.epoch</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#af851b738932e6bdd639294e11c71b566">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a56a77b3fb1dc1cfc7755f3a393351ce6">python.libcarma.libcarma.task</a>
+</li>
+<li>__len__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#ab37669df5bdf0f934f50b13118abc06b">python.libcarma.libcarma.lc</a>
+</li>
+<li>__neq__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1epoch.html#a60115d2de2854aece68302e699ea0aae">python.libcarma.libcarma.epoch</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#af328e7a6a692a0eba9c5863f4a74a195">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a5010d0e3ed86802c91685363ef2593df">python.libcarma.libcarma.task</a>
+</li>
+<li>__repr__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1epoch.html#a3538e212898c02622a6d57c770efa4ca">python.libcarma.libcarma.epoch</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a77ac4622001812f6da9ff42fef654844">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a1e50e377e383eb8d28884f7dc8fb095e">python.libcarma.libcarma.task</a>
+</li>
+<li>__setitem__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a211a3ef8d47d716e47338adce5137194">python.libcarma.libcarma.lc</a>
+</li>
+<li>__str__()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1epoch.html#ab02920b5bb505737f20f21468187f98a">python.libcarma.libcarma.epoch</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#abde0414f9b96376bd15efce8d98ffbb4">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a16f2cab7a7b342a747c96850329b6983">python.libcarma.libcarma.task</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>addIdentifier()
-: <a class="el" href="class_obj.html#afb9cdab9ce6d9b5ae6942465b91f14d1">Obj</a>
+<li>add_ObservationNoise()
+: <a class="el" href="class_task.html#a80d246fe29fbecd58a3cbe687bbf50c1">Task</a>
+</li>
+<li>addNoise()
+: <a class="el" href="class_c_a_r_m_a.html#a8dab0a97d457c89d11727fcc664fd3f3">CARMA</a>
+</li>
+<li>aGW()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#ad32a6f86c4460c3da82789d7dae279c5">CARMA::binarySMBH</a>
+</li>
+<li>aH()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a995de52ad3a5d55aca2d19c21212aaa8">CARMA::binarySMBH</a>
 </li>
 <li>allocCARMA()
 : <a class="el" href="class_c_a_r_m_a.html#a6f96e596ba4a66b3f9eb7234292ad1d0">CARMA</a>
-</li>
-<li>angularDiameterDistance()
-: <a class="el" href="class_obj.html#a4e0add44503b0efdc90046f8eabd1d6d">Obj</a>
-, <a class="el" href="class_spherical.html#aec39dd15b36585358eed8168d37b6455">Spherical</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
+<li>binarySMBH()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a6cf6e0bede1d58f798da6273750cd90d">CARMA::binarySMBH</a>
+</li>
 <li>burnSystem()
 : <a class="el" href="class_c_a_r_m_a.html#a684661827088a58ccc3131184e7506ba">CARMA</a>
 </li>
@@ -167,11 +213,32 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>CARMA()
 : <a class="el" href="class_c_a_r_m_a.html#a8871e02b301b503a987c03afc15c573c">CARMA</a>
 </li>
-<li>checkCARMAParams()
-: <a class="el" href="class_c_a_r_m_a.html#ad606acee248d451679b522172d7b9ac4">CARMA</a>
+<li>Chain()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#aa3738370648b6c61609a82e58d5456f5">python.libcarma.libcarma.task</a>
 </li>
-<li>computeLnLike()
-: <a class="el" href="class_c_a_r_m_a.html#acd0e0de5df0e6f26b87df72d0d5988e9">CARMA</a>
+<li>check()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a58ea30a7a53358667aab9e9c245a8b0e">python.libcarma.libcarma.task</a>
+</li>
+<li>check_Theta()
+: <a class="el" href="class_task.html#a41f8fe9b59b4646004130845d7c6b23c">Task</a>
+</li>
+<li>checkCARMAParams()
+: <a class="el" href="class_c_a_r_m_a.html#a20702c73019e9eafae573df3df0128d3">CARMA</a>
+</li>
+<li>compute_LnLikelihood()
+: <a class="el" href="class_task.html#a370aa8207ebf85de80f5e0a4aa7a5fd8">Task</a>
+</li>
+<li>compute_LnPosterior()
+: <a class="el" href="class_task.html#abd5c94a0e5d4d4e29bd81294d5bc0d30">Task</a>
+</li>
+<li>compute_LnPrior()
+: <a class="el" href="class_task.html#aa7ba4cfa9ada40fd3e3399fce88fe6df">Task</a>
+</li>
+<li>computeLnLikelihood()
+: <a class="el" href="class_c_a_r_m_a.html#af8f65514684e13060bf6614d2401c3dd">CARMA</a>
+</li>
+<li>computeLnPrior()
+: <a class="el" href="class_c_a_r_m_a.html#aec6ca9d09edc9a5a4a69c4ccec69a6a3">CARMA</a>
 </li>
 </ul>
 
@@ -180,32 +247,61 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>deallocCARMA()
 : <a class="el" href="class_c_a_r_m_a.html#af850b7e2ba5af3ae028aacfc0891b830">CARMA</a>
 </li>
+<li>dt()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a6c3bde750b398c74442d76d89844378c">python.libcarma.libcarma.lc</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#af21382fcabf13ecdbd3837509ab82f3d">python.libcarma.libcarma.task</a>
+</li>
+<li>durationInHardState()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#ae3051e9ddfe8d12a84890e1ffbd3eaa4">CARMA::binarySMBH</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
+<li>ejectedMass()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a48d5ce9b2c219dc6dd8321f036995829">CARMA::binarySMBH</a>
+</li>
 <li>EnsembleSampler()
 : <a class="el" href="class_ensemble_sampler.html#a2c9b3046553b31fe5b39792404c8431d">EnsembleSampler</a>
-</li>
-<li>epochToindex()
-: <a class="el" href="class_kepler_obj.html#ac57d999ff4bdb6cbcfc710803d034cc1">KeplerObj</a>
-</li>
-<li>Equatorial()
-: <a class="el" href="class_equatorial.html#a8310993e702bce92cfd908751fb6d17c">Equatorial</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>fixedIntervalSmoother()
-: <a class="el" href="class_c_a_r_m_a.html#af5d31db7b37973d2dea0dae07ef531b5">CARMA</a>
+<li>fit()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a41483bb32afa386c3b39fd99b5e158e5">python.libcarma.libcarma.task</a>
+</li>
+<li>fit_CARMAModel()
+: <a class="el" href="class_task.html#a35b8004ec5a98d8a13ad1f800017a6a3">Task</a>
+</li>
+<li>fracIntrinsicVar()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a4ef44c1d7314761337e2f28eb196fc49">python.libcarma.libcarma.lc</a>
+</li>
+<li>fracNoiseToSignal()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#ad5fa38ac9d1875406ab8cfb48802c088">python.libcarma.libcarma.lc</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>Galactic()
-: <a class="el" href="class_galactic.html#adb8910a11762d017934147c1105a2f25">Galactic</a>
+<li>get_A()
+: <a class="el" href="class_task.html#a31db79de0a756c47b7211af91639306b">Task</a>
+</li>
+<li>get_allocated()
+: <a class="el" href="class_c_a_r_m_a.html#a1ffb8686c5b54d9d4c76b2fd50a27a39">CARMA</a>
+</li>
+<li>get_B()
+: <a class="el" href="class_task.html#a7b9ac1aba53d3c22158fe9f156fcaecd">Task</a>
+</li>
+<li>get_dt()
+: <a class="el" href="class_c_a_r_m_a.html#a56124e5b6da7bf480ab87edaf2b8520f">CARMA</a>
+, <a class="el" href="class_task.html#a5d98307b92b46ba1b5e86e766414b3ac">Task</a>
+</li>
+<li>get_meanFlux()
+: <a class="el" href="class_task.html#add737444d615a0dbfee7505581de5561">Task</a>
+</li>
+<li>get_numBurn()
+: <a class="el" href="class_task.html#ad8e737c998840996dac1618f78bd30f8">Task</a>
 </li>
 <li>get_p()
 : <a class="el" href="class_c_a_r_m_a.html#af758356c8aec7ea57d4edbd4c430c780">CARMA</a>
@@ -213,163 +309,278 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>get_q()
 : <a class="el" href="class_c_a_r_m_a.html#aca44011b5238545f728d61d1cbbb72c2">CARMA</a>
 </li>
-<li>get_t()
-: <a class="el" href="class_c_a_r_m_a.html#a96b654c437e7d9528d44c7dbc4bc9657">CARMA</a>
+<li>get_setSystemsVec()
+: <a class="el" href="class_task.html#aa841a5c8cf5accf00d3b9717e493bf1d">Task</a>
+</li>
+<li>get_Sigma()
+: <a class="el" href="class_task.html#a8fd8196de0aa7d4e48d23a6f665903f8">Task</a>
+</li>
+<li>get_ThetaVec()
+: <a class="el" href="class_task.html#acc99a8a705981e3b7a84f0a0ee896c80">Task</a>
+</li>
+<li>getA()
+: <a class="el" href="class_c_a_r_m_a.html#a1edafdc4cd83a2f7797daa212febc957">CARMA</a>
+</li>
+<li>getA1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#aef1e3cff1cda9422fc084d86a5adfa86">CARMA::binarySMBH</a>
+</li>
+<li>getA2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a87651fd455460ce8bf9772235bf85f4a">CARMA::binarySMBH</a>
+</li>
+<li>getB()
+: <a class="el" href="class_c_a_r_m_a.html#a0c1d34a9f872b31fdebc1fd2481ca3d1">CARMA</a>
+</li>
+<li>getBeamingFactor1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5926c403ec8c60ca7720d9bdd34c6947">CARMA::binarySMBH</a>
+</li>
+<li>getBeamingFactor2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a20ea2af36378b3edcacb312bada6a684">CARMA::binarySMBH</a>
+</li>
+<li>getBeta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a6d011db33094577d466ac69545354224">CARMA::binarySMBH</a>
+</li>
+<li>getBeta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5c25dcd9bc20f4412c12bd35918c4eab">CARMA::binarySMBH</a>
+</li>
+<li>getC()
+: <a class="el" href="class_c_a_r_m_a.html#af2537a7b40e800fb063943b9c469cee9">CARMA</a>
 </li>
 <li>getCARRoots()
 : <a class="el" href="class_c_a_r_m_a.html#a98f282f6809e1e2c19ed10b362048fdc">CARMA</a>
 </li>
+<li>getChain()
+: <a class="el" href="class_ensemble_sampler.html#a2d77cd48679a151922838dccf1a0c94f">EnsembleSampler</a>
+</li>
 <li>getCMARoots()
 : <a class="el" href="class_c_a_r_m_a.html#aead4fd2cb0a4f1670e866435a09e0d50">CARMA</a>
 </li>
-<li>getData()
-: <a class="el" href="class_kepler_obj.html#a9162e912a70706492323c4a7b84e25a7">KeplerObj</a>
+<li>getDopplerFactor1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a3bb857ed74e47c47abfe60827ad58cdf">CARMA::binarySMBH</a>
 </li>
-<li>getFirstCadence()
-: <a class="el" href="class_kepler_obj.html#a8f53290957f8902ddb5668a21527e4ba">KeplerObj</a>
+<li>getDopplerFactor2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a017176138c74d45941d4043c2dfef5d7">CARMA::binarySMBH</a>
 </li>
-<li>getFracHOST()
-: <a class="el" href="class_kepler_obj.html#a230eab3c510a51b2197cf6ec7e30fd75">KeplerObj</a>
+<li>getEllipticity()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a0d9cafe27bed9985305b84a083260811">CARMA::binarySMBH</a>
 </li>
-<li>getFracMIC()
-: <a class="el" href="class_kepler_obj.html#a0ff0576f717c68e5e4b9f0757c3f80f7">KeplerObj</a>
+<li>getEpoch()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a2e9d415057dcb192310a68bf3db1d742">CARMA::binarySMBH</a>
 </li>
-<li>getFTolSI()
-: <a class="el" href="class_kepler_obj.html#a4fb09c27d3291bd40875d78cfdc2e80c">KeplerObj</a>
+<li>getexpw()
+: <a class="el" href="class_c_a_r_m_a.html#a131e3f743bab72db06162b85e51bc1cf">CARMA</a>
 </li>
-<li>getFTolSII()
-: <a class="el" href="class_kepler_obj.html#acbf137e5718db7b15f72c91fa4d2f726">KeplerObj</a>
+<li>getF()
+: <a class="el" href="class_c_a_r_m_a.html#a74e6e4db5aa53ee0c88d93cc92e08e6d">CARMA</a>
 </li>
-<li>getID()
-: <a class="el" href="class_kepler_obj.html#a268fc8a6f87be9489c5ee4d52903fd2c">KeplerObj</a>
+<li>getIntrinsicVar()
+: <a class="el" href="class_c_a_r_m_a.html#a2950241c0e1f1157e5b2d07e497e9b14">CARMA</a>
 </li>
-<li>getIdentifier()
-: <a class="el" href="class_obj.html#ab8db1493558965a3d895a486d641716e">Obj</a>
-</li>
-<li>getLastCadence()
-: <a class="el" href="class_kepler_obj.html#ad2c733e73ddd622f8c2b74b070ba9f51">KeplerObj</a>
-</li>
-<li>getLocation()
-: <a class="el" href="class_kepler_obj.html#ace9583f6845dc6db9e0e23ec60bb0c54">KeplerObj</a>
-, <a class="el" href="class_obj.html#a37de1c5bfaa5b641bf6f093a809cc8d0">Obj</a>
-</li>
-<li>getMaxEvalsCS()
-: <a class="el" href="class_kepler_obj.html#adda2765461c9fe80a8427f39b8f841ed">KeplerObj</a>
-</li>
-<li>getMaxEvalsSI()
-: <a class="el" href="class_kepler_obj.html#aa23b06e8009166f41be3885df24317d4">KeplerObj</a>
-</li>
-<li>getMaxEvalsSII()
-: <a class="el" href="class_kepler_obj.html#a5c3a7895c5a602b005bbb2042e1650e8">KeplerObj</a>
+<li>getLnLike()
+: <a class="el" href="class_ensemble_sampler.html#a008a737b429ec693608968b3b539ddad">EnsembleSampler</a>
 </li>
 <li>getMeanFlux()
-: <a class="el" href="class_kepler_obj.html#a195fb841c86bb6d947bcd9a7c45ec56e">KeplerObj</a>
+: <a class="el" href="class_c_a_r_m_a.html#a44e19a15aba1f78becebc2d01a6a3a97">CARMA</a>
 </li>
-<li>getNumCadences()
-: <a class="el" href="class_kepler_obj.html#ad953af55b06af0234c68e54c6275d7e4">KeplerObj</a>
+<li>getP()
+: <a class="el" href="class_c_a_r_m_a.html#a36df8bd666ea1b1ed984d5c34588e94b">CARMA</a>
 </li>
-<li>getNumChiSq()
-: <a class="el" href="class_kepler_obj.html#a7c4abbe2e792cff003d957d9b631dc74">KeplerObj</a>
+<li>getPeriod()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#aae338bc630a93fbcbb0c1623021e726f">CARMA::binarySMBH</a>
 </li>
-<li>getNumLags()
-: <a class="el" href="class_kepler_obj.html#a1980eedbf8b3b8c7e04b41dc887630f1">KeplerObj</a>
+<li>getQ()
+: <a class="el" href="class_c_a_r_m_a.html#a5ee2f32bd6e67fc81ec1088ae305dfb8">CARMA</a>
 </li>
-<li>getNumQuarters()
-: <a class="el" href="class_kepler_obj.html#a37ec5e30230b9e91a9f4e54033097fc9">KeplerObj</a>
+<li>getR1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a35203f4c1e7fc0d68f4eb0fbbd9112e4">CARMA::binarySMBH</a>
 </li>
-<li>getNumSeeds()
-: <a class="el" href="class_kepler_obj.html#aff16c04462b1714a474a1c2bb3be30ff">KeplerObj</a>
+<li>getR2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#ac992c6780ae47e6451fb8f6dd04b5c09">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsCS()
-: <a class="el" href="class_kepler_obj.html#a70fe38e2ebdfda98be4284f00e6c4734">KeplerObj</a>
+<li>getRadialBeta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a4b5e37cd3bf650fd9323cbf1618fce7b">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsSI()
-: <a class="el" href="class_kepler_obj.html#ade4482c97b7fc9ea66ec8b94a289f881">KeplerObj</a>
+<li>getRadialBeta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a7a34ee1208184f17376ce2ce35faa80a">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsSII()
-: <a class="el" href="class_kepler_obj.html#aa3cf9a27159e7e6a4035434c5e10d65b">KeplerObj</a>
+<li>getSigma()
+: <a class="el" href="class_c_a_r_m_a.html#ae8966239bdea7a3fc242837463d23321">CARMA</a>
 </li>
-<li>getOrder()
-: <a class="el" href="class_kepler_obj.html#acd3e416bd288f43a30a7b753a6697f99">KeplerObj</a>
+<li>getT()
+: <a class="el" href="class_c_a_r_m_a.html#a2f6879444895bae5b42791d13ec9b4a1">CARMA</a>
 </li>
-<li>getOverSampleFactor()
-: <a class="el" href="class_kepler_obj.html#ad44d1900ee67daddc8d7c93887a05f46">KeplerObj</a>
+<li>getTheta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#addb75e48c8ad6c591573723cd769b547">CARMA::binarySMBH</a>
 </li>
-<li>getPath()
-: <a class="el" href="class_kepler_obj.html#a3e99e434a7328f45137b94ae9557ceeb">KeplerObj</a>
+<li>getTheta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a8edb8fb9e1b5a8dc38358e083c46dbdf">CARMA::binarySMBH</a>
 </li>
-<li>getRedShift()
-: <a class="el" href="class_kepler_obj.html#aa39f1254aa63f9cec80061be6da46a58">KeplerObj</a>
-, <a class="el" href="class_spherical.html#a6d4d86228d3fc54008206e75a2fa5f13">Spherical</a>
+<li>getvr()
+: <a class="el" href="class_c_a_r_m_a.html#a0942ceb94c7a11df3705ad7a65b526dd">CARMA</a>
 </li>
-<li>getResiduals()
-: <a class="el" href="class_c_a_r_m_a.html#a2d84c0d953b15519cbddcfffc50132b0">CARMA</a>
+<li>getvrInv()
+: <a class="el" href="class_c_a_r_m_a.html#a05cbbdbd1978540b35f980627054caa2">CARMA</a>
 </li>
-<li>getSeeds()
-: <a class="el" href="class_kepler_obj.html#ab0d9b5872db2ceaf8a589da7a6c5b24a">KeplerObj</a>
+<li>getw()
+: <a class="el" href="class_c_a_r_m_a.html#a3e915e480eeadc65a666523b8d26064d">CARMA</a>
 </li>
-<li>getStage()
-: <a class="el" href="class_kepler_obj.html#a9dadabc2f3314221e358a3c056b22f21">KeplerObj</a>
-</li>
-<li>getStartEpoch()
-: <a class="el" href="class_kepler_obj.html#a5fd1060cb4c3c1cbc804e0bf20eddfa0">KeplerObj</a>
+<li>getX()
+: <a class="el" href="class_c_a_r_m_a.html#ac1e451e382a60ab856edf63e70752074">CARMA</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
-<li>indexToepoch()
-: <a class="el" href="class_kepler_obj.html#a7b822c1719305ecc53c4594fab113c99">KeplerObj</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_k"></a>- k -</h3><ul>
-<li>KeplerObj()
-: <a class="el" href="class_kepler_obj.html#afd0b831e625b2c4f5c75c458a2dd0ba7">KeplerObj</a>
+<li>IR()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a57967beffce0d6d06b78c3049583851a">python.libcarma.libcarma.lc</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
-<li>lookBackTime()
-: <a class="el" href="class_obj.html#a6107516e388eb66505d684f977dceac0">Obj</a>
-, <a class="el" href="class_spherical.html#a2015656786c8277a9c419f9fa7526246">Spherical</a>
+<li>LCData()
+: <a class="el" href="class_l_c_data.html#ada9bc58c533a6644fd7f0ed87aa68825">LCData</a>
 </li>
-<li>luminosityDistance()
-: <a class="el" href="class_obj.html#ae168d94748733f995bdfeb8440d332a3">Obj</a>
-, <a class="el" href="class_spherical.html#a66d8954554041cc005c3fc437bd5293e">Spherical</a>
+<li>list()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a036a7f2657ec716f9302f9cc5d15449d">python.libcarma.libcarma.task</a>
+</li>
+<li>LnPosterior()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a2d8d395adefebba18b97872971d14ec0">python.libcarma.libcarma.task</a>
+</li>
+<li>logLikelihood()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#aee49abd18b0a2beea70eba28352edd8d">python.libcarma.libcarma.task</a>
+</li>
+<li>logPosterior()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a4f0a4fa5a145400b19ac43b981e005b7">python.libcarma.libcarma.task</a>
+</li>
+<li>logPrior()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a8f9c2672ecb99eba7937d0cab3878c76">python.libcarma.libcarma.task</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
+<li>make_IntrinsicLC()
+: <a class="el" href="class_task.html#a10c759df8c4bae272f4212c1f0f79134">Task</a>
+</li>
+<li>make_ObservedLC()
+: <a class="el" href="class_task.html#ab885ea064a7974c4630a326f810700bd">Task</a>
+</li>
+<li>maxEvals()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a54458b7bfc6f1daa4619b3c11709bc28">python.libcarma.libcarma.task</a>
+</li>
+<li>maxSigma()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a5991eadc0ef728e10855017999d3604b">python.libcarma.libcarma.lc</a>
+</li>
+<li>maxTimescale()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a801161c80acc479a6e76580e34b2e5d1">python.libcarma.libcarma.lc</a>
+</li>
+<li>minTimescale()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#ac83a10daef56337045424a27f381fe47">python.libcarma.libcarma.lc</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
+<li>nburn()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a5583472b31550f268e3290ec4c3ad7af">python.libcarma.libcarma.task</a>
+</li>
+<li>nsteps()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#af6f36241731b24af9e6872106f2d6eab">python.libcarma.libcarma.task</a>
+</li>
+<li>nthreads()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a6e635f95fe65a97b184579c9f541ddd5">python.libcarma.libcarma.task</a>
+</li>
+<li>numCadences()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a16a861d93d995573e983e3f47238d088">python.libcarma.libcarma.lc</a>
+</li>
+<li>nwalkers()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a136998a257bc82c4df663d46871a7f51">python.libcarma.libcarma.task</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
-<li>Obj()
-: <a class="el" href="class_obj.html#ae6d85a21719815c7bbb9cd68d609e0a0">Obj</a>
+<li>observe()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a3e8b381e5920139ac7ae60406792f4f2">python.libcarma.libcarma.task</a>
 </li>
 <li>observeSystem()
-: <a class="el" href="class_c_a_r_m_a.html#a12f0019ddf951e20ffda09e46795b8f3">CARMA</a>
+: <a class="el" href="class_c_a_r_m_a.html#a9c4a1c1471281a20e9dabc3b8a7ae527">CARMA</a>
 </li>
 <li>operator()()
-: <a class="el" href="class_c_a_r_m_a.html#a1b85f710457cdf67a6b716a149456bca">CARMA</a>
-, <a class="el" href="class_universe.html#a45c5e437ac9f03652f753a5d86f314f0">Universe</a>
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a4a055846bd801871127d5d480bdd568e">CARMA::binarySMBH</a>
 </li>
-<li>operator=()
-: <a class="el" href="class_universe.html#a446172cfdff7993bf67e0ca200d784e0">Universe</a>
+</ul>
+
+
+<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>p()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a94744fa39163415ffcaf0d62d40fca0a">python.libcarma.libcarma.task</a>
 </li>
-<li>operator==()
-: <a class="el" href="class_universe.html#a8f7d3385d0a7adf659b4a68300f744e6">Universe</a>
+<li>print_System()
+: <a class="el" href="class_task.html#a29f9ab809fb5692ae2fd8814815f8b64">Task</a>
+</li>
+<li>printA()
+: <a class="el" href="class_c_a_r_m_a.html#aeecd124f696410809e879436b70af1ec">CARMA</a>
+</li>
+<li>printB()
+: <a class="el" href="class_c_a_r_m_a.html#ace5f4355098caa632c9aba28b2882b08">CARMA</a>
+</li>
+<li>printC()
+: <a class="el" href="class_c_a_r_m_a.html#a3ffc6377d85bdb5f3a4192ad5826a9df">CARMA</a>
+</li>
+<li>printexpw()
+: <a class="el" href="class_c_a_r_m_a.html#a8cb9254e44aa635c08059ec14a4e2248">CARMA</a>
+</li>
+<li>printF()
+: <a class="el" href="class_c_a_r_m_a.html#a003b1ea5dac58b64dba766b06991103a">CARMA</a>
+</li>
+<li>printP()
+: <a class="el" href="class_c_a_r_m_a.html#a0281829307d89b518920f2a0be1c5686">CARMA</a>
+</li>
+<li>printQ()
+: <a class="el" href="class_c_a_r_m_a.html#ac9b01a1959b935de28e65904529b190b">CARMA</a>
+</li>
+<li>printSigma()
+: <a class="el" href="class_c_a_r_m_a.html#a484c74e9fbbdb718b449fd07d192ef9c">CARMA</a>
+</li>
+<li>printT()
+: <a class="el" href="class_c_a_r_m_a.html#a3e426d288da8c4a69995be2edb72bf8d">CARMA</a>
+</li>
+<li>printvr()
+: <a class="el" href="class_c_a_r_m_a.html#aec5cf02ae8c2b4d406e82c663fb69c42">CARMA</a>
+</li>
+<li>printvrInv()
+: <a class="el" href="class_c_a_r_m_a.html#a3145a01eae617e76e11305ca2ec4b61d">CARMA</a>
+</li>
+<li>printw()
+: <a class="el" href="class_c_a_r_m_a.html#a52ad7813fcd1aa86359bf8946fca45b4">CARMA</a>
+</li>
+<li>printX()
+: <a class="el" href="class_c_a_r_m_a.html#a6df47e4eb5549a3108f7ec6a5e7821c2">CARMA</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_q"></a>- q -</h3><ul>
+<li>q()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#aa81a6ec3a0273a08b157673c847dbfd7">python.libcarma.libcarma.task</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>radialComovingDistance()
-: <a class="el" href="class_obj.html#ab4a4130741f5641d97ca33f4468dc9a3">Obj</a>
-, <a class="el" href="class_spherical.html#acab04a7df5d746f275de748c3bae78ed">Spherical</a>
+<li>read()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1basic_l_c.html#a76ec0879f1c655ea59e3e31c9b639e40">python.libcarma.libcarma.basicLC</a>
+, <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a5baab9f679fcde38644c7b2decdabd61">python.libcarma.libcarma.lc</a>
+</li>
+<li>reset()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a60148b65c4e79bd848695d837b9bf5a5">python.libcarma.libcarma.task</a>
+</li>
+<li>reset_Task()
+: <a class="el" href="class_task.html#a57acc41093d637b76445e8c3b0c16d85">Task</a>
 </li>
 <li>resetState()
-: <a class="el" href="class_c_a_r_m_a.html#a44b60949dc1cbcccb24873a117faa5ac">CARMA</a>
+: <a class="el" href="class_c_a_r_m_a.html#a8748732c23bc65486b9df8f25a905cf9">CARMA</a>
 </li>
 <li>runMCMC()
 : <a class="el" href="class_ensemble_sampler.html#a7673dd0aeca4848f3c4b3591192b606a">EnsembleSampler</a>
@@ -378,80 +589,51 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>scatterFactor()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a93494b990ffb8ca498b6d0d6512a7fa7">python.libcarma.libcarma.task</a>
+</li>
+<li>set()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#af0e7f38c6e6f539a3c278123caaca0d5">python.libcarma.libcarma.task</a>
+</li>
+<li>set_dt()
+: <a class="el" href="class_c_a_r_m_a.html#a08c525da441f05c0779182f32198acf6">CARMA</a>
+</li>
+<li>set_numBurn()
+: <a class="el" href="class_task.html#a957aca6b2ed739372947eec535a152f0">Task</a>
+</li>
+<li>set_System()
+: <a class="el" href="class_task.html#a3a96c9759fc036506571a1374aa0e79c">Task</a>
+</li>
 <li>setCARMA()
-: <a class="el" href="class_c_a_r_m_a.html#a70e6ec6090f629d43e9ed810346c766e">CARMA</a>
+: <a class="el" href="class_c_a_r_m_a.html#a6c1c104dcf44e34fb596c6068239347e">CARMA</a>
 </li>
-<li>setFracHOST()
-: <a class="el" href="class_kepler_obj.html#a7ac5a2d3bdaa7a41a39a238788f8a6fa">KeplerObj</a>
+<li>setEpoch()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a29b72b2cf6d548d1e434c9d68c56a6d7">CARMA::binarySMBH</a>
 </li>
-<li>setFracMIC()
-: <a class="el" href="class_kepler_obj.html#a612da6fa87b8f97c4f161bc5f39fe9ea">KeplerObj</a>
+<li>show()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a9b3a40d7904e96ba27cf91e286cfa599">python.libcarma.libcarma.task</a>
 </li>
-<li>setFTolSI()
-: <a class="el" href="class_kepler_obj.html#a3e6045761b050157a17fb578685bdd9a">KeplerObj</a>
+<li>Sigma()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#a055e8ca28b2115ec7a8434a68a4f812b">python.libcarma.libcarma.task</a>
 </li>
-<li>setFTolSII()
-: <a class="el" href="class_kepler_obj.html#a799a2b684a67435c404e6071af7b00f6">KeplerObj</a>
-</li>
-<li>setMask()
-: <a class="el" href="class_kepler_obj.html#a0712485c7f8f87047dff986c06bca53e">KeplerObj</a>
-</li>
-<li>setMaxEvalsCS()
-: <a class="el" href="class_kepler_obj.html#a00f426d160b0674bfe52d2f36014e465">KeplerObj</a>
-</li>
-<li>setMaxEvalsSI()
-: <a class="el" href="class_kepler_obj.html#a43d6d7205c8a92397558a97217511b62">KeplerObj</a>
-</li>
-<li>setMaxEvalsSII()
-: <a class="el" href="class_kepler_obj.html#ab6eaf04d2a806c718a41c38a44af6190">KeplerObj</a>
-</li>
-<li>setNumChiSq()
-: <a class="el" href="class_kepler_obj.html#a94b23d5f4fe9142053e2c0a8d5a7eab4">KeplerObj</a>
-</li>
-<li>setNumSeeds()
-: <a class="el" href="class_kepler_obj.html#afaefc71cee5ab1f7fed60366910b77d2">KeplerObj</a>
-</li>
-<li>setNumSimsCS()
-: <a class="el" href="class_kepler_obj.html#a78ddbc7c63e7d698e968a65d04ed5ae1">KeplerObj</a>
-</li>
-<li>setNumSimsSI()
-: <a class="el" href="class_kepler_obj.html#ace628ec6c767aff9168497ec63984ccc">KeplerObj</a>
-</li>
-<li>setNumSimsSII()
-: <a class="el" href="class_kepler_obj.html#a762cbe9392ac57bcb4fa64858826e1f1">KeplerObj</a>
-</li>
-<li>setOrder()
-: <a class="el" href="class_kepler_obj.html#af7e062113cc6222956d892733b36142f">KeplerObj</a>
-</li>
-<li>setOverSampleFactor()
-: <a class="el" href="class_kepler_obj.html#a8cf9e305908521eaf390f5dd96fe9b4a">KeplerObj</a>
-</li>
-<li>setProperties()
-: <a class="el" href="class_kepler_obj.html#a18ece34d36959a5eb0c75c34bdeea2ae">KeplerObj</a>
-</li>
-<li>setStage()
-: <a class="el" href="class_kepler_obj.html#afcd5f85bcd1f39d590d70e0dcdc1ee08">KeplerObj</a>
+<li>simulate()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#ac6b18e34b346ea7ad41c030de9c53f69">python.libcarma.libcarma.task</a>
 </li>
 <li>solveCARMA()
-: <a class="el" href="class_c_a_r_m_a.html#ab40779c2e688ef40afe4c925a777ebc7">CARMA</a>
-</li>
-<li>Spherical()
-: <a class="el" href="class_spherical.html#aed44cb28b5f4aaf1b98bfb949dddc495">Spherical</a>
+: <a class="el" href="class_c_a_r_m_a.html#ad4391fa9d2ae5f6673b9ac762fd1795a">CARMA</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
-<li>transverseComovingDistance()
-: <a class="el" href="class_obj.html#a75e3651dda7a1262c4f7c6ff431bb9c8">Obj</a>
-, <a class="el" href="class_spherical.html#a973fd2f86c54c2ca0c6adbdc3b869b41">Spherical</a>
+<li>Task()
+: <a class="el" href="class_task.html#a566e792c22b9a02dd018246dfd4f2c8c">Task</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>Universe()
-: <a class="el" href="class_universe.html#a4d137a146dd3c2514dfb692dfbab6984">Universe</a>
+<li>Theta()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#ae5b13aeb5d099d38cb77a53b3a5f88d0">python.libcarma.libcarma.task</a>
+</li>
+<li>tolIR()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1lc.html#a98510c5215b5a090a756a5c57ad152a0">python.libcarma.libcarma.lc</a>
 </li>
 </ul>
 
@@ -463,6 +645,13 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 </ul>
 
 
+<h3><a class="anchor" id="index_x"></a>- x -</h3><ul>
+<li>xTol()
+: <a class="el" href="classpython_1_1libcarma_1_1libcarma_1_1task.html#ad09f62c696166c2910061f4c7558d5cd">python.libcarma.libcarma.task</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_~"></a>- ~ -</h3><ul>
 <li>~CARMA()
 : <a class="el" href="class_c_a_r_m_a.html#a19f2c3c41d81428c5f77a71f983dcc0b">CARMA</a>
@@ -470,11 +659,11 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>~EnsembleSampler()
 : <a class="el" href="class_ensemble_sampler.html#a3c74a117a85a6230bb48533e88a4cec4">EnsembleSampler</a>
 </li>
-<li>~Obj()
-: <a class="el" href="class_obj.html#a1331b88810f8f346b820cb855955feea">Obj</a>
+<li>~LCData()
+: <a class="el" href="class_l_c_data.html#a39aa2b1418c755c1fd2cdc8a2dd4b3a9">LCData</a>
 </li>
-<li>~Universe()
-: <a class="el" href="class_universe.html#af63f567a85ac8c644c446b1ff53995cf">Universe</a>
+<li>~Task()
+: <a class="el" href="class_task.html#a3ecf499ea35fb4a96853969a1e1cbbce">Task</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -482,7 +671,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

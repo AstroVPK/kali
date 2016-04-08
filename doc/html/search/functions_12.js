@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['viewmatrix',['viewMatrix',['../_c_a_r_m_a_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp'],['../_correlation_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp']]]
+  ['task',['Task',['../class_task.html#a566e792c22b9a02dd018246dfd4f2c8c',1,'Task::Task()=delete'],['../class_task.html#ae64b05231261ab364ebb22e17f17749d',1,'Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurnGiven)']]],
+  ['theta',['Theta',['../classpython_1_1libcarma_1_1libcarma_1_1task.html#ae5b13aeb5d099d38cb77a53b3a5f88d0',1,'python::libcarma::libcarma::task']]],
+  ['tolir',['tolIR',['../classpython_1_1libcarma_1_1libcarma_1_1lc.html#a98510c5215b5a090a756a5c57ad152a0',1,'python.libcarma.libcarma.lc.tolIR'],['../classpython_1_1libcarma_1_1libcarma_1_1lc.html#a98510c5215b5a090a756a5c57ad152a0',1,'python.libcarma.libcarma.lc.tolIR']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: Namespace Members</title>
+<title>libcarma: Namespace Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -95,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_f"><span>f</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
+      <li><a href="#index_h"><span>h</span></a></li>
       <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_k"><span>k</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
@@ -108,7 +104,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_t"><span>t</span></a></li>
       <li><a href="#index_u"><span>u</span></a></li>
       <li><a href="#index_v"><span>v</span></a></li>
-      <li><a href="#index_w"><span>w</span></a></li>
       <li><a href="#index_x"><span>x</span></a></li>
       <li class="current"><a href="#index_y"><span>y</span></a></li>
     </ul>
@@ -133,7 +128,7 @@ $(document).ready(function(){initNavTree('namespacemembers.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -146,494 +141,443 @@ $(document).ready(function(){initNavTree('namespacemembers.html','');});
 <div class="textblock">Here is a list of all namespace members with links to the namespace documentation for each member:</div>
 
 <h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>acf
-: <a class="el" href="namespace_initial_analysis.html#ad2fd8d91ea772dbb0bbe665e7dbf81d4">InitialAnalysis</a>
+<li>A
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a701565d4b7826c9a6c79feb760267d69">binarySMBHDemo</a>
+, <a class="el" href="namespacerand_demo.html#a473eba4c6c70e86ff3527361c634c491">randDemo</a>
 </li>
-<li>acfFile
-: <a class="el" href="namespace_initial_analysis.html#a90ac90deb3293de6009ff8774a0fa67e">InitialAnalysis</a>
+<li>ALIGHFLAGS
+: <a class="el" href="namespacesetup.html#ad6de2d2793e8dad016a00e201563ff15">setup</a>
 </li>
-<li>acfFilePath
-: <a class="el" href="namespace_initial_analysis.html#a4ddd93459df9f2f6eafa747227f54916">InitialAnalysis</a>
+<li>anim
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#af404de73f4c2e94eb4a0a3253e350e56">binarySMBHDemo</a>
+</li>
+<li>animate()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#aaa2c7ffa13452e185262237c6242e2cc">binarySMBHDemo</a>
+</li>
+<li>AnnotateSize
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3ab3ad088d56421712dc63fcecbbd080">binarySMBHDemo</a>
+</li>
+<li>args
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a0681eb689082a253783319c9ad29abc6">binarySMBHDemo</a>
+, <a class="el" href="namespacerand_demo.html#a8fff5e177582984d2e62972f20ae502c">randDemo</a>
+</li>
+<li>ARPoly
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a0bd7421159653b05873148bf10b1e507">CARMADemo</a>
+</li>
+<li>AU
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a2ad6e51c36a32ffe33b3384e27ebe378">binarySMBHDemo</a>
+</li>
+<li>author
+: <a class="el" href="namespacesetup.html#ac83393287a89728d636e4ae9f4ac914f">setup</a>
+</li>
+<li>author_email
+: <a class="el" href="namespacesetup.html#aa144ac52ed417d5c65d7377e0e75673e">setup</a>
+</li>
+<li>ax1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#ab1c5e5f1ec42e9833566bac273380470">binarySMBHDemo</a>
+</li>
+<li>AxisSize
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#ab529335bcc305d4d0e7f0af5059c8d6b">binarySMBHDemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
-<li>basePath
-: <a class="el" href="namespace_initial_analysis.html#a462d97ae58744d7f39a0a11f5a4f7642">InitialAnalysis</a>
+<li>b1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a0af6084664694df5039ec3df3d668af2">binarySMBHDemo</a>
 </li>
-<li>bestFile
-: <a class="el" href="namespace_final_analysis.html#a2990113fcd9a31e44606ce17d678f9fb">FinalAnalysis</a>
+<li>b2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a62cb2cf629c3ab5e8a7f7852c6aa257b">binarySMBHDemo</a>
 </li>
-<li>bestFilePath
-: <a class="el" href="namespace_final_analysis.html#a8286808e6828d6957c0b9b9159314b08">FinalAnalysis</a>
+<li>bF1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a89dd804276d1e3c5b4911a55f2488a8f">binarySMBHDemo</a>
 </li>
-<li>binMax
-: <a class="el" href="namespace_final_analysis.html#ae53b90e1254d309f41585c93c7d59100">FinalAnalysis</a>
+<li>bF2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#ad791db1c35e09782bcb026c48d76adc6">binarySMBHDemo</a>
 </li>
-<li>binWidth
-: <a class="el" href="namespace_final_analysis.html#ac252eee289b29b77df2090f24e7f6dfb">FinalAnalysis</a>
+<li>bSMBH_ext
+: <a class="el" href="namespacesetup.html#a91a3cd768577c74b324ef9e0fdc8ae24">setup</a>
 </li>
-<li>burnSystem()
-: <a class="el" href="namespace_kalman_fast.html#a773a341412a385d39ed10ce68dd87bb0">KalmanFast</a>
+<li>bSMBH_List
+: <a class="el" href="namespacesetup.html#a8e78a501073cfe941c05b388c2e7956e">setup</a>
 </li>
-<li>burnSystemFixed()
-: <a class="el" href="namespace_kalman_fast.html#aa3688eda0919f31279971be1007f5ceb">KalmanFast</a>
+<li>bSMBH_sourceList
+: <a class="el" href="namespacesetup.html#aaae7fa8a3db10577b6550c7b841e4669">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>cbvFolder
-: <a class="el" href="namespace_get_all_data.html#a92d210ac17aea3c86c2cae13d5dcf53a">GetAllData</a>
+<li>c
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a8fd5236e1ded5df1f2708d880f1a6c88">binarySMBHDemo</a>
 </li>
-<li>cbvList
-: <a class="el" href="namespace_get_all_data.html#aef4e9610ed4d2405e028274abbfcdb43">GetAllData</a>
+<li>CARMATask_ext
+: <a class="el" href="namespacesetup.html#ab526aa988f441f3a58795affc1d3b7de">setup</a>
 </li>
-<li>cbvpath
-: <a class="el" href="namespace_get_all_data.html#ac340b879890051d52eef59bb312d86c6">GetAllData</a>
+<li>CARMATask_List
+: <a class="el" href="namespacesetup.html#aae98c7021359c0fe9ff337761d5c1dc5">setup</a>
 </li>
-<li>cbvPath
-: <a class="el" href="namespace_get_all_data.html#a0d44f716af41966e5d4c1e8ec5daca53">GetAllData</a>
+<li>CARMATask_sourceList
+: <a class="el" href="namespacesetup.html#a76df4fd83158e36d10a07aced7b11e8f">setup</a>
 </li>
-<li>cbvPattern
-: <a class="el" href="namespace_get_all_data.html#ab13b78016ebaf3b18c13c40b75b9ae3a">GetAllData</a>
+<li>classifiers
+: <a class="el" href="namespacesetup.html#a2d96dddd66b7833bbb2db38dbbe55a02">setup</a>
 </li>
-<li>checkParams()
-: <a class="el" href="namespace_kalman_fast.html#a93baa236856614fff1114e942663c940">KalmanFast</a>
+<li>CPPFLAGS
+: <a class="el" href="namespacesetup.html#a94afbb2834cc36eb3a362aec00c4f0bb">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
-<li>dataFolder
-: <a class="el" href="namespace_get_all_data.html#a8ff73cf768ddd833d026b762528dc864">GetAllData</a>
+<li>d2r()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3c9dabd3a2711aba2cebebc9d48b7e25">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a.html#a996a0d2fc3d77e9708ee4371edc12353">CARMA</a>
 </li>
-<li>deltat
-: <a class="el" href="namespace_final_analysis.html#aa27dc5884cf09a2ac3f1fb3489bb359b">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a8c65b78c4fc5b3f333cebee5997e6fce">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a7b437af6d1c5ce7f40b5f27233d5f4b1">PlotARMARegions</a>
+<li>Day
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3027d7c41b68c3e159cd590cfd049a3b">binarySMBHDemo</a>
 </li>
-<li>deviances
-: <a class="el" href="namespace_final_analysis.html#a3df48ee06c31fdb1cf340b4fbcf9f9f6">FinalAnalysis</a>
+<li>description
+: <a class="el" href="namespacesetup.html#ade8aa54df2083113a10326ea2fe7934b">setup</a>
 </li>
-<li>DIC
-: <a class="el" href="namespace_final_analysis.html#a68c248ca9c873f73a8e36a8ee251cb55">FinalAnalysis</a>
+<li>dF1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#ab815347908d059a21ee85559443c6f13">binarySMBHDemo</a>
 </li>
-<li>dotsPerInch
-: <a class="el" href="namespace_final_analysis.html#ae1013699910a86a41a0a50eeba068419">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a8bfab69b06ade384b5c902e061dc311d">InitialAnalysis</a>
+<li>dF2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#acc3053039cda3bee07fd61431f0ff2d6">binarySMBHDemo</a>
+</li>
+<li>download_url
+: <a class="el" href="namespacesetup.html#ace7471dbb37081610d405f437793b251">setup</a>
+</li>
+<li>dt
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a0e8710373f07d4050517407141858465">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a_demo.html#a8de741bff9b4acb1631129ec80ee8306">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
-<li>eLFile
-: <a class="el" href="namespace_get_all_data.html#aaf35a1611b07a1bc49bb090dccfaef8e">GetAllData</a>
-</li>
-<li>eLFileLine
-: <a class="el" href="namespace_get_all_data.html#acc2308c98b84b6b6eebcc695fff211ef">GetAllData</a>
-</li>
-<li>epochListFile
-: <a class="el" href="namespace_get_all_data.html#ac9174f2a0b0215a84e06e5f8a4f5e5e6">GetAllData</a>
+<li>ext_modules
+: <a class="el" href="namespacesetup.html#af330bcdd4c9a596a47b19a6b99efbd53">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>fhgt
-: <a class="el" href="namespace_final_analysis.html#a655a72c0122ba74cfe825ce4a0fd48e0">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a099c7053bbc362ba58a221726ce88895">InitialAnalysis</a>
+<li>fig
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a52c6580cc4f2120bbe561e444362eb31">binarySMBHDemo</a>
 </li>
-<li>FITSFolder
-: <a class="el" href="namespace_get_all_data.html#a16ca85b9e5a52cb403c24f90f47e5380">GetAllData</a>
+<li>fig2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a362c9d47e0bf1ae36450b55e3337519e">binarySMBHDemo</a>
 </li>
-<li>fixedIntervalSmoother()
-: <a class="el" href="namespace_kalman_fast.html#a4becb61d8d27132af8940ddf2717f13a">KalmanFast</a>
+<li>fig3
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#aa3b8a615ddcf0fa6a8b6cada1f4e600b">binarySMBHDemo</a>
 </li>
-<li>fwid
-: <a class="el" href="namespace_final_analysis.html#abc30d10b634674cdb4958c494025d3ce">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a3a4fd2196075d26dad36635ab7818084">InitialAnalysis</a>
+<li>fracIntrinsicVar
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a5054753a3c9b970a8bfd2e6cc5f7ff7d">CARMADemo</a>
+</li>
+<li>fracNoiseToSignal
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a057d9699c5c2efec1048479312949b9c">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>getLnLike()
-: <a class="el" href="namespace_kalman_fast.html#aff10a690431ea74c678c101767811865">KalmanFast</a>
+<li>G
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a5dd1de9b7e9291ff2d603fb787279034">binarySMBHDemo</a>
 </li>
-<li>getLnLikeMissing()
-: <a class="el" href="namespace_kalman_fast.html#aa58a01d0dc5d786acd10e70f29572750">KalmanFast</a>
-</li>
-<li>getResiduals()
-: <a class="el" href="namespace_kalman_fast.html#a9bd7e9be6130240320b671d5b4926a23">KalmanFast</a>
+</ul>
+
+
+<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
+<li>HOoM
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a6bca186959a52214cc4eebeb4ab162e6">binarySMBHDemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
-<li>intTime
-: <a class="el" href="namespace_final_analysis.html#ae7544fab9b92313efce519dfcbe443ef">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a048ea28b3d1c9ecf031afaa3e87d0a47">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a54e4c79468e19409c96e67dfdb482f0a">PlotARMARegions</a>
+<li>INCLUDE
+: <a class="el" href="namespacesetup.html#acf0d303c559d8ca52f78fb7970b2de4d">setup</a>
+</li>
+<li>init()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a33ff1bc707fd0b6d5c62b03c5db2eaf0">binarySMBHDemo</a>
+</li>
+<li>intervalLen
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#af275b72ef534a7d65cad36eb28c582f5">binarySMBHDemo</a>
+</li>
+<li>IR
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a856e080e332bfee8400432bcbddadcf4">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_k"></a>- k -</h3><ul>
-<li>KKKKKKKKK
-: <a class="el" href="namespace_get_all_data.html#a8ae2235ff0e5280acf89f07808293bda">GetAllData</a>
+<li>KeplerEqn()
+: <a class="el" href="namespace_c_a_r_m_a.html#abb121c1094fa8828355a1c3240d19706">CARMA</a>
+</li>
+<li>kms2ms
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a45b4858d5e1b210896d6e647bfa40f1f">binarySMBHDemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
-<li>lbls
-: <a class="el" href="namespace_final_analysis.html#ad0acefcc028d6b5ed6a5df8a33837c93">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#aeadeb0d1d3349eeeafd2ee3cf0c17c41">PlotARMARegions</a>
+<li>LabelSize
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a5442484cb46fea21b591857bb4612fd0">binarySMBHDemo</a>
 </li>
-<li>lightcurvesPath
-: <a class="el" href="namespace_get_all_data.html#aa7dab644473a8e6caaa150aa36384dbe">GetAllData</a>
+<li>LegendSize
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a37d5e999bcb090b558ab98425ea058f2">binarySMBHDemo</a>
 </li>
-<li>line
-: <a class="el" href="namespace_final_analysis.html#a7c83462f12c6791e4425510419b04eb4">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#aad933de026342605b321bfd95c96ded8">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a478b5b50b6eddf2098c4a31f8a83b86d">PlotARMARegions</a>
+<li>license
+: <a class="el" href="namespacesetup.html#aae5aa7c9d1cf462778a54e8f6a874c6f">setup</a>
 </li>
-<li>LnLike
-: <a class="el" href="namespace_final_analysis.html#a887a21357f13ebf746beb132e8508849">FinalAnalysis</a>
+<li>lnLikelihood
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#adb10228a4680a9d3c21526a3b3255882">CARMADemo</a>
 </li>
-<li>localCBVFile
-: <a class="el" href="namespace_get_all_data.html#a48b2086a8ab4a4eb4383aaa810014866">GetAllData</a>
+<li>lnPosterior
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#aac99121f005f33a0a43e2daf6480c639">CARMADemo</a>
 </li>
-<li>localQuarterFile
-: <a class="el" href="namespace_get_all_data.html#a877740889eb38000b292aaee018666fb">GetAllData</a>
+<li>lnPrior
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a4f81958bf384b1670f402eea57d64ebb">CARMADemo</a>
 </li>
-<li>localTargFile
-: <a class="el" href="namespace_get_all_data.html#a5da9f0ddc286550f618680b99a09f13e">GetAllData</a>
-</li>
-<li>lpdtargFolder
-: <a class="el" href="namespace_get_all_data.html#a3f0df6e75a64830be35cfc3f992806c4">GetAllData</a>
+<li>long_description
+: <a class="el" href="namespacesetup.html#a005c7e45ae91a23fbf155fca8b6a99d0">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
-<li>MAD()
-: <a class="el" href="namespace_final_analysis.html#aa2936d2049a535da38d4b9777acc0e22">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#ab8d32e5943f6391d1de1d360f78a4e1c">PlotARMARegions</a>
+<li>m_1
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#abc098662555c536fb138b929ca6217fe">CARMADemo</a>
 </li>
-<li>makeSystem()
-: <a class="el" href="namespace_kalman_fast.html#a2e58cd85931f067069622355623d60f7">KalmanFast</a>
+<li>m_1_guess
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a5734b5874a86b8f0eda0a44a74a30fed">CARMADemo</a>
 </li>
-<li>mask
-: <a class="el" href="namespace_final_analysis.html#a94fb4e8e60fe4cb0595dee2bbaf20c81">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a55e93475209de46d06fbb68551aba3de">InitialAnalysis</a>
+<li>maintainer
+: <a class="el" href="namespacesetup.html#a2d2b97e05b2ec934a59e56cfc0566e8b">setup</a>
 </li>
-<li>maxLag
-: <a class="el" href="namespace_initial_analysis.html#a4c72105d2ca5ecffdfd26e4eddedcccc">InitialAnalysis</a>
+<li>maintainer_email
+: <a class="el" href="namespacesetup.html#a722cbcdb0d00c919cbbdd9ffafc96e74">setup</a>
 </li>
-<li>meanY
-: <a class="el" href="namespace_final_analysis.html#a1c2fa47f2afa602b9c2d25ec8580ff42">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a6d2496bd9b370387ae27a7bb0a876c2a">InitialAnalysis</a>
+<li>MAPoly
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a75c9618722e8c9ed0413797b6ec304eb">CARMADemo</a>
 </li>
-<li>medianDevWalker
-: <a class="el" href="namespace_final_analysis.html#ac362b5ee700f3dc97ef8f58b9c95f019">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#aebce0372a3a0163d83eb67756a668e9c">PlotARMARegions</a>
+<li>maxSigma
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a39978964538dce54fa826abcdd34836f">CARMADemo</a>
 </li>
-<li>medianWalker
-: <a class="el" href="namespace_final_analysis.html#a84eaae13a656db02c1fb234b67fa211f">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a52850befe6ca5dd531f3da54183de7af">PlotARMARegions</a>
+<li>maxTimescale
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a51a36b647ad9d55160c4fd3ebf5bb629">CARMADemo</a>
+</li>
+<li>minTimescale
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a0168215deb3ab933fe96dc4b55388cee">CARMADemo</a>
+</li>
+<li>MKLDIR
+: <a class="el" href="namespacesetup.html#a71664edfdcf98a1ed2159a5cb4a7d196">setup</a>
+</li>
+<li>MKLFLAGS
+: <a class="el" href="namespacesetup.html#a356d52830aa81f3e0cfda1095f3162f8">setup</a>
+</li>
+<li>MKLLIBS
+: <a class="el" href="namespacesetup.html#a3ecd92f8e1e53dd6528359a08aee59e9">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
-<li>nbins
-: <a class="el" href="namespace_final_analysis.html#ab8aad06278d0423ea7c2ef145097954b">FinalAnalysis</a>
+<li>name
+: <a class="el" href="namespacesetup.html#a61de3710bf6c9d78c0afa352263f8b09">setup</a>
 </li>
-<li>nBins
-: <a class="el" href="namespace_final_analysis.html#afbe11458d00db6f07dc367e9d9074744">FinalAnalysis</a>
+<li>newLC
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a00f90358447346616f81cdf0ba8454e2">CARMADemo</a>
 </li>
-<li>nbins
-: <a class="el" href="namespace_initial_analysis.html#aff22a766f69daf1da0bf11d8b767dd69">InitialAnalysis</a>
+<li>newTask
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a8303626832dad7b21c7f02d3bcd0f092">CARMADemo</a>
 </li>
-<li>ndim
-: <a class="el" href="namespace_final_analysis.html#ae4b307ed4519c8b02333909f683f76d6">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a6d9523e891d3f88e36e2c83da27f05a9">PlotARMARegions</a>
+<li>NLOPTLIBS
+: <a class="el" href="namespacesetup.html#ae8e55c011b0f75d872a51166b37395ae">setup</a>
 </li>
-<li>newBinErrors
-: <a class="el" href="namespace_final_analysis.html#ac7e5340352eec13fbd15cb78ce1d7c13">FinalAnalysis</a>
+<li>Num
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a20af80bc8ad6317c9f48f3c8974ae34e">binarySMBHDemo</a>
 </li>
-<li>newBinVals
-: <a class="el" href="namespace_final_analysis.html#af73c4fbd388650228620f11e8128489b">FinalAnalysis</a>
+<li>numCadences
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a0bf150d4bd0d4b119fbe66ea9a3f5ebc">CARMADemo</a>
 </li>
-<li>nsteps
-: <a class="el" href="namespace_final_analysis.html#a11e023099f2819c75bd7ecb02c7671c3">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a400da7acac41459d918d50e10fcd9735">PlotARMARegions</a>
+<li>numFrames
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a2a395de684eed7859ba5e04338595253">binarySMBHDemo</a>
 </li>
-<li>numIntLC
-: <a class="el" href="namespace_final_analysis.html#a9481028e551e6a7d0abf48c81f22cf86">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#ad5c01ec92c7e25854daeb2288e12e71a">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a9a622e1006cc8cc55b062f42b9e4c980">PlotARMARegions</a>
-</li>
-<li>numObs
-: <a class="el" href="namespace_final_analysis.html#a38df881ad911780b915aa9e19ebb7dc6">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a886ea74f4787053abb1c8ff90587ce16">InitialAnalysis</a>
-</li>
-<li>numPts
-: <a class="el" href="namespace_final_analysis.html#ab417da76d397a990dd95199dccc1b61b">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#af97ec4666037a95d5ae94bf162868749">InitialAnalysis</a>
-</li>
-<li>numQuarters
-: <a class="el" href="namespace_get_all_data.html#abb46709e621fe2edfea6055c1749afd5">GetAllData</a>
-</li>
-<li>nwalkers
-: <a class="el" href="namespace_final_analysis.html#aa7ae3a71cd02bd6488a119cf3041b24e">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#ad8d2b4da6dbf7506bdf2e3ae4a66e626">PlotARMARegions</a>
+<li>numOrbits
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a6fd042d16c07f82a55f4f905c563c0d9">binarySMBHDemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
-<li>objFolder
-: <a class="el" href="namespace_get_all_data.html#ad1a3a2da71089668ef951488bd43ec72">GetAllData</a>
+<li>OMPFLAGS
+: <a class="el" href="namespacesetup.html#aa0d1a93d0a5a5a10a02c0cac8dbcaa02">setup</a>
 </li>
-<li>obsSystem()
-: <a class="el" href="namespace_kalman_fast.html#acf131e0bf3988ca746748906158dc85f">KalmanFast</a>
-</li>
-<li>obsSystemFixed()
-: <a class="el" href="namespace_kalman_fast.html#a2ca9007cfa54c66b77cabd70e599395e">KalmanFast</a>
-</li>
-<li>obsSystemFixedMissing()
-: <a class="el" href="namespace_kalman_fast.html#ab15297ce7c869d9c749f8ac170fc091e">KalmanFast</a>
-</li>
-<li>obsSystemMissing()
-: <a class="el" href="namespace_kalman_fast.html#a742169bce77d3a99ff5806e4bff223ee">KalmanFast</a>
+<li>OMPLIBS
+: <a class="el" href="namespacesetup.html#aad0176b2380288a025c0c71db934ee2d">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
-<li>pacf
-: <a class="el" href="namespace_initial_analysis.html#a23fa87d68ed30a85f09941a0e5fb2fb1">InitialAnalysis</a>
+<li>p
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#adf3b3082a9cb9203add8b494f5932ba8">CARMADemo</a>
 </li>
-<li>pacfFile
-: <a class="el" href="namespace_initial_analysis.html#a0b2e4511acd1a69080718a129a84637a">InitialAnalysis</a>
+<li>Parsec
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a5d91723e60291fd221a8e96bbbf009c8">binarySMBHDemo</a>
 </li>
-<li>pacfFilePath
-: <a class="el" href="namespace_initial_analysis.html#ac8cf076709e57b76c8ac1d19775b1aa3">InitialAnalysis</a>
+<li>parser
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#aebac506937847b8a824a3f705785ff3c">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a_demo.html#a1fd1c8854d7c66e2b19f47d6aad706ef">CARMADemo</a>
+, <a class="el" href="namespacerand_demo.html#aefb5f3796ae10e974d19b3df08a8268b">randDemo</a>
 </li>
-<li>pBest
-: <a class="el" href="namespace_final_analysis.html#a4cb7be1a71ae9339b38be19665d4816b">FinalAnalysis</a>
+<li>PiSq
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#af37ef2efc0cd6b0b69f996394f5ddf18">binarySMBHDemo</a>
 </li>
-<li>phiBest
-: <a class="el" href="namespace_final_analysis.html#a8d45e2b4a2cbacf49eab526ac11ecc77">FinalAnalysis</a>
+<li>platforms
+: <a class="el" href="namespacesetup.html#a5d7dbf5376a220cd300d93e9a0f48ea4">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_q"></a>- q -</h3><ul>
-<li>qBest
-: <a class="el" href="namespace_final_analysis.html#a52c1bec46dd832ef73e9e1d21d28155b">FinalAnalysis</a>
-</li>
-<li>quarterList
-: <a class="el" href="namespace_get_all_data.html#a05b955962336cb4b084d9ebadce6bebc">GetAllData</a>
-</li>
-<li>quarterPattern
-: <a class="el" href="namespace_get_all_data.html#a826165aca23510d517a06f85902411be">GetAllData</a>
+<li>q
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a71450e798960cbdb932b7f4721305832">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>randStep
-: <a class="el" href="namespace_final_analysis.html#a02480d595c49c0f2494cb9b94dc93ad8">FinalAnalysis</a>
+<li>r1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#afa2c1a69396867f79d8fa488b78a5d4a">binarySMBHDemo</a>
 </li>
-<li>randWalker
-: <a class="el" href="namespace_final_analysis.html#a9dab2cf8612b12f65a094eac2c433ac1">FinalAnalysis</a>
+<li>r2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a8492099467bf0c8cdeea92c96d291d72">binarySMBHDemo</a>
 </li>
-<li>readTime
-: <a class="el" href="namespace_final_analysis.html#a52de26ab1dba066ec7d2b10dd3bd8544">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a03a376434b7fa787e1ba016b5534e816">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a5329612770d2afb1002bfc0672f392d8">PlotARMARegions</a>
+<li>r2d()
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#af52a3980407a0804ce8abebc7d68f63f">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a.html#aad8874276a3916cd43ace9c2d7a6321a">CARMA</a>
 </li>
-<li>RelProbOfMinInfLoss
-: <a class="el" href="namespace_final_analysis.html#a503e1ab9c53535c8cf3182b5bd683239">FinalAnalysis</a>
+<li>r_1
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#aa32ceb76d602a0d157916cf91ad6377c">CARMADemo</a>
 </li>
-<li>remoteCBVFile
-: <a class="el" href="namespace_get_all_data.html#a59840d46d0e238ee525782c0fbe13eeb">GetAllData</a>
+<li>r_1_guess
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a8b7943e46d7401e7e312db8d3a353363">CARMADemo</a>
 </li>
-<li>remoteQuarterFile
-: <a class="el" href="namespace_get_all_data.html#af072517ff6c21d5eab5ab2b237b0baf6">GetAllData</a>
+<li>r_2
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#aac6267bad07ea88a21753363b78d8153">CARMADemo</a>
 </li>
-<li>remoteTargFile
-: <a class="el" href="namespace_get_all_data.html#a7b84aca19fc066108a7f1216a37d8bc2">GetAllData</a>
+<li>r_2_guess
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a845035ed251a896d63845939de16a0a6">CARMADemo</a>
+</li>
+<li>r_3
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a514fd8674af7ed60c5c647977b726159">CARMADemo</a>
+</li>
+<li>r_3_guess
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a2e51a245e221cda099201dff37dd968a">CARMADemo</a>
+</li>
+<li>rand_ext
+: <a class="el" href="namespacesetup.html#a72a912c8df91f65b2a80db002d55f4ff">setup</a>
+</li>
+<li>rand_List
+: <a class="el" href="namespacesetup.html#a7c78e16e81c92c4cb8ed8c293b885193">setup</a>
+</li>
+<li>rand_sourceList
+: <a class="el" href="namespacesetup.html#a79e06cfe494233c86ded36a5f7852f95">setup</a>
+</li>
+<li>rB1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a5fc5c18e9e789a0bab0d94067a4f9636">binarySMBHDemo</a>
+</li>
+<li>rB2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a7d9134aac5e5106450b092ab423b890f">binarySMBHDemo</a>
+</li>
+<li>RhoOoM
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a75a0a01864a83a97da7989e85d83d7de">binarySMBHDemo</a>
+</li>
+<li>rmax
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a74e4ce6514b15b46325ef6ae05f4a3f1">binarySMBHDemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
-<li>s1
-: <a class="el" href="namespace_final_analysis.html#a8237fbcf96157871ca15161b8c911d6a">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a0724f8dbb19686d2c6d61dfa779df462">InitialAnalysis</a>
+<li>sigma
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a9784ff8e7b9633d4c1cf8d882bf51c9d">CARMADemo</a>
 </li>
-<li>s2
-: <a class="el" href="namespace_final_analysis.html#a6e5fab082186d13ccafedfe0f8a36fd3">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a301d3f25d37a34b53b450ac9f7e20b74">InitialAnalysis</a>
+<li>sigma_guess
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a00552ce8d2ff001c98731086d3221a4b">CARMADemo</a>
 </li>
-<li>sampleDeviances
-: <a class="el" href="namespace_final_analysis.html#a0a76ade78d1bb36b45ca6950b6a340a9">FinalAnalysis</a>
+<li>SigmaOoM
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3f75f288ba1950c26cff588479de1a34">binarySMBHDemo</a>
 </li>
-<li>samples
-: <a class="el" href="namespace_final_analysis.html#aa61b8c8a4b0a4c679d09737c3ae4c39c">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#aa67f172c43ed86ba8625f428144531b0">PlotARMARegions</a>
+<li>SolarMass
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a3c430f8a1571165fd1d3b9180f3e428f">binarySMBHDemo</a>
 </li>
-<li>secPerSiderealDay
-: <a class="el" href="namespace_final_analysis.html#aad4e1075c61393b18c1fe9942acd8789">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a941e2c2dea67574aa0bb60b880233ba3">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a911f440b0b304e72e7588c7508cacd20">PlotARMARegions</a>
+<li>SolarMassPerCubicParsec
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#ae0c87d5df255efd649e5a21e0bafbbc3">binarySMBHDemo</a>
 </li>
-<li>set_plot_params()
-: <a class="el" href="namespacempl__settings.html#a0d7883b3b39d3ab7ed7382a9688ac9e3">mpl_settings</a>
+<li>success
+: <a class="el" href="namespacerand_demo.html#a7b35ea6a4b4b19e13476f6e085556b7e">randDemo</a>
 </li>
-<li>setSystem()
-: <a class="el" href="namespace_kalman_fast.html#a599ed523e7fcf7ac22112248d8a31c4d">KalmanFast</a>
-</li>
-<li>setSystemDiffuse()
-: <a class="el" href="namespace_kalman_fast.html#a308c13060d7fef2e08c668baa4f5c3fb">KalmanFast</a>
-</li>
-<li>sigmaBest
-: <a class="el" href="namespace_final_analysis.html#ab9b839125655898989c2bba36c4b2d82">FinalAnalysis</a>
-</li>
-<li>simFolder
-: <a class="el" href="namespace_get_all_data.html#ab8e095b44d1d2a618b9f44a372540200">GetAllData</a>
-</li>
-<li>sortedDICVals
-: <a class="el" href="namespace_final_analysis.html#ac46e153da6c229304def2ef1594ad6d0">FinalAnalysis</a>
-</li>
-<li>step
-: <a class="el" href="namespace_initial_analysis.html#a44db668c8ccdc80acc9e630ba414298a">InitialAnalysis</a>
-</li>
-<li>stepArr
-: <a class="el" href="namespace_final_analysis.html#a221de63368631e4bf8a334f9f0b4fcdb">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#aeab291d1791e6713eb80e5d400f942f5">PlotARMARegions</a>
-</li>
-<li>string
-: <a class="el" href="namespace_get_all_data.html#aa3f14258ba79c9dd527fc1805b92c818">GetAllData</a>
-</li>
-<li>stringTarg
-: <a class="el" href="namespace_get_all_data.html#a6125644c05ef4f47c70dee8f9f271b21">GetAllData</a>
+<li>System
+: <a class="el" href="namespacesetup.html#a09d66ddf3e3c0276fcc930fa2ec73ab2">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
-<li>t
-: <a class="el" href="namespace_final_analysis.html#a90758b7deb047594ad04ead892b7627e">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#abd32e1c44917e64e9d72ff4a89b0134d">InitialAnalysis</a>
+<li>T
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a6e3697d31caf5b65c8bee29546abe4ff">binarySMBHDemo</a>
+, <a class="el" href="namespace_c_a_r_m_a_demo.html#ad48924984a4bff8b24fbada6f1e04893">CARMADemo</a>
 </li>
-<li>target
-: <a class="el" href="namespace_get_all_data.html#ae7c93a35b37e6a7e1f63026786f921e3">GetAllData</a>
+<li>Theta
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a5110720bf5a6c1cf9a737c7ffac9774e">CARMADemo</a>
 </li>
-<li>target_pixel_filesPath
-: <a class="el" href="namespace_get_all_data.html#a45b4d0dc9728eff931ef547819c19225">GetAllData</a>
+<li>theta1
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a39ae44217953e527dae779e7352ac627">binarySMBHDemo</a>
 </li>
-<li>targetListFile
-: <a class="el" href="namespace_get_all_data.html#a651d69300ed082b3426d3910b6c6a5f7">GetAllData</a>
+<li>theta2
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a45b253d55eb0b14ab6802f7b02bf5cf3">binarySMBHDemo</a>
 </li>
-<li>targList
-: <a class="el" href="namespace_get_all_data.html#a0e405ac3485c0d9036936f1e1639d262">GetAllData</a>
+<li>times
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a4559d154f36f640c55cd7fe2d2be1fa6">binarySMBHDemo</a>
 </li>
-<li>targpath
-: <a class="el" href="namespace_get_all_data.html#a2dafe0984549f093bb5d258640946102">GetAllData</a>
-</li>
-<li>targPattern
-: <a class="el" href="namespace_get_all_data.html#ad05a0da5848b788cf7824b79fa516b64">GetAllData</a>
-</li>
-<li>thetaBest
-: <a class="el" href="namespace_final_analysis.html#ae73eb98f29c137ecea3dc1021ba665b5">FinalAnalysis</a>
-</li>
-<li>tLFile
-: <a class="el" href="namespace_get_all_data.html#a7f0291de88ec75252bb7cfaa9a33997e">GetAllData</a>
-</li>
-<li>tMax
-: <a class="el" href="namespace_final_analysis.html#a3e720a14f79520011003b9f32ec0e4b2">FinalAnalysis</a>
-</li>
-<li>TriFile
-: <a class="el" href="namespace_final_analysis.html#a05fafd47a96b32e6c3dc6e30dac35672">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a418058aa77527961189e1d40f3d8091d">PlotARMARegions</a>
-</li>
-<li>TriFilePath
-: <a class="el" href="namespace_final_analysis.html#abf963966146e1751a9c7aeb6a4df238a">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a35b8724b6b0849cfed30c080d79c775e">PlotARMARegions</a>
+<li>tolIR
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a8aa45a54b335d65f54192bc3fa3ba82d">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>urlpath
-: <a class="el" href="namespace_get_all_data.html#ae1e57e5321d57891fb95a9c9326c9713">GetAllData</a>
+<li>url
+: <a class="el" href="namespacesetup.html#a3376e8b9735800b5b9e455914cee908d">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
-<li>v
-: <a class="el" href="namespace_final_analysis.html#a8fb9ac591a57f2affeeb677906de4d5f">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#aa204387766476b9e2deb40567903304e">InitialAnalysis</a>
+<li>VERFLAGS
+: <a class="el" href="namespacesetup.html#a4b1725ffabf7e972e9416fc047daa758">setup</a>
 </li>
-<li>values
-: <a class="el" href="namespace_final_analysis.html#acd9913ccc0f466893ae0a193d0a17388">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a0b1c5b1315c0dd0f36fedc78bf764504">InitialAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a4e1eb2c62fce8e30d2ac6b5152291a8a">PlotARMARegions</a>
-</li>
-<li>vMax
-: <a class="el" href="namespace_final_analysis.html#a1876ad5867611d2150568c7311e8badb">FinalAnalysis</a>
-</li>
-<li>vMin
-: <a class="el" href="namespace_final_analysis.html#a5dff2737a91aa5a7c56b78a13ebf95ec">FinalAnalysis</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
-<li>walkers
-: <a class="el" href="namespace_final_analysis.html#abcbb56dee8740482b79123ed446a959e">FinalAnalysis</a>
-, <a class="el" href="namespace_plot_a_r_m_a_regions.html#a3c04a644963d85e8e23169a93ce616be">PlotARMARegions</a>
+<li>version
+: <a class="el" href="namespacesetup.html#ab177531e7a80674a3db3de2d79eb8be7">setup</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_x"></a>- x -</h3><ul>
-<li>x
-: <a class="el" href="namespace_final_analysis.html#a53f403035b6d6abe6c7e2d7c07601b1d">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#ad5a55c453ab03e26be3a8bcb07df82a2">InitialAnalysis</a>
-</li>
-<li>XXXX
-: <a class="el" href="namespace_get_all_data.html#a0ad0a5c98585457adf46115ebccbba6d">GetAllData</a>
+<li>xStart
+: <a class="el" href="namespace_c_a_r_m_a_demo.html#a4a968eb0ebec9a8a1dd2e0beb557ee70">CARMADemo</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_y"></a>- y -</h3><ul>
-<li>y
-: <a class="el" href="namespace_final_analysis.html#af061a7f615d51259e7a6720b6f39f02d">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#aaf8f8cb78972175b1c343dda2cfe01ac">InitialAnalysis</a>
-</li>
-<li>yFile
-: <a class="el" href="namespace_final_analysis.html#a73049f17326c78323b2344dc7cb4c05d">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#a2ff3e6a83381d10c107126fec5b18bdf">InitialAnalysis</a>
-</li>
-<li>yFilePath
-: <a class="el" href="namespace_final_analysis.html#ad8aaf10ff3415780cc1c8fcd7990395a">FinalAnalysis</a>
-, <a class="el" href="namespace_initial_analysis.html#ad04c497db9193976f5b64077a8e76dbf">InitialAnalysis</a>
-</li>
-<li>yMax
-: <a class="el" href="namespace_final_analysis.html#a7071cf368ec253b5f7165fa535e161ef">FinalAnalysis</a>
-</li>
-<li>yMin
-: <a class="el" href="namespace_final_analysis.html#a542cfbfe4821ac9a631cbe8102ad7de6">FinalAnalysis</a>
+<li>Year
+: <a class="el" href="namespacebinary_s_m_b_h_demo.html#a0cace76cb6d2734d1d722ab46183b936">binarySMBHDemo</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -641,7 +585,7 @@ $(document).ready(function(){initNavTree('namespacemembers.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

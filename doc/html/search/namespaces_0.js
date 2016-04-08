@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['finalanalysis',['FinalAnalysis',['../namespace_final_analysis.html',1,'']]]
+  ['binarysmbhdemo',['binarySMBHDemo',['../namespacebinary_s_m_b_h_demo.html',1,'']]]
 ];

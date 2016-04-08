@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mpl_5fsettings',['mpl_settings',['../namespacempl__settings.html',1,'']]]
+  ['randdemo',['randDemo',['../namespacerand_demo.html',1,'']]]
 ];

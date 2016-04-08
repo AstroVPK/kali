@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: CARMA Class Reference</title>
+<title>libcarma: CARMA Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -101,7 +96,7 @@ $(document).ready(function(){initNavTree('class_c_a_r_m_a.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -131,20 +126,74 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af758356c8aec7ea57d4edbd4c430c780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca44011b5238545f728d61d1cbbb72c2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aca44011b5238545f728d61d1cbbb72c2">get_q</a> ()</td></tr>
 <tr class="separator:aca44011b5238545f728d61d1cbbb72c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96b654c437e7d9528d44c7dbc4bc9657"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a96b654c437e7d9528d44c7dbc4bc9657">get_t</a> ()</td></tr>
-<tr class="separator:a96b654c437e7d9528d44c7dbc4bc9657"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56124e5b6da7bf480ab87edaf2b8520f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a56124e5b6da7bf480ab87edaf2b8520f">get_dt</a> ()</td></tr>
+<tr class="separator:a56124e5b6da7bf480ab87edaf2b8520f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08c525da441f05c0779182f32198acf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a08c525da441f05c0779182f32198acf6">set_dt</a> (double t_incr)</td></tr>
+<tr class="separator:a08c525da441f05c0779182f32198acf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ffb8686c5b54d9d4c76b2fd50a27a39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a1ffb8686c5b54d9d4c76b2fd50a27a39">get_allocated</a> ()</td></tr>
+<tr class="separator:a1ffb8686c5b54d9d4c76b2fd50a27a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6df47e4eb5549a3108f7ec6a5e7821c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a6df47e4eb5549a3108f7ec6a5e7821c2">printX</a> ()</td></tr>
+<tr class="separator:a6df47e4eb5549a3108f7ec6a5e7821c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1e451e382a60ab856edf63e70752074"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ac1e451e382a60ab856edf63e70752074">getX</a> () const </td></tr>
+<tr class="separator:ac1e451e382a60ab856edf63e70752074"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0281829307d89b518920f2a0be1c5686"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a0281829307d89b518920f2a0be1c5686">printP</a> ()</td></tr>
+<tr class="separator:a0281829307d89b518920f2a0be1c5686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36df8bd666ea1b1ed984d5c34588e94b"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a36df8bd666ea1b1ed984d5c34588e94b">getP</a> () const </td></tr>
+<tr class="separator:a36df8bd666ea1b1ed984d5c34588e94b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeecd124f696410809e879436b70af1ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aeecd124f696410809e879436b70af1ec">printA</a> ()</td></tr>
+<tr class="separator:aeecd124f696410809e879436b70af1ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1edafdc4cd83a2f7797daa212febc957"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a1edafdc4cd83a2f7797daa212febc957">getA</a> () const </td></tr>
+<tr class="separator:a1edafdc4cd83a2f7797daa212febc957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec5cf02ae8c2b4d406e82c663fb69c42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aec5cf02ae8c2b4d406e82c663fb69c42">printvr</a> ()</td></tr>
+<tr class="separator:aec5cf02ae8c2b4d406e82c663fb69c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0942ceb94c7a11df3705ad7a65b526dd"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a0942ceb94c7a11df3705ad7a65b526dd">getvr</a> () const </td></tr>
+<tr class="separator:a0942ceb94c7a11df3705ad7a65b526dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3145a01eae617e76e11305ca2ec4b61d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a3145a01eae617e76e11305ca2ec4b61d">printvrInv</a> ()</td></tr>
+<tr class="separator:a3145a01eae617e76e11305ca2ec4b61d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05cbbdbd1978540b35f980627054caa2"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a05cbbdbd1978540b35f980627054caa2">getvrInv</a> () const </td></tr>
+<tr class="separator:a05cbbdbd1978540b35f980627054caa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52ad7813fcd1aa86359bf8946fca45b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a52ad7813fcd1aa86359bf8946fca45b4">printw</a> ()</td></tr>
+<tr class="separator:a52ad7813fcd1aa86359bf8946fca45b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e915e480eeadc65a666523b8d26064d"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a3e915e480eeadc65a666523b8d26064d">getw</a> () const </td></tr>
+<tr class="separator:a3e915e480eeadc65a666523b8d26064d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cb9254e44aa635c08059ec14a4e2248"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a8cb9254e44aa635c08059ec14a4e2248">printexpw</a> ()</td></tr>
+<tr class="separator:a8cb9254e44aa635c08059ec14a4e2248"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a131e3f743bab72db06162b85e51bc1cf"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a131e3f743bab72db06162b85e51bc1cf">getexpw</a> () const </td></tr>
+<tr class="separator:a131e3f743bab72db06162b85e51bc1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace5f4355098caa632c9aba28b2882b08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ace5f4355098caa632c9aba28b2882b08">printB</a> ()</td></tr>
+<tr class="separator:ace5f4355098caa632c9aba28b2882b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1d34a9f872b31fdebc1fd2481ca3d1"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a0c1d34a9f872b31fdebc1fd2481ca3d1">getB</a> () const </td></tr>
+<tr class="separator:a0c1d34a9f872b31fdebc1fd2481ca3d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ffc6377d85bdb5f3a4192ad5826a9df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a3ffc6377d85bdb5f3a4192ad5826a9df">printC</a> ()</td></tr>
+<tr class="separator:a3ffc6377d85bdb5f3a4192ad5826a9df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2537a7b40e800fb063943b9c469cee9"><td class="memItemLeft" align="right" valign="top">const complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#af2537a7b40e800fb063943b9c469cee9">getC</a> () const </td></tr>
+<tr class="separator:af2537a7b40e800fb063943b9c469cee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a003b1ea5dac58b64dba766b06991103a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a003b1ea5dac58b64dba766b06991103a">printF</a> ()</td></tr>
+<tr class="separator:a003b1ea5dac58b64dba766b06991103a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74e6e4db5aa53ee0c88d93cc92e08e6d"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a74e6e4db5aa53ee0c88d93cc92e08e6d">getF</a> () const </td></tr>
+<tr class="separator:a74e6e4db5aa53ee0c88d93cc92e08e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a484c74e9fbbdb718b449fd07d192ef9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a484c74e9fbbdb718b449fd07d192ef9c">printSigma</a> ()</td></tr>
+<tr class="separator:a484c74e9fbbdb718b449fd07d192ef9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8966239bdea7a3fc242837463d23321"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ae8966239bdea7a3fc242837463d23321">getSigma</a> () const </td></tr>
+<tr class="separator:ae8966239bdea7a3fc242837463d23321"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9b01a1959b935de28e65904529b190b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ac9b01a1959b935de28e65904529b190b">printQ</a> ()</td></tr>
+<tr class="separator:ac9b01a1959b935de28e65904529b190b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ee2f32bd6e67fc81ec1088ae305dfb8"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a5ee2f32bd6e67fc81ec1088ae305dfb8">getQ</a> () const </td></tr>
+<tr class="separator:a5ee2f32bd6e67fc81ec1088ae305dfb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e426d288da8c4a69995be2edb72bf8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a3e426d288da8c4a69995be2edb72bf8d">printT</a> ()</td></tr>
+<tr class="separator:a3e426d288da8c4a69995be2edb72bf8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f6879444895bae5b42791d13ec9b4a1"><td class="memItemLeft" align="right" valign="top">const double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a2f6879444895bae5b42791d13ec9b4a1">getT</a> () const </td></tr>
+<tr class="separator:a2f6879444895bae5b42791d13ec9b4a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f96e596ba4a66b3f9eb7234292ad1d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a6f96e596ba4a66b3f9eb7234292ad1d0">allocCARMA</a> (int numP, int numQ)</td></tr>
 <tr class="separator:a6f96e596ba4a66b3f9eb7234292ad1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af850b7e2ba5af3ae028aacfc0891b830"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#af850b7e2ba5af3ae028aacfc0891b830">deallocCARMA</a> ()</td></tr>
 <tr class="separator:af850b7e2ba5af3ae028aacfc0891b830"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad606acee248d451679b522172d7b9ac4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ad606acee248d451679b522172d7b9ac4">checkCARMAParams</a> (double *Theta)</td></tr>
-<tr class="separator:ad606acee248d451679b522172d7b9ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70e6ec6090f629d43e9ed810346c766e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a70e6ec6090f629d43e9ed810346c766e">setCARMA</a> (double *Theta)</td></tr>
-<tr class="separator:a70e6ec6090f629d43e9ed810346c766e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b85f710457cdf67a6b716a149456bca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a1b85f710457cdf67a6b716a149456bca">operator()</a> (const vector&lt; double &gt; &amp;x, vector&lt; double &gt; &amp;dxdt, const double t)</td></tr>
-<tr class="separator:a1b85f710457cdf67a6b716a149456bca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab40779c2e688ef40afe4c925a777ebc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ab40779c2e688ef40afe4c925a777ebc7">solveCARMA</a> (double dt)</td></tr>
-<tr class="separator:ab40779c2e688ef40afe4c925a777ebc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20702c73019e9eafae573df3df0128d3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a20702c73019e9eafae573df3df0128d3">checkCARMAParams</a> (double *ThetaIn)</td></tr>
+<tr class="separator:a20702c73019e9eafae573df3df0128d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c1c104dcf44e34fb596c6068239347e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a6c1c104dcf44e34fb596c6068239347e">setCARMA</a> (double *ThetaIn)</td></tr>
+<tr class="separator:a6c1c104dcf44e34fb596c6068239347e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4391fa9d2ae5f6673b9ac762fd1795a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ad4391fa9d2ae5f6673b9ac762fd1795a">solveCARMA</a> ()</td></tr>
+<tr class="separator:ad4391fa9d2ae5f6673b9ac762fd1795a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8748732c23bc65486b9df8f25a905cf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a8748732c23bc65486b9df8f25a905cf9">resetState</a> (double InitUncertainty)</td></tr>
 <tr class="separator:a8748732c23bc65486b9df8f25a905cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44b60949dc1cbcccb24873a117faa5ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a44b60949dc1cbcccb24873a117faa5ac">resetState</a> ()</td></tr>
@@ -153,28 +202,24 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a98f282f6809e1e2c19ed10b362048fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aead4fd2cb0a4f1670e866435a09e0d50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aead4fd2cb0a4f1670e866435a09e0d50">getCMARoots</a> (complex&lt; double &gt; *&amp;CMARoots)</td></tr>
 <tr class="separator:aead4fd2cb0a4f1670e866435a09e0d50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2950241c0e1f1157e5b2d07e497e9b14"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a2950241c0e1f1157e5b2d07e497e9b14">getIntrinsicVar</a> ()</td></tr>
+<tr class="separator:a2950241c0e1f1157e5b2d07e497e9b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a684661827088a58ccc3131184e7506ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a684661827088a58ccc3131184e7506ba">burnSystem</a> (int numBurn, unsigned int burnSeed, double *burnRand)</td></tr>
 <tr class="separator:a684661827088a58ccc3131184e7506ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12f0019ddf951e20ffda09e46795b8f3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a12f0019ddf951e20ffda09e46795b8f3">observeSystem</a> (double distRand, double noiseRand)</td></tr>
-<tr class="separator:a12f0019ddf951e20ffda09e46795b8f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbfdf1b311724e3a128613d880db66c5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#adbfdf1b311724e3a128613d880db66c5">observeSystem</a> (double distRand, double noiseRand, double mask)</td></tr>
-<tr class="separator:adbfdf1b311724e3a128613d880db66c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad920bb6c62ce79b2ad5871bfcfe515de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#ad920bb6c62ce79b2ad5871bfcfe515de">observeSystem</a> (int numObs, unsigned int distSeed, unsigned int noiseSeed, double *distRand, double *noiseRand, double noiseSigma, double *y)</td></tr>
-<tr class="separator:ad920bb6c62ce79b2ad5871bfcfe515de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a083e1356ab030a2279a882b71eee26c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a083e1356ab030a2279a882b71eee26c1">observeSystem</a> (int numObs, unsigned int distSeed, unsigned int noiseSeed, double *distRand, double *noiseRand, double noiseSigma, double *y, double *mask)</td></tr>
-<tr class="separator:a083e1356ab030a2279a882b71eee26c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd0e0de5df0e6f26b87df72d0d5988e9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#acd0e0de5df0e6f26b87df72d0d5988e9">computeLnLike</a> (int numPts, double *y, double *yerr)</td></tr>
-<tr class="separator:acd0e0de5df0e6f26b87df72d0d5988e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec17c78b88d909dba10342447915a89e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aec17c78b88d909dba10342447915a89e">computeLnLike</a> (int numPts, double *y, double *yerr, double *mask)</td></tr>
-<tr class="separator:aec17c78b88d909dba10342447915a89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d84c0d953b15519cbddcfffc50132b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a2d84c0d953b15519cbddcfffc50132b0">getResiduals</a> (int numPts, double *y, double *r)</td></tr>
-<tr class="separator:a2d84c0d953b15519cbddcfffc50132b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5d31db7b37973d2dea0dae07ef531b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#af5d31db7b37973d2dea0dae07ef531b5">fixedIntervalSmoother</a> (int numPts, double *y, double *r, double *x)</td></tr>
-<tr class="separator:af5d31db7b37973d2dea0dae07ef531b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c4a1c1471281a20e9dabc3b8a7ae527"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a9c4a1c1471281a20e9dabc3b8a7ae527">observeSystem</a> (<a class="el" href="struct_ln_like_data.html">LnLikeData</a> *ptr2LnLikeData, unsigned int distSeed, double *distRand)</td></tr>
+<tr class="separator:a9c4a1c1471281a20e9dabc3b8a7ae527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44e19a15aba1f78becebc2d01a6a3a97"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a44e19a15aba1f78becebc2d01a6a3a97">getMeanFlux</a> (<a class="el" href="struct_ln_like_data.html">LnLikeData</a> *ptr2Data)</td></tr>
+<tr class="separator:a44e19a15aba1f78becebc2d01a6a3a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dab0a97d457c89d11727fcc664fd3f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#a8dab0a97d457c89d11727fcc664fd3f3">addNoise</a> (<a class="el" href="struct_ln_like_data.html">LnLikeData</a> *ptr2LnLikeData, unsigned int noiseSeed, double *noiseRand)</td></tr>
+<tr class="separator:a8dab0a97d457c89d11727fcc664fd3f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8f65514684e13060bf6614d2401c3dd"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#af8f65514684e13060bf6614d2401c3dd">computeLnLikelihood</a> (<a class="el" href="struct_ln_like_data.html">LnLikeData</a> *ptr2LnLikeData)</td></tr>
+<tr class="separator:af8f65514684e13060bf6614d2401c3dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec6ca9d09edc9a5a4a69c4ccec69a6a3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_a_r_m_a.html#aec6ca9d09edc9a5a4a69c4ccec69a6a3">computeLnPrior</a> (<a class="el" href="struct_ln_like_data.html">LnLikeData</a> *ptr2LnLikeData)</td></tr>
+<tr class="separator:aec6ca9d09edc9a5a4a69c4ccec69a6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00020">20</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00038">38</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a8871e02b301b503a987c03afc15c573c"></a>
 <div class="memitem">
@@ -190,7 +235,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model. </p>
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00354">354</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00414">414</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
@@ -207,11 +252,45 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00423">423</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00479">479</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8dab0a97d457c89d11727fcc664fd3f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::addNoise </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_ln_like_data.html">LnLikeData</a> *&#160;</td>
+          <td class="paramname"><em>ptr2LnLikeData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>noiseSeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>noiseRand</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01997">1997</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a6f96e596ba4a66b3f9eb7234292ad1d0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -236,7 +315,16 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00490">490</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00542">542</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0_icgraph" id="class_c_a_r_m_a_a6f96e596ba4a66b3f9eb7234292ad1d0_icgraph">
+</map>
+</div>
+</p>
 
 </div>
 </div>
@@ -270,20 +358,11 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01304">1304</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba_cgraph" id="class_c_a_r_m_a_a684661827088a58ccc3131184e7506ba_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="203,5,288,32"/></map>
-</div>
-</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01893">1893</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad606acee248d451679b522172d7b9ac4"></a>
+<a class="anchor" id="a20702c73019e9eafae573df3df0128d3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -291,136 +370,89 @@ Here is the call graph for this function:</div>
           <td class="memname">int CARMA::checkCARMAParams </td>
           <td>(</td>
           <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>Theta</em></td><td>)</td>
+          <td class="paramname"><em>ThetaIn</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Function to check the validity of the <a class="el" href="class_c_a_r_m_a.html">CARMA</a> parameters. Theta contains \(p\) CAR parameters followed by \(q+1\) CMA parameters, i.e. \(\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\), where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.</p>
+<p>Function to check the validity of the <a class="el" href="class_c_a_r_m_a.html">CARMA</a> parameters. Theta contains <img class="formulaInl" alt="$p$" src="form_1.png"/> CAR parameters followed by <img class="formulaInl" alt="$q+1$" src="form_2.png"/> CMA parameters, i.e. <img class="formulaInl" alt="$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]$" src="form_0.png"/>, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19.</p>
 <p>Checks the validity of the supplied C-ARMA parameters. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">Theta</td><td>\(\Theta\) contains \(p\) CAR parameters followed by \(q+1\) CMA parameters, i.e. \(\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\), where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">Theta</td><td><img class="formulaInl" alt="$\Theta$" src="form_3.png"/> contains <img class="formulaInl" alt="$p$" src="form_1.png"/> CAR parameters followed by <img class="formulaInl" alt="$q+1$" src="form_2.png"/> CMA parameters, i.e. <img class="formulaInl" alt="$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]$" src="form_0.png"/>, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19 </td></tr>
   </table>
   </dd>
 </dl>
 <p>&lt;Function to check the validity of the <a class="el" href="class_c_a_r_m_a.html">CARMA</a> parameters.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">Theta</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ThetaIn</td><td></td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00921">921</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01206">1206</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4_cgraph.png" border="0" usemap="#class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4_cgraph" id="class_c_a_r_m_a_ad606acee248d451679b522172d7b9ac4_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="261,5,347,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_a20702c73019e9eafae573df3df0128d3_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a20702c73019e9eafae573df3df0128d3_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a20702c73019e9eafae573df3df0128d3_cgraph" id="class_c_a_r_m_a_a20702c73019e9eafae573df3df0128d3_cgraph">
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="acd0e0de5df0e6f26b87df72d0d5988e9"></a>
+<a class="anchor" id="af8f65514684e13060bf6614d2401c3dd"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double CARMA::computeLnLike </td>
+          <td class="memname">double CARMA::computeLnLikelihood </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numPts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="struct_ln_like_data.html">LnLikeData</a> *&#160;</td>
+          <td class="paramname"><em>ptr2LnLikeData</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>yerr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01532">1532</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_cgraph.png" border="0" usemap="#class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_cgraph" id="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="221,5,307,32"/></map>
-</div>
-</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l02028">2028</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_icgraph.png" border="0" usemap="#class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_icgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_icgraph" id="class_c_a_r_m_a_acd0e0de5df0e6f26b87df72d0d5988e9_icgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="222,5,306,32"/><area shape="rect" id="node3" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="355,5,405,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_af8f65514684e13060bf6614d2401c3dd_icgraph.png" border="0" usemap="#class_c_a_r_m_a_af8f65514684e13060bf6614d2401c3dd_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_af8f65514684e13060bf6614d2401c3dd_icgraph" id="class_c_a_r_m_a_af8f65514684e13060bf6614d2401c3dd_icgraph">
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="aec17c78b88d909dba10342447915a89e"></a>
+<a class="anchor" id="aec6ca9d09edc9a5a4a69c4ccec69a6a3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double CARMA::computeLnLike </td>
+          <td class="memname">double CARMA::computeLnPrior </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numPts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="struct_ln_like_data.html">LnLikeData</a> *&#160;</td>
+          <td class="paramname"><em>ptr2LnLikeData</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>yerr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01694">1694</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l02157">2157</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
-Here is the call graph for this function:</div>
+Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e_cgraph.png" border="0" usemap="#class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e_cgraph" id="class_c_a_r_m_a_aec17c78b88d909dba10342447915a89e_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="221,5,307,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_aec6ca9d09edc9a5a4a69c4ccec69a6a3_icgraph.png" border="0" usemap="#class_c_a_r_m_a_aec6ca9d09edc9a5a4a69c4ccec69a6a3_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_aec6ca9d09edc9a5a4a69c4ccec69a6a3_icgraph" id="class_c_a_r_m_a_aec6ca9d09edc9a5a4a69c4ccec69a6a3_icgraph">
+</map>
 </div>
 </p>
 
@@ -439,45 +471,41 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00673">673</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00725">725</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af5d31db7b37973d2dea0dae07ef531b5"></a>
+<a class="anchor" id="a1ffb8686c5b54d9d4c76b2fd50a27a39"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CARMA::fixedIntervalSmoother </td>
+          <td class="memname">int CARMA::get_allocated </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numPts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>x</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01086">1086</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a56124e5b6da7bf480ab87edaf2b8520f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CARMA::get_dt </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01078">1078</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
@@ -494,14 +522,14 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00905">905</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01070">1070</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_c_a_r_m_a_af758356c8aec7ea57d4edbd4c430c780_icgraph.png" border="0" usemap="#class_c_a_r_m_a_af758356c8aec7ea57d4edbd4c430c780_icgraph" alt=""/></div>
 <map name="class_c_a_r_m_a_af758356c8aec7ea57d4edbd4c430c780_icgraph" id="class_c_a_r_m_a_af758356c8aec7ea57d4edbd4c430c780_icgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="166,5,250,32"/><area shape="rect" id="node3" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="299,5,349,32"/></map>
+</map>
 </div>
 </p>
 
@@ -520,33 +548,67 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00909">909</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01074">1074</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_c_a_r_m_a_aca44011b5238545f728d61d1cbbb72c2_icgraph.png" border="0" usemap="#class_c_a_r_m_a_aca44011b5238545f728d61d1cbbb72c2_icgraph" alt=""/></div>
 <map name="class_c_a_r_m_a_aca44011b5238545f728d61d1cbbb72c2_icgraph" id="class_c_a_r_m_a_aca44011b5238545f728d61d1cbbb72c2_icgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="166,5,250,32"/><area shape="rect" id="node3" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="299,5,349,32"/></map>
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="a96b654c437e7d9528d44c7dbc4bc9657"></a>
+<a class="anchor" id="a1edafdc4cd83a2f7797daa212febc957"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double CARMA::get_t </td>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getA </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l00913">913</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01118">1118</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0c1d34a9f872b31fdebc1fd2481ca3d1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getB </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01158">1158</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af2537a7b40e800fb063943b9c469cee9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01166">1166</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
@@ -564,7 +626,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01296">1296</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01090">1090</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
@@ -582,113 +644,224 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01300">1300</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01094">1094</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2d84c0d953b15519cbddcfffc50132b0"></a>
+<a class="anchor" id="a131e3f743bab72db06162b85e51bc1cf"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CARMA::getResiduals </td>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getexpw </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numPts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>r</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01150">1150</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="a12f0019ddf951e20ffda09e46795b8f3"></a>
+<a class="anchor" id="a74e6e4db5aa53ee0c88d93cc92e08e6d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double CARMA::observeSystem </td>
+          <td class="memname">const double * CARMA::getF </td>
           <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>distRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>noiseRand</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01388">1388</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01174">1174</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="adbfdf1b311724e3a128613d880db66c5"></a>
+<a class="anchor" id="a2950241c0e1f1157e5b2d07e497e9b14"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double CARMA::observeSystem </td>
+          <td class="memname">double CARMA::getIntrinsicVar </td>
           <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>distRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>noiseRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01397">1397</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01984">1984</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad920bb6c62ce79b2ad5871bfcfe515de"></a>
+<a class="anchor" id="a44e19a15aba1f78becebc2d01a6a3a97"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CARMA::getMeanFlux </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_ln_like_data.html">LnLikeData</a> *&#160;</td>
+          <td class="paramname"><em>ptr2Data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01988">1988</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a36df8bd666ea1b1ed984d5c34588e94b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double * CARMA::getP </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01110">1110</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5ee2f32bd6e67fc81ec1088ae305dfb8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double * CARMA::getQ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01182">1182</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae8966239bdea7a3fc242837463d23321"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double * CARMA::getSigma </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01198">1198</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2f6879444895bae5b42791d13ec9b4a1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double * CARMA::getT </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01190">1190</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0942ceb94c7a11df3705ad7a65b526dd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getvr </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01126">1126</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a05cbbdbd1978540b35f980627054caa2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getvrInv </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01134">1134</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3e915e480eeadc65a666523b8d26064d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const complex&lt; double &gt; * CARMA::getw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01142">1142</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac1e451e382a60ab856edf63e70752074"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double * CARMA::getX </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01102">1102</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c4a1c1471281a20e9dabc3b8a7ae527"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void CARMA::observeSystem </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numObs</em>, </td>
+          <td class="paramtype"><a class="el" href="struct_ln_like_data.html">LnLikeData</a> *&#160;</td>
+          <td class="paramname"><em>ptr2LnLikeData</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -699,32 +872,8 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>noiseSeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>distRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>noiseRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>noiseSigma</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
+          <td class="paramname"><em>distRand</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -734,125 +883,453 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01408">1408</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01911">1911</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aeecd124f696410809e879436b70af1ec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printA </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01114">1114</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de_cgraph.png" border="0" usemap="#class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de_cgraph" id="class_c_a_r_m_a_ad920bb6c62ce79b2ad5871bfcfe515de_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="224,5,309,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_cgraph.png" border="0" usemap="#class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_cgraph" id="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_icgraph.png" border="0" usemap="#class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_icgraph" id="class_c_a_r_m_a_aeecd124f696410809e879436b70af1ec_icgraph">
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="a083e1356ab030a2279a882b71eee26c1"></a>
+<a class="anchor" id="ace5f4355098caa632c9aba28b2882b08"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CARMA::observeSystem </td>
+          <td class="memname">void CARMA::printB </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>numObs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>distSeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>noiseSeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>distRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>noiseRand</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>noiseSigma</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01470">1470</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01154">1154</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1_cgraph" id="class_c_a_r_m_a_a083e1356ab030a2279a882b71eee26c1_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="224,5,309,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_cgraph.png" border="0" usemap="#class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_cgraph" id="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_icgraph.png" border="0" usemap="#class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_icgraph" id="class_c_a_r_m_a_ace5f4355098caa632c9aba28b2882b08_icgraph">
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="a1b85f710457cdf67a6b716a149456bca"></a>
+<a class="anchor" id="a3ffc6377d85bdb5f3a4192ad5826a9df"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CARMA::operator() </td>
+          <td class="memname">void CARMA::printC </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>dxdt</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>t</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Compute and return the first column of expm(A*dt)*B*trans(B)*expm(trans(A)*dt)</p>
-<p>At every step, it is necessary to compute the conditional covariance matrix of the state given by \(\textbf{\textsf{Q}} = \int_{t_{0}}^{t} \mathrm{e}^{\textbf{\textsf{A}}\chi} \mathbfit{B} \mathbfit{B}^{\top} \mathrm{e}^{\\textbf{\textsf{A}}^{\top}\chi} \mathrm{d}\chi\). Notice that the matrix \(\textbf{\textsf{Q}}\) is symmetric positive definate and only the first column needfs to be computed.</p>
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01162">1162</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_cgraph" id="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_icgraph" id="class_c_a_r_m_a_a3ffc6377d85bdb5f3a4192ad5826a9df_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8cb9254e44aa635c08059ec14a4e2248"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printexpw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01146">1146</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_cgraph" id="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_icgraph" id="class_c_a_r_m_a_a8cb9254e44aa635c08059ec14a4e2248_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a003b1ea5dac58b64dba766b06991103a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printF </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01170">1170</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_cgraph" id="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_icgraph" id="class_c_a_r_m_a_a003b1ea5dac58b64dba766b06991103a_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0281829307d89b518920f2a0be1c5686"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printP </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01106">1106</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_cgraph" id="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_icgraph" id="class_c_a_r_m_a_a0281829307d89b518920f2a0be1c5686_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac9b01a1959b935de28e65904529b190b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printQ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01178">1178</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_cgraph.png" border="0" usemap="#class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_cgraph" id="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_icgraph.png" border="0" usemap="#class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_icgraph" id="class_c_a_r_m_a_ac9b01a1959b935de28e65904529b190b_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a484c74e9fbbdb718b449fd07d192ef9c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printSigma </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01194">1194</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_cgraph" id="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_icgraph" id="class_c_a_r_m_a_a484c74e9fbbdb718b449fd07d192ef9c_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a3e426d288da8c4a69995be2edb72bf8d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printT </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01186">1186</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a3e426d288da8c4a69995be2edb72bf8d_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a3e426d288da8c4a69995be2edb72bf8d_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a3e426d288da8c4a69995be2edb72bf8d_cgraph" id="class_c_a_r_m_a_a3e426d288da8c4a69995be2edb72bf8d_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aec5cf02ae8c2b4d406e82c663fb69c42"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printvr </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01122">1122</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_cgraph.png" border="0" usemap="#class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_cgraph" id="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_icgraph.png" border="0" usemap="#class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_icgraph" id="class_c_a_r_m_a_aec5cf02ae8c2b4d406e82c663fb69c42_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a3145a01eae617e76e11305ca2ec4b61d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printvrInv </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01130">1130</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_cgraph" id="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_icgraph" id="class_c_a_r_m_a_a3145a01eae617e76e11305ca2ec4b61d_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a52ad7813fcd1aa86359bf8946fca45b4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01138">1138</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_cgraph" id="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_icgraph" id="class_c_a_r_m_a_a52ad7813fcd1aa86359bf8946fca45b4_icgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6df47e4eb5549a3108f7ec6a5e7821c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::printX </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01098">1098</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_cgraph" id="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_icgraph" id="class_c_a_r_m_a_a6df47e4eb5549a3108f7ec6a5e7821c2_icgraph">
+</map>
+</div>
+</p>
 
 </div>
 </div>
@@ -870,14 +1347,14 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01251">1251</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01848">1848</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9_icgraph" alt=""/></div>
 <map name="class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9_icgraph" id="class_c_a_r_m_a_a8748732c23bc65486b9df8f25a905cf9_icgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#a9dd80aa78622e42e58063971be13e31d" title="calcCARMALnLike" alt="" coords="192,5,325,32"/><area shape="rect" id="node3" href="_c_a_r_m_a_8cpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="217,56,301,83"/><area shape="rect" id="node4" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="373,56,424,83"/></map>
+</map>
 </div>
 </p>
 
@@ -896,20 +1373,38 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01267">1267</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01870">1870</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac_cgraph" alt=""/></div>
 <map name="class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac_cgraph" id="class_c_a_r_m_a_a44b60949dc1cbcccb24873a117faa5ac_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#a0644b006a49b595cc3e4d9cf6dff7303" title="kron" alt="" coords="193,5,239,32"/></map>
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="a70e6ec6090f629d43e9ed810346c766e"></a>
+<a class="anchor" id="a08c525da441f05c0779182f32198acf6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CARMA::set_dt </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t_incr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01082">1082</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6c1c104dcf44e34fb596c6068239347e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -917,56 +1412,73 @@ Here is the call graph for this function:</div>
           <td class="memname">void CARMA::setCARMA </td>
           <td>(</td>
           <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>Theta</em></td><td>)</td>
+          <td class="paramname"><em>ThetaIn</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Function to set a <a class="el" href="class_c_a_r_m_a.html">CARMA</a> object with the given <a class="el" href="class_c_a_r_m_a.html">CARMA</a> parameters. Theta contains p CAR parameters followed by q+1 CMA parameters, i.e. \(\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\), where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19. </p>
+<p>Function to set a <a class="el" href="class_c_a_r_m_a.html">CARMA</a> object with the given <a class="el" href="class_c_a_r_m_a.html">CARMA</a> parameters. Theta contains p CAR parameters followed by q+1 CMA parameters, i.e. <img class="formulaInl" alt="$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]$" src="form_0.png"/>, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19. </p>
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01083">1083</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01398">1398</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_cgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_cgraph" id="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_cgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf" title="viewMatrix" alt="" coords="200,5,285,32"/></map>
+<div class="center"><img src="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_cgraph.png" border="0" usemap="#class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_cgraph" id="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_cgraph">
+</map>
 </div>
 </p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_icgraph" alt=""/></div>
-<map name="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_icgraph" id="class_c_a_r_m_a_a70e6ec6090f629d43e9ed810346c766e_icgraph">
-<area shape="rect" id="node2" href="_c_a_r_m_a_8cpp.html#a9dd80aa78622e42e58063971be13e31d" title="calcCARMALnLike" alt="" coords="200,5,333,32"/><area shape="rect" id="node3" href="_c_a_r_m_a_8cpp.html#ac6c51cd6959e4a7a5ec0557af951daaa" title="calcLnLike" alt="" coords="225,56,309,83"/><area shape="rect" id="node4" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="main" alt="" coords="381,56,432,83"/></map>
+<div class="center"><img src="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_icgraph.png" border="0" usemap="#class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_icgraph" id="class_c_a_r_m_a_a6c1c104dcf44e34fb596c6068239347e_icgraph">
+</map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="ab40779c2e688ef40afe4c925a777ebc7"></a>
+<a class="anchor" id="ad4391fa9d2ae5f6673b9ac762fd1795a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void CARMA::solveCARMA </td>
           <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>dt</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01219">1219</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8cpp_source.html#l01659">1659</a> of file <a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_cgraph.png" border="0" usemap="#class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_cgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_cgraph" id="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_cgraph">
+</map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_icgraph.png" border="0" usemap="#class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_icgraph" alt=""/></div>
+<map name="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_icgraph" id="class_c_a_r_m_a_ad4391fa9d2ae5f6673b9ac762fd1795a_icgraph">
+</map>
+</div>
+</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/vish/code/trunk/cpp/libcarma/include/<a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a></li>
-<li>/home/vish/code/trunk/cpp/libcarma/src/<a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a></li>
+<li>/home/vish/code/trunk/cpp/libcarma/cython/include/<a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a></li>
+<li>/home/vish/code/trunk/cpp/libcarma/cython/src/<a class="el" href="_c_a_r_m_a_8cpp_source.html">CARMA.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -974,7 +1486,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="class_c_a_r_m_a.html">CARMA</a></li>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: /home/vish/code/trunk/cpp/libcarma/include/MCMC.hpp Source File</title>
+<title>libcarma: /home/vish/code/trunk/cpp/libcarma/cython/include/MCMC.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -99,7 +94,7 @@ $(document).ready(function(){initNavTree('_m_c_m_c_8hpp_source.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -125,34 +120,33 @@ $(document).ready(function(){initNavTree('_m_c_m_c_8hpp_source.html','');});
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">int</span> numDims, numWalkers, numSteps, numThreads;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ZSeed, BernoulliSeed, WalkerSeed;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">double</span> A;<span class="comment">//, newLnLike, oldLnLike, pAccept;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="namespacebinary_s_m_b_h_demo.html#a701565d4b7826c9a6c79feb760267d69">A</a>;<span class="comment">//, newLnLike, oldLnLike, pAccept;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="comment">//VSLStreamStatePtr ZStream, WalkerStream, *BernoulliStream;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">double</span> *Chain, *Zs, *<a class="code" href="namespace_final_analysis.html#a887a21357f13ebf746beb132e8508849">LnLike</a>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">double</span> *Chain, *Zs, *LnLike;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="comment">//double *currSubSetOld, *compSubSetOld, *currSubSetNew;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment">//double **compWalkerOldPos, **currWalkerOldPos, **currWalkerNewPos;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">int</span> *WalkerChoice, *MoveYesNo;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    double (*Func)(<span class="keywordtype">double</span>* <a class="code" href="namespace_final_analysis.html#a53f403035b6d6abe6c7e2d7c07601b1d">x</a>, <span class="keywordtype">void</span>* FuncArgs);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    double (*Func)(<span class="keywordtype">double</span>* x, <span class="keywordtype">void</span>* FuncArgs);</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span>* FuncArgs;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="class_ensemble_sampler.html">EnsembleSampler</a>(<span class="keywordtype">int</span> ndims, <span class="keywordtype">int</span> <a class="code" href="namespace_final_analysis.html#aa7ae3a71cd02bd6488a119cf3041b24e">nwalkers</a>, <span class="keywordtype">int</span> <a class="code" href="namespace_final_analysis.html#a11e023099f2819c75bd7ecb02c7671c3">nsteps</a>, <span class="keywordtype">int</span> nthreads, <span class="keywordtype">double</span> a, <span class="keywordtype">double</span> (*func)(<span class="keywordtype">double</span>* <a class="code" href="namespace_final_analysis.html#a53f403035b6d6abe6c7e2d7c07601b1d">x</a>, <span class="keywordtype">void</span>* funcArgs), <span class="keywordtype">void</span>* funcArgs, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> zSeed, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> bernoulliSeed, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> walkerSeed);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="class_ensemble_sampler.html">EnsembleSampler</a>(<span class="keywordtype">int</span> ndims, <span class="keywordtype">int</span> nwalkers, <span class="keywordtype">int</span> nsteps, <span class="keywordtype">int</span> nthreads, <span class="keywordtype">double</span> a, <span class="keywordtype">double</span> (*func)(<span class="keywordtype">double</span>* x, <span class="keywordtype">void</span>* funcArgs), <span class="keywordtype">void</span>* funcArgs, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> zSeed, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> bernoulliSeed, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> walkerSeed);</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    ~<a class="code" href="class_ensemble_sampler.html">EnsembleSampler</a>();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> runMCMC(<span class="keywordtype">double</span>* initPos);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> writeChain(<span class="keywordtype">string</span> filePath, <span class="keywordtype">int</span> mode);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    };</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="namespace_final_analysis_html_aa7ae3a71cd02bd6488a119cf3041b24e"><div class="ttname"><a href="namespace_final_analysis.html#aa7ae3a71cd02bd6488a119cf3041b24e">FinalAnalysis.nwalkers</a></div><div class="ttdeci">tuple nwalkers</div><div class="ttdef"><b>Definition:</b> <a href="_final_analysis_8py_source.html#l00056">FinalAnalysis.py:56</a></div></div>
-<div class="ttc" id="namespace_final_analysis_html_a53f403035b6d6abe6c7e2d7c07601b1d"><div class="ttname"><a href="namespace_final_analysis.html#a53f403035b6d6abe6c7e2d7c07601b1d">FinalAnalysis.x</a></div><div class="ttdeci">tuple x</div><div class="ttdef"><b>Definition:</b> <a href="_final_analysis_8py_source.html#l00222">FinalAnalysis.py:222</a></div></div>
-<div class="ttc" id="namespace_final_analysis_html_a11e023099f2819c75bd7ecb02c7671c3"><div class="ttname"><a href="namespace_final_analysis.html#a11e023099f2819c75bd7ecb02c7671c3">FinalAnalysis.nsteps</a></div><div class="ttdeci">tuple nsteps</div><div class="ttdef"><b>Definition:</b> <a href="_final_analysis_8py_source.html#l00052">FinalAnalysis.py:52</a></div></div>
-<div class="ttc" id="namespace_final_analysis_html_a887a21357f13ebf746beb132e8508849"><div class="ttname"><a href="namespace_final_analysis.html#a887a21357f13ebf746beb132e8508849">FinalAnalysis.LnLike</a></div><div class="ttdeci">tuple LnLike</div><div class="ttdef"><b>Definition:</b> <a href="_final_analysis_8py_source.html#l00237">FinalAnalysis.py:237</a></div></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> getChain(<span class="keywordtype">double</span> *ChainPtr);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> getLnLike(<span class="keywordtype">double</span> *LnLikePtr);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">void</span> writeChain(<span class="keywordtype">string</span> filePath, <span class="keywordtype">int</span> mode);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    };</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="class_ensemble_sampler_html"><div class="ttname"><a href="class_ensemble_sampler.html">EnsembleSampler</a></div><div class="ttdef"><b>Definition:</b> <a href="_m_c_m_c_8hpp_source.html#l00009">MCMC.hpp:9</a></div></div>
+<div class="ttc" id="namespacebinary_s_m_b_h_demo_html_a701565d4b7826c9a6c79feb760267d69"><div class="ttname"><a href="namespacebinary_s_m_b_h_demo.html#a701565d4b7826c9a6c79feb760267d69">binarySMBHDemo.A</a></div><div class="ttdeci">tuple A</div><div class="ttdef"><b>Definition:</b> <a href="binary_s_m_b_h_demo_8py_source.html#l00070">binarySMBHDemo.py:70</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="_m_c_m_c_8hpp.html">MCMC.hpp</a></li>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:37 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

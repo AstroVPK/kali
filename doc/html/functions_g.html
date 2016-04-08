@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: Class Members</title>
+<title>libcarma: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -86,21 +81,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
-      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions.html#index_a"><span>a</span></a></li>
+      <li><a href="functions.html#index__"><span>_</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
       <li><a href="functions_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
       <li><a href="functions_f.html#index_f"><span>f</span></a></li>
       <li class="current"><a href="functions_g.html#index_g"><span>g</span></a></li>
-      <li><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
-      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_n.html#index_n"><span>n</span></a></li>
@@ -110,8 +103,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_t.html#index_t"><span>t</span></a></li>
-      <li><a href="functions_u.html#index_u"><span>u</span></a></li>
-      <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
       <li><a href="functions_y.html#index_y"><span>y</span></a></li>
@@ -138,7 +129,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -151,107 +142,147 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>Galactic()
-: <a class="el" href="class_galactic.html#adb8910a11762d017934147c1105a2f25">Galactic</a>
-, <a class="el" href="class_universe.html#a2ba8175dcf9e583c18ffef6d19ee6e9d">Universe</a>
+<li>get_A()
+: <a class="el" href="class_task.html#a31db79de0a756c47b7211af91639306b">Task</a>
+</li>
+<li>get_allocated()
+: <a class="el" href="class_c_a_r_m_a.html#a1ffb8686c5b54d9d4c76b2fd50a27a39">CARMA</a>
+</li>
+<li>get_B()
+: <a class="el" href="class_task.html#a7b9ac1aba53d3c22158fe9f156fcaecd">Task</a>
+</li>
+<li>get_dt()
+: <a class="el" href="class_c_a_r_m_a.html#a56124e5b6da7bf480ab87edaf2b8520f">CARMA</a>
+, <a class="el" href="class_task.html#a5d98307b92b46ba1b5e86e766414b3ac">Task</a>
+</li>
+<li>get_meanFlux()
+: <a class="el" href="class_task.html#add737444d615a0dbfee7505581de5561">Task</a>
+</li>
+<li>get_numBurn()
+: <a class="el" href="class_task.html#ad8e737c998840996dac1618f78bd30f8">Task</a>
+</li>
+<li>get_p()
+: <a class="el" href="class_c_a_r_m_a.html#af758356c8aec7ea57d4edbd4c430c780">CARMA</a>
+</li>
+<li>get_q()
+: <a class="el" href="class_c_a_r_m_a.html#aca44011b5238545f728d61d1cbbb72c2">CARMA</a>
+</li>
+<li>get_setSystemsVec()
+: <a class="el" href="class_task.html#aa841a5c8cf5accf00d3b9717e493bf1d">Task</a>
+</li>
+<li>get_Sigma()
+: <a class="el" href="class_task.html#a8fd8196de0aa7d4e48d23a6f665903f8">Task</a>
+</li>
+<li>get_ThetaVec()
+: <a class="el" href="class_task.html#acc99a8a705981e3b7a84f0a0ee896c80">Task</a>
+</li>
+<li>getA()
+: <a class="el" href="class_c_a_r_m_a.html#a1edafdc4cd83a2f7797daa212febc957">CARMA</a>
+</li>
+<li>getA1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#aef1e3cff1cda9422fc084d86a5adfa86">CARMA::binarySMBH</a>
+</li>
+<li>getA2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a87651fd455460ce8bf9772235bf85f4a">CARMA::binarySMBH</a>
+</li>
+<li>getB()
+: <a class="el" href="class_c_a_r_m_a.html#a0c1d34a9f872b31fdebc1fd2481ca3d1">CARMA</a>
+</li>
+<li>getBeamingFactor1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5926c403ec8c60ca7720d9bdd34c6947">CARMA::binarySMBH</a>
+</li>
+<li>getBeamingFactor2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a20ea2af36378b3edcacb312bada6a684">CARMA::binarySMBH</a>
+</li>
+<li>getBeta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a6d011db33094577d466ac69545354224">CARMA::binarySMBH</a>
+</li>
+<li>getBeta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a5c25dcd9bc20f4412c12bd35918c4eab">CARMA::binarySMBH</a>
+</li>
+<li>getC()
+: <a class="el" href="class_c_a_r_m_a.html#af2537a7b40e800fb063943b9c469cee9">CARMA</a>
 </li>
 <li>getCARRoots()
-: <a class="el" href="class_c_a_r_m_a.html#afad6e999f5171c8dbe5618f39ac49433">CARMA</a>
+: <a class="el" href="class_c_a_r_m_a.html#a98f282f6809e1e2c19ed10b362048fdc">CARMA</a>
+</li>
+<li>getChain()
+: <a class="el" href="class_ensemble_sampler.html#a2d77cd48679a151922838dccf1a0c94f">EnsembleSampler</a>
 </li>
 <li>getCMARoots()
-: <a class="el" href="class_c_a_r_m_a.html#a1d572ff7e85465abc3efb6ca1ac0cafc">CARMA</a>
+: <a class="el" href="class_c_a_r_m_a.html#aead4fd2cb0a4f1670e866435a09e0d50">CARMA</a>
 </li>
-<li>getData()
-: <a class="el" href="class_kepler_obj.html#acb2e980082a9a943dbecb40cf4dcd0bb">KeplerObj</a>
+<li>getDopplerFactor1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a3bb857ed74e47c47abfe60827ad58cdf">CARMA::binarySMBH</a>
 </li>
-<li>getFirstCadence()
-: <a class="el" href="class_kepler_obj.html#a8f53290957f8902ddb5668a21527e4ba">KeplerObj</a>
+<li>getDopplerFactor2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a017176138c74d45941d4043c2dfef5d7">CARMA::binarySMBH</a>
 </li>
-<li>getFracHOST()
-: <a class="el" href="class_kepler_obj.html#a230eab3c510a51b2197cf6ec7e30fd75">KeplerObj</a>
+<li>getEllipticity()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a0d9cafe27bed9985305b84a083260811">CARMA::binarySMBH</a>
 </li>
-<li>getFracMIC()
-: <a class="el" href="class_kepler_obj.html#a0ff0576f717c68e5e4b9f0757c3f80f7">KeplerObj</a>
+<li>getEpoch()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a2e9d415057dcb192310a68bf3db1d742">CARMA::binarySMBH</a>
 </li>
-<li>getFTolSI()
-: <a class="el" href="class_kepler_obj.html#a4fb09c27d3291bd40875d78cfdc2e80c">KeplerObj</a>
+<li>getexpw()
+: <a class="el" href="class_c_a_r_m_a.html#a131e3f743bab72db06162b85e51bc1cf">CARMA</a>
 </li>
-<li>getFTolSII()
-: <a class="el" href="class_kepler_obj.html#acbf137e5718db7b15f72c91fa4d2f726">KeplerObj</a>
+<li>getF()
+: <a class="el" href="class_c_a_r_m_a.html#a74e6e4db5aa53ee0c88d93cc92e08e6d">CARMA</a>
 </li>
-<li>getID()
-: <a class="el" href="class_kepler_obj.html#a268fc8a6f87be9489c5ee4d52903fd2c">KeplerObj</a>
+<li>getIntrinsicVar()
+: <a class="el" href="class_c_a_r_m_a.html#a2950241c0e1f1157e5b2d07e497e9b14">CARMA</a>
 </li>
-<li>getIdentifier()
-: <a class="el" href="class_obj.html#ab8db1493558965a3d895a486d641716e">Obj</a>
-</li>
-<li>getLastCadence()
-: <a class="el" href="class_kepler_obj.html#ad2c733e73ddd622f8c2b74b070ba9f51">KeplerObj</a>
-</li>
-<li>getLocation()
-: <a class="el" href="class_kepler_obj.html#ace9583f6845dc6db9e0e23ec60bb0c54">KeplerObj</a>
-, <a class="el" href="class_obj.html#a37de1c5bfaa5b641bf6f093a809cc8d0">Obj</a>
-</li>
-<li>getMaxEvalsCS()
-: <a class="el" href="class_kepler_obj.html#adda2765461c9fe80a8427f39b8f841ed">KeplerObj</a>
-</li>
-<li>getMaxEvalsSI()
-: <a class="el" href="class_kepler_obj.html#aa23b06e8009166f41be3885df24317d4">KeplerObj</a>
-</li>
-<li>getMaxEvalsSII()
-: <a class="el" href="class_kepler_obj.html#a5c3a7895c5a602b005bbb2042e1650e8">KeplerObj</a>
+<li>getLnLike()
+: <a class="el" href="class_ensemble_sampler.html#a008a737b429ec693608968b3b539ddad">EnsembleSampler</a>
 </li>
 <li>getMeanFlux()
-: <a class="el" href="class_kepler_obj.html#a195fb841c86bb6d947bcd9a7c45ec56e">KeplerObj</a>
+: <a class="el" href="class_c_a_r_m_a.html#a44e19a15aba1f78becebc2d01a6a3a97">CARMA</a>
 </li>
-<li>getNumCadences()
-: <a class="el" href="class_kepler_obj.html#ad953af55b06af0234c68e54c6275d7e4">KeplerObj</a>
+<li>getP()
+: <a class="el" href="class_c_a_r_m_a.html#a36df8bd666ea1b1ed984d5c34588e94b">CARMA</a>
 </li>
-<li>getNumChiSq()
-: <a class="el" href="class_kepler_obj.html#a7c4abbe2e792cff003d957d9b631dc74">KeplerObj</a>
+<li>getPeriod()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#aae338bc630a93fbcbb0c1623021e726f">CARMA::binarySMBH</a>
 </li>
-<li>getNumLags()
-: <a class="el" href="class_kepler_obj.html#a1980eedbf8b3b8c7e04b41dc887630f1">KeplerObj</a>
+<li>getQ()
+: <a class="el" href="class_c_a_r_m_a.html#a5ee2f32bd6e67fc81ec1088ae305dfb8">CARMA</a>
 </li>
-<li>getNumQuarters()
-: <a class="el" href="class_kepler_obj.html#a37ec5e30230b9e91a9f4e54033097fc9">KeplerObj</a>
+<li>getR1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a35203f4c1e7fc0d68f4eb0fbbd9112e4">CARMA::binarySMBH</a>
 </li>
-<li>getNumSeeds()
-: <a class="el" href="class_kepler_obj.html#aff16c04462b1714a474a1c2bb3be30ff">KeplerObj</a>
+<li>getR2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#ac992c6780ae47e6451fb8f6dd04b5c09">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsCS()
-: <a class="el" href="class_kepler_obj.html#a70fe38e2ebdfda98be4284f00e6c4734">KeplerObj</a>
+<li>getRadialBeta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a4b5e37cd3bf650fd9323cbf1618fce7b">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsSI()
-: <a class="el" href="class_kepler_obj.html#ade4482c97b7fc9ea66ec8b94a289f881">KeplerObj</a>
+<li>getRadialBeta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a7a34ee1208184f17376ce2ce35faa80a">CARMA::binarySMBH</a>
 </li>
-<li>getNumSimsSII()
-: <a class="el" href="class_kepler_obj.html#aa3cf9a27159e7e6a4035434c5e10d65b">KeplerObj</a>
+<li>getSigma()
+: <a class="el" href="class_c_a_r_m_a.html#ae8966239bdea7a3fc242837463d23321">CARMA</a>
 </li>
-<li>getOrder()
-: <a class="el" href="class_kepler_obj.html#acd3e416bd288f43a30a7b753a6697f99">KeplerObj</a>
+<li>getT()
+: <a class="el" href="class_c_a_r_m_a.html#a2f6879444895bae5b42791d13ec9b4a1">CARMA</a>
 </li>
-<li>getOverSampleFactor()
-: <a class="el" href="class_kepler_obj.html#ad44d1900ee67daddc8d7c93887a05f46">KeplerObj</a>
+<li>getTheta1()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#addb75e48c8ad6c591573723cd769b547">CARMA::binarySMBH</a>
 </li>
-<li>getPath()
-: <a class="el" href="class_kepler_obj.html#a3e99e434a7328f45137b94ae9557ceeb">KeplerObj</a>
+<li>getTheta2()
+: <a class="el" href="class_c_a_r_m_a_1_1binary_s_m_b_h.html#a8edb8fb9e1b5a8dc38358e083c46dbdf">CARMA::binarySMBH</a>
 </li>
-<li>getRedShift()
-: <a class="el" href="class_kepler_obj.html#aa39f1254aa63f9cec80061be6da46a58">KeplerObj</a>
-, <a class="el" href="class_spherical.html#a6d4d86228d3fc54008206e75a2fa5f13">Spherical</a>
+<li>getvr()
+: <a class="el" href="class_c_a_r_m_a.html#a0942ceb94c7a11df3705ad7a65b526dd">CARMA</a>
 </li>
-<li>getResiduals()
-: <a class="el" href="class_c_a_r_m_a.html#a2d84c0d953b15519cbddcfffc50132b0">CARMA</a>
+<li>getvrInv()
+: <a class="el" href="class_c_a_r_m_a.html#a05cbbdbd1978540b35f980627054caa2">CARMA</a>
 </li>
-<li>getSeeds()
-: <a class="el" href="class_kepler_obj.html#ad493b1e9867acac00840229d31b71e2a">KeplerObj</a>
+<li>getw()
+: <a class="el" href="class_c_a_r_m_a.html#a3e915e480eeadc65a666523b8d26064d">CARMA</a>
 </li>
-<li>getStage()
-: <a class="el" href="class_kepler_obj.html#a9dadabc2f3314221e358a3c056b22f21">KeplerObj</a>
-</li>
-<li>getStartEpoch()
-: <a class="el" href="class_kepler_obj.html#a5fd1060cb4c3c1cbc804e0bf20eddfa0">KeplerObj</a>
+<li>getX()
+: <a class="el" href="class_c_a_r_m_a.html#ac1e451e382a60ab856edf63e70752074">CARMA</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -259,7 +290,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Oct 8 2015 14:25:26 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

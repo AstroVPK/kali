@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['ensemblesampler',['EnsembleSampler',['../class_ensemble_sampler.html',1,'']]],
-  ['equatorial',['Equatorial',['../class_equatorial.html',1,'']]]
+  ['carma',['CARMA',['../class_c_a_r_m_a.html',1,'']]]
 ];

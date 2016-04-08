@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: File Members</title>
+<title>libcarma: File Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -84,28 +79,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="globals.html"><span>All</span></a></li>
       <li><a href="globals_func.html"><span>Functions</span></a></li>
       <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
       <li><a href="globals_defs.html"><span>Macros</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
+      <li><a href="#index__"><span>_</span></a></li>
       <li><a href="#index_a"><span>a</span></a></li>
+      <li><a href="#index_b"><span>b</span></a></li>
       <li><a href="#index_c"><span>c</span></a></li>
       <li><a href="#index_d"><span>d</span></a></li>
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
-      <li><a href="#index_h"><span>h</span></a></li>
       <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_k"><span>k</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
       <li><a href="#index_n"><span>n</span></a></li>
-      <li><a href="#index_o"><span>o</span></a></li>
       <li><a href="#index_p"><span>p</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
       <li><a href="#index_s"><span>s</span></a></li>
-      <li><a href="#index_t"><span>t</span></a></li>
       <li><a href="#index_v"><span>v</span></a></li>
+      <li><a href="#index_y"><span>y</span></a></li>
       <li class="current"><a href="#index_z"><span>z</span></a></li>
     </ul>
   </div>
@@ -129,7 +125,7 @@ $(document).ready(function(){initNavTree('globals.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -141,73 +137,59 @@ $(document).ready(function(){initNavTree('globals.html','');});
 <div class="contents">
 <div class="textblock">Here is a list of all file members with links to the files they belong to:</div>
 
+<h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
+<li>_wordlen_t
+: <a class="el" href="rdrand_8cpp.html#acd2b4a4f9b95333d55673ab3b5a879c6">rdrand.cpp</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>ACF()
-: <a class="el" href="_correlation_8hpp.html#a0733d619e610b9c1d5949f8a93e7af50">Correlation.hpp</a>
-, <a class="el" href="_correlation_8cpp.html#a0733d619e610b9c1d5949f8a93e7af50">Correlation.cpp</a>
+<li>AU
+: <a class="el" href="_constants_8hpp.html#a8497a2d27908c87901466c9de72ff8d8">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a8497a2d27908c87901466c9de72ff8d8">Constants.cpp</a>
 </li>
-<li>AcquireDirectory()
-: <a class="el" href="_acquire_8hpp.html#a4c4565084a152b01217e6f1650fc3450">Acquire.hpp</a>
-, <a class="el" href="_acquire_8cpp.html#a4c4565084a152b01217e6f1650fc3450">Acquire.cpp</a>
-</li>
-<li>AcquireFile()
-: <a class="el" href="_acquire_8hpp.html#a6d8415f6f6ba7cb8f43f36fd22d002a6">Acquire.hpp</a>
-, <a class="el" href="_acquire_8cpp.html#a6d8415f6f6ba7cb8f43f36fd22d002a6">Acquire.cpp</a>
-</li>
-<li>AcquireInput()
-: <a class="el" href="_acquire_8hpp.html#a42cdc40f31099f8ddbbe1334c24306c4">Acquire.hpp</a>
-</li>
-<li>ACVF()
-: <a class="el" href="_correlation_8hpp.html#ab5d562f3b6a902b3dcabe4fcebf9f581">Correlation.hpp</a>
-, <a class="el" href="_correlation_8cpp.html#ab5d562f3b6a902b3dcabe4fcebf9f581">Correlation.cpp</a>
+</ul>
+
+
+<h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
+<li>BINARY_HPP
+: <a class="el" href="binary_s_m_b_h_8hpp.html#ab05b52f10d0c452bf0f47c4c30599b9c">binarySMBH.hpp</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>calcCARMALnLike()
-: <a class="el" href="_c_a_r_m_a_8hpp.html#a9dd80aa78622e42e58063971be13e31d">CARMA.hpp</a>
-, <a class="el" href="_c_a_r_m_a_8cpp.html#a9dd80aa78622e42e58063971be13e31d">CARMA.cpp</a>
+<li>c
+: <a class="el" href="_constants_8hpp.html#a2c09e929a6ea340fc9653cca414b11d3">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a2c09e929a6ea340fc9653cca414b11d3">Constants.cpp</a>
 </li>
-<li>calcLnLike()
-: <a class="el" href="_c_a_r_m_a_8hpp.html#a9719ae8ef8f4ba7946a78a28412b6273">CARMA.hpp</a>
-, <a class="el" href="_gauss_m_v_8hpp.html#a9719ae8ef8f4ba7946a78a28412b6273">GaussMV.hpp</a>
-, <a class="el" href="_c_a_r_m_a_8cpp.html#af9281261b466e28c15b702652226c5ed">CARMA.cpp</a>
-, <a class="el" href="_gauss_m_v_8cpp.html#a0febe7a4233c25ab9ad63bd3d97731f3">GaussMV.cpp</a>
+<li>calcCARMALnPosterior()
+: <a class="el" href="_c_a_r_m_a_8hpp.html#a51deeba64923cbc15a7d8c48396c6080">CARMA.hpp</a>
+, <a class="el" href="_c_a_r_m_a_8cpp.html#a51deeba64923cbc15a7d8c48396c6080">CARMA.cpp</a>
 </li>
-<li>compareSF1()
-: <a class="el" href="_kepler_8hpp.html#ad5f452781f97494e147976dc434e47c6">Kepler.hpp</a>
-, <a class="el" href="_kepler_8cpp.html#ad5f452781f97494e147976dc434e47c6">Kepler.cpp</a>
+<li>calcLnPosterior()
+: <a class="el" href="_c_a_r_m_a_8cpp.html#aa722465dd36f0b7f0322e55715ecb717">CARMA.cpp</a>
+, <a class="el" href="_c_a_r_m_a_8hpp.html#aa722465dd36f0b7f0322e55715ecb717">CARMA.hpp</a>
+</li>
+<li>complexOne
+: <a class="el" href="_constants_8hpp.html#a7fcae12bee2bf97db614c980f2912ded">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#aa8578dabbff8c9dad78c162665c32af8">Constants.cpp</a>
+</li>
+<li>complexZero
+: <a class="el" href="_constants_8hpp.html#a1429bd49fdfa9d3e410e025876d72d0e">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a60965ce7302347a2e697391416a29cca">Constants.cpp</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
-<li>d2r()
-: <a class="el" href="_spherical_8hpp.html#a155fee045125ba7dfcfa586bc274fbf0">Spherical.hpp</a>
-</li>
-<li>DIAGNOSTIC
-: <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#accb3f9a9f31de3ed9cb9c0c65aff8e89">DLAPACKE.cpp</a>
-</li>
-<li>DLAPACKE_dgzthi()
-: <a class="el" href="_d_l_a_p_a_c_k_e_8hpp.html#a5809c14c7f2e31b2aed7ca2bd8866d97">DLAPACKE.hpp</a>
-, <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#a5809c14c7f2e31b2aed7ca2bd8866d97">DLAPACKE.cpp</a>
-</li>
-<li>DLAPACKE_dgzthp()
-: <a class="el" href="_d_l_a_p_a_c_k_e_8hpp.html#ab3a159d8cd9adbd800461142e5a092a1">DLAPACKE.hpp</a>
-, <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#ab3a159d8cd9adbd800461142e5a092a1">DLAPACKE.cpp</a>
-</li>
-<li>DLAPACKE_dszthi()
-: <a class="el" href="_d_l_a_p_a_c_k_e_8hpp.html#a03ec6e9bacb5d503a156b210eab66db5">DLAPACKE.hpp</a>
-, <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#a03ec6e9bacb5d503a156b210eab66db5">DLAPACKE.cpp</a>
-</li>
-<li>DLAPACKE_dszthp()
-: <a class="el" href="_d_l_a_p_a_c_k_e_8hpp.html#a88327457c7fd42b447d9b51cfb77a658">DLAPACKE.hpp</a>
-, <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#a88327457c7fd42b447d9b51cfb77a658">DLAPACKE.cpp</a>
+<li>Day
+: <a class="el" href="_constants_8hpp.html#a187ad5035a30f1230f63152e677791ba">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a187ad5035a30f1230f63152e677791ba">Constants.cpp</a>
 </li>
 <li>dtime()
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a7a7718261954382ab26f32dae64bf3f4">CARMA.hpp</a>
-, <a class="el" href="_correlation_8hpp.html#a7a7718261954382ab26f32dae64bf3f4">Correlation.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a7a7718261954382ab26f32dae64bf3f4">CARMA.cpp</a>
 </li>
 </ul>
@@ -218,38 +200,22 @@ $(document).ready(function(){initNavTree('globals.html','');});
 : <a class="el" href="_constants_8hpp.html#ab17e17fb32b792781b807505e7f60c9c">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#ab17e17fb32b792781b807505e7f60c9c">Constants.cpp</a>
 </li>
-<li>exists()
-: <a class="el" href="_utilities_8hpp.html#a93b1964ec39c086d2cbca290ae8b53d2">Utilities.hpp</a>
-, <a class="el" href="_utilities_8cpp.html#a93b1964ec39c086d2cbca290ae8b53d2">Utilities.cpp</a>
-</li>
-<li>expm()
-: <a class="el" href="_c_a_r_m_a_8hpp.html#ad5f1fe67cce97ae78b89def2e0f76da7">CARMA.hpp</a>
-, <a class="el" href="_c_a_r_m_a_8cpp.html#ad5f1fe67cce97ae78b89def2e0f76da7">CARMA.cpp</a>
-</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>gcd()
-: <a class="el" href="_utilities_8hpp.html#af23d9d3b957105f099417c29e1404852">Utilities.hpp</a>
-, <a class="el" href="_utilities_8cpp.html#af23d9d3b957105f099417c29e1404852">Utilities.cpp</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
-<li>histogram()
-: <a class="el" href="_utilities_8hpp.html#a23c828de3a9181344b3e67d4cf7e536b">Utilities.hpp</a>
-, <a class="el" href="_utilities_8cpp.html#a23c828de3a9181344b3e67d4cf7e536b">Utilities.cpp</a>
-</li>
-<li>Hz()
-: <a class="el" href="_universe_8hpp.html#a3a82e6d18714a64068b6ca270b75947f">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#a3a82e6d18714a64068b6ca270b75947f">Universe.cpp</a>
+<li>G
+: <a class="el" href="_constants_8hpp.html#a67783a2c4f670ee5a9dadcf428324d32">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a67783a2c4f670ee5a9dadcf428324d32">Constants.cpp</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>infiniteVal
+: <a class="el" href="_constants_8hpp.html#a5ce1018aef28e71271ae3b4431210720">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a5ce1018aef28e71271ae3b4431210720">Constants.cpp</a>
+</li>
 <li>integrationTime
 : <a class="el" href="_constants_8hpp.html#a6a9e5bbdf108936466078a267b5acd51">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#a6a9e5bbdf108936466078a267b5acd51">Constants.cpp</a>
@@ -258,6 +224,12 @@ $(document).ready(function(){initNavTree('globals.html','');});
 
 
 <h3><a class="anchor" id="index_k"></a>- k -</h3><ul>
+<li>kms
+: <a class="el" href="_constants_8cpp.html#ade81fa2dde12779958f5cafad2d62a6f">Constants.cpp</a>
+</li>
+<li>kms2ms
+: <a class="el" href="_constants_8hpp.html#a81120f2278cac2eb2b1cb85782c83024">Constants.hpp</a>
+</li>
 <li>kron()
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a0644b006a49b595cc3e4d9cf6dff7303">CARMA.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a0644b006a49b595cc3e4d9cf6dff7303">CARMA.cpp</a>
@@ -269,10 +241,6 @@ $(document).ready(function(){initNavTree('globals.html','');});
 <li>lcCadence
 : <a class="el" href="_constants_8hpp.html#ac18142dbc207474c073432f4b28424b9">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#ac18142dbc207474c073432f4b28424b9">Constants.cpp</a>
-</li>
-<li>lcm()
-: <a class="el" href="_utilities_8hpp.html#a0acb6ddf6c3154bd0d256dac3f1084b0">Utilities.hpp</a>
-, <a class="el" href="_utilities_8cpp.html#a0acb6ddf6c3154bd0d256dac3f1084b0">Utilities.cpp</a>
 </li>
 <li>log2OfE
 : <a class="el" href="_constants_8hpp.html#a6a5210c2bcb5149c1073568e5c8d6599">Constants.hpp</a>
@@ -286,22 +254,16 @@ $(document).ready(function(){initNavTree('globals.html','');});
 
 
 <h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
-<li>main()
-: <a class="el" href="compute_c_fs_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">computeCFs.cpp</a>
-, <a class="el" href="fit_a_r_m_a_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">fitARMA.cpp</a>
-, <a class="el" href="write_mock_l_c_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">writeMockLC.cpp</a>
-, <a class="el" href="test_point_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">testPoint.cpp</a>
-, <a class="el" href="test_method_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">testMethod.cpp</a>
-, <a class="el" href="test_kalman_c_p_p_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">testKalmanCPP.cpp</a>
-, <a class="el" href="write_kepler_l_c_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">writeKeplerLC.cpp</a>
-, <a class="el" href="plot_a_r_m_a_regions_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">plotARMARegions.cpp</a>
-</li>
 <li>MKL_Complex16
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">CARMA.hpp</a>
+, <a class="el" href="_l_c_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">LC.hpp</a>
+, <a class="el" href="_task_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">Task.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a1fa119034fee07a6d5449926cbb7915a">CARMA.cpp</a>
 </li>
 <li>MKL_Complex8
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">CARMA.hpp</a>
+, <a class="el" href="_l_c_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">LC.hpp</a>
+, <a class="el" href="_task_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">Task.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">CARMA.cpp</a>
 </li>
 </ul>
@@ -327,65 +289,82 @@ $(document).ready(function(){initNavTree('globals.html','');});
 </ul>
 
 
-<h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
-<li>operator!=()
-: <a class="el" href="_spherical_8hpp.html#a58c3c65d834ad03dfa96936a815a78f0">Spherical.hpp</a>
-, <a class="el" href="_universe_8hpp.html#a923ffb102f2f1cf8c018e2fdab71e759">Universe.hpp</a>
-, <a class="el" href="_spherical_8cpp.html#a58c3c65d834ad03dfa96936a815a78f0">Spherical.cpp</a>
-, <a class="el" href="_universe_8cpp.html#a923ffb102f2f1cf8c018e2fdab71e759">Universe.cpp</a>
-</li>
-<li>operator&lt;()
-: <a class="el" href="_universe_8hpp.html#ae6d5ff462dc8f2a42c1c89dfbb045a70">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#ae6d5ff462dc8f2a42c1c89dfbb045a70">Universe.cpp</a>
-</li>
-<li>operator&lt;&lt;()
-: <a class="el" href="_universe_8hpp.html#af3dca6b540cbad8426d8aae6dc1f6f32">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#af3dca6b540cbad8426d8aae6dc1f6f32">Universe.cpp</a>
-</li>
-<li>operator&lt;=()
-: <a class="el" href="_universe_8hpp.html#aedb45560ee22b1f0d1913bd40c716f3e">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#aedb45560ee22b1f0d1913bd40c716f3e">Universe.cpp</a>
-</li>
-<li>operator==()
-: <a class="el" href="_spherical_8hpp.html#aff27ce80712096c80dcede74e1d23817">Spherical.hpp</a>
-, <a class="el" href="_universe_8hpp.html#ad7426db61680a1aa7bf601a316f50296">Universe.hpp</a>
-, <a class="el" href="_spherical_8cpp.html#aff27ce80712096c80dcede74e1d23817">Spherical.cpp</a>
-, <a class="el" href="_universe_8cpp.html#ad7426db61680a1aa7bf601a316f50296">Universe.cpp</a>
-</li>
-<li>operator&gt;()
-: <a class="el" href="_universe_8hpp.html#ac646834ee273250d89054f51c560ad90">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#ac646834ee273250d89054f51c560ad90">Universe.cpp</a>
-</li>
-<li>operator&gt;=()
-: <a class="el" href="_universe_8hpp.html#ad2f27b03dcb666cb1e5f00840f3cffe2">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#ad2f27b03dcb666cb1e5f00840f3cffe2">Universe.cpp</a>
-</li>
-<li>operator&gt;&gt;()
-: <a class="el" href="_universe_8hpp.html#ad347ea8dc2c56d9d77d9c6f673d5927e">Universe.hpp</a>
-, <a class="el" href="_universe_8cpp.html#ad347ea8dc2c56d9d77d9c6f673d5927e">Universe.cpp</a>
-</li>
-</ul>
-
-
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
-<li>PACF()
-: <a class="el" href="_correlation_8hpp.html#aa90de21932497f2965056021a30149b7">Correlation.hpp</a>
-, <a class="el" href="_correlation_8cpp.html#aa90de21932497f2965056021a30149b7">Correlation.cpp</a>
+<li>Parsec
+: <a class="el" href="_constants_8hpp.html#a2e08042cd1e7eb1861e7115f34fa3acb">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a2e08042cd1e7eb1861e7115f34fa3acb">Constants.cpp</a>
 </li>
 <li>pi
 : <a class="el" href="_constants_8hpp.html#a31c17cc321db72d5ab448b71ea92792f">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#a31c17cc321db72d5ab448b71ea92792f">Constants.cpp</a>
 </li>
+<li>piSq
+: <a class="el" href="_constants_8hpp.html#a18bbe41d56bab00212fd0e8e733e9f1f">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a18bbe41d56bab00212fd0e8e733e9f1f">Constants.cpp</a>
+</li>
+<li>PY_SSIZE_T_CLEAN
+: <a class="el" href="b_s_m_b_h_8cpp.html#ac9efdaac9411d0868b715edccca3269d">bSMBH.cpp</a>
+, <a class="el" href="_c_a_r_m_a_task_8cpp.html#ac9efdaac9411d0868b715edccca3269d">CARMATask.cpp</a>
+, <a class="el" href="rand_8cpp.html#ac9efdaac9411d0868b715edccca3269d">rand.cpp</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>r2d()
-: <a class="el" href="_spherical_8hpp.html#af1eef2f0439e93b1a6d847361c96d299">Spherical.hpp</a>
+<li>rdrand_16()
+: <a class="el" href="rdrand_8hpp.html#ac0b6836005a9eeaa7fc22e8ec128da4c">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#ac0b6836005a9eeaa7fc22e8ec128da4c">rdrand.cpp</a>
+</li>
+<li>rdrand_32()
+: <a class="el" href="rdrand_8hpp.html#ae5322e4aa5e55c40875b980638726001">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#ae5322e4aa5e55c40875b980638726001">rdrand.cpp</a>
+</li>
+<li>rdrand_64()
+: <a class="el" href="rdrand_8hpp.html#a2982203449ab462050e54165e8f091db">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#a2982203449ab462050e54165e8f091db">rdrand.cpp</a>
+</li>
+<li>RdRand_cpuid()
+: <a class="el" href="rdrand_8cpp.html#a092ff5b5cdd0009b9a39bd9a087e5ee8">rdrand.cpp</a>
+</li>
+<li>rdrand_get_bytes()
+: <a class="el" href="rdrand_8hpp.html#a1a468804afabc5a50899235998bd23d6">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#a1908b1f4b65c4dabc7cfdff97b488095">rdrand.cpp</a>
+</li>
+<li>rdrand_get_n_32()
+: <a class="el" href="rdrand_8hpp.html#a274f8a8206b8113d441df7f4df5f00de">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#a226c1c992d91231a6d0c374b3ccb3f44">rdrand.cpp</a>
+</li>
+<li>rdrand_get_n_64()
+: <a class="el" href="rdrand_8hpp.html#af3417f8f6b25ffb090aa102e4d223c05">rdrand.hpp</a>
+, <a class="el" href="rdrand_8cpp.html#a2e933b7b559d673f1b22a64710b772f7">rdrand.cpp</a>
+</li>
+<li>RdRand_isSupported()
+: <a class="el" href="rdrand_8cpp.html#a53e99256bfc3ab954115658e09ff0b7c">rdrand.cpp</a>
+</li>
+<li>RDRAND_MASK
+: <a class="el" href="rdrand_8cpp.html#af7b2fee6da8e44ce8d6a0e4a5262d079">rdrand.cpp</a>
+</li>
+<li>RDRAND_NOT_READY
+: <a class="el" href="rdrand_8hpp.html#a1dd7849babc67ef0652c6fb0290e1004">rdrand.hpp</a>
+</li>
+<li>RDRAND_SUCCESS
+: <a class="el" href="rdrand_8hpp.html#a8e20c349766b3e174dc5e27bd0db79fc">rdrand.hpp</a>
+</li>
+<li>RDRAND_SUPPORT_UNKNOWN
+: <a class="el" href="rdrand_8hpp.html#a5c08b02f43bf40a193fdfcc838c185cd">rdrand.hpp</a>
+</li>
+<li>RDRAND_SUPPORTED
+: <a class="el" href="rdrand_8hpp.html#ad131f54060ea28be27c3c7bad0690e78">rdrand.hpp</a>
+</li>
+<li>RDRAND_UNSUPPORTED
+: <a class="el" href="rdrand_8hpp.html#a9575c78908cc2224ce4413cbd965640c">rdrand.hpp</a>
 </li>
 <li>readTime
 : <a class="el" href="_constants_8hpp.html#abd52f1ed1ece35cffe3fc3e4180ca0f3">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#abd52f1ed1ece35cffe3fc3e4180ca0f3">Constants.cpp</a>
+</li>
+<li>RETRY_LIMIT
+: <a class="el" href="rdrand_8cpp.html#ad4eba3b0ea03f397bae8792d0f0e4cd4">rdrand.cpp</a>
 </li>
 </ul>
 
@@ -415,52 +394,29 @@ $(document).ready(function(){initNavTree('globals.html','');});
 : <a class="el" href="_constants_8hpp.html#ad273a878a46f52a8c720ef7eae03ae4f">Constants.hpp</a>
 , <a class="el" href="_constants_8cpp.html#ad273a878a46f52a8c720ef7eae03ae4f">Constants.cpp</a>
 </li>
-<li>SF1()
-: <a class="el" href="_correlation_8hpp.html#abf87d03b9b305f4e43dc5c20da98c7a2">Correlation.hpp</a>
-, <a class="el" href="_correlation_8cpp.html#abf87d03b9b305f4e43dc5c20da98c7a2">Correlation.cpp</a>
+<li>SolarMass
+: <a class="el" href="_constants_8hpp.html#ada9035453156e0ae346332fde905c274">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#ada9035453156e0ae346332fde905c274">Constants.cpp</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
-<li>TIME_ACF
-: <a class="el" href="compute_c_fs_8cpp.html#ab872824cf150e190f8548f6df6cb2541">computeCFs.cpp</a>
-</li>
-<li>TIME_ACVF
-: <a class="el" href="compute_c_fs_8cpp.html#a0acac96c1124718e6c622f3c015c5a9e">computeCFs.cpp</a>
-</li>
-<li>TIME_LNLIKE
-: <a class="el" href="test_kalman_c_p_p_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testKalmanCPP.cpp</a>
-, <a class="el" href="write_mock_l_c_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">writeMockLC.cpp</a>
-, <a class="el" href="plot_a_r_m_a_regions_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">plotARMARegions.cpp</a>
-, <a class="el" href="fit_a_r_m_a_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">fitARMA.cpp</a>
-, <a class="el" href="test_method_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testMethod.cpp</a>
-, <a class="el" href="test_point_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testPoint.cpp</a>
-, <a class="el" href="write_kepler_l_c_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">writeKeplerLC.cpp</a>
-</li>
-<li>TIME_MCMC
-: <a class="el" href="fit_a_r_m_a_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">fitARMA.cpp</a>
-, <a class="el" href="test_kalman_c_p_p_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testKalmanCPP.cpp</a>
-, <a class="el" href="test_point_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testPoint.cpp</a>
-, <a class="el" href="plot_a_r_m_a_regions_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">plotARMARegions.cpp</a>
-, <a class="el" href="write_mock_l_c_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">writeMockLC.cpp</a>
-, <a class="el" href="write_kepler_l_c_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">writeKeplerLC.cpp</a>
-, <a class="el" href="test_method_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testMethod.cpp</a>
-</li>
-<li>TIME_PACF
-: <a class="el" href="compute_c_fs_8cpp.html#aeaa6b080fee0a9e3da1b6c8dcb9c7bce">computeCFs.cpp</a>
-</li>
-<li>TIME_SF1
-: <a class="el" href="compute_c_fs_8cpp.html#a10709d200824af6d64229bf06d05449d">computeCFs.cpp</a>
+<li>SolarMassPerCubicParsec
+: <a class="el" href="_constants_8hpp.html#a798a374e513280a7d37661626aab93d5">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#a798a374e513280a7d37661626aab93d5">Constants.cpp</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>viewMatrix()
-: <a class="el" href="_c_a_r_m_a_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf">CARMA.hpp</a>
-, <a class="el" href="_correlation_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf">Correlation.hpp</a>
-, <a class="el" href="_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf">CARMA.cpp</a>
+: <a class="el" href="_c_a_r_m_a_8hpp.html#a32cca3ca3e17261a84d64c6653524515">CARMA.hpp</a>
+, <a class="el" href="_c_a_r_m_a_8cpp.html#a32cca3ca3e17261a84d64c6653524515">CARMA.cpp</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_y"></a>- y -</h3><ul>
+<li>Year
+: <a class="el" href="_constants_8hpp.html#aa2047f98d2c2eecb4bfe0d2bd43ac10e">Constants.hpp</a>
+, <a class="el" href="_constants_8cpp.html#aa2047f98d2c2eecb4bfe0d2bd43ac10e">Constants.cpp</a>
 </li>
 </ul>
 
@@ -476,7 +432,7 @@ $(document).ready(function(){initNavTree('globals.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

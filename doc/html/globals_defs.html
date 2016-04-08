@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: File Members</title>
+<title>libcarma: File Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -84,6 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals.html"><span>All</span></a></li>
       <li><a href="globals_func.html"><span>Functions</span></a></li>
       <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
       <li class="current"><a href="globals_defs.html"><span>Macros</span></a></li>
     </ul>
   </div>
@@ -107,7 +103,7 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -118,46 +114,46 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
 
 <div class="contents">
 &#160;<ul>
-<li>DIAGNOSTIC
-: <a class="el" href="_d_l_a_p_a_c_k_e_8cpp.html#accb3f9a9f31de3ed9cb9c0c65aff8e89">DLAPACKE.cpp</a>
+<li>BINARY_HPP
+: <a class="el" href="binary_s_m_b_h_8hpp.html#ab05b52f10d0c452bf0f47c4c30599b9c">binarySMBH.hpp</a>
 </li>
 <li>MKL_Complex16
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">CARMA.hpp</a>
+, <a class="el" href="_l_c_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">LC.hpp</a>
+, <a class="el" href="_task_8hpp.html#a1fa119034fee07a6d5449926cbb7915a">Task.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a1fa119034fee07a6d5449926cbb7915a">CARMA.cpp</a>
 </li>
 <li>MKL_Complex8
 : <a class="el" href="_c_a_r_m_a_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">CARMA.hpp</a>
 , <a class="el" href="_c_a_r_m_a_8cpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">CARMA.cpp</a>
+, <a class="el" href="_l_c_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">LC.hpp</a>
+, <a class="el" href="_task_8hpp.html#a0b45f62ef34311fdb79b8de82d75c0d3">Task.hpp</a>
 </li>
-<li>TIME_ACF
-: <a class="el" href="compute_c_fs_8cpp.html#ab872824cf150e190f8548f6df6cb2541">computeCFs.cpp</a>
+<li>PY_SSIZE_T_CLEAN
+: <a class="el" href="b_s_m_b_h_8cpp.html#ac9efdaac9411d0868b715edccca3269d">bSMBH.cpp</a>
+, <a class="el" href="_c_a_r_m_a_task_8cpp.html#ac9efdaac9411d0868b715edccca3269d">CARMATask.cpp</a>
+, <a class="el" href="rand_8cpp.html#ac9efdaac9411d0868b715edccca3269d">rand.cpp</a>
 </li>
-<li>TIME_ACVF
-: <a class="el" href="compute_c_fs_8cpp.html#a0acac96c1124718e6c622f3c015c5a9e">computeCFs.cpp</a>
+<li>RDRAND_MASK
+: <a class="el" href="rdrand_8cpp.html#af7b2fee6da8e44ce8d6a0e4a5262d079">rdrand.cpp</a>
 </li>
-<li>TIME_LNLIKE
-: <a class="el" href="test_method_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testMethod.cpp</a>
-, <a class="el" href="test_kalman_c_p_p_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testKalmanCPP.cpp</a>
-, <a class="el" href="fit_a_r_m_a_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">fitARMA.cpp</a>
-, <a class="el" href="test_point_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">testPoint.cpp</a>
-, <a class="el" href="write_kepler_l_c_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">writeKeplerLC.cpp</a>
-, <a class="el" href="write_mock_l_c_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">writeMockLC.cpp</a>
-, <a class="el" href="plot_a_r_m_a_regions_8cpp.html#af1a43a55f50dea06366f9de6940e3e39">plotARMARegions.cpp</a>
+<li>RDRAND_NOT_READY
+: <a class="el" href="rdrand_8hpp.html#a1dd7849babc67ef0652c6fb0290e1004">rdrand.hpp</a>
 </li>
-<li>TIME_MCMC
-: <a class="el" href="fit_a_r_m_a_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">fitARMA.cpp</a>
-, <a class="el" href="test_kalman_c_p_p_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testKalmanCPP.cpp</a>
-, <a class="el" href="test_point_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testPoint.cpp</a>
-, <a class="el" href="plot_a_r_m_a_regions_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">plotARMARegions.cpp</a>
-, <a class="el" href="write_mock_l_c_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">writeMockLC.cpp</a>
-, <a class="el" href="write_kepler_l_c_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">writeKeplerLC.cpp</a>
-, <a class="el" href="test_method_8cpp.html#ae3f370bd2a68105370ee90f3f5805e86">testMethod.cpp</a>
+<li>RDRAND_SUCCESS
+: <a class="el" href="rdrand_8hpp.html#a8e20c349766b3e174dc5e27bd0db79fc">rdrand.hpp</a>
 </li>
-<li>TIME_PACF
-: <a class="el" href="compute_c_fs_8cpp.html#aeaa6b080fee0a9e3da1b6c8dcb9c7bce">computeCFs.cpp</a>
+<li>RDRAND_SUPPORT_UNKNOWN
+: <a class="el" href="rdrand_8hpp.html#a5c08b02f43bf40a193fdfcc838c185cd">rdrand.hpp</a>
 </li>
-<li>TIME_SF1
-: <a class="el" href="compute_c_fs_8cpp.html#a10709d200824af6d64229bf06d05449d">computeCFs.cpp</a>
+<li>RDRAND_SUPPORTED
+: <a class="el" href="rdrand_8hpp.html#ad131f54060ea28be27c3c7bad0690e78">rdrand.hpp</a>
+</li>
+<li>RDRAND_UNSUPPORTED
+: <a class="el" href="rdrand_8hpp.html#a9575c78908cc2224ce4413cbd965640c">rdrand.hpp</a>
+</li>
+<li>RETRY_LIMIT
+: <a class="el" href="rdrand_8cpp.html#ad4eba3b0ea03f397bae8792d0f0e4cd4">rdrand.cpp</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -165,7 +161,7 @@ $(document).ready(function(){initNavTree('globals_defs.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

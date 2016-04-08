@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keplerobj',['KeplerObj',['../class_kepler_obj.html',1,'']]]
+  ['keplerseqndata',['KeplersEqnData',['../struct_c_a_r_m_a_1_1_keplers_eqn_data.html',1,'CARMA']]]
 ];

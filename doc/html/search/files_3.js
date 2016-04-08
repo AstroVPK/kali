@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['finalanalysis_2epy',['FinalAnalysis.py',['../_final_analysis_8py.html',1,'']]],
-  ['fitarma_2ecpp',['fitARMA.cpp',['../fit_a_r_m_a_8cpp.html',1,'']]]
+  ['lc_2ecpp',['LC.cpp',['../_l_c_8cpp.html',1,'']]],
+  ['lc_2ehpp',['LC.hpp',['../_l_c_8hpp.html',1,'']]],
+  ['libcarma_2epy',['libcarma.py',['../libcarma_8py.html',1,'']]]
 ];

@@ -1,6 +1,0 @@
-var searchData=
-[
-  ['verflags',['VERFLAGS',['../namespacesetup.html#a4b1725ffabf7e972e9416fc047daa758',1,'setup']]],
-  ['version',['version',['../namespacesetup.html#ab177531e7a80674a3db3de2d79eb8be7',1,'setup']]],
-  ['viewmatrix',['viewMatrix',['../_c_a_r_m_a_8hpp.html#a32cca3ca3e17261a84d64c6653524515',1,'viewMatrix(int nRows, int nCols, int *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#a532bd90de8673b1e4546e062a862dba6',1,'viewMatrix(int nRows, int nCols, vector&lt; double &gt; mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8hpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#a32cca3ca3e17261a84d64c6653524515',1,'viewMatrix(int nRows, int nCols, int *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#adaf529b8047fb0aa639f2aa494b9cfaf',1,'viewMatrix(int nRows, int nCols, double *mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#a532bd90de8673b1e4546e062a862dba6',1,'viewMatrix(int nRows, int nCols, vector&lt; double &gt; mat):&#160;CARMA.cpp'],['../_c_a_r_m_a_8cpp.html#ab43c14961907b75c90cee7b7fd28a3cc',1,'viewMatrix(int nRows, int nCols, complex&lt; double &gt; *mat):&#160;CARMA.cpp']]]
-];

@@ -1,16 +1,19 @@
 var searchData=
 [
-  ['t',['t',['../namespace_final_analysis.html#a90758b7deb047594ad04ead892b7627e',1,'FinalAnalysis.t()'],['../namespace_initial_analysis.html#abd32e1c44917e64e9d72ff4a89b0134d',1,'InitialAnalysis.t()']]],
-  ['target',['target',['../namespace_get_all_data.html#ae7c93a35b37e6a7e1f63026786f921e3',1,'GetAllData']]],
-  ['target_5fpixel_5ffilespath',['target_pixel_filesPath',['../namespace_get_all_data.html#a45b4d0dc9728eff931ef547819c19225',1,'GetAllData']]],
-  ['targetlistfile',['targetListFile',['../namespace_get_all_data.html#a651d69300ed082b3426d3910b6c6a5f7',1,'GetAllData']]],
-  ['targlist',['targList',['../namespace_get_all_data.html#a0e405ac3485c0d9036936f1e1639d262',1,'GetAllData']]],
-  ['targpath',['targpath',['../namespace_get_all_data.html#a2dafe0984549f093bb5d258640946102',1,'GetAllData']]],
-  ['targpattern',['targPattern',['../namespace_get_all_data.html#ad05a0da5848b788cf7824b79fa516b64',1,'GetAllData']]],
-  ['thetabest',['thetaBest',['../namespace_final_analysis.html#ae73eb98f29c137ecea3dc1021ba665b5',1,'FinalAnalysis']]],
-  ['timeh',['timeH',['../class_universe.html#a7a1b9c18475efced2a8260420dfc3911',1,'Universe']]],
-  ['tlfile',['tLFile',['../namespace_get_all_data.html#a7f0291de88ec75252bb7cfaa9a33997e',1,'GetAllData']]],
-  ['tmax',['tMax',['../namespace_final_analysis.html#a3e720a14f79520011003b9f32ec0e4b2',1,'FinalAnalysis']]],
-  ['trifile',['TriFile',['../namespace_final_analysis.html#a05fafd47a96b32e6c3dc6e30dac35672',1,'FinalAnalysis.TriFile()'],['../namespace_plot_a_r_m_a_regions.html#a418058aa77527961189e1d40f3d8091d',1,'PlotARMARegions.TriFile()']]],
-  ['trifilepath',['TriFilePath',['../namespace_final_analysis.html#abf963966146e1751a9c7aeb6a4df238a',1,'FinalAnalysis.TriFilePath()'],['../namespace_plot_a_r_m_a_regions.html#a35b8724b6b0849cfed30c080d79c775e',1,'PlotARMARegions.TriFilePath()']]]
+  ['r1',['r1',['../namespacebinary_s_m_b_h_demo.html#afa2c1a69396867f79d8fa488b78a5d4a',1,'binarySMBHDemo']]],
+  ['r2',['r2',['../namespacebinary_s_m_b_h_demo.html#a8492099467bf0c8cdeea92c96d291d72',1,'binarySMBHDemo']]],
+  ['r_5f1',['r_1',['../namespace_c_a_r_m_a_demo.html#aa32ceb76d602a0d157916cf91ad6377c',1,'CARMADemo']]],
+  ['r_5f1_5fguess',['r_1_guess',['../namespace_c_a_r_m_a_demo.html#a8b7943e46d7401e7e312db8d3a353363',1,'CARMADemo']]],
+  ['r_5f2',['r_2',['../namespace_c_a_r_m_a_demo.html#aac6267bad07ea88a21753363b78d8153',1,'CARMADemo']]],
+  ['r_5f2_5fguess',['r_2_guess',['../namespace_c_a_r_m_a_demo.html#a845035ed251a896d63845939de16a0a6',1,'CARMADemo']]],
+  ['r_5f3',['r_3',['../namespace_c_a_r_m_a_demo.html#a514fd8674af7ed60c5c647977b726159',1,'CARMADemo']]],
+  ['r_5f3_5fguess',['r_3_guess',['../namespace_c_a_r_m_a_demo.html#a2e51a245e221cda099201dff37dd968a',1,'CARMADemo']]],
+  ['rand_5fext',['rand_ext',['../namespacesetup.html#a72a912c8df91f65b2a80db002d55f4ff',1,'setup']]],
+  ['rand_5flist',['rand_List',['../namespacesetup.html#a7c78e16e81c92c4cb8ed8c293b885193',1,'setup']]],
+  ['rand_5fsourcelist',['rand_sourceList',['../namespacesetup.html#a79e06cfe494233c86ded36a5f7852f95',1,'setup']]],
+  ['rb1',['rB1',['../namespacebinary_s_m_b_h_demo.html#a5fc5c18e9e789a0bab0d94067a4f9636',1,'binarySMBHDemo']]],
+  ['rb2',['rB2',['../namespacebinary_s_m_b_h_demo.html#a7d9134aac5e5106450b092ab423b890f',1,'binarySMBHDemo']]],
+  ['readtime',['readTime',['../_constants_8hpp.html#abd52f1ed1ece35cffe3fc3e4180ca0f3',1,'readTime():&#160;Constants.hpp'],['../_constants_8cpp.html#abd52f1ed1ece35cffe3fc3e4180ca0f3',1,'readTime():&#160;Constants.cpp']]],
+  ['rhooom',['RhoOoM',['../namespacebinary_s_m_b_h_demo.html#a75a0a01864a83a97da7989e85d83d7de',1,'binarySMBHDemo']]],
+  ['rmax',['rmax',['../namespacebinary_s_m_b_h_demo.html#a74e4ce6514b15b46325ef6ae05f4a3f1',1,'binarySMBHDemo']]]
 ];

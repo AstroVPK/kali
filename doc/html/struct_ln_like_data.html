@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>CARMA Analysis: LnLikeData Struct Reference</title>
+<title>libcarma: LnLikeData Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,12 +20,6 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-});
-</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -34,10 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">CARMA Analysis
+   <div id="projectname">libcarma
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">Code to fit stochastic time series to C-ARMA Model</div>
+   <div id="projectbrief">Library to model stochastic light curves as C-ARMA processes</div>
   </td>
  </tr>
  </tbody>
@@ -51,7 +47,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -101,7 +96,7 @@ $(document).ready(function(){initNavTree('struct_ln_like_data.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -123,8 +118,28 @@ $(document).ready(function(){initNavTree('struct_ln_like_data.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a06edae26098d8ccd31a18fa0995fed86"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a06edae26098d8ccd31a18fa0995fed86">numPts</a></td></tr>
-<tr class="separator:a06edae26098d8ccd31a18fa0995fed86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a825ffbe1d96bd9f1c913ed95c83fd8de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a825ffbe1d96bd9f1c913ed95c83fd8de">numCadences</a></td></tr>
+<tr class="separator:a825ffbe1d96bd9f1c913ed95c83fd8de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af49dc41383840c47d9e03c154c510912"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#af49dc41383840c47d9e03c154c510912">IR</a></td></tr>
+<tr class="separator:af49dc41383840c47d9e03c154c510912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fcbb2527d414cc2b0fe576a7a61f45c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a0fcbb2527d414cc2b0fe576a7a61f45c">tolIR</a></td></tr>
+<tr class="separator:a0fcbb2527d414cc2b0fe576a7a61f45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbb8573027fb54b1d207c126a64c49c9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#acbb8573027fb54b1d207c126a64c49c9">t_incr</a></td></tr>
+<tr class="separator:acbb8573027fb54b1d207c126a64c49c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a883ba357c5e5a7eff7fb9a25f130a0e7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a883ba357c5e5a7eff7fb9a25f130a0e7">fracIntrinsicVar</a></td></tr>
+<tr class="separator:a883ba357c5e5a7eff7fb9a25f130a0e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d90bcfebe1eec966719b8c0febb7dc7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a9d90bcfebe1eec966719b8c0febb7dc7">fracNoiseToSignal</a></td></tr>
+<tr class="separator:a9d90bcfebe1eec966719b8c0febb7dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae30e91660af267721f78434f5e771293"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#ae30e91660af267721f78434f5e771293">maxSigma</a></td></tr>
+<tr class="separator:ae30e91660af267721f78434f5e771293"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a429a07a037a45e99a52c0c9e6193b23d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a429a07a037a45e99a52c0c9e6193b23d">minTimescale</a></td></tr>
+<tr class="separator:a429a07a037a45e99a52c0c9e6193b23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1c1eb4d8e84c78b1b76849adfd0aeb8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#ab1c1eb4d8e84c78b1b76849adfd0aeb8">maxTimescale</a></td></tr>
+<tr class="separator:ab1c1eb4d8e84c78b1b76849adfd0aeb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b1bf48c4b998b85df9c381974e65f93"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a5b1bf48c4b998b85df9c381974e65f93">t</a></td></tr>
+<tr class="separator:a5b1bf48c4b998b85df9c381974e65f93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd71e6e5c9f90880038586d6f4e705fe"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#afd71e6e5c9f90880038586d6f4e705fe">x</a></td></tr>
+<tr class="separator:afd71e6e5c9f90880038586d6f4e705fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac75cc1e68fffac23d841e09f927a0a53"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#ac75cc1e68fffac23d841e09f927a0a53">y</a></td></tr>
 <tr class="separator:ac75cc1e68fffac23d841e09f927a0a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54330ef049f623a902d04f58e5aee208"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ln_like_data.html#a54330ef049f623a902d04f58e5aee208">yerr</a></td></tr>
@@ -134,8 +149,50 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00106">106</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00021">21</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a883ba357c5e5a7eff7fb9a25f130a0e7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::fracIntrinsicVar</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00026">26</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9d90bcfebe1eec966719b8c0febb7dc7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::fracNoiseToSignal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00027">27</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af49dc41383840c47d9e03c154c510912"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LnLikeData::IR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00023">23</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a51c6e3bd71666d529910318735f0df21"></a>
 <div class="memitem">
 <div class="memproto">
@@ -146,21 +203,119 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00110">110</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00035">35</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a06edae26098d8ccd31a18fa0995fed86"></a>
+<a class="anchor" id="ae30e91660af267721f78434f5e771293"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int LnLikeData::numPts</td>
+          <td class="memname">double LnLikeData::maxSigma</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00107">107</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00028">28</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab1c1eb4d8e84c78b1b76849adfd0aeb8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::maxTimescale</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00030">30</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a429a07a037a45e99a52c0c9e6193b23d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::minTimescale</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00029">29</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a825ffbe1d96bd9f1c913ed95c83fd8de"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LnLikeData::numCadences</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00022">22</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5b1bf48c4b998b85df9c381974e65f93"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double* LnLikeData::t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00031">31</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acbb8573027fb54b1d207c126a64c49c9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::t_incr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00025">25</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0fcbb2527d414cc2b0fe576a7a61f45c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double LnLikeData::tolIR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00024">24</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd71e6e5c9f90880038586d6f4e705fe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double* LnLikeData::x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00032">32</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 
 </div>
 </div>
@@ -174,7 +329,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00108">108</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00033">33</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 
 </div>
 </div>
@@ -188,12 +343,12 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00109">109</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_c_a_r_m_a_8hpp_source.html#l00034">34</a> of file <a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/vish/code/trunk/cpp/libcarma/include/<a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a></li>
+<li>/home/vish/code/trunk/cpp/libcarma/cython/include/<a class="el" href="_c_a_r_m_a_8hpp_source.html">CARMA.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -201,7 +356,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_ln_like_data.html">LnLikeData</a></li>
-    <li class="footer">Generated on Fri Oct 9 2015 07:40:18 for CARMA Analysis by
+    <li class="footer">Generated on Mon Apr 4 2016 14:53:39 for libcarma by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

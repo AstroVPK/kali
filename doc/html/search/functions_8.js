@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['indextoepoch',['indexToepoch',['../class_kepler_obj.html#a7b822c1719305ecc53c4594fab113c99',1,'KeplerObj::indexToepoch(int index)'],['../class_kepler_obj.html#a89d53cab1519c3cb5d337da37565b60d',1,'KeplerObj::indexToepoch(vector&lt; int &gt; indexList)']]]
+  ['init',['init',['../namespacebinary_s_m_b_h_demo.html#a33ff1bc707fd0b6d5c62b03c5db2eaf0',1,'binarySMBHDemo']]],
+  ['ir',['IR',['../classpython_1_1libcarma_1_1libcarma_1_1lc.html#a57967beffce0d6d06b78c3049583851a',1,'python.libcarma.libcarma.lc.IR'],['../classpython_1_1libcarma_1_1libcarma_1_1lc.html#a57967beffce0d6d06b78c3049583851a',1,'python.libcarma.libcarma.lc.IR']]]
 ];
