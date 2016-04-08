@@ -35,7 +35,7 @@ import python.lc as lc
 
 ffiObj = cffi.FFI()
 try:
-	libcarmaPath = str(os.environ['LIBCARMA'])
+	libcarmaPath = str(os.environ['LIBCARMA_CFFI'])
 except KeyError as Err:
 	print str(Err) + '. Exiting....'
 	sys.exit(1)

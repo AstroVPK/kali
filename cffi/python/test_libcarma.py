@@ -30,7 +30,7 @@ import python.util.triangle as triangle
 from python.util.mpl_settings import *
 ffiObj = cffi.FFI()
 try:
-	libcarmaPath = str(os.environ['LIBCARMA'])
+	libcarmaPath = str(os.environ['LIBCARMA_CFFI'])
 except KeyError as Err:
 	print str(Err) + '. Exiting....'
 	sys.exit(1)
