@@ -5,8 +5,8 @@
 # relative to <libcarma>/bin/
 LIBCARMA=$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)
 LIBCARMA_CFFI=$(cd "$(dirname "$BASH_SOURCE")/../cffi"; pwd)
-LIBCARMA_CYTHON=$(cd "$(dirname "$BASH_SOURCE")/../cython/python"; pwd)
-LIBCARMA_CYTHON_LIB=$(cd "$(dirname "$BASH_SOURCE")/../cython/lib"; pwd)
+LIBCARMA_CYTHON=$(cd "$(dirname "$BASH_SOURCE")/../python"; pwd)
+LIBCARMA_CYTHON_LIB=$(cd "$(dirname "$BASH_SOURCE")/../lib"; pwd)
 
 export LIBCARMA="$LIBCARMA"
 export LIBCARMA_CFFI="$LIBCARMA_CFFI"
