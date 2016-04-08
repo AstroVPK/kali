@@ -274,7 +274,11 @@ class lc(object):
 
 	@abc.abstractmethod
 	def read(self, supplied):
-		raise NotImplementedError(r'Override readlc!')
+		raise NotImplementedError(r'Override read by subclassing lc!')
+
+	@abc.abstractmethod
+	def write(self, path = os.environ['PWD']):
+		raise NotImplementedError(r'Override write by subclassing lc!')
 
 class basicLC(lc):
 	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
