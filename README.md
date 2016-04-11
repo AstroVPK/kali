@@ -1,7 +1,6 @@
 # libcarma
 A library to model a time series as a Continuous-time ARMA (C-ARMA) process. This library is written in C++ 
-and is exposed to Python using `cffi` (more complete but to be deprecated) and using `cython` (less complete 
-but preferred).
+and is exposed to Python using `cython` and `cffi` (deprecated)
 
 
 Version: 1.0.0
@@ -25,10 +24,11 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
   `<libcarma dir>$ python python/DemoScript.py /Users/<user name>/<path to working dir> Config.ini`
 
-You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, cffi, cython & Brandon 
-Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, Intel C++ Compiler XE, Intel MKL, 
-`cffi`, `cython` & NLOpt are required though the plan is to eventually allow the use of g++ etc... Brandon 
-Kelly's `carma_pack` is not required but is recommended.
+You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, cython , cffi (optional), 
+& Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, Intel C++ Compiler XE, 
+Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow the use of g++ etc... Brandon 
+Kelly's `carma_pack` is not required but is recommended. `cffi` is only required if you wish to use the older 
+depracted `cffi` interface to the `c++` code.
 
 1. Anaconda Python
 
@@ -164,6 +164,22 @@ replace it with an alternative. Intel MKL may be obtained from
   This software has been tested with
   1. NLOpt Version 2.4.2
 
+6. `cython`
+
+  `cython` is used to wrap the `c++` parts of libcarma in Python. Make sure that you have the latest `cython` 
+build. You can get the most recent version using
+
+  `bash-prompt$ conda update conda`
+
+
+  `bash-prompt$ conda update --all`
+
+
+  `bash-prompt$ conda install cython`
+
+  This software has been tested with
+  1. Cython Version 0.23.4
+
 5. `cffi`
 
 
@@ -188,25 +204,6 @@ be installed into Anaconda using
 
   `bash-prompt$ conda install cffi`
 
-6. `cython`
-
-  We are now beginning to use `cython` to wrap the `c++` parts of libcarma in Python. So far the `cython`-based 
-interface is proving to be simple, elegant, faster, and cleaner than the older `cffi` interface. In particular
-, the `cython` interface makes `CARMA` objects easily to persist in Python i.e. the Python layer has ownership
- which means that we can reuse the same object repeatedly. To use the new `cython`-based interface, make sure 
- that you have the latest `cython`. You can get the most recent version using
-
-  `bash-prompt$ conda update conda`
-
-
-  `bash-prompt$ conda update --all`
-
-
-  `bash-prompt$ conda install cython`
-
-  This software has been tested with
-  1. Cython Version 0.23.4
-
 7. `carma_pack`
 
 
@@ -217,7 +214,7 @@ interface is proving to be simple, elegant, faster, and cleaner than the older `
 
 
   Please install `carma_pack` using the instructions provided with the package. This library includes a 
-Python script `python/KellyAnalysis.py` to use `carma_pack` with the same interface as the rest of this 
+Python script `cffi/python/KellyAnalysis.py` to use `carma_pack` with the same interface as the rest of this 
 package. Please read
 
 
@@ -230,40 +227,13 @@ To make `libcarma` after cloning the repository, simply run
 `bash-prompt$ source ./bin/setup.sh`
 
 
-`bash-prompt$ make`
-
-
-You must re-run
-
-
-`bash-prompt$ source ./bin/setup.sh`
-
-
-in every new terminal that you use `libcarma` in. You may consider adding 
-
-
-`source <path to libcarma>/bin/setup.sh`
-
-
-to your `.bashrc`. To clean the library, run 
-
-
-`bash-prompt$ make clean`
-
-
-To make the cython interfaced libcarma, simply run
-
-
-`bash-prompt$ source ./bin/setup.sh`
-
-
-`bash-prompt$ cd cython`
-
-
 `bash-prompt$ python setup.py build_ext`
 
 
-You must re-run
+This will compile all the `c++` source files in the folder `src/` with the headers in `include/` and put the 
+built object files in the directory `build/`. Then it will link the object files together into the library 
+which will be located in `lib/`. Python `__init__.py` files make the libary visible to the Python interface 
+files located in `python/`. You must re-run
 
 
 `bash-prompt$ source ./bin/setup.sh`
@@ -275,14 +245,24 @@ in every new terminal that you use `libcarma` in. You may consider adding
 `source <path to libcarma>/bin/setup.sh`
 
 
-to your `.bashrc`.
+to your `.bashrc`. To clean the library, just delete the `build/` directory and any files inside  `lib/`. You 
+may consider adding 
 
-This covers installation. While waiting for a usage guide, please feel free to try the package out by running
+
+`source <path to libcarma>/bin/setup.sh`
+
+
+to your `.bashrc`. This covers installation. Please feel free to try the 
+package out by running
 
 
 `bash-prompt$ source <path to libcarma>/bin/setup.sh`
 
 
-`cffi` version: `bash-prompt$/usr/bin/time -p -v python scripts/DemoScript.py <path to libcarma>/examples/Demo01/ Config.ini | tee <path to libcarma>/examples/Demo01/timing.dat`
-
 `cython` version: `bash-prompt$/usr/bin/time -p -v python cython/examples/CARMADemo.py`
+
+
+`cffi` version: `bash-prompt$/usr/bin/time -p -v python cffi/scripts/DemoScript.py <path to libcarma>/cffi/examples/Demo01/ Config.ini | tee <path to libcarma>/cffi/examples/Demo01/timing.dat`
+
+
+A preliminary user guide is now available at `<path to libcarma>/guide/Introduction.ipynb`.
