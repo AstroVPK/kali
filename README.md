@@ -183,8 +183,8 @@ build. You can get the most recent version using
 5. `cffi`
 
 
-  The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. It can 
-be installed into Anaconda using
+  The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. Use of 
+  `cffi` is now depracated. For posterity sake, `cffi` can be installed into Anaconda using
 
 
   `bash-prompt$ sudo apt-get install libffi6` (On linux only)
