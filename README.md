@@ -184,7 +184,7 @@ build. You can get the most recent version using
 
 7. `future`
 
-  `future` is a Python 2 package that makes a number of useful Python 3 packages useable in Python 2.. You can 
+  `future` is a Python 2 package that makes a number of useful Python 3 modules useable in Python 2. You can 
   get `future` using
 
 
