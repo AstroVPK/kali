@@ -175,6 +175,22 @@ class lc(object):
 		self._band = str(band)
 
 	@property
+	def xunit(self):
+		return self._xunit
+
+	@xunit.setter
+	def xunit(self, value):
+		self._xunit = str(value)
+
+	@property
+	def yunit(self):
+		return self._yunit
+
+	@xunit.setter
+	def yunit(self, value):
+		self._yunit = str(value)
+
+	@property
 	def IR(self):
 		return self._IR
 
@@ -392,6 +408,11 @@ class lc(object):
 		return lccopy
 
 	def __add__(self, other):
+		"""!
+		\brief Add.
+		
+		Add another light curve or scalar to the light curve.
+		"""
 		lccopy = self.copy()
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			lccopy.x += other
@@ -414,15 +435,35 @@ class lc(object):
 		return lccopy
 
 	def __radd__(self, other):
+		"""!
+		\brief Add.
+		
+		Add a light curve to a scalar.
+		"""
 		return self + other
 
 	def __sub__(self, other):
+		"""!
+		\brief Subtract.
+		
+		Subtract another light curve or scalar from the light curve.
+		"""
 		return self + (- other)
 
 	def __rsub__(self, other):
+		"""!
+		\brief Subtract.
+		
+		Subtract a light curve from a scalar .
+		"""
 		return self + (- other)
 
 	def __iadd__(self, other):
+		"""!
+		\brief Inplace add.
+		
+		Inplace add another light curve or scalar to the light curve.
+		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			self.x += other
 			self.y += other
@@ -441,13 +482,18 @@ class lc(object):
 		return self
 
 	def __isub__(self, other):
+		"""!
+		\brief Inplace subtract.
+		
+		Inplace subtract another light curve or scalar from the light curve.
+		"""
 		return self.iadd( - other)
 
 	def __mul__(self, other):
 		"""!
-		\brief Multiply the light curve
+		\brief Multiply.
 		
-		Multiply the light curve by a scalar
+		Multiply the light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			if type(other) is types.ComplexType:
@@ -467,6 +513,11 @@ class lc(object):
 			raise NotImplemented
 
 	def __rmul__(self, other):
+		"""!
+		\brief Multiply.
+		
+		Multiply a scalar by the light curve.
+		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			if type(other) is types.ComplexType:
 				other = complex(other)
@@ -477,6 +528,11 @@ class lc(object):
 			raise NotImplemented
 
 	def __div__(self, other):
+		"""!
+		\brief Divide.
+		
+		Divide the light curve by a scalar.
+		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			if type(other) is types.ComplexType:
 				other = complex(other)
@@ -487,13 +543,18 @@ class lc(object):
 			raise NotImplemented
 
 	def __rdiv__(self, other):
+		"""!
+		\brief Divide  - not defined & not implemented.
+		
+		Divide a scalar by the light curve - not defined & not implemented.
+		"""
 		raise NotImplemented
 
 	def __imul__(self, other):
 		"""!
-		\brief Multiply the light curve inplace
+		\brief Inplace multiply.
 		
-		Multiply the light curve by a scalar inplace
+		Inplace multiply a light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			if type(other) is types.ComplexType:
@@ -512,6 +573,11 @@ class lc(object):
 			raise NotImplemented
 
 	def __idiv__(self, other):
+		"""!
+		\brief Inplace divide.
+		
+		Inplace divide a light curve by a scalar.
+		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
 			if type(other) is types.ComplexType:
 				other = complex(other)
