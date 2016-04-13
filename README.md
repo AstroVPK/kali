@@ -24,11 +24,11 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
   `<libcarma dir>$ python python/DemoScript.py /Users/<user name>/<path to working dir> Config.ini`
 
-You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, cython , cffi (optional), 
-& Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, Intel C++ Compiler XE, 
-Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow the use of g++ etc... Brandon 
-Kelly's `carma_pack` is not required but is recommended. `cffi` is only required if you wish to use the older 
-depracted `cffi` interface to the `c++` code.
+You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
+package, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
+Python, Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
+the use of g++ etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
+if you wish to use the older depracted `cffi` interface to the `c++` code.
 
 1. Anaconda Python
 
@@ -169,6 +169,7 @@ replace it with an alternative. Intel MKL may be obtained from
   `cython` is used to wrap the `c++` parts of libcarma in Python. Make sure that you have the latest `cython` 
 build. You can get the most recent version using
 
+
   `bash-prompt$ conda update conda`
 
 
@@ -177,10 +178,29 @@ build. You can get the most recent version using
 
   `bash-prompt$ conda install cython`
 
+
   This software has been tested with
   1. Cython Version 0.23.4
 
-5. `cffi`
+7. `future`
+
+  `future` is a Python 2 package that makes a number of useful Python 3 packages useable in Python 2.. You can 
+  get `future` using
+
+
+  `bash-prompt$ conda update conda`
+
+
+  `bash-prompt$ conda update --all`
+
+
+  `bash-prompt$ conda install future`
+
+
+  This software has been tested with
+  1. `future` Version 0.15.2
+
+8. `cffi`
 
 
   The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. Use of 
@@ -204,7 +224,7 @@ build. You can get the most recent version using
 
   `bash-prompt$ conda install cffi`
 
-7. `carma_pack`
+9. `carma_pack`
 
 
   Brandon Kelly's `carma_pack` is a C-ARMA analysis package written in C++ and Python. It may be obtained at

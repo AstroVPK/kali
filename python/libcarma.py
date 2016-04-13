@@ -8,11 +8,13 @@
 """
 
 import numpy as np
-import abc
-import psutil
-import types
-import os
-import pdb
+import abc as abc
+import psutil as psutil
+import types as types
+import os as os
+import reprlib as reprlib
+import copy as copy
+import pdb as pdb
 
 import rand as rand
 import CARMATask as CARMATask
@@ -23,7 +25,7 @@ class epoch(object):
 	
 	\brief Class to hold individual epochs of a light curve.
 	
-	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same tiemstamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
+	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same timestamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
 	"""
 	def __init__(self, t, x, y, yerr, mask):
 		"""!
@@ -93,7 +95,7 @@ class lc(object):
 	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
 	"""
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
 		"""!
 		\brief Initialize a new light curve
 		
@@ -104,6 +106,10 @@ class lc(object):
 		
 		Keyword arguments
 		\param[in] dt:                The spacing between cadences.
+		\param[in] name:              The name of the light curve (usually the object's name).
+		\param[in] band:              The name of the photometric band (eg. HSC-I or SDSS-g etc..).
+		\param[in] xunit              Unit in which time is measured (eg. s, sec, seconds etc...).
+		\param[in] yunit              Unit in which the flux is measured (eg Wm^{-2} etc...).
 		\param[in] IR:                Is the light curve irregular?
 		\param[in] tolIR:             The tolerance level at which a given step in the lightcurve should be considered irregular for the purpose of solving the C-ARMA model. The C-ARMA model needs to be re-solved if abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time. If IR  == False, this parameter is not used.
 		\param[in] fracIntrinsicVar:  The fractional variability of the source i.e. fracIntrinsicVar = sqrt(Sigma[0,0])/mean_flux.
@@ -113,30 +119,36 @@ class lc(object):
 		\param[in] maxTimescale:      The longest allowed timescale = maxTimescale*T. Note that if the observed light curve is shorter than the longest timescale present, T may be much smaller than the longest timescale and hence maxTimescale should be made larger in such cases.
 		\param[in] supplied:          Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
 		"""
-		self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
-		self.t = np.zeros(self.numCadences) ## Numpy array of timestamps.
-		self.x = np.zeros(self.numCadences) ## Numpy array of intrinsic fluxes.
-		self.y = np.zeros(self.numCadences) ## Numpy array of observed fluxes.
-		self.yerr = np.zeros(self.numCadences) ## Numpy array of observed flux errors.
-		self.mask = np.zeros(self.numCadences) ## Numpy array of mask values.
-		self._dt = dt ## Increment between epochs.
-		self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
-		self._IR = IR ## Is the light curve irregular?
-		self._tolIR = tolIR ## Tolerance on the irregularity. If IR == False, this parameter is not used. Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time.
-		self._fracIntrinsicVar = fracIntrinsicVar
-		self._fracNoiseToSignal = fracNoiseToSignal
-		self._maxSigma = maxSigma
-		self._minTimescale = minTimescale
-		self._maxTimescale = maxTimescale
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, dt = self.dt, IR = self._IR, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
-		self._mean = np.mean(self.y)
-		self._std = np.std(self.y)
-		if not supplied:
+		if supplied:
+			self.read(supplied)
+		else:
+			self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
+			self.t = np.zeros(self.numCadences) ## Numpy array of timestamps.
+			self.x = np.zeros(self.numCadences) ## Numpy array of intrinsic fluxes.
+			self.y = np.zeros(self.numCadences) ## Numpy array of observed fluxes.
+			self.yerr = np.zeros(self.numCadences) ## Numpy array of observed flux errors.
+			self.mask = np.zeros(self.numCadences) ## Numpy array of mask values.
+			self._dt = dt ## Increment between epochs.
+			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
+			self._name = str(name) ## The name of the light curve (usually the object's name).
+			self._band = str(band) ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).
+			self._xunit = r'$' + str(xunit) + '$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
+			self._yunit = r'$' + str(yunit) + '$' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
+			self._IR = IR ## Is the light curve irregular?
+			self._tolIR = tolIR ## Tolerance on the irregularity. If IR == False, this parameter is not used. Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time.
+			self._fracIntrinsicVar = fracIntrinsicVar
+			self._fracNoiseToSignal = fracNoiseToSignal
+			self._maxSigma = maxSigma
+			self._minTimescale = minTimescale
+			self._maxTimescale = maxTimescale
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
-		else:
-			self.read(supplied)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, dt = self.dt, IR = self._IR, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._mean = np.mean(self.y)
+		self._std = np.std(self.y)
+		self._meanerr = np.mean(self.yerr)
+		self._stderr = np.std(self.yerr)
 
 	@property
 	def numCadences(self):
@@ -145,6 +157,22 @@ class lc(object):
 	@property
 	def dt(self):
 		return self._dt
+
+	@property
+	def name(self):
+		return self._name
+
+	@name.setter
+	def name(self, value):
+		self._name = str(value)
+
+	@property
+	def band(self):
+		return self._band
+
+	@band.setter
+	def band(self, value):
+		self._band = str(band)
 
 	@property
 	def IR(self):
@@ -216,23 +244,38 @@ class lc(object):
 		"""!
 		\brief Return a representation of the lc such that eval(repr(someLC)) == someLC is True.
 		"""
-		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._dt, self._IR, self._tolIR, self._fracIntrinsicVar, self._fracNoiseToSignal, self._maxSigma, self._minTimescale, self._maxTimescale)
+		return u"libcarma.lc(%f, %s, %f, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._dt, self._name, self._band, self._xunit, self._yunit, self._IR, self._tolIR, self._fracIntrinsicVar, self._fracNoiseToSignal, self._maxSigma, self._minTimescale, self._maxTimescale)
 
 	def __str__(self):
 		"""!
 		\brief Return a human readable representation of the light curve.
 		"""
-		line = 'numCadences: %d\n'%(self._numCadences)
-		line += 'IR (Irregularly sampled): %s\n'%(self._IR)
-		line += 'tolIR (Tolerance for irregularity): %f\n'%(self._tolIR)
-		line += 'fracIntrinsicVar (Intrinsic variability fraction): %f\n'%(self._fracIntrinsicVar)
-		line += 'fracNoiseToSignal (Noise to signal fraction): %f\n'%(self._fracNoiseToSignal)
-		line += 'maxSigma (Maximum allowed sigma multiplier): %f\n'%(self._maxSigma)
-		line += 'minTimescale (Minimum allowed timescale factor): %f\n'%(self._minTimescale)
-		line += 'maxTimescale (Maximum allowed timescale factor): %f\n'%(self._maxTimescale)
+		line = ''
+		line += '                                             Name: %s\n'%(self._name)
+		line += '                                             Band: %s\n'%(self._band)
+		line += '                                        Time Unit: %s\n'%(self._xunit)
+		line += '                                        Flux Unit: %s\n'%(self._yunit)
+		line += '                                      numCadences: %d\n'%(self._numCadences)
+		line += '                                               dt: %e\n'%(self._dt)
+		line += '                                                T: %e\n'%(self._T)
+		line += '                                     mean of flux: %e\n'%(self._mean)
+		line += '                           std. deviation of flux: %e\n'%(self._std)
+		line += '                               mean of flux error: %e\n'%(self._meanerr)
+		line += '                     std. deviation of flux error: %e\n'%(self._stderr)
+		line += '                         IR (Irregularly sampled): %s\n'%(self._IR)
+		line += '               tolIR (Tolerance for irregularity): %e\n'%(self._tolIR)
+		line += 'fracIntrinsicVar (Intrinsic variability fraction): %e\n'%(self._fracIntrinsicVar)
+		line += '     fracNoiseToSignal (Noise to signal fraction): %e\n'%(self._fracNoiseToSignal)
+		line += '      maxSigma (Maximum allowed sigma multiplier): %e\n'%(self._maxSigma)
+		line += '  minTimescale (Minimum allowed timescale factor): %e\n'%(self._minTimescale)
+		line += '  maxTimescale (Maximum allowed timescale factor): %e\n'%(self._maxTimescale)
+		line += '\n'
+		epochline = ''
 		for i in xrange(self._numCadences - 1):
-			line = line + str(self[i]) + '\n'
-		line = line + str(self[self._numCadences - 1])
+			epochline += str(self[i])
+			epochline += '\n'
+		epochline += str(self[self._numCadences - 1])
+		line += reprlib.repr(epochline)
 		return line
 
 	def __eq__(self, other):
@@ -263,30 +306,293 @@ class lc(object):
 			return True
 
 	def __getitem__(self, key):
+		"""!
+		\brief Return an epoch.
+		
+		Return an epoch corresponding to the index.
+		"""
 		return epoch(self.t[key], self.x[key], self.y[key], self.yerr[key], self.mask[key])
 
 	def __setitem__(self, key, val):
+		"""!
+		\brief Set an epoch.
+		
+		Set the epoch corresponding to the provided index using the values from the epoch val.
+		"""
 		if isinstance(val, epoch):
 			self.t[key] = val.t
 			self.x[key] = val.x
 			self.y[key] = val.y
 			self.yerr[key] = val.yerr
 			self.mask[key] = val.mask
+		self._mean = np.mean(self.y)
+		self._std = np.std(self.y)
+		self._meanerr = np.mean(self.yerr)
+		self._stderr = np.std(self.yerr)
+
+	def __iter__(self):
+		"""!
+		\brief Return a light curve iterator.
+		
+		Return a light curve iterator object making light curves iterable.
+		"""
+		return lcIterator(self.t, self.x, self.y, self.yerr, self.mask)
 
 	@abc.abstractmethod
-	def read(self, supplied):
+	def copy(self):
+		"""!
+		\brief Return a copy
+		
+		Return a (deep) copy of the object.
+		"""
+		raise NotImplementedError(r'Override copy by subclassing lc!')
+
+	def __invert__(self):
+		"""!
+		\brief Return the lc without the mean.
+		
+		Return a new lc with the mean removed.
+		"""
+		lccopy = self.copy()
+		lccopy.x -= lccopy._mean
+		lccopy.y -= lccopy._mean
+
+	def __pos__(self):
+		"""!
+		\brief Return + light curve.
+		
+		Return + light curve i.e. do nothing but just return a deepcopy of the object.
+		"""
+		return self.copy()
+
+	def __neg__(self):
+		"""!
+		\brief Invert the light curve.
+		
+		Return a light curve with the delta fluxes flipped in sign.
+		"""
+		lccopy = self.copy()
+		lccopy.x = -1.0*(self.x - np.mean(self.x)) + np.mean(self.x)
+		lccopy.y = -1.0*(self.y - self._mean) + self._mean
+		lccopy._mean = np.mean(lccopy.y)
+		lccopy._std = np.std(lccopy.y)
+		return lccopy
+
+	def __abs__(self):
+		"""!
+		\brief Abs the light curve.
+		
+		Return a light curve with the abs of the delta fluxes.
+		"""
+		lccopy = self.copy()
+		lccopy.x = np.abs(self.x - np.mean(self.x)) + np.mean(self.x)
+		lccopy.y = np.abs(self.y - self._mean) + self._mean
+		lccopy._mean = np.mean(lccopy.y)
+		lccopy._std = np.std(lccopy.y)
+		return lccopy
+
+	def __add__(self, other):
+		lccopy = self.copy()
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			lccopy.x += other
+			lccopy.y += other
+			lccopy._mean = np.mean(lccopy.y)
+			lccopy._std = np.std(lccopy.y)
+		elif isinstance(other, lc):
+			if other.numCadences == self.numCadences:
+				lccopy.x += other.x
+				lccopy.y += other.y
+				lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+				lccopy._mean = np.mean(lccopy.y)
+				lccopy._std = np.std(lccopy.y)
+				lccopy._mean = np.mean(lccopy.yerr)
+				lccopy._stderr = np.std(lccopy.yerr)
+			else:
+				raise ValueError('Light curves have un-equal length')
+		else:
+			raise NotImplemented
+		return lccopy
+
+	def __radd__(self, other):
+		return self + other
+
+	def __sub__(self, other):
+		return self + (- other)
+
+	def __rsub__(self, other):
+		return self + (- other)
+
+	def __iadd__(self, other):
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			self.x += other
+			self.y += other
+			self._mean += other
+		elif isinstance(other, lc):
+			if other.numCadences == self.numCadences:
+				self.x += other.x
+				self.y += other.y
+				self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+				self._mean = np.mean(self.y)
+				self._std = np.std(self.y)
+				self._mean = np.mean(self.yerr)
+				self._stderr = np.std(self.yerr)
+			else:
+				raise ValueError('Light curves have un-equal length')
+		return self
+
+	def __isub__(self, other):
+		return self.iadd( - other)
+
+	def __mul__(self, other):
+		"""!
+		\brief Multiply the light curve
+		
+		Multiply the light curve by a scalar
+		"""
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			if type(other) is types.ComplexType:
+				other = complex(other)
+			else:
+				other = float(other)
+			lccopy = self.copy()
+			lccopy.x *= other
+			lccopy.y *= other
+			lccopy.yerr *= other
+			lccopy._mean += other
+			lccopy._std *= other
+			lccopy._meanerr *= other
+			lccopy._stderr *= other
+			return lccopy
+		else:
+			raise NotImplemented
+
+	def __rmul__(self, other):
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			if type(other) is types.ComplexType:
+				other = complex(other)
+			else:
+				other = float(other)
+			return self*other
+		else:
+			raise NotImplemented
+
+	def __div__(self, other):
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			if type(other) is types.ComplexType:
+				other = complex(other)
+			else:
+				other = float(other)
+			return self*(1.0/other)
+		else:
+			raise NotImplemented
+
+	def __rdiv__(self, other):
+		raise NotImplemented
+
+	def __imul__(self, other):
+		"""!
+		\brief Multiply the light curve inplace
+		
+		Multiply the light curve by a scalar inplace
+		"""
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			if type(other) is types.ComplexType:
+				other = complex(other)
+			else:
+				other = float(other)
+			self.x *= other
+			self.y *= other
+			self.yerr *= other
+			self._mean += other
+			self._std *= other
+			self._meanerr *= other
+			self._stderr *= other
+			return self
+		else:
+			raise NotImplemented
+
+	def __idiv__(self, other):
+		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
+			if type(other) is types.ComplexType:
+				other = complex(other)
+			else:
+				other = float(other)
+			self.x *= (1.0/other)
+			self.y *= (1.0/other)
+			self.yerr *= (1.0/other)
+			self._mean += (1.0/other)
+			self._std *= (1.0/other)
+			self._meanerr *= (1.0/other)
+			self._stderr *= (1.0/other)
+			return self
+		else:
+			raise NotImplemented
+
+	@abc.abstractmethod
+	def read(self, name, path = os.environ['PWD']):
+		"""!
+		\brief Read the light curve from disk.
+		
+		Not implemented!
+		"""
 		raise NotImplementedError(r'Override read by subclassing lc!')
 
 	@abc.abstractmethod
-	def write(self, path = os.environ['PWD']):
+	def write(self, name, path = os.environ['PWD'], ):
+		"""!
+		\brief Write the light curve to disk.
+		
+		Not implemented
+		"""
 		raise NotImplementedError(r'Override write by subclassing lc!')
 
-class basicLC(lc):
-	def __init__(self, numCadences, dt = 1.0, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
-		super(basicLC, self).__init__(numCadences, dt, IR, tolIR, fracIntrinsicVar, fracNoiseToSignal, maxSigma, minTimescale, maxTimescale, supplied)
+class lcIterator(object):
+	def __init__(self, t, x, y, yerr, mask):
+		self.t = t
+		self.x = x
+		self.y = y
+		self.yerr = yerr
+		self.mask = mask
+		self.index = 0
 
-	def read(self, supplied):
-		data = np.loadtxt(supplied)
+	def __next__(self):
+		"""!
+		\brief Return the next epoch.
+		
+		To make light curves iterable, return the next epoch.
+		"""
+		try:
+			nextEpoch = epoch(self.t[self.index], self.x[self.index], self.y[self.index], self.yerr[self.index], self.mask[self.index])
+		except IndexError:
+			raise StopIteration
+		self.index += 1
+		return nextEpoch
+
+	def __iter__(self):
+		return self
+
+class basicLC(lc):
+	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, IR = False, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 1.0e2, minTimescale = 5.0e-1, maxTimescale = 5.0, supplied = None):
+		super(basicLC, self).__init__(numCadences, dt, name, band, xunit, yunit, IR, tolIR, fracIntrinsicVar, fracNoiseToSignal, maxSigma, minTimescale, maxTimescale, supplied)
+
+	def copy(self):
+		lccopy = basicLC(self._numCadences, dt = self._dt, name = self._name, band = self._band, xunit = self._xunit, yunit = self._yunit, IR = self._IR, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		lccopy.t = np.copy(self.t)
+		lccopy.x = np.copy(self.x)
+		lccopy.y = np.copy(self.y)
+		lccopy.yerr = np.copy(self.yerr)
+		lccopy.mask = np.copy(self.mask)
+		lccopy._mean = np.mean(lccopy.y)
+		lccopy._std = np.std(lccopy.y)
+		lccopy._mean = np.mean(lccopy.yerr)
+		lccopy._stderr = np.std(lccopy.yerr)
+		return lccopy
+
+	def read(self, name, pwd):
+		pass
+
+	def write(self, name , pwd):
+		pass
 
 class task(object):
 	__metaclass__ = abc.ABCMeta
@@ -592,6 +898,10 @@ class task(object):
 				noiseSeed = randSeed[0]
 			self._taskCython.make_ObservedLC(observedLC.numCadences, observedLC.IR, observedLC.tolIR, observedLC.fracIntrinsicVar, observedLC.fracNoiseToSignal, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, burnSeed, distSeed, noiseSeed, threadNum = tnum)
 			observedLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+			observedLC._mean = np.mean(observedLC.y)
+			observedLC._std = np.std(observedLC.y)
+			observedLC._meanerr = np.mean(observedLC.yerr)
+			observedLC._stderr = np.std(observedLC.yerr)
 			return observedLC
 
 	def observe(self, intrinsicLC, noiseSeed = None, tnum = None):
@@ -604,6 +914,8 @@ class task(object):
 		self._taskCython.add_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.IR, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
 		intrinsicLC._mean = np.mean(intrinsicLC.y)
 		intrinsicLC._std = np.std(intrinsicLC.y)
+		intrinsicLC._meanerr = np.mean(intrinsicLC.yerr)
+		intrinsicLC._stderr = np.std(intrinsicLC.yerr)
 
 	def logPrior(self, observedLC, tnum = None):
 		if tnum is None:
