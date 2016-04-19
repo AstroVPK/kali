@@ -480,7 +480,7 @@ using namespace std;
 		deltaXTemp = static_cast<double*>(_mm_malloc(ndims*numThreads*sizeof(double),64));
 		initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
 		int nthreads = numThreads;
-		#pragma omp parallel for default(none) shared(nthreads, xStream, xSeed, nwalkers)
+		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(nthreads, xStream, xSeed, nwalkers)
 		for (int i = 0; i < numThreads; ++i) {
 			vslNewStream(&xStream[i], VSL_BRNG_SFMT19937, xSeed);
 			vslSkipAheadStream(xStream[i], i*(nwalkers/nthreads));
@@ -494,7 +494,7 @@ using namespace std;
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;
-		#pragma omp parallel for default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior)
+		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
 			bool goodPoint = false;

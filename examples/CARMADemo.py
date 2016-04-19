@@ -14,7 +14,7 @@ parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpo
 args = parser.parse_args()
 
 T = 3500.0
-dt = 0.1
+dt = 0.5
 numCadences = int(T/dt)
 IR = False
 tolIR = 1.0e-3
@@ -96,7 +96,11 @@ xStart[4] = MAPoly[1]
 
 print "xStart: " + str(xStart)
 
+startT = time.time()
 newTask.fit(newLC, xStart)
+stopT = time.time()
+
+print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0, (stopT - startT)/3600.0)
 
 plt.figure(2)
 plt.plot(newLC.t, newLC.x, color = '#7570b3', zorder = 5, label = r'Intrinsic LC: $\ln \mathcal{L} = %+e$'%(lnLikelihood))
