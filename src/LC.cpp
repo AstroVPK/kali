@@ -11,7 +11,6 @@ using namespace std;
 	LCData::LCData() {
 		numCadences = 0;
 		dt = 0.0;
-		IR = false;
 		tolIR = 0.0;
 		fracIntrinsicVar = 0.0;
 		fracNoiseToSignal = 0.0;

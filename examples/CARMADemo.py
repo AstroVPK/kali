@@ -1,12 +1,13 @@
 import numpy as np
-import math
-import time
-import pdb
+import math as math
+import time as time
+import pdb as pdb
+import sys as sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import argparse as argparse
 
-import libcarma
+import libcarma as libcarma
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
@@ -45,7 +46,7 @@ Theta[4] = MAPoly[1]
 
 print "Theta: " + str(Theta)
 
-newTask = libcarma.basicTask(p, q, nwalkers = 20, nsteps = 5)
+newTask = libcarma.basicTask(p, q, nwalkers = 160, nsteps = 250)
 
 newTask.set(dt, Theta)
 
@@ -60,15 +61,19 @@ newLC = newTask.simulate(numCadences)
 
 newTask.observe(newLC)
 
+dt_start = math.sqrt(sys.float_info[0])
+
+newTask.set(dt_start, Theta)
+
 lnPrior = newTask.logPrior(newLC)
-
-lnLikelihood = newTask.logLikelihood(newLC)
-
-lnPosterior = newTask.logPosterior(newLC)
 
 print 'The log prior is %e'%(lnPrior)
 
+lnLikelihood = newTask.logLikelihood(newLC)
+
 print 'The log likelihood is %e'%(lnLikelihood)
+
+lnPosterior = newTask.logPosterior(newLC)
 
 print 'The log posterior is %e'%(lnPosterior)
 

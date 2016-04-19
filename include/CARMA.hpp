@@ -20,7 +20,7 @@ double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 struct LnLikeData {
 	int numCadences;
-	bool IR;
+	int cadenceNum;
 	double tolIR;
 	double t_incr;
 	double fracIntrinsicVar;
@@ -28,6 +28,9 @@ struct LnLikeData {
 	double maxSigma;
 	double minTimescale;
 	double maxTimescale;
+	double currentLnPrior;
+	double currentLnLikelihood;
+	double currentLnPosterior;
 	double *t;
 	double *x;
 	double *y;
@@ -100,8 +103,12 @@ public:
 
 	void printX();
 	const double* getX() const;
+	void setX(double* newX);
 	void printP();
 	const double* getP() const;
+	void setP(double* newP);
+
+	void printdt();
 	void printA();
 	const complex<double>* getA() const;
 	void printvr();
@@ -138,9 +145,12 @@ public:
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
 	void observeSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
+	void addObserveSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand);
 	double getMeanFlux(LnLikeData *ptr2Data);
-	void addNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
+	void observeNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
+	void addObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
+	double updateLnLikelihood(LnLikeData *ptr2Data);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	void computeACVF(int numLags, double *Lags, double* ACVF);
 	};

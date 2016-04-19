@@ -128,6 +128,7 @@ using namespace std;
 
 	int Task::print_System(int threadNum) {
 		int retVal = 0;
+		printf("dt: %+8.7e\n",Systems[threadNum].get_dt());
 		printf("A\n");
 		Systems[threadNum].printA();
 		printf("\n");
@@ -199,8 +200,41 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::make_IntrinsicLC(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+	int Task::get_X(double *X, int threadNum) {
 		int retVal = 0;
+		const double *ptrToX = Systems[threadNum].getX();
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			X[rowCtr] = ptrToX[rowCtr];
+			}
+		return retVal;
+		}
+
+	int Task::set_X(double *X, int threadNum) {
+		int retVal = 0;
+		Systems[threadNum].setX(X);
+		return retVal;
+		}
+
+	int Task::get_P(double *P, int threadNum) {
+		int retVal = 0;
+		const double *ptrToP = Systems[threadNum].getP();
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			for (int colCtr = 0; colCtr < p; ++colCtr) {
+				P[rowCtr + p*colCtr] = ptrToP[rowCtr + p*colCtr];
+				}
+			}
+		return retVal;
+		}
+
+	int Task::set_P(double *P, int threadNum) {
+		int retVal = 0;
+		Systems[threadNum].setP(P);
+		return retVal;
+		}
+
+	int Task::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+		int retVal = 0;
+		double old_dt = Systems[threadNum].get_dt();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 		for (int i = 0; i < numBurn*p; i++) {
 			burnRand[i] = 0.0;
@@ -213,7 +247,6 @@ using namespace std;
 			}
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -223,7 +256,30 @@ using namespace std;
 		LnLikeData *ptr2Data = &Data;
 		Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
-		Systems[threadNum].resetState();
+		//Systems[threadNum].resetState();
+		return retVal;
+		}
+
+	int Task::add_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int distSeed, int threadNum) {
+		int retVal = 0;
+		double old_dt = Systems[threadNum].get_dt();
+		double* distRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*p*sizeof(double),64));
+		for (int i = 0; i < (numCadences - cadenceNum - 1)*p; i++) {
+			distRand[i] = 0.0;
+			}
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		LnLikeData *ptr2Data = &Data;
+		Systems[threadNum].addObserveSystem(ptr2Data, distSeed, distRand);
+		_mm_free(distRand);
+		//Systems[threadNum].resetState();
 		return retVal;
 		}
 
@@ -236,8 +292,9 @@ using namespace std;
 		return meanFlux;
 		}
 
-	int Task::make_ObservedLC(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
+	int Task::make_ObservedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
 		int retVal = 0;
+		double old_dt = Systems[threadNum].get_dt();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 		for (int i = 0; i < numBurn*p; ++i) {
 			burnRand[i] = 0.0;
@@ -250,7 +307,6 @@ using namespace std;
 			}
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -266,17 +322,16 @@ using namespace std;
 		for (int i = 0; i < numCadences; i++) {
 			noiseRand[i] = 0.0;
 			}
-		Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
+		Systems[threadNum].observeNoise(ptr2Data, noiseSeed, noiseRand);
 		_mm_free(noiseRand);
-		Systems[threadNum].resetState();
+		//Systems[threadNum].resetState();
 		return retVal;
 		}
 
-	int Task::add_ObservationNoise(int numCadences, bool IR, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+	int Task::add_ObservationNoise(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
 		int retVal = 0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -290,16 +345,38 @@ using namespace std;
 		for (int i = 0; i < numCadences; i++) {
 			noiseRand[i] = 0.0;
 			}
-		Systems[threadNum].addNoise(ptr2Data, noiseSeed, noiseRand);
+		Systems[threadNum].observeNoise(ptr2Data, noiseSeed, noiseRand);
 		_mm_free(noiseRand);
 		return retVal;
 		}
 
-	double Task::compute_LnPrior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	int Task::extend_ObservationNoise(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+		int retVal = 0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.fracIntrinsicVar = fracIntrinsicVar;
+		Data.fracNoiseToSignal = fracNoiseToSignal;
+		LnLikeData *ptr2Data = &Data;
+		double* noiseRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*sizeof(double),64));
+		for (int i = 0; i < (numCadences - cadenceNum -1); i++) {
+			noiseRand[i] = 0.0;
+			}
+		Systems[threadNum].addObserveNoise(ptr2Data, noiseSeed, noiseRand);
+		_mm_free(noiseRand);
+		return retVal;
+		}
+
+	double Task::compute_LnPrior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -310,16 +387,18 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
-		Systems[threadNum].resetState();
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
 		return LnPrior;
 		}
 
-	double Task::compute_LnLikelihood(int numCadences, bool IR, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnLikelihood(int numCadences, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnLikelihood = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -327,16 +406,18 @@ using namespace std;
 		Data.yerr = yerr;
 		Data.mask = mask;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
-		Systems[threadNum].resetState();
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
 		return LnLikelihood;
 		}
 
-	double Task::compute_LnPosterior(int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnPosterior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -347,10 +428,13 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		LnPosterior = LnPrior + LnLikelihood;
-		Systems[threadNum].resetState();
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
 		return LnPosterior;
 		}
 
@@ -358,13 +442,12 @@ using namespace std;
 		Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 		}
 
-	int Task::fit_CARMAModel(double dt, int numCadences, bool IR, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;
 		int threadNum = omp_get_thread_num();
 		LnLikeData Data;
 		Data.numCadences = numCadences;
-		Data.IR = IR;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
