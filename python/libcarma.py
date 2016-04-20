@@ -95,14 +95,16 @@ class lc(object):
 	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
 	"""
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
+	def __init__(self, numCadences, p, q, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
 		"""!
 		\brief Initialize a new light curve
 		
 		The constructor assumes that the light curve to be constructed is regular. There is no option to construct irregular light curves. Irregular light can be obtained by reading in a supplied irregular light curve. The constructor takes an optional keyword argument (supplied = <light curve file>) that is read in using the read method. This supplied light curve can be irregular. Typically, the supplied light curve is irregular either because the user created it that way, or because the survey that produced it sampled the sky at irregular intervals.
 		
 		Non-keyword arguments
-		\param[in] numCadences: The number of cadences in the light curve
+		\param[in] numCadences: The number of cadences in the light curve.
+		\param[in] p          : The order of the C-ARMA model used.
+		\param[in] q          : The order of the C-ARMA model used.
 		
 		Keyword arguments
 		\param[in] dt:                The spacing between cadences.
@@ -125,11 +127,15 @@ class lc(object):
 			self._simulatedCadenceNum = -1 ## How many cadences have already been simulated.
 			self._observedCadenceNum = -1 ## How many cadences have already been observed.
 			self._computedCadenceNum = -1 ## How many cadences have been LnLikelihood'd already.
+			self._p = p ## C-ARMA model used to simulate the LC.
+			self._q = q ## C-ARMA model used to simulate the LC.
 			self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 			self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
 			self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
 			self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
+			self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+			self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 			self._name = str(name) ## The name of the light curve (usually the object's name).
@@ -145,7 +151,7 @@ class lc(object):
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.X, self.P, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		self._mean = np.mean(self.y)
 		self._std = np.std(self.y)
 		self._meanerr = np.mean(self.yerr)
@@ -166,6 +172,10 @@ class lc(object):
 	@property
 	def computedCadenceNum(self):
 		return self._computedCadenceNum
+
+	@property
+	def p(self):
+		return self._p
 
 	@property
 	def dt(self):
@@ -651,6 +661,9 @@ class basicLC(lc):
 		lccopy.y = np.copy(self.y)
 		lccopy.yerr = np.copy(self.yerr)
 		lccopy.mask = np.copy(self.mask)
+		lccopy._p = self._p
+		lccopy.X = np.copy(self.X)
+		lccopy.P = np.copy(self.P)
 		lccopy._mean = np.mean(lccopy.y)
 		lccopy._std = np.std(lccopy.y)
 		lccopy._mean = np.mean(lccopy.yerr)
@@ -964,7 +977,7 @@ class task(object):
 		if tnum is None:
 			tnum = 0
 		numCadences = int(float(duration)/self._taskCython.get_dt(threadNum = tnum))
-		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+		intrinsicLC = basicLC(numCadences, p = self._p, q = self._q, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if burnSeed is None:
 			rand.rdrand(randSeed)
@@ -972,7 +985,7 @@ class task(object):
 		if distSeed is None:
 			rand.rdrand(randSeed)
 			distSeed = randSeed[0]
-		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, burnSeed, distSeed, threadNum = tnum)
+		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, intrinsicLC.X, intrinsicLC.P, burnSeed, distSeed, threadNum = tnum)
 		intrinsicLC._simulatedCadenceNum = numCadences - 1
 		intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0] 
 		return intrinsicLC
@@ -1009,7 +1022,7 @@ class task(object):
 			newt[intrinsicLC._numCadences + i] = newt[intrinsicLC._numCadences - 1] + i*intrinsicLC._dt
 			newmask[i] = 1.0
 		intrinsicLC._numCadences = newNumCadences
-		self._taskCython.add_IntrinsicLC(intrinsicLC._numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR, intrinsicLC._fracIntrinsicVar, intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask, distSeed, noiseSeed, threadNum = tnum)
+		self._taskCython.extend_IntrinsicLC(intrinsicLC._numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR, intrinsicLC._fracIntrinsicVar, intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask, intrinsicLC.X, intrinsicLC.P, distSeed, noiseSeed, threadNum = tnum)
 		if gap:
 			old, gap, new = np.split(newt, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
 			newt = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -1036,7 +1049,7 @@ class task(object):
 		if noiseSeed is None:
 			rand.rdrand(randSeed)
 			noiseSeed = randSeed[0]
-		if intrinsicLC._observedCadenceNum == intrinsicLC.simulatedCadenceNum:
+		if intrinsicLC._observedCadenceNum == -1:
 			self._taskCython.add_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
 		else:
 			self._taskCython.extend_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
@@ -1054,7 +1067,12 @@ class task(object):
 	def logLikelihood(self, observedLC, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		if observedLC._computedCadenceNum == -1:
+			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		else:
+			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedNumCadences, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+			observedLC._computedNumCadences = observedLC._numCadences - 1
+		return lnLikelihood
 
 	def logPosterior(self, observedLC, tnum = None):
 		if tnum is None:

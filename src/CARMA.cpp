@@ -1110,11 +1110,14 @@ void CARMA::printX() {
 	viewMatrix(p,1,X);
 	}
 
-const double* CARMA::getX() const {
-	return X;
+void CARMA::getX(double *newX) {
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+		newX[rowCtr] = X[rowCtr];
+		}
 	}
 
-void CARMA::setX(double* newX) {
+void CARMA::setX(double *newX) {
 	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
 		X[i] = newX[i];
@@ -1125,14 +1128,21 @@ void CARMA::printP() {
 	viewMatrix(p,p,P);
 	}
 
-const double* CARMA::getP() const {
-	return P;
+void CARMA::getP(double *newP) {
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			newP[rowCtr + p*colCtr] = P[rowCtr + p*colCtr];
+			}
+		}
 	}
 
 void CARMA::setP(double* newP) {
-	#pragma omp simd
-	for (int i = 0; i < pSq; ++i) {
-		P[i] = newP[i];
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			P[rowCtr + p*colCtr] = newP[rowCtr + p*colCtr];
+			}
 		}
 	}
 
@@ -1938,7 +1948,7 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 		}
 	}
 
-void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
+void CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -1990,7 +2000,7 @@ void CARMA::observeSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *d
 	vslDeleteStream(&distStream);
 	}
 
-void CARMA::addObserveSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
+void CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2088,7 +2098,7 @@ void CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* n
 	vslDeleteStream(&noiseStream);
 	}
 
-void CARMA::addObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+void CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;

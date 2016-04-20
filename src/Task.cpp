@@ -120,6 +120,13 @@ using namespace std;
 		return retVal;
 		}
 
+	int Task::reset_System(int threadNum) {
+		int retVal = -1;
+		Systems[threadNum].resetState();
+		retVal = 0;
+		return retVal;
+		}
+
 	void Task::get_setSystemsVec(int *setSystems) {
 		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
 			setSystems[threadNum] = static_cast<int>(setSystemsVec[threadNum]);
@@ -200,40 +207,33 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_X(double *X, int threadNum) {
+	int Task::get_X(double *newX, int threadNum) {
 		int retVal = 0;
-		const double *ptrToX = Systems[threadNum].getX();
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			X[rowCtr] = ptrToX[rowCtr];
-			}
+		Systems[threadNum].getX(newX);
 		return retVal;
 		}
 
-	int Task::set_X(double *X, int threadNum) {
+	int Task::set_X(double *newX, int threadNum) {
 		int retVal = 0;
-		Systems[threadNum].setX(X);
+		Systems[threadNum].setX(newX);
 		return retVal;
 		}
 
-	int Task::get_P(double *P, int threadNum) {
+	int Task::get_P(double *newP, int threadNum) {
 		int retVal = 0;
-		const double *ptrToP = Systems[threadNum].getP();
-		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			for (int colCtr = 0; colCtr < p; ++colCtr) {
-				P[rowCtr + p*colCtr] = ptrToP[rowCtr + p*colCtr];
-				}
-			}
+		Systems[threadNum].getP(newP);
 		return retVal;
 		}
 
-	int Task::set_P(double *P, int threadNum) {
+	int Task::set_P(double *newP, int threadNum) {
 		int retVal = 0;
-		Systems[threadNum].setP(P);
+		Systems[threadNum].setP(newP);
 		return retVal;
 		}
 
-	int Task::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+	int Task::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
 		int retVal = 0;
+		Systems[threadNum].resetState();
 		double old_dt = Systems[threadNum].get_dt();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
 		for (int i = 0; i < numBurn*p; i++) {
@@ -253,16 +253,21 @@ using namespace std;
 		Data.y = y;
 		Data.yerr = yerr;
 		Data.mask = mask;
+		Data.lcX = lcX;
+		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
+		Systems[threadNum].simulateSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
-		//Systems[threadNum].resetState();
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
 		return retVal;
 		}
 
-	int Task::add_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int distSeed, int threadNum) {
+	int Task::extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum) {
 		int retVal = 0;
 		double old_dt = Systems[threadNum].get_dt();
+		Systems[threadNum].setX(lcX);
+		Systems[threadNum].setP(lcP);
 		double* distRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*p*sizeof(double),64));
 		for (int i = 0; i < (numCadences - cadenceNum - 1)*p; i++) {
 			distRand[i] = 0.0;
@@ -276,10 +281,11 @@ using namespace std;
 		Data.y = y;
 		Data.yerr = yerr;
 		Data.mask = mask;
+		Data.lcX = lcX;
+		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].addObserveSystem(ptr2Data, distSeed, distRand);
+		Systems[threadNum].extendSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
-		//Systems[threadNum].resetState();
 		return retVal;
 		}
 
@@ -316,7 +322,7 @@ using namespace std;
 		Data.fracIntrinsicVar = fracIntrinsicVar;
 		Data.fracNoiseToSignal = fracNoiseToSignal;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].observeSystem(ptr2Data, distSeed, distRand);
+		Systems[threadNum].simulateSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
 		double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
 		for (int i = 0; i < numCadences; i++) {
@@ -324,7 +330,6 @@ using namespace std;
 			}
 		Systems[threadNum].observeNoise(ptr2Data, noiseSeed, noiseRand);
 		_mm_free(noiseRand);
-		//Systems[threadNum].resetState();
 		return retVal;
 		}
 
@@ -368,7 +373,7 @@ using namespace std;
 		for (int i = 0; i < (numCadences - cadenceNum -1); i++) {
 			noiseRand[i] = 0.0;
 			}
-		Systems[threadNum].addObserveNoise(ptr2Data, noiseSeed, noiseRand);
+		Systems[threadNum].extendObserveNoise(ptr2Data, noiseSeed, noiseRand);
 		_mm_free(noiseRand);
 		return retVal;
 		}
@@ -377,6 +382,29 @@ using namespace std;
 		double LnPrior = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
+		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
+		return LnPrior;
+		}
+
+	double Task::update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+		double LnPrior = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -414,6 +442,26 @@ using namespace std;
 		return LnLikelihood;
 		}
 
+	double Task::update_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+		double LnLikelihood = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
+		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
+		return LnLikelihood;
+		}
+
 	double Task::compute_LnPosterior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
 		LnLikeData Data;
@@ -437,6 +485,32 @@ using namespace std;
 		//Systems[threadNum].resetState();
 		return LnPosterior;
 		}
+
+	double Task::update_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
+		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
+		LnPosterior = LnPrior + LnLikelihood;
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		//Systems[threadNum].resetState();
+		return LnPosterior;
+		}
+
 
 	void Task::compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum) {
 		Systems[threadNum].computeACVF(numLags, Lags, ACVF);

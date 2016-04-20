@@ -36,6 +36,8 @@ struct LnLikeData {
 	double *y;
 	double *yerr;
 	double *mask;
+	double *lcX;
+	double *lcP;
 	};
 
 class CARMA {
@@ -102,11 +104,11 @@ public:
 	int get_allocated();
 
 	void printX();
-	const double* getX() const;
-	void setX(double* newX);
+	void getX(double *newX);
+	void setX(double *newX);
 	void printP();
-	const double* getP() const;
-	void setP(double* newP);
+	void getP(double *newP);
+	void setP(double *newP);
 
 	void printdt();
 	void printA();
@@ -144,11 +146,11 @@ public:
 	double getIntrinsicVar();
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
-	void observeSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
-	void addObserveSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand);
+	void simulateSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
+	void extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand);
 	double getMeanFlux(LnLikeData *ptr2Data);
 	void observeNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
-	void addObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
+	void extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double updateLnLikelihood(LnLikeData *ptr2Data);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);

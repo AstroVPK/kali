@@ -29,6 +29,8 @@ using namespace std;
 		double *y;
 		double *yerr;
 		double *mask;
+		double *lcX;
+		double *lcP;
 		LCData();
 		~LCData();
 	};
