@@ -217,6 +217,10 @@ class lc(object):
 		return self._dt
 
 	@property
+	def T(self):
+		return self._T
+
+	@property
 	def name(self):
 		return self._name
 
@@ -762,6 +766,10 @@ class jumpSampler(sampler):
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
+		returnLC._mean = np.mean(returnLC.y)
+		returnLC._std = np.std(returnLC.y)
+		returnLC._mean = np.mean(returnLC.yerr)
+		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
 		return returnLC
 
@@ -791,6 +799,47 @@ class bernoulliSampler(sampler):
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
+		returnLC._mean = np.mean(returnLC.y)
+		returnLC._std = np.std(returnLC.y)
+		returnLC._mean = np.mean(returnLC.yerr)
+		returnLC._stderr = np.std(returnLC.yerr)
+		returnLC._numCadences = newNumCadences
+		return returnLC
+
+class SDSSSampler(sampler):
+
+	def sample(self, **kwargs):
+		returnLC = self.lcObj.copy()
+		timeStamps = kwargs.get('timestamps', None)
+		timeStampDeltas = timeStamps[1:] - timeStamps[:-1]
+		SDSSLength = timeStamps[-1] - timeStamps[0]
+		minDelta = np.min(timeStampDeltas)
+		if minDelta < self.lcObj.dt:
+			raise ValueError('Insufficiently dense sampling!')
+		if SDSSLength > self.lcObj.T:
+			raise ValueError('Insufficiently long lc!')
+		newNumCadences = timeStamps.shape[0]
+		tNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		xNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		for i in xrange(newNumCadences):
+			index = np.where(self.lcObj.t > timeStamps[i])[0][0]
+			returnLC.t[i] = self.lcObj.t[index]
+			returnLC.x[i] = self.lcObj.x[index]
+			returnLC.y[i] = self.lcObj.y[index]
+			returnLC.yerr[i] = self.lcObj.yerr[index]
+			returnLC.mask[i] = self.lcObj.mask[index]
+		returnLC.t = tNew
+		returnLC.x = xNew
+		returnLC.y = yNew
+		returnLC.yerr = yerrNew
+		returnLC.mask = maskNew
+		returnLC._mean = np.mean(returnLC.y)
+		returnLC._std = np.std(returnLC.y)
+		returnLC._mean = np.mean(returnLC.yerr)
+		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
 		return returnLC
 
