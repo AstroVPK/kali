@@ -30,6 +30,7 @@ class epoch(object):
 	
 	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same timestamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
 	"""
+
 	def __init__(self, t, x, y, yerr, mask):
 		"""!
 		\brief Initialize the epoch.
@@ -98,6 +99,7 @@ class lc(object):
 	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
 	"""
 	__metaclass__ = abc.ABCMeta
+
 	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, supplied = None):
 		"""!
 		\brief Initialize a new light curve
@@ -137,12 +139,8 @@ class lc(object):
 			self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
 			self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
 			self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
-			if self._p != 0:
-				self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-				self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-			else:
-				self.X = None
-				self.P = None
+			self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+			self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 			self._name = str(name) ## The name of the light curve (usually the object's name).
@@ -709,8 +707,15 @@ class basicLC(lc):
 	def write(self, name , pwd):
 		pass
 
+class sampler(object):
+	__metaclass__ = abc.ABCMeta
+
+	def __init__(self):
+		pass
+
 class task(object):
 	__metaclass__ = abc.ABCMeta
+
 	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = False), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = False), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):
 		try:
 			assert p > q, r'p must be greater than q'
