@@ -9,6 +9,7 @@
 
 import numpy as np
 import math as math
+import scipy.stats as spstats
 import cmath as cmath
 import sys as sys
 import abc as abc
@@ -100,7 +101,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, sampler = None, supplied = None):
 		"""!
 		\brief Initialize a new light curve
 		
@@ -157,6 +158,10 @@ class lc(object):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
 		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.X, self.P, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		if sampler is not None:
+			self._sampler = sampler(self)
+		else:
+			self._sampler = None
 		self._mean = np.mean(self.y)
 		self._std = np.std(self.y)
 		self._meanerr = np.mean(self.yerr)
@@ -296,6 +301,14 @@ class lc(object):
 	def maxTimescale(self, value):
 		self._maxTimescale = value
 		self._lcCython.maxTimescale = value
+
+	@property
+	def sampler(self):
+		return str(self._sampler)
+
+	@sampler.setter
+	def sampler(self, value):
+		self._sampler = eval(str(value).split('.')[-1])(self)
 
 	def __len__(self):
 		return self._numCadences
@@ -655,6 +668,9 @@ class lc(object):
 		"""
 		raise NotImplementedError(r'Override write by subclassing lc!')
 
+	def sample(self, **kwargs):
+		return self._sampler.sample(**kwargs)
+
 class lcIterator(object):
 	def __init__(self, t, x, y, yerr, mask):
 		self.t = t
@@ -710,8 +726,73 @@ class basicLC(lc):
 class sampler(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self):
-		pass
+	def __init__(self, lcObj):
+		"""!
+		\brief Initialize the sampler.
+		
+		"""
+		if isinstance(lcObj, lc):
+			self.min_dt = np.min(lcObj.t[1:] - lcObj.t[:-1])
+			self.max_T = lcObj.t[-1] - lcObj.t[0]
+			self.lcObj = lcObj
+
+	@abc.abstractmethod
+	def sample(self, **kwargs):
+		raise NotImplemented
+
+class jumpSampler(sampler):
+
+	def sample(self, **kwargs):
+		returnLC = self.lcObj.copy()
+		jumpVal = kwargs.get('jump', 1)
+		newNumCadences = int(self.lcObj.numCadences/float(jumpVal))
+		tNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		xNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		for i in xrange(newNumCadences):
+			tNew[i] = self.lcObj.t[jumpVal*i]
+			xNew[i] = self.lcObj.x[jumpVal*i]
+			yNew[i] = self.lcObj.y[jumpVal*i]
+			yerrNew[i] = self.lcObj.yerr[jumpVal*i]
+			maskNew[i] = self.lcObj.mask[jumpVal*i]
+		returnLC.t = tNew
+		returnLC.x = xNew
+		returnLC.y = yNew
+		returnLC.yerr = yerrNew
+		returnLC.mask = maskNew
+		returnLC._numCadences = newNumCadences
+		return returnLC
+
+class bernoulliSampler(sampler):
+
+	def sample(self, **kwargs):
+		returnLC = self.lcObj.copy()
+		probVal = kwargs.get('probability', 1.0)
+		keepArray = spstats.bernoulli.rvs(0.25, size = self.lcObj.numCadences)
+		newNumCadences = np.sum(keepArray)
+		tNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		xNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		counter = 0
+		for i in xrange(self.lcObj.numCadences):
+			if keepArray[i] == 1:
+				tNew[counter] = self.lcObj.t[i]
+				xNew[counter] = self.lcObj.x[i]
+				yNew[counter] = self.lcObj.y[i]
+				yerrNew[counter] = self.lcObj.yerr[i]
+				maskNew[counter] = self.lcObj.mask[i]
+				counter += 1
+		returnLC.t = tNew
+		returnLC.x = xNew
+		returnLC.y = yNew
+		returnLC.yerr = yerrNew
+		returnLC.mask = maskNew
+		returnLC._numCadences = newNumCadences
+		return returnLC
 
 class task(object):
 	__metaclass__ = abc.ABCMeta
