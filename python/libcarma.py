@@ -770,7 +770,7 @@ class bernoulliSampler(sampler):
 	def sample(self, **kwargs):
 		returnLC = self.lcObj.copy()
 		probVal = kwargs.get('probability', 1.0)
-		keepArray = spstats.bernoulli.rvs(0.25, size = self.lcObj.numCadences)
+		keepArray = spstats.bernoulli.rvs(probVal, size = self.lcObj.numCadences)
 		newNumCadences = np.sum(keepArray)
 		tNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		xNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
