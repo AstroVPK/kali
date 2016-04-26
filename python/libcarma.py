@@ -8,6 +8,9 @@
 """
 
 import numpy as np
+import math as math
+import cmath as cmath
+import sys as sys
 import abc as abc
 import psutil as psutil
 import types as types
@@ -95,7 +98,7 @@ class lc(object):
 	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
 	"""
 	__metaclass__ = abc.ABCMeta
-	def __init__(self, numCadences, p, q, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, supplied = None):
 		"""!
 		\brief Initialize a new light curve
 		
@@ -134,8 +137,12 @@ class lc(object):
 			self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
 			self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
 			self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
-			self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-			self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+			if self._p != 0:
+				self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+				self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+			else:
+				self.X = None
+				self.P = None
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 			self._name = str(name) ## The name of the light curve (usually the object's name).
@@ -176,6 +183,31 @@ class lc(object):
 	@property
 	def p(self):
 		return self._p
+
+	@p.setter
+	def p(self, value):
+		newX = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+		newP = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+		large_number = math.sqrt(sys.float_info[0])
+		if value > self._p:
+			iterMax = self._p
+		else:
+			iterMax = value
+		for i in xrange(iterMax):
+			newX[i] = self.X[i]
+			for j in xrange(iterMax):
+				newP[i + j*value] = self.P[i + j*self._p]
+		self._p = value
+		self.X = newX
+		self.P = newP
+
+	@property
+	def q(self):
+		return self._q
+
+	@q.setter
+	def q(self, value):
+		self._q = value
 
 	@property
 	def dt(self):
@@ -662,6 +694,7 @@ class basicLC(lc):
 		lccopy.yerr = np.copy(self.yerr)
 		lccopy.mask = np.copy(self.mask)
 		lccopy._p = self._p
+		lccopy._q = self._q
 		lccopy.X = np.copy(self.X)
 		lccopy.P = np.copy(self.P)
 		lccopy._mean = np.mean(lccopy.y)
@@ -977,7 +1010,7 @@ class task(object):
 		if tnum is None:
 			tnum = 0
 		numCadences = int(float(duration)/self._taskCython.get_dt(threadNum = tnum))
-		intrinsicLC = basicLC(numCadences, p = self._p, q = self._q, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale)
+		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, p = self._p, q = self._q, )
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if burnSeed is None:
 			rand.rdrand(randSeed)
@@ -1000,6 +1033,8 @@ class task(object):
 		if noiseSeed is None:
 			rand.rdrand(randSeed)
 			noiseSeed = randSeed[0]
+		if intrinsicLC.p != self.p:
+			intrinsicLC.p = self.p
 		if gap is None:
 			extraNumCadences = int(float(duration)/self._taskCython.get_dt(threadNum = tnum))
 		else:
