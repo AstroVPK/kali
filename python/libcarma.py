@@ -101,7 +101,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, sampler = None, supplied = None):
+	def __init__(self, numCadences, dt = 1.0, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 2.0, p = 0, q = 0, sampler = None, supplied = None, pwd = None):
 		"""!
 		\brief Initialize a new light curve
 		
@@ -125,9 +125,10 @@ class lc(object):
 		\param[in] minTimescale:      The shortest allowed timescale = minTimescale*dt. Note that if the observed light curve is very sparsely sampled, dt may be much larger than the actaul minimum timescale present and hence minTimescale should be made smaller in such cases.
 		\param[in] maxTimescale:      The longest allowed timescale = maxTimescale*T. Note that if the observed light curve is shorter than the longest timescale present, T may be much smaller than the longest timescale and hence maxTimescale should be made larger in such cases.
 		\param[in] supplied:          Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
+		\param[in] pwd:               Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
 		"""
 		if supplied:
-			self.read(supplied)
+			self.read(supplied, path = pwd)
 		else:
 			self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
 			self._simulatedCadenceNum = -1 ## How many cadences have already been simulated.
