@@ -31,7 +31,7 @@ using namespace std;
 		void set_numBurn(int numBurn);
 		int check_Theta(double *Theta, int threadNum);
 		double get_dt(int threadNum);
-		void get_ThetaVec(double *Theta, int threadNum);
+		void get_Theta(double *Theta, int threadNum);
 		int set_System(double dt, double *Theta, int threadNum);
 		int reset_System(int threadNum);
 		void get_setSystemsVec(int *setSystems);

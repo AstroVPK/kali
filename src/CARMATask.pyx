@@ -33,7 +33,7 @@ cdef extern from 'Task.hpp':
 		void set_numBurn(int numBurn)
 		int check_Theta(double *Theta, int threadNum)
 		double get_dt(int threadNum)
-		void get_ThetaVec(double *Theta, int threadNum)
+		void get_Theta(double *Theta, int threadNum)
 		int set_System(double dt, double *Theta, int threadNum)
 		int reset_System(int threadNum);
 		void get_setSystemsVec(int *setSystems)
@@ -158,10 +158,10 @@ cdef class CARMATask:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def get_ThetaVec(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
+	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		self.thisptr.get_ThetaVec(&Theta[0], threadNum)
+		self.thisptr.get_Theta(&Theta[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

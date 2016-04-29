@@ -82,7 +82,7 @@ using namespace std;
 
 	double Task::get_dt(int threadNum) {return Systems[threadNum].get_dt();}
 
-	void Task::get_ThetaVec(double *Theta, int threadNum) {
+	void Task::get_Theta(double *Theta, int threadNum) {
 		for (int i = 0; i < (p + q + 1); ++i) {
 			Theta[i] = ThetaVec[i + threadNum*(p + q + 1)];
 			}
@@ -106,6 +106,9 @@ using namespace std;
 		if (alreadySet == false) {
 			int goodYN = Systems[threadNum].checkCARMAParams(Theta);
 			if (goodYN == 1) {
+				for (int i = 0; i < (p + q + 1); ++i) {
+					ThetaVec[i + threadNum*(p + q + 1)] = Theta[i];
+					}
 				double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
 				Systems[threadNum].set_dt(dt);
 				Systems[threadNum].setCARMA(Theta);

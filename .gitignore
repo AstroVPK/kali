@@ -47,7 +47,8 @@
 # Python Extensions
 _libcarma.py
 
-# Specific Executables
+# Specific Executables Etc...
+src/CARMATask.cpp
 testPoint
 endToEndTest
 plotCARMARegions

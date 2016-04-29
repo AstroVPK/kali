@@ -18,10 +18,49 @@ import types as types
 import os as os
 import reprlib as reprlib
 import copy as copy
+import warnings as warnings
 import pdb as pdb
 
 import rand as rand
 import CARMATask as CARMATask
+
+def roots(p, q, Theta):
+	ARPoly = np.zeros(p + 1)
+	ARPoly[0] = 1.0
+	for i in xrange(p):
+		ARPoly[i + 1] = Theta[i]
+	ARRoots = np.roots(ARPoly)
+	MAPoly = np.zeros(q + 1)
+	for i in xrange(q + 1):
+		MAPoly[i] = Theta[p + q - i]
+	MARoots = np.roots(MAPoly)
+	Rho = np.zeros(p + q + 1, dtype = 'complex128')
+	for i in xrange(p):
+		Rho[i] = ARRoots[i]
+	for i in xrange(q):
+		Rho[p + i] = MARoots[i]
+	Rho[p + q] = MAPoly[0]
+	return Rho
+
+def coeffs(p, q, Rho):
+	ARRoots = np.zeros(p, dtype = 'complex128')
+	for i in xrange(p):
+		ARRoots[i] = Rho[i]
+	ARPoly = np.poly(ARRoots)
+	MARoots = np.zeros(q, dtype = 'complex128')
+	for i in xrange(q):
+		MARoots[i] = Rho[p + i]
+	MAPoly = np.poly(MARoots)
+	with warnings.catch_warnings():
+		warnings.simplefilter('ignore')
+		for i in xrange(q + 1):
+			MAPoly[i] =Rho[-1]*MAPoly[i]
+	Theta = np.zeros(p + q + 1, dtype = 'float64')
+	for i in xrange(p):
+		Theta[i] = ARPoly[i + 1].real
+	for i in xrange(q + 1):
+		Theta[p + i] = MAPoly[q - i].real
+	return Theta
 
 class epoch(object):
 	"""!
@@ -937,6 +976,10 @@ class task(object):
 			raise AttributeError(str(err))
 
 	@property
+	def ndims(self):
+		return self._ndims
+
+	@property
 	def nwalkers(self):
 		return self._nwalkers
 
@@ -1010,6 +1053,18 @@ class task(object):
 		return np.reshape(self._Chain, newshape = (self._ndims, self._nwalkers, self._nsteps), order = 'F')
 
 	@property
+	def rootChain(self):
+		if hasattr(self, '_rootChain'):
+			return self._rootChain
+		else:
+			Chain = self.Chain
+			self._rootChain = np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'complex128')
+			for stepNum in xrange(self._nsteps):
+				for walkerNum in xrange(self._nwalkers):
+					self._rootChain[:, walkerNum, stepNum] = roots(self._p, self._q, Chain[:, walkerNum, stepNum])
+		return self._rootChain
+
+	@property
 	def LnPosterior(self):
 		return np.reshape(self._LnPosterior, newshape = (self._nwalkers, self._nsteps), order = 'F')
 
@@ -1076,6 +1131,27 @@ class task(object):
 			self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
 		except AssertionError as err:
 			raise AttributeError(str(err))
+
+	def roots(self, tnum = None):
+		if tnum is None:
+			tnum = 0
+		Theta = self.Theta()
+		ARPoly = np.zeros(self.p + 1)
+		ARPoly[0] = 1.0
+		for i in xrange(self.p):
+			ARPoly[i + 1] = Theta[i]
+		ARRoots = np.roots(ARPoly)
+		MAPoly = np.zeros(self.q + 1)
+		for i in xrange(self.q + 1):
+			MAPoly[i] = Theta[self.p + self.q - i]
+		MARoots = np.roots(MAPoly)
+		Rho = np.zeros(self.p + self.q + 1, dtype = 'complex128')
+		for i in xrange(self.p):
+			Rho[i] = ARRoots[i]
+		for i in xrange(self.q):
+			Rho[self.p + i] = MARoots[i]
+		Rho[self.p + self.q] = MAPoly[0]
+		return Rho
 
 	def check(self, Theta, tnum = None):
 		if tnum is None:
