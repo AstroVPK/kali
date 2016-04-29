@@ -162,6 +162,8 @@ replace it with an alternative. Intel MKL may be obtained from
   `bash-prompt$ sudo ldconfig`
 
   This software has been tested with
+
+
   1. NLOpt Version 2.4.2
 
 6. `cython`
@@ -180,7 +182,11 @@ build. You can get the most recent version using
 
 
   This software has been tested with
+
+
   1. Cython Version 0.23.4
+
+  2. Cython Version 0.24
 
 7. `future`
 
@@ -198,6 +204,8 @@ build. You can get the most recent version using
 
 
   This software has been tested with
+
+
   1. `future` Version 0.15.2
 
 8. `cffi`

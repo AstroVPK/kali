@@ -49,6 +49,7 @@ _libcarma.py
 
 # Specific Executables Etc...
 src/CARMATask.cpp
+src/rand.cpp
 testPoint
 endToEndTest
 plotCARMARegions
