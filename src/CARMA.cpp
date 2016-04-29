@@ -2366,8 +2366,13 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		timescaleOsc = fabs((2.0*pi)/(CARw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
-		printf("computeLnPrior - threadNum: %d; timescale: %+4.3e\n",threadNum,timescale);
-		printf("computeLnPrior - threadNum: %d; timescaleOsc: %+4.3e\n",threadNum,timescaleOsc);
+		printf("computeLnPrior - threadNum: %d; maxSigma:        %+4.3e\n", threadNum, maxSigma);
+		printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]):  %+4.3e\n", threadNum, sqrt(Sigma[0]));
+		printf("computeLnPrior - threadNum: %d; minTimescale:    %+4.3e\n", threadNum, minTimescale);
+		printf("computeLnPrior - threadNum: %d; maxTimescale:    %+4.3e\n", threadNum, maxTimescale);
+		printf("computeLnPrior - threadNum: %d; timescale:       %+4.3e\n", threadNum, timescale);
+		printf("computeLnPrior - threadNum: %d; timescaleOsc:    %+4.3e\n", threadNum, timescaleOsc);
+		printf("\n");
 		#endif
 
 		if (timescale < minTimescale) {
