@@ -13,7 +13,9 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 1. Ubuntu 14.04 LTS Trusty Tahr
 
-2. Mac OS X 10.10.5 Yosemite
+2. Red Hat Enterprise Linux Server release 6.5 (Santiago)
+
+3. Mac OS X 10.10.5 Yosemite
 
   NB: On Mac OS X, Anaconda's matplotlib.pyplot seems to have trouble understanding the tilde '~' character as 
   part of a path. So instead of
