@@ -17,5 +17,5 @@ def rdrand(np.ndarray[unsigned int, ndim=1, mode="c"] inputArr not None):
 	success = rdrand_get_n_32(numRand, &inputArr[0])
 	if success != 1:
 		warnings.warn('Intel RDRAND failed with error code %d! Using numpy.random'%(success))
-		inputArr = np.random.randint(0, 4294967295, numRand)
+		inputArr = np.random.randint(0, 4294967295, numRand).astype(np.uint32)
 	return success
