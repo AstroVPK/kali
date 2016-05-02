@@ -1,11 +1,10 @@
-import libcarma as libcarma
+import math as math
 import numpy as np
-import matplotlib.pyplot as plt
 import astropy.io.fits as astfits
-import os, sys, getopt, pdb
-import argparse
-import math
+import os as os
+import pdb
 
+import libcarma as libcarma
 
 # all classes should have inits for initializing 
 
