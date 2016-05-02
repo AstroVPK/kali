@@ -130,8 +130,6 @@ class k2rawLC(libcarma.basicLC):
 		self._dt = np.nanmedian(self.t[1:] - self.t[:-1]) ## Increment between epochs.
 		self._p = 0
 		self._q = 0
-		self._p = 0
-		self._q = 0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
 		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
