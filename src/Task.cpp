@@ -269,8 +269,6 @@ using namespace std;
 	int Task::extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum) {
 		int retVal = 0;
 		double old_dt = Systems[threadNum].get_dt();
-		Systems[threadNum].setX(lcX);
-		Systems[threadNum].setP(lcP);
 		double* distRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*p*sizeof(double),64));
 		for (int i = 0; i < (numCadences - cadenceNum - 1)*p; i++) {
 			distRand[i] = 0.0;
@@ -287,7 +285,11 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
+		Systems[threadNum].setX(lcX);
+		Systems[threadNum].setP(lcP);
 		Systems[threadNum].extendSystem(ptr2Data, distSeed, distRand);
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
 		_mm_free(distRand);
 		return retVal;
 		}
@@ -395,11 +397,9 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
-		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
-		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].set_dt(numeric_limits<double>::max());
 		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		return LnPrior;
 		}
 
@@ -418,34 +418,13 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
-		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
-		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		return LnPrior;
 		}
 
-	double Task::compute_LnLikelihood(int numCadences, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
-		double LnLikelihood = 0.0;
-		LnLikeData Data;
-		Data.numCadences = numCadences;
-		Data.tolIR = tolIR;
-		Data.t = t;
-		Data.x = x;
-		Data.y = y;
-		Data.yerr = yerr;
-		Data.mask = mask;
-		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
-		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
-		Systems[threadNum].set_dt(old_dt);
-		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
-		return LnLikelihood;
-		}
-
-	double Task::update_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnLikelihood = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
@@ -456,19 +435,49 @@ using namespace std;
 		Data.y = y;
 		Data.yerr = yerr;
 		Data.mask = mask;
+		Data.lcX = lcX;
+		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
-		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
-		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].set_dt(numeric_limits<double>::max());
 		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
+		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
+		cadenceNum = Data.cadenceNum;
 		return LnLikelihood;
 		}
 
-	double Task::compute_LnPosterior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+		double LnLikelihood = 0.0;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.currentLnLikelihood = currentLnLikelihood;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.lcX = lcX;
+		Data.lcP = lcP;
+		LnLikeData *ptr2Data = &Data;
+		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
+		Systems[threadNum].solveCARMA();
+		Systems[threadNum].setX(lcX);
+		Systems[threadNum].setP(lcP);
+		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
+		cadenceNum = Data.cadenceNum;
+		return LnLikelihood;
+		}
+
+	double Task::compute_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -479,21 +488,23 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
+		Systems[threadNum].set_dt(numeric_limits<double>::max());
+		Systems[threadNum].solveCARMA();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		LnPosterior = LnPrior + LnLikelihood;
-		Systems[threadNum].set_dt(old_dt);
-		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
+		cadenceNum = Data.cadenceNum;
 		return LnPosterior;
 		}
 
-	double Task::update_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double Task::update_LnPosterior(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
 		LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
+		Data.currentLnLikelihood = currentLnLikelihood;
 		Data.tolIR = tolIR;
 		Data.t = t;
 		Data.x = x;
@@ -504,13 +515,16 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		double old_dt = Systems[threadNum].get_dt();
+		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
+		Systems[threadNum].solveCARMA();
+		Systems[threadNum].setX(lcX);
+		Systems[threadNum].setP(lcP);
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
 		LnPosterior = LnPrior + LnLikelihood;
-		Systems[threadNum].set_dt(old_dt);
-		Systems[threadNum].solveCARMA();
-		//Systems[threadNum].resetState();
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
+		cadenceNum = Data.cadenceNum;
 		return LnPosterior;
 		}
 
@@ -531,6 +545,9 @@ using namespace std;
 		Data.y = y;
 		Data.yerr = yerr;
 		Data.mask = mask;
+		Data.maxSigma = maxSigma;
+		Data.minTimescale = minTimescale;
+		Data.maxTimescale = maxTimescale;
 		#ifdef DEBUG_FIT_CARMAMODEL
 		#pragma omp critical
 		{
@@ -539,9 +556,6 @@ using namespace std;
 		printf("fit_CARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
 		}
 		#endif
-		Data.maxSigma = maxSigma;
-		Data.minTimescale = minTimescale;
-		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
 		LnLikeArgs Args;
 		Args.numThreads = numThreads;

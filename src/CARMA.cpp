@@ -2141,8 +2141,6 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
-	double maxSigma = Data.maxSigma;
-	double maxTimescale = Data.maxTimescale;
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
@@ -2155,8 +2153,10 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 	v = y[0] - H[0]*XMinus[0]; // Compute v = y - H*X
+	//printf("v[%d]: %e\n", 0, v);
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+	//printf("S[%d]: %e\n", 0, S);
 	SInv = 1.0/S;
 	cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 	for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2177,6 +2177,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 			}
 		}
 	Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	//printf("Contrib[%d]: %e\n", 0, Contrib);
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 	ptCounter = ptCounter + 1;
 	for (int i = 1; i < numCadences; i++) {
@@ -2193,8 +2194,10 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 		v = y[i] - H[0]*XMinus[0]; // Compute v = y - H*X
+		//printf("v[%d]: %e\n", i, v);
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		//printf("S[%d]: %e\n", i, S);
 		SInv = 1.0/S;
 		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 		for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2215,13 +2218,24 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 				}
 			}
 		Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		//printf("Contrib[%d]: %e\n", i, Contrib);
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1;
 		}
-	//LnLike += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*log2Pi;
+	//printf("LnLike: %e\n", LnLikelihood);
 
 	Data.cadenceNum = numCadences - 1;
 	Data.currentLnLikelihood = LnLikelihood;
+
+	/*printf("X\n");
+	printf("-\n");
+	viewMatrix(p, 1, X);
+	printf("\n");
+	printf("P\n");
+	printf("-\n");
+	viewMatrix(p, p, P);
+	printf("\n");*/
 
 	return LnLikelihood;
 	}
@@ -2247,15 +2261,26 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 
 	int startCadence = cadenceNum + 1;
 
+	/*printf("X\n");
+	printf("-\n");
+	viewMatrix(p, 1, X);
+	printf("\n");
+	printf("P\n");
+	printf("-\n");
+	viewMatrix(p, p, P);
+	printf("\n");*/
+
 	H[0] = mask[startCadence];
 	R[0] = yerr[startCadence]*yerr[startCadence]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-	v = y[startCadence] - H[0]*XMinus[startCadence]; // Compute v = y - H*X
+	v = y[startCadence] - H[0]*XMinus[0]; // Compute v = y - H*X
+	//printf("v[%d]: %e\n", startCadence, v);
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+	//printf("S[%d]: %e\n", startCadence, S);
 	SInv = 1.0/S;
 	cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 	for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2276,6 +2301,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 			}
 		}
 	Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	//printf("Contrib[%d]: %e\n", startCadence, Contrib);
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 	ptCounter = ptCounter + 1;
 	for (int i = startCadence + 1; i < numCadences; i++) {
@@ -2292,8 +2318,10 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 		v = y[i] - H[0]*XMinus[0]; // Compute v = y - H*X
+		//printf("v[%d]: %e\n", i, v);
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		//printf("S[%d]: %e\n", i, S);
 		SInv = 1.0/S;
 		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 		for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2314,15 +2342,18 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 				}
 			}
 		Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		//printf("Contrib[%d]: %e\n", i, Contrib);
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1;
 		}
-		//LnLike += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*log2Pi;
+	//printf("LnLike: %e\n", LnLikelihood);
 
 	Data.cadenceNum = numCadences - 1;
-	Data.currentLnLikelihood = LnLikelihood;
+	currentLnLikelihood += LnLikelihood;
+	Data.currentLnLikelihood += LnLikelihood;
 
-	return LnLikelihood;
+	return currentLnLikelihood;
 	}
 
 

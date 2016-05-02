@@ -180,8 +180,10 @@ class lc(object):
 			self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
 			self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
 			self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
-			self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-			self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+			self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+			self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+			self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+			self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 			self._name = str(name) ## The name of the light curve (usually the object's name).
@@ -197,7 +199,7 @@ class lc(object):
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.X, self.P, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)
 		else:
@@ -229,20 +231,26 @@ class lc(object):
 
 	@p.setter
 	def p(self, value):
-		newX = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
-		newP = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+		newXSim = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+		newPSim = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+		newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+		newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
 		large_number = math.sqrt(sys.float_info[0])
 		if value > self._p:
 			iterMax = self._p
 		else:
 			iterMax = value
 		for i in xrange(iterMax):
-			newX[i] = self.X[i]
+			newXSim[i] = self.XSim[i]
+			newXComp[i] = self.XComp[i]
 			for j in xrange(iterMax):
-				newP[i + j*value] = self.P[i + j*self._p]
+				newPSim[i + j*value] = self.PSim[i + j*self._p]
+				newPComp[i + j*value] = self.PComp[i + j*self._p]
 		self._p = value
-		self.X = newX
-		self.P = newP
+		self.XSim = newXSim
+		self.PSim = newPSim
+		self.XComp = newXComp
+		self.PComp = newPComp
 
 	@property
 	def q(self):
@@ -753,8 +761,10 @@ class basicLC(lc):
 		lccopy.mask = np.copy(self.mask)
 		lccopy._p = self._p
 		lccopy._q = self._q
-		lccopy.X = np.copy(self.X)
-		lccopy.P = np.copy(self.P)
+		lccopy.XSim = np.copy(self.XSim)
+		lccopy.PSim = np.copy(self.PSim)
+		lccopy.XComp = np.copy(self.XComp)
+		lccopy.PComp = np.copy(self.PComp)
 		lccopy._mean = np.mean(lccopy.y)
 		lccopy._std = np.std(lccopy.y)
 		lccopy._mean = np.mean(lccopy.yerr)
@@ -1221,7 +1231,7 @@ class task(object):
 	def simulate(self, duration, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 5.0, burnSeed = None, distSeed = None, noiseSeed = None, tnum = None):
 		if tnum is None:
 			tnum = 0
-		numCadences = int(float(duration)/self._taskCython.get_dt(threadNum = tnum))
+		numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum = tnum)))
 		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, p = self._p, q = self._q, )
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if burnSeed is None:
@@ -1230,7 +1240,7 @@ class task(object):
 		if distSeed is None:
 			rand.rdrand(randSeed)
 			distSeed = randSeed[0]
-		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, intrinsicLC.X, intrinsicLC.P, burnSeed, distSeed, threadNum = tnum)
+		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, burnSeed, distSeed, threadNum = tnum)
 		intrinsicLC._simulatedCadenceNum = numCadences - 1
 		intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0] 
 		return intrinsicLC
@@ -1248,38 +1258,39 @@ class task(object):
 		if intrinsicLC.p != self.p:
 			intrinsicLC.p = self.p
 		if gap is None:
-			extraNumCadences = int(float(duration)/self._taskCython.get_dt(threadNum = tnum))
+			gapSize = 0.0
 		else:
-			oldNumCadences = intrinsicLC._numCadences
-			gapNumCadences = int(float(gap)/self._taskCython.get_dt(threadNum = tnum))
-			extraNumCadences = int(float(duration + gap)/self._taskCython.get_dt(threadNum = tnum))
-		newNumCadences = intrinsicLC._numCadences + extraNumCadences + 1
+			gapSize = gap
+		oldNumCadences = intrinsicLC.numCadences
+		gapNumCadences = int(round(float(gapSize)/self._taskCython.get_dt(threadNum = tnum)))
+		extraNumCadences = int(round(float(duration + gapSize)/self._taskCython.get_dt(threadNum = tnum)))
+		newNumCadences = intrinsicLC.numCadences + extraNumCadences
 		newt = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 		newx = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		newy = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
 		newyerr = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
 		newmask = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
-		for i in xrange(intrinsicLC._numCadences):
+		for i in xrange(intrinsicLC.numCadences):
 			newt[i] = intrinsicLC.t[i]
 			newx[i] = intrinsicLC.x[i]
 			newy[i] = intrinsicLC.y[i]
 			newyerr[i] = intrinsicLC.yerr[i]
 			newmask[i] = intrinsicLC.mask[i]
-		for i in xrange(extraNumCadences + 1):
-			newt[intrinsicLC._numCadences + i] = newt[intrinsicLC._numCadences - 1] + i*intrinsicLC._dt
+		for i in xrange(intrinsicLC.numCadences, newNumCadences):
+			newt[i] = newt[intrinsicLC.numCadences - 1] + gapSize + (i - intrinsicLC.numCadences + 1)*self._taskCython.get_dt(threadNum = tnum)
 			newmask[i] = 1.0
 		intrinsicLC._numCadences = newNumCadences
-		self._taskCython.extend_IntrinsicLC(intrinsicLC._numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR, intrinsicLC._fracIntrinsicVar, intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask, intrinsicLC.X, intrinsicLC.P, distSeed, noiseSeed, threadNum = tnum)
-		if gap:
-			old, gap, new = np.split(newt, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
+		self._taskCython.extend_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR, intrinsicLC._fracIntrinsicVar, intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask, intrinsicLC.XSim, intrinsicLC.PSim, distSeed, noiseSeed, threadNum = tnum)
+		if gap is not None:
+			old, gap, new = np.split(newt, [oldNumCadences, oldNumCadences + gapNumCadences])
 			newt = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
-			old, gap, new = np.split(newx, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
+			old, gap, new = np.split(newx, [oldNumCadences, oldNumCadences + gapNumCadences])
 			newx = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
-			old, gap, new = np.split(newy, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
+			old, gap, new = np.split(newy, [oldNumCadences, oldNumCadences + gapNumCadences])
 			newy = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
-			old, gap, new = np.split(newyerr, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
+			old, gap, new = np.split(newyerr, [oldNumCadences, oldNumCadences + gapNumCadences])
 			newyerr = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
-			old, gap, new = np.split(newmask, [oldNumCadences, oldNumCadences + gapNumCadences + 1])
+			old, gap, new = np.split(newmask, [oldNumCadences, oldNumCadences + gapNumCadences])
 			newmask = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
 		intrinsicLC._simulatedCadenceNum = newt.shape[0] - 1
 		intrinsicLC._numCadences = newt.shape[0]
@@ -1311,20 +1322,29 @@ class task(object):
 			tnum = 0
 		return self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 
-	def logLikelihood(self, observedLC, tnum = None):
+	def logLikelihood(self, observedLC, forced = False, tnum = None):
 		if tnum is None:
 			tnum = 0
+		if forced == True:
+			observedLC._computedCadenceNum = -1
+		observedLC._logPrior = self.logPrior(observedLC, tnum = tnum)
 		if observedLC._computedCadenceNum == -1:
-			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+			observedLC._logLikelihood = lnLikelihood
+			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
+			observedLC._computedCadenceNum = observedLC.numCadences - 1
+		elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
+			lnLikelihood = observedLC._logLikelihood
 		else:
-			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedNumCadences, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
-			observedLC._computedNumCadences = observedLC._numCadences - 1
+			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+			observedLC._logLikelihood = lnLikelihood
+			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
+			observedLC._computedCadenceNum = observedLC.numCadences - 1
 		return lnLikelihood
 
-	def logPosterior(self, observedLC, tnum = None):
-		if tnum is None:
-			tnum = 0
-		return self._taskCython.compute_LnPosterior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+	def logPosterior(self, observedLC, forced = False, tnum = None):
+		lnLikelihood = self.logLikelihood(observedLC, forced = forced, tnum = tnum)
+		return observedLC._logPosterior
 
 	def acvf(self, start = 0.0, stop = 100.0, num = 100, endpoint = True, base  = 10.0, spacing = 'linear'):
 		if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:

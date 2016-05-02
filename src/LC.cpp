@@ -22,6 +22,8 @@ using namespace std;
 		y = nullptr;
 		yerr = nullptr;
 		mask = nullptr;
-		lcX = nullptr;
-		lcP = nullptr;
+		lcXSim = nullptr;
+		lcPSim = nullptr;
+		lcXComp = nullptr;
+		lcPComp = nullptr;
 	}
