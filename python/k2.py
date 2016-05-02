@@ -72,8 +72,10 @@ class k2pdcsapLC(libcarma.basicLC):
 		self._dt = np.nanmedian(self.t[1:] - self.t[:-1]) ## Increment between epochs.
 		self._p = 0
 		self._q = 0
-		self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self._name = str(name.split('.')[0]) ## The name of the light curve (usually the object's name).
 		self._band = str('Kep') ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).
 		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
@@ -130,8 +132,10 @@ class k2rawLC(libcarma.basicLC):
 		self._q = 0
 		self._p = 0
 		self._q = 0
-		self.X = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		self.P = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self._name = str(name.split('.')[0]) ## The name of the light curve (usually the object's name).
 		self._band = str('Kep') ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).
 		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
