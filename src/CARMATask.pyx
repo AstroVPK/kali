@@ -73,8 +73,7 @@ cdef class lc:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None,
-	np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
+	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
 		self.thisptr = new LCData()
 		self.thisptr.numCadences = t.shape[0]
 		self.thisptr.dt = dt
