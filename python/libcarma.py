@@ -846,7 +846,7 @@ class bernoulliSampler(sampler):
 		returnLC._numCadences = newNumCadences
 		return returnLC
 
-class SDSSSampler(sampler):
+class matchSampler(sampler):
 
 	def sample(self, **kwargs):
 		returnLC = self.lcObj.copy()
