@@ -1,11 +1,35 @@
 import sys, os, argparse, time, pdb, math, thread, cPickle
 import numpy as np, numba
 from scipy.spatial.distance import euclidean
-import libcarma
-import carmcmc
+import libcarma, carmcmc
+import testingTools
 from matplotlib.pyplot import subplots, show, figure
 from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 from multiprocessing import Process
+
+
+#Light Curve Parameters:
+
+	#AR_Roots
+	#MA_Roots
+	#B_q
+	
+	#Rho = cat (AR_Roots, MA_Roots, B_q) //libcarma
+
+#Defaults:
+dt = 0.1
+T = 10
+numCadences = int(T/dt)
+
+maxSigma = 2.0
+minTimescale = 5.0e-1
+maxTimescale = 2.0
+
+AR_ROOTS = [-0.033642081+0.0254j, -0.033642081-0.0254j]
+MA_ROOTS = [-3.833333, -0.001853]
+B_Q = 2.0e-9
+
+
 
 #Defaults:
 dt = 0.1
@@ -31,65 +55,6 @@ ma_roots = [-3.833333, -0.001853]
 #ma_roots = [-4.833333, -2.46, 0.000245]
 NWALKERS = 20#100
 NSTEPS = 200*2
-CLOCK_FLAG = 1
-
-class clock:
-
-	def __init__(self):
-		self.CLOCK_FLAG = 1
-	
-	def start(self):
-		self.run()
-
-	def stop(self):
-		self.CLOCK_FLAG = 0
-
-	def run(self):
-		T0 = time.time()
-		#anim_chars = '|/-\\|/-'
-		#anim_chars = '>v<^'
-		anim = '*+._.+*"'
-		anim_chars = [2*"".join((anim[i:],anim[:i])) for i in xrange(len(anim))]
-		anim_N = len(anim_chars)
-		anim_n = 0
-		cycle_n = 0
-		s = ''
-		m = ''
-		h = ''
-		T = 0
-		string = ''
-		print "Clock Started"
-		sys.__stdout__.flush()
-		while self.CLOCK_FLAG:
-			time.sleep(0.05)
-			if (time.time() - T0 - T) > 0.1:
-				T = time.time() - T0
-				s = 'o'.join((str(int(T) % 60).zfill(2), str(T-int(T))[2:3][::-1].zfill(1)[::-1]))
-				m = str((int(T) / 60) % 60).zfill(2)
-				h = str(int(T) / 3600).zfill(2)
-				string = ':'.join((h,m,s))
-				if cycle_n == 2:
-					c_anim = anim_chars[anim_n].join('[]')
-					string = ' '.join((string, c_anim))
-					anim_n += 1
-					cycle_n = 0
-				cycle_n += 1
-				string = ''.join((string,'\r'))
-				sys.__stdout__.write(string)
-				sys.__stdout__.flush()
-			
-				anim_n %= anim_N
-
-def run_clock():
-	c = clock()
-	c.start()
-
-def start_clock():
-	C = Process(target = run_clock)
-	C.daemon = True
-	C.start()
-	return C
-
 
 def plot_params(p1, p2, loglik, title = None, ax = None):
 
@@ -107,7 +72,6 @@ def plot_params(p1, p2, loglik, title = None, ax = None):
 def getErrors(theta_exp, theta_0):
 	'''computer the euclidian distance between the experimental params and the original params'''
 	return euclidean(theta_exp/theta_0, np.ones(len(theta_0)))
-	
 
 def getTheta(ar_roots, ma_roots, sigma):
 	'''Return theta for Libcarma'''
@@ -496,9 +460,12 @@ class fakeTask:
 	def __init__(self):
 		pass
 
-def getObjects(p, q, ar_roots, ma_roots, sigma, new = False):
+def getObjects(ar_roots, ma_roots, b_q, dt, T, steps, walkers, new = False):
 
 	hash_ = buildHash(ar_roots, ma_roots, sigma)
+	p = len(ar_roots)
+	q = len(ma_roots)
+	theta = testingTools.Theta(ar_roots, ma_roots, b_q)
 	if not os.path.isdir('Pickles/'):
 		os.mkdir('Pickles/')
 		new = True
@@ -509,13 +476,10 @@ def getObjects(p, q, ar_roots, ma_roots, sigma, new = False):
 		LC, task, sample = cPickle.load(open('Pickles/Objects-%i-%i-%s.p' % (p,q,hash_),'rb'))
 	else:
 		print "Generating", hash_
-		LC = generateLC(ar_roots, ma_roots, sigma, module = 'libcarma')
-		C = start_clock()
-		task = fitCARMA(LC, p, q, module = 'libcarma')
-		C.terminate()
+		LC = createLC(theta, p, q, dt, T)
+		task = testingTools.fitCARMA(LC, p, q, module = 'libcarma', nwalkers = walkers, nsteps = steps)
 		print ''
-		sample = fitCARMA(LC, p, q, module = 'carmcmc')
-		#sample = None
+		sample = fitCARMA(LC, p, q, module = 'carmcmc', steps*walkers/2)
 		faketask = fakeTask()
 		faketask.Chain = task.Chain
 		faketask.LnPosterior = task.LnPosterior
@@ -552,7 +516,7 @@ def plotPSD(theta, p, q, ax = None):
 
 def comparePSD(obj1, obj2, p, q):
 
-	t1, ln1 = generateTheta(obj1)
+	t1, ln1 = obj1.Chain[
 	t2, ln2 = generateTheta(obj2)
 	ax = plotPSD(t1, p, q)
 	ax = plotPSD(t2, p, q, ax = ax)
