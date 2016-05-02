@@ -199,7 +199,7 @@ class lc(object):
 			for i in xrange(self._numCadences):
 				self.t[i] = i*self._dt
 				self.mask[i] = 1.0
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self.dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)
 		else:
