@@ -26,7 +26,8 @@ set_plot_params(useTex = True)
 parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
 parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
-parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per chain')
+parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
+parser.add_argument('-nwalkers', '--nwalkers', type = int, default = 100, help = r'Number of walkers')
 parser.add_argument('-p', '--p', type = int, default = 2, help = r'C-AR order')
 parser.add_argument('-q', '--q', type = int, default = 1, help = r'C-MA order')
 parser.add_argument('-g', '--g', dest = 'g', action = 'store_true', help = r'Analyze g-band LC')
@@ -40,6 +41,7 @@ args = parser.parse_args()
 P = args.p
 Q = args.q
 NSTEPS = args.nsteps
+NWALKERS = args.nwalkers
 
 def timescales(p, q, Rho):
 	imagPairs = 0
@@ -86,18 +88,18 @@ if args.g or args.r:
 	Theta = np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
 
 	if args.g:
-		ntg = libcarma.basicTask(P, Q, nsteps = NSTEPS)
+		ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
 		ntg.set(sdss0g.dt, Theta)
 		ntg.fit(sdss0g, Theta)
 
 	if args.r:
-		ntr = libcarma.basicTask(P, Q, nsteps = NSTEPS)
+		ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
 		ntr.set(sdss0r.dt, Theta)
 		ntr.fit(sdss0r, Theta)
 
 	if carma_pack:
-		NUMSAMPLES = ntg.nwalkers*NSTEPS/2
-		NBURNIN = ntg.nwalkers*NSTEPS/2
+		NUMSAMPLES = NWALKERS*NSTEPS/2
+		NBURNIN = NWALKERS*NSTEPS/2
 
 		if args.g:
 			carma_model_g = cmcmc.CarmaModel(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
