@@ -12,6 +12,13 @@ import sdss as sdss
 from util.mpl_settings import set_plot_params
 import util.triangle as triangle
 
+try:
+	import carmcmc as cmcmc
+except ImportError:
+	carma_pack = False
+else:
+	carma_pack = True
+
 fhgt = 10
 fwid = 16
 set_plot_params(useTex = True)
@@ -70,6 +77,21 @@ ntg.set(sdss0g.dt, Theta)
 ntr.set(sdss0r.dt, Theta)
 ntg.fit(sdss0g, Theta)
 ntr.fit(sdss0r, Theta)
+
+if carma_pack:
+	NUMSAMPLES = ntg.nwalkers*NSTEPS/2
+	NBURNIN = ntg.nwalkers*NSTEPS/2
+	carma_model_g = cmcmc.CarmaModel(ntg.t, ntg.y, ntg.yerr, p = P, q = Q)  # create new CARMA process model
+	carma_model_r = cmcmc.CarmaModel(ntr.t, ntr.y, ntr.yerr, p = P, q = Q)
+	carma_sample_g = carma_model_g.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
+	carma_sample_r = carma_model_r.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
+	ar_samples_g = carma_sample_g.get_samples('ar_coefs')
+	ma_samples_g = carma_sample_g.get_samples('ma_coefs')
+	sigma_g = carma_sample_g.get_samples('sigma')
+	ar_samples_r = carma_sample_r.get_samples('ar_coefs')
+	ma_samples_r = carma_sample_r.get_samples('ma_coefs')
+	sigma_r = carma_sample_r.get_samples('sigma')
+	pdb.set_trace()
 
 fig2 = plt.figure(2, figsize = (fhgt*1.25, 2.25*fhgt))
 gs = gridspec.GridSpec(225, 100)
