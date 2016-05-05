@@ -182,7 +182,7 @@ if args.g or args.r:
 				words = line.rstrip('\n').split()
 				for dimNum in xrange(P + Q + 1):
 					cmcmcChain_g[dimNum, sampleNum] = float(words[dimNum])
-				cmcmcmLnPosterior_g[sampleNum] = float(words[P + Q + 1])
+				cmcmcLnPosterior_g[sampleNum] = float(words[P + Q + 1])
 			chainFile.close()
 			carma_pack_results_g = True
 
@@ -308,7 +308,7 @@ if args.g or args.r:
 				words = line.rstrip('\n').split()
 				for dimNum in xrange(P + Q + 1):
 					cmcmcChain_r[dimNum, sampleNum] = float(words[dimNum])
-				cmcmcmLnPosterior_r[sampleNum] = float(words[P + Q + 1])
+				cmcmcLnPosterior_r[sampleNum] = float(words[P + Q + 1])
 			chainFile.close()
 			carma_pack_results_r = True
 
