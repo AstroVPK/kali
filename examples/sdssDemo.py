@@ -123,7 +123,7 @@ if args.g or args.r:
 				for j in xrange(P):
 					cmcmcChain_g[j, i] = ar_poly_g[i,j + 1]
 				for j in xrange(Q + 1):
-					cmcmcChain_g[j + P, i] = ma_coefs_g[i,j]*sigma_g[i,0]
+					cmcmcChain_g[j + P, i] = ma_poly_g[i,j]*sigma_g[i,0]
 
 		if args.r:
 			carma_model_r = cmcmc.CarmaModel(sdss0r.t, sdss0r.y, sdss0r.yerr, p = P, q = Q)
@@ -138,7 +138,7 @@ if args.g or args.r:
 				for j in xrange(P):
 					cmcmcChain_r[j, i] = ar_poly_r[i,j + 1]
 				for j in xrange(Q + 1):
-					cmcmcChain_r[j + P, i] = ma_coefs_r[i,j]*sigma_r[i,0]
+					cmcmcChain_r[j + P, i] = ma_poly_r[i,j]*sigma_r[i,0]
 
 	if args.g:
 		fig2 = plt.figure(2, figsize = (fhgt, fhgt))
