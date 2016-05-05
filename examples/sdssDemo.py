@@ -161,7 +161,7 @@ if args.g or args.r:
 					line = ''
 					for dimNum in xrange(P + Q +1):
 						line += '%+9.8e '%(cmcmcChain_g[dimNum, sampleNum])
-					line += '%+9.8e\n'%(cmcmcLnPosterior_g[sampleNum, 0])
+					line += '%+9.8e\n'%(cmcmcLnPosterior_g[sampleNum])
 					chainFile.write(line)
 					del line
 				chainFile.close()
@@ -287,7 +287,7 @@ if args.g or args.r:
 					line = ''
 					for dimNum in xrange(P + Q +1):
 						line += '%+9.8e '%(cmcmcChain_r[dimNum, sampleNum])
-					line += '%+9.8e\n'%(cmcmcLnPosterior_r[sampleNum, 0])
+					line += '%+9.8e\n'%(cmcmcLnPosterior_r[sampleNum])
 					chainFile.write(line)
 					del line
 				chainFile.close()
