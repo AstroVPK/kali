@@ -100,14 +100,14 @@ if args.g or args.r:
 		NBURNIN = ntg.nwalkers*NSTEPS/2
 
 		if args.g:
-			carma_model_g = cmcmc.CarmaModel(ntg.t, ntg.y, ntg.yerr, p = P, q = Q)  # create new CARMA process model
+			carma_model_g = cmcmc.CarmaModel(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
 			carma_sample_g = carma_model_g.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
 			ar_samples_g = carma_sample_g.get_samples('ar_coefs')
 			ma_samples_g = carma_sample_g.get_samples('ma_coefs')
 			sigma_g = carma_sample_g.get_samples('sigma')
 
 		if args.r:
-			carma_model_r = cmcmc.CarmaModel(ntr.t, ntr.y, ntr.yerr, p = P, q = Q)
+			carma_model_r = cmcmc.CarmaModel(sdss0r.t, sdss0r.y, sdss0r.yerr, p = P, q = Q)
 			carma_sample_r = carma_model_r.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
 			ar_samples_r = carma_sample_r.get_samples('ar_coefs')
 			ma_samples_r = carma_sample_r.get_samples('ma_coefs')
