@@ -118,7 +118,7 @@ if args.g or args.r:
 			sigma_g = carma_sample_g.get_samples('sigma')
 			cmcmcLnPosterior_g = carma_sample_g.get_samples('logpost')
 			numSamples = ar_poly_g.shape[0]
-			Chain_g = np.zeros((P + Q + 1, numSamples))
+			cmcmcChain_g = np.zeros((P + Q + 1, numSamples))
 			for i in xrange(numSamples):
 				for j in xrange(P):
 					cmcmcChain_g[j, i] = ar_poly_g[i,j + 1]
@@ -133,7 +133,7 @@ if args.g or args.r:
 			sigma_r = carma_sample_r.get_samples('sigma')
 			lnPosterior_r = carma_sample_r.get_samples('logpost')
 			numSamples = ar_poly_g.shape[0]
-			Chain_r = np.zeros((P + Q + 1, numSamples))
+			cmcmcChain_r = np.zeros((P + Q + 1, numSamples))
 			for i in xrange(numSamples):
 				for j in xrange(P):
 					cmcmcChain_r[j, i] = ar_poly_r[i,j + 1]
