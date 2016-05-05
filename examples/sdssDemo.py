@@ -4,6 +4,7 @@ import cmath as cmath
 import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 from matplotlib import gridspec as gridspec
+import argparse as argparse
 import pdb
 
 import libcarma as libcarma
@@ -18,6 +19,11 @@ set_plot_params(useTex = True)
 P = 2
 Q = 1
 NSTEPS = 500
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
+parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+args = parser.parse_args()
 
 def timescales(p, q, Rho):
 	imagPairs = 0
@@ -46,8 +52,8 @@ def timescales(p, q, Rho):
 	imagMA = np.array([(2.0*math.pi)/math.abs(x) for x in imagRoots])
 	return realAR, imagAR, realMA, imagMA
 
-sdss0g = sdss.sdss_gLC(supplied = 'LightCurveSDSS_1.csv', pwd = '/home/vish/Desktop')
-sdss0r = sdss.sdss_rLC(supplied = 'LightCurveSDSS_1.csv', pwd = '/home/vish/Desktop')
+sdss0g = sdss.sdss_gLC(supplied = args.name, pwd = args.pwd)
+sdss0r = sdss.sdss_rLC(supplied = args.name, pwd = args.pwd)
 
 plt.figure(1, figsize = (fwid, fhgt))
 plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
