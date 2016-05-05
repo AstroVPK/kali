@@ -23,14 +23,23 @@ fhgt = 10
 fwid = 16
 set_plot_params(useTex = True)
 
-P = 2
-Q = 1
-NSTEPS = 500
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
 parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per chain')
+parser.add_argument('-p', '--p', type = int, default = 2, help = r'C-AR order')
+parser.add_argument('-q', '--q', type = int, default = 1, help = r'C-MA order')
+parser.add_argument('-g', '--g', dest = 'g', action = 'store_true', help = r'Analyze g-band LC')
+parser.add_argument('-no-g', '--no-g', dest = 'g', action = 'store_false', help = r'Do not analyze g-band LC')
+parser.set_defaults(g = True)
+parser.add_argument('-r', '--r', dest = 'r', action = 'store_true', help = r'Analyze r-band LC')
+parser.add_argument('-no-r', '--no-r', dest = 'r', action = 'store_false', help = r'Do not analyze r-band LC')
+parser.set_defaults(r = False)
 args = parser.parse_args()
+
+P = args.p
+Q = args.q
+NSTEPS = args.nsteps
 
 def timescales(p, q, Rho):
 	imagPairs = 0
@@ -59,73 +68,94 @@ def timescales(p, q, Rho):
 	imagMA = np.array([(2.0*math.pi)/math.abs(x) for x in imagRoots])
 	return realAR, imagAR, realMA, imagMA
 
-sdss0g = sdss.sdss_gLC(supplied = args.name, pwd = args.pwd)
-sdss0r = sdss.sdss_rLC(supplied = args.name, pwd = args.pwd)
+if args.g:
+	sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
+if args.r:
+	sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
 
-plt.figure(1, figsize = (fwid, fhgt))
-plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
-plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
-plt.xlabel(sdss0g.xunit)
-plt.ylabel(sdss0g.yunit)
-plt.legend()
+if args.g or args.r:
+	plt.figure(1, figsize = (fwid, fhgt))
+	if args.g:
+		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
+	if args.r:
+		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
+	plt.xlabel(sdss0g.xunit)
+	plt.ylabel(sdss0g.yunit)
+	plt.legend()
 
-Theta = np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
+	Theta = np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
 
-ntg = libcarma.basicTask(P, Q, nsteps = NSTEPS)
-ntr = libcarma.basicTask(P, Q, nsteps = NSTEPS)
-ntg.set(sdss0g.dt, Theta)
-ntr.set(sdss0r.dt, Theta)
-ntg.fit(sdss0g, Theta)
-ntr.fit(sdss0r, Theta)
+	if args.g:
+		ntg = libcarma.basicTask(P, Q, nsteps = NSTEPS)
+		ntg.set(sdss0g.dt, Theta)
+		ntg.fit(sdss0g, Theta)
 
-if carma_pack:
-	NUMSAMPLES = ntg.nwalkers*NSTEPS/2
-	NBURNIN = ntg.nwalkers*NSTEPS/2
-	carma_model_g = cmcmc.CarmaModel(ntg.t, ntg.y, ntg.yerr, p = P, q = Q)  # create new CARMA process model
-	carma_model_r = cmcmc.CarmaModel(ntr.t, ntr.y, ntr.yerr, p = P, q = Q)
-	carma_sample_g = carma_model_g.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
-	carma_sample_r = carma_model_r.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
-	ar_samples_g = carma_sample_g.get_samples('ar_coefs')
-	ma_samples_g = carma_sample_g.get_samples('ma_coefs')
-	sigma_g = carma_sample_g.get_samples('sigma')
-	ar_samples_r = carma_sample_r.get_samples('ar_coefs')
-	ma_samples_r = carma_sample_r.get_samples('ma_coefs')
-	sigma_r = carma_sample_r.get_samples('sigma')
-	pdb.set_trace()
+	if args.r:
+		ntr = libcarma.basicTask(P, Q, nsteps = NSTEPS)
+		ntr.set(sdss0r.dt, Theta)
+		ntr.fit(sdss0r, Theta)
 
-fig2 = plt.figure(2, figsize = (fhgt*1.25, 2.25*fhgt))
-gs = gridspec.GridSpec(225, 100)
-ax1 = fig2.add_subplot(gs[0:99, :])
-scatPlot1 = ax1.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-ax1.set_xlim(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(ntg.Chain[0,:,NSTEPS/2:]))
-ax1.set_ylim(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(ntg.Chain[1,:,NSTEPS/2:]))
-ax1.set_xlabel(r'$a_{1}$')
-ax1.set_ylabel(r'$a_{2}$')
-ax2 = fig2.add_subplot(gs[125:224, :])
-scatPlot2 = ax2.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-ax2.set_xlim(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(ntg.Chain[2,:,NSTEPS/2:]))
-ax2.set_ylim(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(ntg.Chain[3,:,NSTEPS/2:]))
-ax2.set_xlabel(r'$b_{0}$')
-ax2.set_ylabel(r'$b_{1}$')
-cBar = plt.colorbar(scatPlot1, ax = [ax1, ax2], orientation = 'horizontal')#, ticks = cBarTicks, format = r'$\scriptstyle %2.1f$')
-cBar.set_label(r'$\ln \mathcal{P}$')
+	if carma_pack:
+		NUMSAMPLES = ntg.nwalkers*NSTEPS/2
+		NBURNIN = ntg.nwalkers*NSTEPS/2
 
-fig3 = plt.figure(3, figsize = (fhgt*1.25, 2.25*fhgt))
-gs = gridspec.GridSpec(225, 100)
-ax1 = fig3.add_subplot(gs[0:99, :])
-scatPlot1 = ax1.scatter(ntr.Chain[0,:,NSTEPS/2:], ntr.Chain[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-ax1.set_xlim(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(ntr.Chain[0,:,NSTEPS/2:]))
-ax1.set_ylim(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(ntr.Chain[1,:,NSTEPS/2:]))
-ax1.set_xlabel(r'$a_{1}$')
-ax1.set_ylabel(r'$a_{2}$')
-ax2 = fig3.add_subplot(gs[125:224, :])
-scatPlot2 = ax2.scatter(ntr.Chain[2,:,NSTEPS/2:], ntr.Chain[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-ax2.set_xlim(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(ntr.Chain[2,:,NSTEPS/2:]))
-ax2.set_ylim(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(ntr.Chain[3,:,NSTEPS/2:]))
-ax2.set_xlabel(r'$b_{0}$')
-ax2.set_ylabel(r'$b_{1}$')
-cBar = plt.colorbar(scatPlot1, ax = [ax1, ax2], orientation = 'horizontal')#, ticks = cBarTicks, format = r'$\scriptstyle %2.1f$')
-cBar.set_label(r'$\ln \mathcal{P}$')
+		if args.g:
+			carma_model_g = cmcmc.CarmaModel(ntg.t, ntg.y, ntg.yerr, p = P, q = Q)  # create new CARMA process model
+			carma_sample_g = carma_model_g.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
+			ar_samples_g = carma_sample_g.get_samples('ar_coefs')
+			ma_samples_g = carma_sample_g.get_samples('ma_coefs')
+			sigma_g = carma_sample_g.get_samples('sigma')
 
-plt.show()
+		if args.r:
+			carma_model_r = cmcmc.CarmaModel(ntr.t, ntr.y, ntr.yerr, p = P, q = Q)
+			carma_sample_r = carma_model_r.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
+			ar_samples_r = carma_sample_r.get_samples('ar_coefs')
+			ma_samples_r = carma_sample_r.get_samples('ma_coefs')
+			sigma_r = carma_sample_r.get_samples('sigma')
+		pdb.set_trace()
+
+	if args.g:
+		fig2 = plt.figure(2, figsize = (fhgt, fhgt))
+		plt.title(r'g-band C-AR Coeffs')
+		scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		cBar1 = plt.colorbar(scatPlot1, orientation = 'horizontal')
+		cBar1.set_label(r'$\ln \mathcal{P}$')
+		plt.xlim(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(ntg.Chain[0,:,NSTEPS/2:]))
+		plt.ylim(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(ntg.Chain[1,:,NSTEPS/2:]))
+		plt.xlabel(r'$a_{1}$')
+		plt.ylabel(r'$a_{2}$')
+
+		fig3 = plt.figure(3, figsize = (fhgt, fhgt))
+		plt.title(r'g-band C-MA Coeffs')
+		scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		cBar2 = plt.colorbar(scatPlot2, orientation = 'horizontal')
+		cBar2.set_label(r'$\ln \mathcal{P}$')
+		plt.xlim(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(ntg.Chain[2,:,NSTEPS/2:]))
+		plt.ylim(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(ntg.Chain[3,:,NSTEPS/2:]))
+		plt.xlabel(r'$b_{0}$')
+		plt.ylabel(r'$b_{1}$')
+
+	if args.r:
+		fig4 = plt.figure(4, figsize = (fhgt, fhgt))
+		plt.title(r'r-band C-AR Coeffs')
+		scatPlot3 = plt.scatter(ntr.Chain[0,:,NSTEPS/2:], ntr.Chain[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		cBar3 = plt.colorbar(scatPlot3, orientation = 'horizontal')
+		cBar3.set_label(r'$\ln \mathcal{P}$')
+		plt.xlim(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(ntr.Chain[0,:,NSTEPS/2:]))
+		plt.ylim(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(ntr.Chain[1,:,NSTEPS/2:]))
+		plt.xlabel(r'$a_{1}$')
+		plt.ylabel(r'$a_{2}$')
+
+		fig5 = plt.figure(5, figsize = (fhgt, fhgt))
+		plt.title(r'r-band C-MA Coeffs')
+		scatPlot4 = plt.scatter(ntr.Chain[2,:,NSTEPS/2:], ntr.Chain[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		cBar4 = plt.colorbar(scatPlot4, orientation = 'horizontal')
+		cBar4.set_label(r'$\ln \mathcal{P}$')
+		plt.xlim(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(ntr.Chain[2,:,NSTEPS/2:]))
+		plt.ylim(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(ntr.Chain[3,:,NSTEPS/2:]))
+		plt.xlabel(r'$b_{0}$')
+		plt.ylabel(r'$b_{1}$')
+
+	plt.show()
+
 pdb.set_trace()
