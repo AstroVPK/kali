@@ -190,7 +190,7 @@ if args.g or args.r:
 		plt.title(r'g-band C-AR Coeffs')
 		scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
 		if carma_pack_results_g:
-			scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+			scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
 			plt.xlim(min(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[0,:])), max(np.nanmax(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[0,:])))
 			plt.ylim(min(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[1,:])), max(np.nanmax(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[1,:])))
 		else:
@@ -205,7 +205,7 @@ if args.g or args.r:
 		plt.title(r'g-band C-MA Coeffs')
 		scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
 		if carma_pack_results_g:
-			scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+			scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
 			plt.xlim(min(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[2,:])), max(np.nanmax(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[2,:])))
 			plt.ylim(min(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[3,:])), max(np.nanmax(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[3,:])))
 		else:
@@ -316,7 +316,7 @@ if args.g or args.r:
 		plt.title(r'r-band C-AR Coeffs')
 		scatPlot3 = plt.scatter(ntr.Chain[0,:,NSTEPS/2:], ntr.Chain[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
 		if carma_pack_results_r:
-			scatPlot3cmcmc = plt.scatter(cmcmcChain_r[0,:], cmcmcChain_r[1,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+			scatPlot3cmcmc = plt.scatter(cmcmcChain_r[0,:], cmcmcChain_r[1,:], c = cmcmcLnPosterior_r[:], marker = 'o', edgecolors = 'none')
 			plt.xlim(min(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[0,:])), max(np.nanmax(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[0,:])))
 			plt.ylim(min(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[1,:])), max(np.nanmax(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[1,:])))
 		else:
@@ -331,7 +331,7 @@ if args.g or args.r:
 		plt.title(r'r-band C-MA Coeffs')
 		scatPlot4 = plt.scatter(ntr.Chain[2,:,NSTEPS/2:], ntr.Chain[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
 		if carma_pack_results_r:
-			scatPlot4cmcmc = plt.scatter(cmcmcChain_r[2,:], cmcmcChain_r[3,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+			scatPlot4cmcmc = plt.scatter(cmcmcChain_r[2,:], cmcmcChain_r[3,:], c = cmcmcLnPosterior_r[:], marker = 'o', edgecolors = 'none')
 			plt.xlim(min(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[2,:])), max(np.nanmax(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[2,:])))
 			plt.ylim(min(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[3,:])), max(np.nanmax(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[3,:])))
 		else:
