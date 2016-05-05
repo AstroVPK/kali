@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 from matplotlib import gridspec as gridspec
 import argparse as argparse
+import warnings as warnings
 import pdb
 import os as os
 
@@ -35,6 +36,8 @@ set_plot_params(useTex = True)
 parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
 parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
+parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
 parser.add_argument('-nwalkers', '--nwalkers', type = int, default = 25*psutil.cpu_count(logical = True), help = r'Number of walkers')
 parser.add_argument('-p', '--p', type = int, default = 2, help = r'C-AR order')
@@ -45,6 +48,9 @@ parser.set_defaults(g = True)
 parser.add_argument('-r', '--r', dest = 'r', action = 'store_true', help = r'Analyze r-band LC')
 parser.add_argument('-no-r', '--no-r', dest = 'r', action = 'store_false', help = r'Do not analyze r-band LC')
 parser.set_defaults(r = False)
+parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
+parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
+parser.set_defaults(plot = False)
 args = parser.parse_args()
 
 P = args.p
@@ -79,113 +85,264 @@ def timescales(p, q, Rho):
 	imagMA = np.array([(2.0*math.pi)/math.abs(x) for x in imagRoots])
 	return realAR, imagAR, realMA, imagMA
 
-if args.g:
-	sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
-if args.r:
-	sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
-
 if args.g or args.r:
 	plt.figure(1, figsize = (fwid, fhgt))
-	if args.g:
-		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
-	if args.r:
-		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
-	plt.xlabel(sdss0g.xunit)
-	plt.ylabel(sdss0g.yunit)
+	plt.xlabel('$t$ (MJD)')
+	plt.ylabel('$F$ (Jy)')
 	plt.legend()
 
 	Theta = np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
 
 	if args.g:
-		ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-		ntg.set(sdss0g.dt, Theta)
-		ntg.fit(sdss0g, Theta)
+		sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
 
-	if args.r:
-		ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-		ntr.set(sdss0r.dt, Theta)
-		ntr.fit(sdss0r, Theta)
+		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
+		fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
+		libcarmaChain_g = os.path.join(args.pwd, fileName)
+		try:
+			chainFile = open(libcarmaChain_g, 'r')
+		except IOError:
+			chainFile = open(libcarmaChain_g, 'w')
+			ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			ntg.set(sdss0g.dt, Theta)
+			ntg.fit(sdss0g, Theta)
+			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
+			chainFile.write(line)
+			for stepNum in xrange(NSTEPS):
+				for walkerNum in xrange(NWALKERS):
+					line = ''
+					for dimNum in xrange(P + Q +1):
+						line += '%+9.8e '%(ntg.Chain[dimNum, walkerNum, stepNum])
+					line += '%+9.8e\n'%(ntg.LnPosterior[walkerNum, stepNum])
+					chainFile.write(line)
+					del line
+		else:
+			line = chainFile.readline()
+			words = line.rstrip('\n').split()
+			P = int(words[0])
+			Q = int(words[1])
+			NWALKERS = int(words[2])
+			NSTEPS = int(words[3])
+			ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			for stepNum in xrange(NSTEPS):
+				for walkerNum in xrange(NWALKERS):
+					line = chainFile.readline()
+					words = line.rstrip('\n').split()
+					for dimNum in xrange(P + Q + 1):
+						ntg.Chain[dimNum, walkerNum, stepNum] = float(words[dimNum])
+					ntg.LnPosterior[walkerNum, stepNum] = float(words[P + Q + 1])
+		chainFile.close()
 
-	if carma_pack:
-		NUMSAMPLES = NWALKERS*NSTEPS/2
-		NBURNIN = NWALKERS*NSTEPS/2
+		fileName = args.n.split('.')[0] + '_' + args.cC + '_g.dat'
+		cmcmcChain_g = os.path.join(args.pwd, fileName)
+		try:
+			chainFile = open(cmcmcChain_g, 'r')
+		except IOError:
+			NSAMPLES = NWALKERS*NSTEPS/2
+			NBURNIN = NWALKERS*NSTEPS/2
+			if carma_pack:
+				chainFile = open(cmcmcChain_g, 'w')
+				carma_model_g = cmcmc.CarmaModel(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
+				carma_sample_g = carma_model_g.run_mcmc(NSAMPLES, nburnin = NBURNIN)
+				ar_poly_g = carma_sample_g.get_samples('ar_coefs')
+				ma_poly_g = carma_sample_g.get_samples('ma_coefs')
+				sigma_g = carma_sample_g.get_samples('sigma')
+				logpost_g = carma_sample_g.get_samples('logpost')
+				cmcmcChain_g = np.zeros((P + Q + 1, NSAMPLES))
+				cmcmcLnPosterior_g = np.zeros(NSAMPLES)
+				line = '%d %d %d\n'%(P, Q, NSAMPLES)
+				chainFile.write(line)
+				for sampleNum in xrange(NSAMPLES):
+					for j in xrange(P):
+						cmcmcChain_g[j, sampleNum] = ar_poly_g[sampleNum, j + 1]
+					for j in xrange(Q + 1):
+						cmcmcChain_g[j + P, sampleNum] = ma_poly_g[sampleNum, j]*sigma_g[sampleNum, 0]
+					cmcmcLnPosterior_g[sampleNum] = logpost_g[sampleNum, 0]
+					line = ''
+					for dimNum in xrange(P + Q +1):
+						line += '%+9.8e '%(cmcmcChain_g[dimNum, sampleNum])
+					line += '%+9.8e\n'%(cmcmcLnPosterior_g[sampleNum, 0])
+					chainFile.write(line)
+					del line
+				chainFile.close()
+				carma_pack_results_g = True
+			else:
+				warnings.warn('carma_pack not found \& pre-computed carma_pack chains not located. Not using carma_pack!')
+				carma_pack_results_g = False
+		else:
+			line = chainFile.readline()
+			words = line.rstrip('\n').split()
+			P = int(words[0])
+			Q = int(words[1])
+			NSAMPLES = int(words[2])
+			cmcmcChain_g = np.zeros((P + Q + 1, NSAMPLES))
+			cmcmcLnPosterior_g = np.zeros(NSAMPLES)
+			for sampleNum in xrange(NSAMPLES):
+				line = chainFile.readline()
+				words = line.rstrip('\n').split()
+				for dimNum in xrange(P + Q + 1):
+					cmcmcChain_g[dimNum, sampleNum] = float(words[dimNum])
+				cmcmcmLnPosterior_g[sampleNum] = float(words[P + Q + 1])
+			chainFile.close()
+			carma_pack_results_g = True
 
-		if args.g:
-			carma_model_g = cmcmc.CarmaModel(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
-			carma_sample_g = carma_model_g.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
-			ar_poly_g = carma_sample_g.get_samples('ar_coefs')
-			ma_poly_g = carma_sample_g.get_samples('ma_coefs')
-			sigma_g = carma_sample_g.get_samples('sigma')
-			cmcmcLnPosterior_g = carma_sample_g.get_samples('logpost')
-			numSamples = ar_poly_g.shape[0]
-			cmcmcChain_g = np.zeros((P + Q + 1, numSamples))
-			for i in xrange(numSamples):
-				for j in xrange(P):
-					cmcmcChain_g[j, i] = ar_poly_g[i,j + 1]
-				for j in xrange(Q + 1):
-					cmcmcChain_g[j + P, i] = ma_poly_g[i,j]*sigma_g[i,0]
-
-		if args.r:
-			carma_model_r = cmcmc.CarmaModel(sdss0r.t, sdss0r.y, sdss0r.yerr, p = P, q = Q)
-			carma_sample_r = carma_model_r.run_mcmc(NUMSAMPLES, nburnin = NBURNIN)
-			ar_poly_r = carma_sample_r.get_samples('ar_coefs')
-			ma_poly_r = carma_sample_r.get_samples('ma_coefs')
-			sigma_r = carma_sample_r.get_samples('sigma')
-			lnPosterior_r = carma_sample_r.get_samples('logpost')
-			numSamples = ar_poly_g.shape[0]
-			cmcmcChain_r = np.zeros((P + Q + 1, numSamples))
-			for i in xrange(numSamples):
-				for j in xrange(P):
-					cmcmcChain_r[j, i] = ar_poly_r[i,j + 1]
-				for j in xrange(Q + 1):
-					cmcmcChain_r[j + P, i] = ma_poly_r[i,j]*sigma_r[i,0]
-
-	if args.g:
 		fig2 = plt.figure(2, figsize = (fhgt, fhgt))
 		plt.title(r'g-band C-AR Coeffs')
 		scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-		scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_g:
+			scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+			plt.xlim(min(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[0,:])), max(np.nanmax(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[0,:])))
+			plt.ylim(min(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[1,:])), max(np.nanmax(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[1,:])))
+		else:
+			plt.xlim(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(ntg.Chain[0,:,NSTEPS/2:]))
+			plt.ylim(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(ntg.Chain[1,:,NSTEPS/2:]))
 		cBar1 = plt.colorbar(scatPlot1, orientation = 'horizontal')
 		cBar1.set_label(r'$\ln \mathcal{P}$')
-		plt.xlim(min(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[0,:])), max(np.nanmax(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[0,:])))
-		plt.ylim(min(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[1,:])), max(np.nanmax(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[1,:])))
 		plt.xlabel(r'$a_{1}$')
 		plt.ylabel(r'$a_{2}$')
 
 		fig3 = plt.figure(3, figsize = (fhgt, fhgt))
 		plt.title(r'g-band C-MA Coeffs')
 		scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-		scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_g:
+			scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:,0], marker = 'o', edgecolors = 'none')
+			plt.xlim(min(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[2,:])), max(np.nanmax(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[2,:])))
+			plt.ylim(min(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[3,:])), max(np.nanmax(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[3,:])))
+		else:
+			plt.xlim(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(ntg.Chain[2,:,NSTEPS/2:]))
+			plt.ylim(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(ntg.Chain[3,:,NSTEPS/2:]))
 		cBar2 = plt.colorbar(scatPlot2, orientation = 'horizontal')
 		cBar2.set_label(r'$\ln \mathcal{P}$')
-		plt.xlim(min(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[2,:])), max(np.nanmax(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[2,:])))
-		plt.ylim(min(np.nanmin(ntg.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[3,:])), max(np.nanmax(ntg.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[3,:])))
 		plt.xlabel(r'$b_{0}$')
 		plt.ylabel(r'$b_{1}$')
 
 	if args.r:
+		sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
+
+		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
+		fileName = args.n.split('.')[0] + '_' + args.lC + '_r.dat'
+		libcarmaChain_r = os.path.join(args.pwd, fileName)
+		try:
+			chainFile = open(libcarmaChain_r, 'r')
+		except IOError:
+			NSAMPLES = NWALKERS*NSTEPS/2
+			NBURNIN = NWALKERS*NSTEPS/2
+			if carma_pack:
+				chainFile = open(libcarmaChain_r, 'w')
+				ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+				ntr.set(sdss0r.dt, Theta)
+				ntr.fit(sdss0r, Theta)
+				line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
+				chainFile.write(line)
+				for stepNum in xrange(NSTEPS):
+					for walkerNum in xrange(NWALKERS):
+						line = ''
+						for dimNum in xrange(P + Q +1):
+							line += '%+9.8e '%(ntr.Chain[dimNum, walkerNum, stepNum])
+						line += '%+9.8e\n'%(ntr.LnPosterior[walkerNum, stepNum])
+						chainFile.write(line)
+						del line
+			chainFile.close()
+		else:
+			line = chainFile.readline()
+			words = line.rstrip('\n').split()
+			P = int(words[0])
+			Q = int(words[1])
+			NWALKERS = int(words[2])
+			NSTEPS = int(words[3])
+			ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			for stepNum in xrange(NSTEPS):
+				for walkerNum in xrange(NWALKERS):
+					line = chainFile.readline()
+					words = line.rstrip('\n').split()
+					for dimNum in xrange(P + Q + 1):
+						ntr.Chain[dimNum, walkerNum, stepNum] = float(words[dimNum])
+					ntr.LnPosterior[walkerNum, stepNum] = float(words[P + Q + 1])
+
+		fileName = args.n.split('.')[0] + '_' + args.cC + '_r.dat'
+		cmcmcChain_r = os.path.join(args.pwd, fileName)
+		try:
+			chainFile = open(cmcmcChain_r, 'r')
+		except IOError:
+			NSAMPLES = NWALKERS*NSTEPS/2
+			NBURNIN = NWALKERS*NSTEPS/2
+			if carma_pack:
+				chainFile = open(cmcmcChain_r, 'w')
+				carma_model_r = cmcmc.CarmaModel(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, p = P, q = Q)  # create new CARMA process model
+				carma_sample_r = carma_model_r.run_mcmc(NSAMPLES, nburnin = NBURNIN)
+				ar_poly_r = carma_sample_r.get_samples('ar_coefs')
+				ma_poly_r = carma_sample_r.get_samples('ma_coefs')
+				sigma_r = carma_sample_r.get_samples('sigma')
+				logpost_r = carma_sample_r.get_samples('logpost')
+				cmcmcChain_r = np.zeros((P + Q + 1, NSAMPLES))
+				cmcmcLnPosterior_r = np.zeros(NSAMPLES)
+				line = '%d %d %d\n'%(P, Q, NSAMPLES)
+				chainFile.write(line)
+				for sampleNum in xrange(NSAMPLES):
+					for j in xrange(P):
+						cmcmcChain_r[j, sampleNum] = ar_poly_r[sampleNum, j + 1]
+					for j in xrange(Q + 1):
+						cmcmcChain_r[j + P, sampleNum] = ma_poly_r[sampleNum, j]*sigma_r[sampleNum, 0]
+					cmcmcLnPosterior_r[sampleNum] = logpost_r[sampleNum, 0]
+					line = ''
+					for dimNum in xrange(P + Q +1):
+						line += '%+9.8e '%(cmcmcChain_r[dimNum, sampleNum])
+					line += '%+9.8e\n'%(cmcmcLnPosterior_r[sampleNum, 0])
+					chainFile.write(line)
+					del line
+				chainFile.close()
+				carma_pack_results_r = True
+			else:
+				warnings.warn('carma_pack not found \& pre-computed carma_pack chains not located. Not using carma_pack!')
+				carma_pack_results_r = False
+		else:
+			line = chainFile.readline()
+			words = line.rstrip('\n').split()
+			P = int(words[0])
+			Q = int(words[1])
+			NSAMPLES = int(words[2])
+			cmcmcChain_r = np.zeros((P + Q + 1, NSAMPLES))
+			cmcmcLnPosterior_r = np.zeros(NSAMPLES)
+			for sampleNum in xrange(NSAMPLES):
+				line = chainFile.readline()
+				words = line.rstrip('\n').split()
+				for dimNum in xrange(P + Q + 1):
+					cmcmcChain_r[dimNum, sampleNum] = float(words[dimNum])
+				cmcmcmLnPosterior_r[sampleNum] = float(words[P + Q + 1])
+			chainFile.close()
+			carma_pack_results_r = True
+
 		fig4 = plt.figure(4, figsize = (fhgt, fhgt))
 		plt.title(r'r-band C-AR Coeffs')
 		scatPlot3 = plt.scatter(ntr.Chain[0,:,NSTEPS/2:], ntr.Chain[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-		scatPlot3cmcmc = plt.scatter(cmcmcChain_r[0,:], cmcmcChain_r[1,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_r:
+			scatPlot3cmcmc = plt.scatter(cmcmcChain_r[0,:], cmcmcChain_r[1,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+			plt.xlim(min(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[0,:])), max(np.nanmax(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[0,:])))
+			plt.ylim(min(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[1,:])), max(np.nanmax(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[1,:])))
+		else:
+			plt.xlim(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(ntr.Chain[0,:,NSTEPS/2:]))
+			plt.ylim(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(ntr.Chain[1,:,NSTEPS/2:]))
 		cBar3 = plt.colorbar(scatPlot3, orientation = 'horizontal')
 		cBar3.set_label(r'$\ln \mathcal{P}$')
-		plt.xlim(min(np.nanmin(ntr.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[0,:])), max(np.nanmax(ntr.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[0,:])))
-		plt.ylim(min(np.nanmin(ntr.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[1,:])), max(np.nanmax(ntr.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[1,:])))
 		plt.xlabel(r'$a_{1}$')
 		plt.ylabel(r'$a_{2}$')
 
 		fig5 = plt.figure(5, figsize = (fhgt, fhgt))
 		plt.title(r'r-band C-MA Coeffs')
 		scatPlot4 = plt.scatter(ntr.Chain[2,:,NSTEPS/2:], ntr.Chain[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
-		scatPlot4cmcmc = plt.scatter(cmcmcChain_r[2,:], cmcmcChain_r[3,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_r:
+			scatPlot4cmcmc = plt.scatter(cmcmcChain_r[2,:], cmcmcChain_r[3,:], c = cmcmcLnPosterior_r[:,0], marker = 'o', edgecolors = 'none')
+			plt.xlim(min(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[2,:])), max(np.nanmax(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[2,:])))
+			plt.ylim(min(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[3,:])), max(np.nanmax(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[3,:])))
+		else:
+			plt.xlim(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(ntr.Chain[2,:,NSTEPS/2:]))
+			plt.ylim(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(ntr.Chain[3,:,NSTEPS/2:]))
 		cBar4 = plt.colorbar(scatPlot4, orientation = 'horizontal')
 		cBar4.set_label(r'$\ln \mathcal{P}$')
-		plt.xlim(min(np.nanmin(ntr.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[2,:])), max(np.nanmax(ntr.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[2,:])))
-		plt.ylim(min(np.nanmin(ntr.Chain[3,:,NSTEPS/2:]), np.nanmin(cmcmcChain_r[3,:])), max(np.nanmax(ntr.Chain[3,:,NSTEPS/2:]), np.nanmax(cmcmcChain_r[3,:])))
 		plt.xlabel(r'$b_{0}$')
 		plt.ylabel(r'$b_{1}$')
 
-	plt.show()
+	if args.plot:
+		plt.show()
 
 pdb.set_trace()
