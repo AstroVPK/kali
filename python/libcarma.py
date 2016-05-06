@@ -29,11 +29,11 @@ def roots(p, q, Theta):
 	ARPoly[0] = 1.0
 	for i in xrange(p):
 		ARPoly[i + 1] = Theta[i]
-	ARRoots = np.roots(ARPoly)
+	ARRoots = np.array(np.roots(ARPoly))
 	MAPoly = np.zeros(q + 1)
 	for i in xrange(q + 1):
 		MAPoly[i] = Theta[p + q - i]
-	MARoots = np.roots(MAPoly)
+	MARoots = np.array(np.roots(MAPoly))
 	Rho = np.zeros(p + q + 1, dtype = 'complex128')
 	for i in xrange(p):
 		Rho[i] = ARRoots[i]
@@ -46,15 +46,15 @@ def coeffs(p, q, Rho):
 	ARRoots = np.zeros(p, dtype = 'complex128')
 	for i in xrange(p):
 		ARRoots[i] = Rho[i]
-	ARPoly = np.poly(ARRoots)
+	ARPoly = np.array(np.poly(ARRoots))
 	MARoots = np.zeros(q, dtype = 'complex128')
 	for i in xrange(q):
 		MARoots[i] = Rho[p + i]
-	MAPoly = np.poly(MARoots)
+	MAPoly = np.array(np.poly(MARoots))
 	with warnings.catch_warnings():
 		warnings.simplefilter('ignore')
 		for i in xrange(q + 1):
-			MAPoly[i] =Rho[-1]*MAPoly[i]
+			MAPoly[i] = Rho[-1]*MAPoly[i]
 	Theta = np.zeros(p + q + 1, dtype = 'float64')
 	for i in xrange(p):
 		Theta[i] = ARPoly[i + 1].real

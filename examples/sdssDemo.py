@@ -54,6 +54,9 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
+parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
+parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
+parser.set_defaults(stop = False)
 args = parser.parse_args()
 
 P = args.p
@@ -92,9 +95,8 @@ if args.g or args.r:
 	plt.figure(1, figsize = (fwid, fhgt))
 	plt.xlabel('$t$ (MJD)')
 	plt.ylabel('$F$ (Jy)')
+	plt.title(r'Light curve')
 	plt.legend()
-
-	Theta = np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
 
 	if args.g:
 		sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
@@ -102,6 +104,13 @@ if args.g or args.r:
 		sdss0g.maxTimescale = args.maxTimescale
 		sdss0g.maxSigma = args.maxSigma
 
+		minT = sdss0g.dt*sdss0g.minTimescale
+		maxT = sdss0g.T*sdss0g.maxTimescale
+		Rho = 1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
+		Rho[-1] = 1.0e-2*np.std(sdss0g.y)
+		Guess = libcarma.coeffs(P, Q, Rho)
+
+		plt.figure(1)
 		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
 		fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
 		libcarmaChain_g = os.path.join(args.pwd, fileName)
@@ -110,8 +119,8 @@ if args.g or args.r:
 		except IOError:
 			chainFile = open(libcarmaChain_g, 'w')
 			ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-			ntg.set(sdss0g.dt, Theta)
-			ntg.fit(sdss0g, Theta)
+			ntg.set(sdss0g.dt, Guess)
+			ntg.fit(sdss0g, Guess)
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
 			chainFile.write(line)
 			for stepNum in xrange(NSTEPS):
@@ -229,10 +238,12 @@ if args.g or args.r:
 				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
 				lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(6, figsize = (fhgt, fhgt))
+		plt.title(r'g-band C-AR Timescales')
 		plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
 		plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
 		plt.figure(7, figsize = (fhgt, fhgt))
+		plt.title(r'g-band C-MA Timescales')
 		plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
 		plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
@@ -258,10 +269,18 @@ if args.g or args.r:
 			plt.tight_layout()
 
 	if args.r:
+		plt.figure(1)
 		sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
 		sdss0r.minTimescale = args.minTimescale
 		sdss0r.maxTimescale = args.maxTimescale
 		sdss0r.maxSigma = args.maxSigma
+
+		minT = sdss0r.dt*sdss0r.minTimescale
+		maxT = sdss0r.T*sdss0r.maxTimescale
+		Rho = 1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
+		Rho[-1] = 1.0e-2*np.std(sdss0r.y)
+		Guess = libcarma.coeffs(P, Q, Rho)
+
 
 		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
 		fileName = args.n.split('.')[0] + '_' + args.lC + '_r.dat'
@@ -271,21 +290,20 @@ if args.g or args.r:
 		except IOError:
 			NSAMPLES = NWALKERS*NSTEPS/2
 			NBURNIN = NWALKERS*NSTEPS/2
-			if carma_pack:
-				chainFile = open(libcarmaChain_r, 'w')
-				ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-				ntr.set(sdss0r.dt, Theta)
-				ntr.fit(sdss0r, Theta)
-				line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
-				chainFile.write(line)
-				for stepNum in xrange(NSTEPS):
-					for walkerNum in xrange(NWALKERS):
-						line = ''
-						for dimNum in xrange(P + Q +1):
-							line += '%+9.8e '%(ntr.Chain[dimNum, walkerNum, stepNum])
-						line += '%+9.8e\n'%(ntr.LnPosterior[walkerNum, stepNum])
-						chainFile.write(line)
-						del line
+			chainFile = open(libcarmaChain_r, 'w')
+			ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			ntr.set(sdss0r.dt, Guess)
+			ntr.fit(sdss0r, Guess)
+			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
+			chainFile.write(line)
+			for stepNum in xrange(NSTEPS):
+				for walkerNum in xrange(NWALKERS):
+					line = ''
+					for dimNum in xrange(P + Q +1):
+						line += '%+9.8e '%(ntr.Chain[dimNum, walkerNum, stepNum])
+					line += '%+9.8e\n'%(ntr.LnPosterior[walkerNum, stepNum])
+					chainFile.write(line)
+					del line
 			chainFile.close()
 		else:
 			line = chainFile.readline()
@@ -392,8 +410,16 @@ if args.g or args.r:
 			for walkerNum in xrange(NWALKERS):
 				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntr.rootChain[:, walkerNum, stepNum])
 				lcarmaTau_r[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntr.rootChain[P + Q, walkerNum, stepNum]])
-		plt.figure(6, figsize = (fhgt, fhgt))
-		plt.scatter(lcarmaTau_r[0,:,NSTEPS/2:], lcarmaTau_r[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		plt.figure(8, figsize = (fhgt, fhgt))
+		plt.title(r'r-band C-AR Timescales')
+		plt.scatter(lcarmaTau_r[0,:,NSTEPS/2:], lcarmaTau_r[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
+		plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
+		plt.figure(9, figsize = (fhgt, fhgt))
+		plt.title(r'r-band C-MA Timescales')
+		plt.scatter(lcarmaTau_r[2,:,NSTEPS/2:], lcarmaTau_r[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
+		plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
 		if carma_pack_results_r:
 			cmcmcRho_r = np.zeros((P + Q + 1, NSAMPLES))
 			cmcmcTau_r = np.zeros((P + Q + 1, NSAMPLES))
@@ -404,9 +430,19 @@ if args.g or args.r:
 					cmcmcTau_r[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_r[P + Q, sampleNum]])
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 					pass
-			plt.scatter(cmcmcTau_r[0,:], cmcmcTau_r[1,:], c = cmcmcLnPosterior_r[:], marker = 'o', edgecolors = 'none')
+			plt.figure(8)
+			plt.scatter(cmcmcTau_r[0,:], cmcmcTau_r[1,:], c = cmcmcLnPosterior_r[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+			plt.xlim(min(np.min(cmcmcTau_r[0,:]), np.min(lcarmaTau_r[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[0,:]), np.max(lcarmaTau_r[0,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_r[1,:]), np.min(lcarmaTau_r[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[1,:]), np.max(lcarmaTau_r[1,:,NSTEPS/2:])))
+			plt.tight_layout()
+			plt.figure(9)
+			plt.scatter(cmcmcTau_r[2,:], cmcmcTau_r[3,:], c = cmcmcLnPosterior_r[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+			plt.xlim(min(np.min(cmcmcTau_r[2,:]), np.min(lcarmaTau_r[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[2,:]), np.max(lcarmaTau_r[2,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_r[3,:]), np.min(lcarmaTau_r[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[3,:]), np.max(lcarmaTau_r[3,:,NSTEPS/2:])))
+			plt.tight_layout()
 
 	if args.plot:
 		plt.show()
 
-pdb.set_trace()
+if args.stop:
+	pdb.set_trace()
