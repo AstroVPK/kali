@@ -68,9 +68,9 @@ def timescales(p, q, Rho):
 	decayTimescales = np.zeros(numReal)
 	oscTimescales = np.zeros(numImag)
 	realRoots = set(Rho[0:p].real)
-	imagRoots = set(abs(Rho[0:p].imag)).difference(Set([0.0]))
-	realAR = np.array([1.0/math.abs(x) for x in realRoots])
-	imagAR = np.array([(2.0*math.pi)/math.abs(x) for x in imagRoots])
+	imagRoots = set(abs(Rho[0:p].imag)).difference(set([0.0]))
+	realAR = np.array([1.0/abs(x) for x in realRoots])
+	imagAR = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
 	imagPairs = 0
 	for i in xrange(q):
 		if Rho[i].imag != 0.0:
@@ -80,9 +80,9 @@ def timescales(p, q, Rho):
 	decayTimescales = np.zeros(numReal)
 	oscTimescales = np.zeros(numImag)
 	realRoots = set(Rho[p:p + q].real)
-	imagRoots = set(abs(Rho[p:p + q].imag)).difference(Set([0.0]))
-	realMA = np.array([1.0/math.abs(x) for x in realRoots])
-	imagMA = np.array([(2.0*math.pi)/math.abs(x) for x in imagRoots])
+	imagRoots = set(abs(Rho[p:p + q].imag)).difference(set([0.0]))
+	realMA = np.array([1.0/abs(x) for x in realRoots])
+	imagMA = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
 	return realAR, imagAR, realMA, imagMA
 
 if args.g or args.r:
@@ -182,7 +182,7 @@ if args.g or args.r:
 				words = line.rstrip('\n').split()
 				for dimNum in xrange(P + Q + 1):
 					cmcmcChain_g[dimNum, sampleNum] = float(words[dimNum])
-				cmcmcLnPosterior_g[sampleNum] = float(words[P + Q + 1])
+				cmcmcLnPosterior_g[sampleNum] = float(words[P+Q+1])
 			chainFile.close()
 			carma_pack_results_g = True
 
@@ -215,6 +215,26 @@ if args.g or args.r:
 		cBar2.set_label(r'$\ln \mathcal{P}$')
 		plt.xlabel(r'$b_{0}$')
 		plt.ylabel(r'$b_{1}$')
+
+		# Convert Theta -> Rho -> Tau
+		lcarmaTau_g = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
+		for stepNum in xrange(NSTEPS):
+			for walkerNum in xrange(NWALKERS):
+				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
+				lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
+		plt.figure(6, figsize = (fhgt, fhgt))
+		plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_g:
+			cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
+			cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
+			for sampleNum in xrange(NSAMPLES):
+				cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
+				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
+				try:
+					cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
+				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
+					pass
+			plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
 
 	if args.r:
 		sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
@@ -341,6 +361,26 @@ if args.g or args.r:
 		cBar4.set_label(r'$\ln \mathcal{P}$')
 		plt.xlabel(r'$b_{0}$')
 		plt.ylabel(r'$b_{1}$')
+
+		# Convert Theta -> Rho -> Tau
+		lcarmaTau_r = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
+		for stepNum in xrange(NSTEPS):
+			for walkerNum in xrange(NWALKERS):
+				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntr.rootChain[:, walkerNum, stepNum])
+				lcarmaTau_r[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntr.rootChain[P + Q, walkerNum, stepNum]])
+		plt.figure(6, figsize = (fhgt, fhgt))
+		plt.scatter(lcarmaTau_r[0,:,NSTEPS/2:], lcarmaTau_r[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		if carma_pack_results_r:
+			cmcmcRho_r = np.zeros((P + Q + 1, NSAMPLES))
+			cmcmcTau_r = np.zeros((P + Q + 1, NSAMPLES))
+			for sampleNum in xrange(NSAMPLES):
+				cmcmcRho_r[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_r[:,sampleNum])
+				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = timescales(P, Q, (cmcmcRho_r[:,sampleNum]))
+				try:
+					cmcmcTau_r[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_r[P + Q, sampleNum]])
+				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
+					pass
+			plt.scatter(cmcmcTau_r[0,:], cmcmcTau_r[1,:], c = cmcmcLnPosterior_r[:], marker = 'o', edgecolors = 'none')
 
 	if args.plot:
 		plt.show()

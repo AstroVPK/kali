@@ -14,8 +14,8 @@ class sdss_gLC(libcarma.basicLC):
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
 		self._maxSigma = 2.0
-		self._minTimescale = 5.0e-1
-		self._maxTimescale = 2.0
+		self._minTimescale = 2.0
+		self._maxTimescale = 0.5
 		self._p = 0
 		self._q = 0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
@@ -61,8 +61,8 @@ class sdss_rLC(libcarma.basicLC):
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
 		self._maxSigma = 2.0
-		self._minTimescale = 5.0e-1
-		self._maxTimescale = 2.0
+		self._minTimescale = 2.0
+		self._maxTimescale = 0.5
 		self._p = 0
 		self._q = 0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
