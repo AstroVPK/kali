@@ -51,6 +51,9 @@ parser.set_defaults(r = False)
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
 parser.set_defaults(plot = False)
+parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
+parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
+parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
 args = parser.parse_args()
 
 P = args.p
@@ -95,6 +98,9 @@ if args.g or args.r:
 
 	if args.g:
 		sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
+		sdss0g.minTimescale = args.minTimescale
+		sdss0g.maxTimescale = args.maxTimescale
+		sdss0g.maxSigma = args.maxSigma
 
 		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
 		fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
@@ -238,6 +244,9 @@ if args.g or args.r:
 
 	if args.r:
 		sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
+		sdss0r.minTimescale = args.minTimescale
+		sdss0r.maxTimescale = args.maxTimescale
+		sdss0r.maxSigma = args.maxSigma
 
 		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
 		fileName = args.n.split('.')[0] + '_' + args.lC + '_r.dat'
