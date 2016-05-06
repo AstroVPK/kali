@@ -34,8 +34,8 @@ class k2pdcsapLC(libcarma.basicLC):
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
 		self._maxSigma = 2.0
-		self._minTimescale = 5.0e-1
-		self._maxTimescale = 2.0
+		self._minTimescale = 2.0
+		self._maxTimescale = 0.5
 		if path is None:
 			path = os.environ['PWD']
 		#open kepler k2 lc fits file
@@ -92,8 +92,8 @@ class k2rawLC(libcarma.basicLC):
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
 		self._maxSigma = 2.0
-		self._minTimescale = 5.0e-1
-		self._maxTimescale = 2.0
+		self._minTimescale = 2.0
+		self._maxTimescale = 0.5
 		if path is None:
 			path = os.environ['PWD']
 		#open kepler k2 lc fits file
