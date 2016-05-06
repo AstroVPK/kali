@@ -229,7 +229,13 @@ if args.g or args.r:
 				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
 				lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(6, figsize = (fhgt, fhgt))
-		plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+		plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
+		plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
+		plt.figure(7, figsize = (fhgt, fhgt))
+		plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
+		plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
 		if carma_pack_results_g:
 			cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
 			cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
@@ -240,7 +246,16 @@ if args.g or args.r:
 					cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 					pass
-			plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
+			plt.figure(6)
+			plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+			plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(lcarmaTau_g[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(lcarmaTau_g[0,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(lcarmaTau_g[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(lcarmaTau_g[1,:,NSTEPS/2:])))
+			plt.tight_layout()
+			plt.figure(7)
+			plt.scatter(cmcmcTau_g[2,:], cmcmcTau_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+			plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(lcarmaTau_g[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(lcarmaTau_g[3,:,NSTEPS/2:])))
+			plt.tight_layout()
 
 	if args.r:
 		sdss0r = sdss.sdss_rLC(supplied = args.n, pwd = args.pwd)
