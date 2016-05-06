@@ -69,8 +69,7 @@ def createLC(theta, p, q, dt, T, nwalkers = 100, nsteps = 500):
 def fitCARMA(LC, p, q, module = 'libcarma', *args, **kwargs):
 	'''fit a light curve to a carma process'''
 	if module == 'libcarma':
-		guess = np.zeros((p+q+1)) + libcarma.coeffs(2,1,np.array([ -9.32273996e+00, -5.84387993e-02,-5.64273662e-01, 5.64472543e-05]))
-		guess = np.zeros((p+q+1)) + np.array([0.725, 0.01, 7.0e-7, 1.2e-7])
+		guess = np.zeros((p+q+1)) + libcarma.coeffs(p,q,np.concatenate((np.random.random(p), np.random.random(q)*1e-7+1e-7, np.random.random(1)*1e-7+1e-7))
 		newTask = libcarma.basicTask(p, q, *args, **kwargs)
 		newTask.fit(LC, guess)
 		return newTask
@@ -94,12 +93,11 @@ def DistanceCompare(theta1, lnlk1, theta2, lnlk2, theta):
 	line2 = 'med: '+"%.6f" % meds[0]+' | '+"%.6f" % meds[1]
 	return '\n'.join((title, line1, line2))
 
-def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
+def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta = None):
 
+	mock = bool(theta is not None)
 	pos1 = lnlk1.argmax()
 	pos2 = lnlk2.argmax()
-
-	print theta1.shape, theta2.shape, lnlk1.shape, lnlk2.shape, theta.shape
 
 	m, n = theta1.shape
 	fig = figure(figsize = (n*5, n*5), dpi = 100)
@@ -111,7 +109,7 @@ def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
 				  ax = fig.add_subplot(n, n, i*n+j+1)
 				  ax.set_title(r'$\theta_{%i}$' % (j + 1))
 				  num, bins, patches = ax.hist([theta1[:,i], theta2[:,i]], bins = nbins, histtype = 'stepfilled', normed = True, color = ['#A0A0DC','#DCA0A0'], alpha = 1.0, stacked = True)
-				  ax.axvline(theta[i], color = 'g')
+				  if mock: ax.axvline(theta[i], color = 'g')
 				  ax.axvline(theta1[pos1,i], color = 'b')
 				  ax.axvline(theta2[pos2,i], color = 'r')
 				  ax.autoscale_view(False, False, False)
@@ -123,8 +121,9 @@ def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
 				  ax = fig.add_subplot(n, n, n*i+j+1, sharex = xAxis, sharey = yAxis)
 				  ax.scatter(theta1[:,j], theta1[:,i], c = lnlk1, marker = 'o', edgecolor = 'none', alpha = 0.5, cmap = 'cool')
 				  ax.scatter(theta2[:,j], theta2[:,i], c = lnlk2, marker = 'o', edgecolor = 'none', alpha = 0.5, cmap = 'autumn')
-				  ax.axvline(theta[j], color = 'g')
-				  ax.axhline(theta[i], color = 'g')
+				  if mock:
+						ax.axvline(theta[j], color = 'g')
+						ax.axhline(theta[i], color = 'g')
 				  ax.axhline(theta1[pos1,i], color = 'b')
 				  ax.axvline(theta1[pos1,j], color = 'b')
 				  ax.axhline(theta2[pos2,i], color = 'r')
