@@ -47,7 +47,7 @@ parser.add_argument('-no-g', '--no-g', dest = 'g', action = 'store_false', help 
 parser.set_defaults(g = True)
 parser.add_argument('-r', '--r', dest = 'r', action = 'store_true', help = r'Analyze r-band LC')
 parser.add_argument('-no-r', '--no-r', dest = 'r', action = 'store_false', help = r'Do not analyze r-band LC')
-parser.set_defaults(r = False)
+parser.set_defaults(r = True)
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
 parser.set_defaults(plot = False)
