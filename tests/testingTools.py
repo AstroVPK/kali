@@ -3,7 +3,7 @@ Library of functions to acilitate libcarma testing
 everything should work in terms of Rho, Theta, p and q
 or arrays of rho, theta, p and q
 '''
-import sys, os, time
+import sys, os, time, pdb
 import numpy as np
 import libcarma, carmcmc
 from matplotlib.pyplot import subplots, show, figure
@@ -69,7 +69,7 @@ def createLC(theta, p, q, dt, T, nwalkers = 100, nsteps = 500):
 def fitCARMA(LC, p, q, module = 'libcarma', *args, **kwargs):
 	'''fit a light curve to a carma process'''
 	if module == 'libcarma':
-		guess = np.zeros((p+q+1)) + np.array([6.7284e-2, 1.776948e-3, 7.66666e-9, 2.0000e-9])
+		guess = np.zeros((p+q+1)) + libcarma.coeffs(p,q,np.concatenate((np.random.random(p), np.random.random(q)*1e-7+1e-7, np.random.random(1)*1e-7+1e-7))
 		newTask = libcarma.basicTask(p, q, *args, **kwargs)
 		newTask.fit(LC, guess)
 		return newTask
@@ -93,12 +93,11 @@ def DistanceCompare(theta1, lnlk1, theta2, lnlk2, theta):
 	line2 = 'med: '+"%.6f" % meds[0]+' | '+"%.6f" % meds[1]
 	return '\n'.join((title, line1, line2))
 
-def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
+def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta = None):
 
+	mock = bool(theta is not None)
 	pos1 = lnlk1.argmax()
 	pos2 = lnlk2.argmax()
-
-	print theta1.shape, theta2.shape, lnlk1.shape, lnlk2.shape, theta.shape
 
 	m, n = theta1.shape
 	fig = figure(figsize = (n*5, n*5), dpi = 100)
@@ -110,7 +109,7 @@ def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
 				  ax = fig.add_subplot(n, n, i*n+j+1)
 				  ax.set_title(r'$\theta_{%i}$' % (j + 1))
 				  num, bins, patches = ax.hist([theta1[:,i], theta2[:,i]], bins = nbins, histtype = 'stepfilled', normed = True, color = ['#A0A0DC','#DCA0A0'], alpha = 1.0, stacked = True)
-				  ax.axvline(theta[i], color = 'g')
+				  if mock: ax.axvline(theta[i], color = 'g')
 				  ax.axvline(theta1[pos1,i], color = 'b')
 				  ax.axvline(theta2[pos2,i], color = 'r')
 				  ax.autoscale_view(False, False, False)
@@ -122,8 +121,9 @@ def trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, theta):
 				  ax = fig.add_subplot(n, n, n*i+j+1, sharex = xAxis, sharey = yAxis)
 				  ax.scatter(theta1[:,j], theta1[:,i], c = lnlk1, marker = 'o', edgecolor = 'none', alpha = 0.5, cmap = 'cool')
 				  ax.scatter(theta2[:,j], theta2[:,i], c = lnlk2, marker = 'o', edgecolor = 'none', alpha = 0.5, cmap = 'autumn')
-				  ax.axvline(theta[j], color = 'g')
-				  ax.axhline(theta[i], color = 'g')
+				  if mock:
+						ax.axvline(theta[j], color = 'g')
+						ax.axhline(theta[i], color = 'g')
 				  ax.axhline(theta1[pos1,i], color = 'b')
 				  ax.axvline(theta1[pos1,j], color = 'b')
 				  ax.axhline(theta2[pos2,i], color = 'r')
@@ -148,14 +148,23 @@ def abslog(x):
 
 def loadLC(self, name, path = None):
 	from JacksTools import jio, jools
-	fname = "LightCurveSDSS_39.csv"
+	fname = ''
+	while not os.path.isfile(fname): 
+		fname = "LightCurveSDSS_%i.csv" % np.random.randint(1,56)
+	fname = "LightCurveSDSS_39.csv"# % np.random.randint(1,56)
 	data = jio.load(fname, headed = True, delimiter = ',')
-	flux, err = jools.luptitude_to_flux(data['psfMag_g'], data['psfMagErr_g'], 'g')
+	flux, err = jools.luptitude_to_flux(data['calMag_g'], data['calMagErr_g'], 'g')
+	#flux = data['psfMag_g']
+	#err = data['psfMagErr_g']
 	z = 1.074
 	t = jools.time_to_restFrame(data['mjd_g'], z)
-	flux = jools.flux_to_lum(flux, z)
-	err = jools.flux_to_lum(err, z)
-
+	t = t - min(t)
+	#flux = jools.flux_to_lum(flux, z)
+	#err = jools.flux_to_lum(err, z)
+	
+	self._p = 0
+	self._q = 0
+	self._computedCadenceNum = -1
 	self._tolIR = 1.0e-3
 	self._fracIntrinsicVar = 0.0
 	self._fracNoiseToSignal = 0.0
@@ -189,7 +198,7 @@ def loadLC(self, name, path = None):
 			else:
 				self.t[i] = self.t[i - 1] + self._dt
 		self.mask[i] = 0.0
-	self._dt = np.nanmedian(self.t[1:] - self.t[:-1]) ## Increment between epochs.
+	#self._dt = np.nanmedian(self.t[1:] - self.t[:-1]) ## Increment between epochs.
 	self._p = 0
 	self._q = 0
 	self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
@@ -208,8 +217,8 @@ libcarma.basicLC.read = loadLC
 
 def main():
 
-	dt = 0.5
-	T = 350
+	dt = 0.4
+	T = 1079
 	numCadences = int(T/dt)
 
 	maxSigma = 2.0
@@ -231,17 +240,25 @@ def main():
 		LC = libcarma.basicLC(1, supplied = True)
 
 		fig, ax = subplots(1,1)
-		ax.plot(LC.t, LC.y)
+		ax.errorbar(LC.t, LC.y, LC.yerr, ls = ' ', marker = '.', markeredgecolor = 'none', color = '#D95F02')
 
+		#LC.sampler = 'matchSampler'
+		#LC.sample(timestamps=LC1.t)
 
-		LC.minTimescale = 2.0
-		LC.maxTimescale = 0.5
+		LC.minTimescale = 0.5
+		LC.maxTimescale = 2.0
 		T0 = time.time()
-		task = fitCARMA(LC, p, q, module = 'libcarma', nwalkers = 100, nsteps = 100)
+		task = fitCARMA(LC, p, q, module = 'libcarma', nwalkers = 100, nsteps = 1000)
 		T1 = time.time() - T0
 		print "Time1:", T1
 		T0 = time.time()
-		sample = fitCARMA(LC, p, q, 'carmcmc', 25*100, nburnin = 75*100)
+		###!!!
+		#pos = np.in1d(LC.t, LC1.t)
+		#LC.t = LC.t[pos]
+		#LC.y = LC.y[pos]
+		#LC.yerr = LC.yerr[pos]
+		###!!!
+		sample = fitCARMA(LC, p, q, 'carmcmc', 25*1000, nburnin = 75*1000)
 		T2 = time.time() - T0
 		print "Time2:", T2
 		tims.append(1.0*T2/T1)
@@ -255,7 +272,10 @@ def main():
 		lnlk2 = sample.get_samples('logpost')[:,0]
 		#strings.append(DistanceCompare(theta1, lnlk1, theta2, lnlk2, np.log10(np.absolute(1.0/libcarma.roots(p, q, theta).real))))
 		#trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, np.log10(np.absolute(1.0/libcarma.roots(p, q, theta).real)))
-		trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, np.log10(np.ones(theta1.shape[1])))
+		try:
+			trianglePlotCompare(theta1, lnlk1, theta2, lnlk2, np.log10(np.ones(theta1.shape[1])))
+		except:
+			pass
 		show(False)
 		fig.canvas.draw()
 		fig.canvas.update()
@@ -265,9 +285,11 @@ def main():
 	#for i,s in enumerate(strings):
 	#	print i
 	#	print s
-	show()
+	
+	show(False)
 	print np.mean(tims)
 	print np.std(tims)
 
+	pdb.set_trace()
 if __name__ == '__main__':
 	main()
