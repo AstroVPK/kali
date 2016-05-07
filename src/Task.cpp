@@ -533,7 +533,7 @@ using namespace std;
 		Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 		}
 
-	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;
 		int threadNum = omp_get_thread_num();
@@ -647,7 +647,7 @@ using namespace std;
 		_mm_free(xStream);
 		_mm_free(deltaXTemp);
 		_mm_free(max_LnPosterior);
-		EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, 2.0, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
+		EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 		newEnsemble.runMCMC(initPos);
 		_mm_free(initPos);
 		newEnsemble.getChain(Chain);

@@ -894,7 +894,7 @@ class matchSampler(sampler):
 class task(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
 		try:
 			assert p > q, r'p must be greater than q'
 			assert p >= 1, r'p must be greater than or equal to 1'
@@ -925,6 +925,7 @@ class task(object):
 			self._scatterFactor = scatterFactor
 			self._maxEvals = maxEvals
 			self._xTol = xTol
+			self._mcmcA = mcmcA
 			self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
 			self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
 			self._taskCython = CARMATask.CARMATask(self._p, self._q, self._nthreads, self._nburn)
@@ -1053,6 +1054,19 @@ class task(object):
 			assert value >= 0, r'xTol must be greater than or equal to 0'
 			assert type(value) is types.FloatType, r'xTol must be a float'
 			self._xTol = value
+		except AssertionError as err:
+			raise AttributeError(str(err))
+
+	@property
+	def mcmcA(self):
+		return self._mcmcA
+
+	@xTol.setter
+	def mcmcA(self, value):
+		try:
+			assert value >= 0, r'mcmcA must be greater than or equal to 0.0'
+			assert type(value) is types.FloatType, r'xTol must be a float'
+			self._mcmcA = value
 		except AssertionError as err:
 			raise AttributeError(str(err))
 
