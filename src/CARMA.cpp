@@ -2375,19 +2375,10 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 	#ifdef DEBUG_COMPUTELNPRIOR
 	int threadNum = omp_get_thread_num();
-	printf("computeLnPrior - threadNum: %d; Address of System: %p\n",threadNum,this);
-	printf("\n");
-	printf("computeLnPrior - threadNum: %d; maxSigma: %+4.3e\n",threadNum,maxSigma);
-	printf("computeLnPrior - threadNum: %d; minTimescale: %+4.3e\n",threadNum,minTimescale);
-	printf("computeLnPrior - threadNum: %d; maxTimescale: %+4.3e\n",threadNum,maxTimescale);
 	#endif
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
-
-	#ifdef DEBUG_COMPUTELNPRIOR
-	printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]): %e\n", threadNum, sqrt(Sigma[0]));
-	#endif
 
 	if (sqrt(Sigma[0]) > maxSigma) {
 		LnPrior = -infiniteVal;
@@ -2403,7 +2394,6 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		printf("computeLnPrior - threadNum: %d; maxTimescale:    %+4.3e\n", threadNum, maxTimescale);
 		printf("computeLnPrior - threadNum: %d; timescale:       %+4.3e\n", threadNum, timescale);
 		printf("computeLnPrior - threadNum: %d; timescaleOsc:    %+4.3e\n", threadNum, timescaleOsc);
-		printf("\n");
 		#endif
 
 		if (timescale < minTimescale) {
@@ -2424,6 +2414,7 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTELNPRIOR
 		printf("computeLnPrior - threadNum: %d; LnPrior: %+4.3e\n",threadNum,LnPrior);
+		printf("\n");
 		#endif
 
 	Data.currentLnPrior = LnPrior;

@@ -585,7 +585,7 @@ using namespace std;
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;
-		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior)
+		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior, ptr2Data)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
 			bool goodPoint = false;
@@ -599,7 +599,7 @@ using namespace std;
 					deltaXTemp[threadNum*ndims + dimCtr] += 1.0;
 					deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
 					}
-				if (set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) {
+				if ((set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) and (Systems[threadNum].computeLnPrior(ptr2Data) == 0.0)) {
 					goodPoint = true;
 					} else {
 					goodPoint = false;
@@ -609,12 +609,25 @@ using namespace std;
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 				xVec[threadNum].push_back(deltaXTemp[threadNum*ndims + dimCtr]);
 				}
+			#ifdef DEBUG_FIT_CARMAMODEL
+			#pragma omp critical
+			{
+			fflush(0);
+			printf("pre-opt xVec[%d][%d]: ", walkerNum, threadNum);
+			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+				printf("%e, ", xVec[threadNum][dimNum]);
+				}
+			printf("%e", xVec[threadNum][ndims  - 1]);
+			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+			fflush(0);
+			}
+			#endif
 			nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
 			#ifdef DEBUG_FIT_CARMAMODEL
 			#pragma omp critical
 			{
 			fflush(0);
-			printf("xVec[%d][%d]: ", walkerNum, threadNum);
+			printf("post-opt xVec[%d][%d]: ", walkerNum, threadNum);
 			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
 				printf("%e, ", xVec[threadNum][dimNum]);
 				}

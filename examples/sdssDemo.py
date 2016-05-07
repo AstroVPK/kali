@@ -54,6 +54,7 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
+parser.add_argument('-sFac', '--scatterFactor', type = float, default = 0.1, help = r'Scatter factgor for starting locations of walkers pre-optimization')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
 parser.set_defaults(stop = False)
@@ -106,8 +107,8 @@ if args.g or args.r:
 
 		minT = sdss0g.dt*sdss0g.minTimescale
 		maxT = sdss0g.T*sdss0g.maxTimescale
-		Rho = 1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
-		Rho[-1] = 1.0e-2*np.std(sdss0g.y)
+		Rho = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
+		Rho[-1] = 1.0e-1*np.std(sdss0g.y)
 		Guess = libcarma.coeffs(P, Q, Rho)
 
 		plt.figure(1)
@@ -119,6 +120,7 @@ if args.g or args.r:
 		except IOError:
 			chainFile = open(libcarmaChain_g, 'w')
 			ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			ntg.scatterFactor = args.scatterFactor
 			ntg.set(sdss0g.dt, Guess)
 			ntg.fit(sdss0g, Guess)
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
@@ -277,8 +279,8 @@ if args.g or args.r:
 
 		minT = sdss0r.dt*sdss0r.minTimescale
 		maxT = sdss0r.T*sdss0r.maxTimescale
-		Rho = 1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
-		Rho[-1] = 1.0e-2*np.std(sdss0r.y)
+		Rho = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
+		Rho[-1] = 1.0e-1*np.std(sdss0r.y)
 		Guess = libcarma.coeffs(P, Q, Rho)
 
 
@@ -292,6 +294,7 @@ if args.g or args.r:
 			NBURNIN = NWALKERS*NSTEPS/2
 			chainFile = open(libcarmaChain_r, 'w')
 			ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
+			ntr.scatterFactor = args.scatterFactor
 			ntr.set(sdss0r.dt, Guess)
 			ntr.fit(sdss0r, Guess)
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
