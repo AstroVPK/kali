@@ -17,14 +17,6 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 3. Mac OS X 10.10.5 Yosemite
 
-  NB: On Mac OS X, Anaconda's matplotlib.pyplot seems to have trouble understanding the tilde '~' character as 
-  part of a path. So instead of
-
-  `<libcarma dir>$ python python/DemoScript.py ~/<path to working dir> Config.ini`
-
-  do
-
-  `<libcarma dir>$ python python/DemoScript.py /Users/<user name>/<path to working dir> Config.ini`
 
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
 package, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
@@ -58,6 +50,8 @@ to date by periodically doing
 
 
   1. Python 2.7.11 |Anaconda 2.4.1 (64-bit)
+
+  2. Python 2.7.11 |Anaconda 4.0.0 (64-bit)
 
 
 2. Intel C++ Compiler XE
@@ -101,14 +95,18 @@ required by the compiler.
   This software has been tested with
 
 
-  1. Intel® Parallel Studio XE 2016 Cluster Edition Initial Release 16.0.1.111 / 20151020 (icpc version 16.0.0 
+  1. Intel® Parallel Studio XE 2016 Cluster Edition Initial Release 16.0.1.111 (icpc version 16.0.0)
 (gcc version 4.9.0 compatibility)
 
-  2. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 / 20151021 (icpc version 16.0.1 
+  2. Intel® Parallel Studio XE 2016 Cluster Edition Update 1 16.0.1.150 (icpc version 16.0.1)
 (gcc version 4.8.0 compatibility)
 
-  3. Intel® Parallel Studio XE 2016 Cluster Edition Update 2 16.0.1.181 / 20151021 (icpc version 16.0.2 
+  3. Intel® Parallel Studio XE 2016 Cluster Edition Update 2 16.0.2.180 (icpc version 16.0.2)
 (gcc version 4.8.0 compatibility)
+
+  4. Intel® Parallel Studio XE 2016 Cluster Edition Update 3 16.0.3.210 (icpc version 16.0.3)
+(gcc version 4.8.0 compatibility)
+
 
 3. Intel MKL Library
 
@@ -132,6 +130,9 @@ replace it with an alternative. Intel MKL may be obtained from
   1. Intel® Math Kernel Library 11.3 Update 1 11.3.1
 
   3. Intel® Math Kernel Library 11.3 Update 2 11.3.2
+
+  4. Intel® Math Kernel Library 11.3 Update 3 11.3.3
+
 
 4. NLOpt
 
