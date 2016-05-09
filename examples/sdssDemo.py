@@ -84,7 +84,7 @@ if args.g or args.r:
 		Rho[-1] = 1.0e-1*np.std(sdss0g.y)
 		Guess = libcarma.coeffs(P, Q, Rho)
 
-		plt.figure(1)
+		plt.figure(1, figsize = (fhgt, fhgt))
 		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
 		fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
 		libcarmaChain_g = os.path.join(args.pwd, fileName)

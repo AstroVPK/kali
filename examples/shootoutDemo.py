@@ -148,7 +148,7 @@ else:
 		mock_sdss0g.dt = dt
 		mock_sdss0g.T = mock_sdss0gt[-1] - mock_sdss0gt[0]
 
-plt.figure(1)
+plt.figure(1, figsize = (fwid, fhgt))
 plt.errorbar(sdss0g.t, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
 plt.errorbar(mock_sdss0g.t, mock_sdss0g.y, mock_sdss0g.yerr, label = r'mock sdss-g', fmt = '.', capsize = 0, color = '#000000', markeredgecolor = 'none', zorder = 10)
 plt.xlabel('$t$ (MJD)')
