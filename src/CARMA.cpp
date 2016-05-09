@@ -2092,7 +2092,7 @@ void CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* n
 		absFlux = absMeanFlux + x[i];
 		noiseLvl = fracNoiseToSignal*absFlux;
 		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, 1, &noiseRand[i], 0.0, noiseLvl);
-		y[i] = x[i] + noiseRand[i];
+		y[i] = absFlux + noiseRand[i];
 		yerr[i] = noiseLvl;
 		}
 	vslDeleteStream(&noiseStream);
@@ -2124,7 +2124,7 @@ void CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, dou
 		absFlux = absMeanFlux + x[i];
 		noiseLvl = fracNoiseToSignal*absFlux;
 		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, 1, &noiseRand[i - startCadence], 0.0, noiseLvl);
-		y[i] = x[i] + noiseRand[i - startCadence];
+		y[i] = absFlux + noiseRand[i - startCadence];
 		yerr[i] = noiseLvl;
 		}
 	vslDeleteStream(&noiseStream);

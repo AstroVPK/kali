@@ -291,9 +291,18 @@ class lc(object):
 	def dt(self):
 		return self._dt
 
+	@dt.setter
+	def dt(self, value):
+		self._lcCython.dt = value
+		self._dt = value
+
 	@property
 	def T(self):
 		return self._T
+
+	@T.setter
+	def T(self, value):
+		self._T = value
 
 	@property
 	def name(self):
@@ -901,19 +910,20 @@ class matchSampler(sampler):
 		maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		for i in xrange(newNumCadences):
 			index = np.where(self.lcObj.t > timeStamps[i])[0][0]
-			returnLC.t[i] = self.lcObj.t[index]
-			returnLC.x[i] = self.lcObj.x[index]
-			returnLC.y[i] = self.lcObj.y[index]
-			returnLC.yerr[i] = self.lcObj.yerr[index]
-			returnLC.mask[i] = self.lcObj.mask[index]
+			tNew[i] = self.lcObj.t[index]
+			xNew[i] = self.lcObj.x[index]
+			yNew[i] = self.lcObj.y[index]
+			yerrNew[i] = self.lcObj.yerr[index]
+			maskNew[i] = self.lcObj.mask[index]
 		returnLC.t = tNew
 		returnLC.x = xNew
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
+		returnLC._T = returnLC.t[-1] - returnLC.t[0]
 		returnLC._mean = np.mean(returnLC.y)
 		returnLC._std = np.std(returnLC.y)
-		returnLC._mean = np.mean(returnLC.yerr)
+		returnLC._meanerr = np.mean(returnLC.yerr)
 		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
 		return returnLC
@@ -1088,11 +1098,11 @@ class task(object):
 	def mcmcA(self):
 		return self._mcmcA
 
-	@xTol.setter
+	@mcmcA.setter
 	def mcmcA(self, value):
 		try:
 			assert value >= 0, r'mcmcA must be greater than or equal to 0.0'
-			assert type(value) is types.FloatType, r'xTol must be a float'
+			assert type(value) is types.FloatType, r'mcmcA must be a float'
 			self._mcmcA = value
 		except AssertionError as err:
 			raise AttributeError(str(err))
@@ -1267,11 +1277,11 @@ class task(object):
 			self._taskCython.set_P(np.reshape(P, newshape = (self._p*self._p), order = 'F'), tnum)
 			return newP
 
-	def simulate(self, duration, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 5.0e-1, maxTimescale = 5.0, burnSeed = None, distSeed = None, noiseSeed = None, tnum = None):
+	def simulate(self, duration, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, burnSeed = None, distSeed = None, noiseSeed = None, tnum = None):
 		if tnum is None:
 			tnum = 0
 		numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum = tnum)))
-		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = 1.0e-3, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, p = self._p, q = self._q, )
+		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = tolIR, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, p = self._p, q = self._q, )
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if burnSeed is None:
 			rand.rdrand(randSeed)
@@ -1410,7 +1420,7 @@ class task(object):
 		if xSeed is None:
 			rand.rdrand(randSeed)
 			xSeed = randSeed[0]
-		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, self.scatterFactor, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.scatterFactor, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 
 class basicTask(task):
 	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):

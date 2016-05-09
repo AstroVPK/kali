@@ -98,6 +98,7 @@ cdef class lc:
 
 	property dt:
 		def __get__(self): return self.thisptr.dt
+		def __set__(self, dt): self.thisptr.dt = dt
 
 	property tolIR:
 		def __get__(self): return self.thisptr.tolIR

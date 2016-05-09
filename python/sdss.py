@@ -47,6 +47,10 @@ class sdss_gLC(libcarma.basicLC):
 			self.y[lineNum] = float(words[27])
 			self.yerr[lineNum] = float(words[28])
 			self.mask[lineNum] = 1.0
+		self._mean = np.mean(self.y)
+		self._std = np.std(self.y)
+		self._meanerr = np.mean(self.yerr)
+		self._stderr = np.std(self.yerr)
 		self._T = float(self.t[-1] - self.t[0])
 		self._dt = float(np.nanmin(self.t[1:] - self.t[:-1]))
 
