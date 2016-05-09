@@ -138,7 +138,7 @@ else:
 		mock_sdss0gy = np.array(mock_sdss0gy)
 		mock_sdss0gyerr = np.array(mock_sdss0gyerr)
 		mock_sdss0gmas = np.array(mock_sdss0gmask)
-		dt = np.min(mock_sdss0gt[1:] - mock_sdss0gt[:-1])
+		dt = float(np.min(mock_sdss0gt[1:] - mock_sdss0gt[:-1]))
 		mock_sdss0g = libcarma.basicLC(mock_sdss0gt.shape[0], dt)
 		mock_sdss0g.t = mock_sdss0gt
 		mock_sdss0g.x = mock_sdss0gx
