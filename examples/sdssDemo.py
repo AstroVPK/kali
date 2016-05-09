@@ -65,33 +65,6 @@ Q = args.q
 NSTEPS = args.nsteps
 NWALKERS = args.nwalkers
 
-def timescales(p, q, Rho):
-	imagPairs = 0
-	for i in xrange(p):
-		if Rho[i].imag != 0.0:
-			imagPairs += 1
-	numImag = imagPairs/2
-	numReal = numImag + (p - imagPairs)
-	decayTimescales = np.zeros(numReal)
-	oscTimescales = np.zeros(numImag)
-	realRoots = set(Rho[0:p].real)
-	imagRoots = set(abs(Rho[0:p].imag)).difference(set([0.0]))
-	realAR = np.array([1.0/abs(x) for x in realRoots])
-	imagAR = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
-	imagPairs = 0
-	for i in xrange(q):
-		if Rho[i].imag != 0.0:
-			imagPairs += 1
-	numImag = imagPairs/2
-	numReal = numImag + (q - imagPairs)
-	decayTimescales = np.zeros(numReal)
-	oscTimescales = np.zeros(numImag)
-	realRoots = set(Rho[p:p + q].real)
-	imagRoots = set(abs(Rho[p:p + q].imag)).difference(set([0.0]))
-	realMA = np.array([1.0/abs(x) for x in realRoots])
-	imagMA = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
-	return realAR, imagAR, realMA, imagMA
-
 if args.g or args.r:
 	plt.figure(1, figsize = (fwid, fhgt))
 	plt.xlabel('$t$ (MJD)')
@@ -237,7 +210,7 @@ if args.g or args.r:
 		lcarmaTau_g = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
 		for stepNum in xrange(NSTEPS):
 			for walkerNum in xrange(NWALKERS):
-				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
+				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
 				lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(6, figsize = (fhgt, fhgt))
 		plt.title(r'g-band C-AR Timescales')
@@ -254,7 +227,7 @@ if args.g or args.r:
 			cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
 			for sampleNum in xrange(NSAMPLES):
 				cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
-				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
+				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 				try:
 					cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
@@ -411,7 +384,7 @@ if args.g or args.r:
 		lcarmaTau_r = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
 		for stepNum in xrange(NSTEPS):
 			for walkerNum in xrange(NWALKERS):
-				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = timescales(P, Q, ntr.rootChain[:, walkerNum, stepNum])
+				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntr.rootChain[:, walkerNum, stepNum])
 				lcarmaTau_r[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntr.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(8, figsize = (fhgt, fhgt))
 		plt.title(r'r-band C-AR Timescales')
@@ -428,7 +401,7 @@ if args.g or args.r:
 			cmcmcTau_r = np.zeros((P + Q + 1, NSAMPLES))
 			for sampleNum in xrange(NSAMPLES):
 				cmcmcRho_r[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_r[:,sampleNum])
-				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = timescales(P, Q, (cmcmcRho_r[:,sampleNum]))
+				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_r[:,sampleNum]))
 				try:
 					cmcmcTau_r[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_r[P + Q, sampleNum]])
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!

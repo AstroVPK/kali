@@ -62,6 +62,33 @@ def coeffs(p, q, Rho):
 		Theta[p + i] = MAPoly[q - i].real
 	return Theta
 
+def timescales(p, q, Rho):
+	imagPairs = 0
+	for i in xrange(p):
+		if Rho[i].imag != 0.0:
+			imagPairs += 1
+	numImag = imagPairs/2
+	numReal = numImag + (p - imagPairs)
+	decayTimescales = np.zeros(numReal)
+	oscTimescales = np.zeros(numImag)
+	realRoots = set(Rho[0:p].real)
+	imagRoots = set(abs(Rho[0:p].imag)).difference(set([0.0]))
+	realAR = np.array([1.0/abs(x) for x in realRoots])
+	imagAR = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
+	imagPairs = 0
+	for i in xrange(q):
+		if Rho[i].imag != 0.0:
+			imagPairs += 1
+	numImag = imagPairs/2
+	numReal = numImag + (q - imagPairs)
+	decayTimescales = np.zeros(numReal)
+	oscTimescales = np.zeros(numImag)
+	realRoots = set(Rho[p:p + q].real)
+	imagRoots = set(abs(Rho[p:p + q].imag)).difference(set([0.0]))
+	realMA = np.array([1.0/abs(x) for x in realRoots])
+	imagMA = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
+	return realAR, imagAR, realMA, imagMA
+
 class epoch(object):
 	"""!
 	\anchor epoch_
