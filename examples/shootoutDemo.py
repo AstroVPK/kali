@@ -443,16 +443,12 @@ if carma_pack_results_g:
 	cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
 	cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
 	for sampleNum in xrange(NSAMPLES):
+		cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
+		cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 		try:
-			cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
-		except IndexError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
-			pass
-		else:
-			cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
-			try:
-				cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
-			except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
-				pass
+			cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
+		except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
+			cmcmcTau_g[:,sampleNum] = np.nan*np.ones(P + Q + 1)
 
 lcarmaMedianTauDist = 0.0
 lcarmaMedianTauLoc = np.zeros(P + Q + 1)
@@ -468,7 +464,7 @@ if carma_pack_results_g:
 	lcmcmcMedianTauDist = 0.0
 	lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
-		lcmcmcMedianTauLoc[i] = np.median(cmcmcTau_g[i,:])
+		lcmcmcMedianTauLoc[i] = np.nanmedian(cmcmcTau_g[i,:])
 		lcmcmcMedianTauDelta = (lcmcmcMedianTauLoc[i] - TauMock[i])/TauMock[i]
 		lcmcmcMedianTauDist += math.pow(lcmcmcMedianTauDelta, 2.0)
 	lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
