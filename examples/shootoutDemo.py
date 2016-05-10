@@ -236,16 +236,17 @@ except IOError:
 		logpost_g = carma_sample_g.get_samples('logpost')
 		cmcmcChain_g = np.zeros((P + Q + 1, NSAMPLES))
 		cmcmcLnPosterior_g = np.zeros(NSAMPLES)
+		for sampleNum in xrange(NSAMPLES):
+			for j in xrange(P):
+				cmcmcChain_g[j, sampleNum] = ar_poly_g[sampleNum, j + 1]
+			for j in xrange(Q + 1):
+				cmcmcChain_g[j + P, sampleNum] = ma_poly_g[sampleNum, j]*sigma_g[sampleNum, 0]
+			cmcmcLnPosterior_g[sampleNum] = logpost_g[sampleNum, 0]
 		if args.save:
 			with open(cmcmcChainFilePath, 'w') as chainFile:
 				line = '%d %d %d\n'%(P, Q, NSAMPLES)
 				chainFile.write(line)
 				for sampleNum in xrange(NSAMPLES):
-					for j in xrange(P):
-						cmcmcChain_g[j, sampleNum] = ar_poly_g[sampleNum, j + 1]
-					for j in xrange(Q + 1):
-						cmcmcChain_g[j + P, sampleNum] = ma_poly_g[sampleNum, j]*sigma_g[sampleNum, 0]
-					cmcmcLnPosterior_g[sampleNum] = logpost_g[sampleNum, 0]
 					line = ''
 					for dimNum in xrange(P + Q +1):
 						line += '%+9.8e '%(cmcmcChain_g[dimNum, sampleNum])
