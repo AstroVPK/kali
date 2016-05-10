@@ -382,12 +382,16 @@ if carma_pack_results_g:
 	cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
 	cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
 	for sampleNum in xrange(NSAMPLES):
-		cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
-		cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 		try:
-			cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
-		except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
+			cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
+		except IndexError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 			pass
+		else:
+			cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
+			try:
+				cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
+			except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
+				pass
 
 lcarmaMedianTauDist = 0.0
 lcarmaMedianTauLoc = np.zeros(P + Q + 1)
