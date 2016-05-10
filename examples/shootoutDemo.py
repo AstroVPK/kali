@@ -184,7 +184,7 @@ except IOError:
 	ntg.fit(mock_sdss0g, ThetaGuess)
 	stopLCARMA = time.time()
 	timeLCARMA = stopLCARMA - startLCARMA
-	print "LCARMA took %4.3 s = %4.3f min = %4.3f hrs"%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
+	print "LCARMA took %4.3f s = %4.3f min = %4.3f hrs"%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
 	if args.save:
 		with open(libcarmaChainFilePath, 'w') as chainFile:
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
@@ -227,7 +227,7 @@ except IOError:
 		carma_sample_g = carma_model_g.run_mcmc(NSAMPLES, nburnin = NBURNIN)
 		stopCMCMC = time.time()
 		timeCMCMC = stopCMCMC - startCMCMC
-		print "CMCMC took %4.3 s = %4.3f min = %4.3f hrs"%(timeCMCMC, timeCMCMC/60.0, timeCMCMC/3600.0)
+		print "CMCMC took %4.3f s = %4.3f min = %4.3f hrs"%(timeCMCMC, timeCMCMC/60.0, timeCMCMC/3600.0)
 		ar_poly_g = carma_sample_g.get_samples('ar_coefs')
 		ma_poly_g = carma_sample_g.get_samples('ma_coefs')
 		sigma_g = carma_sample_g.get_samples('sigma')
