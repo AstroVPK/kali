@@ -55,6 +55,9 @@ parser.set_defaults(stop = False)
 parser.add_argument('--save', dest = 'save', action = 'store_true', help = r'Save files?')
 parser.add_argument('--no-save', dest = 'save', action = 'store_false', help = r'Do not save files?')
 parser.set_defaults(save = False)
+parser.add_argument('--log10', dest = 'log10', action = 'store_true', help = r'Compute distances in log space?')
+parser.add_argument('--no-log10', dest = 'log10', action = 'store_false', help = r'Do not compute distances in log space?')
+parser.set_defaults(log10 = False)
 args = parser.parse_args()
 
 P = args.p
@@ -259,50 +262,96 @@ else:
 	chainFile.close()
 	carma_pack_results_g = True
 
-lcarmaMedianThetaDist = 0.0
-lcarmaMedianThetaLoc = np.zeros(P + Q + 1)
-for i in xrange(P + Q + 1):
-	lcarmaMedianThetaLoc[i] = np.median(ntg.Chain[i,:,NSTEPS/2:])
-	lcarmaMedianThetaDelta = (lcarmaMedianThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
-	lcarmaMedianThetaDist += math.pow(lcarmaMedianThetaDelta, 2.0)
-lcarmaMedianThetaDist = math.sqrt(lcarmaMedianThetaDist)
-lcarmaMedianThetaDist /= (P + Q + 1)
-print 'lcarma Median Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMedianThetaDist)
-
-if carma_pack_results_g:
-	lcmcmcMedianThetaDist = 0.0
-	lcmcmcMedianThetaLoc = np.zeros(P + Q + 1)
+if args.log10:
+	lcarmaMedianThetaDist = 0.0
+	lcarmaMedianThetaLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
-		lcmcmcMedianThetaLoc[i] = np.median(cmcmcChain_g[i,:])
-		lcmcmcMedianThetaDelta = (lcmcmcMedianThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
-		lcmcmcMedianThetaDist += math.pow(lcmcmcMedianThetaDelta, 2.0)
-	lcmcmcMedianThetaDist = math.sqrt(lcmcmcMedianThetaDist)
-	lcmcmcMedianThetaDist /= (P + Q + 1)
-	print 'lcmcmc Median Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMedianThetaDist)
-
-lcarmaMLEThetaDist = 0.0
-bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
-bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
-lcarmaMLEThetaLoc = np.zeros(P + Q + 1)
-for i in xrange(P + Q + 1):
-	lcarmaMLEThetaLoc[i] = ntg.Chain[i,bestWalker,bestStep]
-	lcarmaMLEThetaDelta = (lcarmaMLEThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
-	lcarmaMLEThetaDist += math.pow(lcarmaMLEThetaDelta, 2.0)
-lcarmaMLEThetaDist = math.sqrt(lcarmaMLEThetaDist)
-lcarmaMLEThetaDist /= (P + Q + 1)
-print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-
-if carma_pack_results_g:
-	lcmcmcMLEThetaDist = 0.0
-	bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
-	lcmcmcMLEThetaLoc = np.zeros(P + Q + 1)
+		lcarmaMedianThetaLoc[i] = np.median(ntg.Chain[i,:,NSTEPS/2:])
+		lcarmaMedianThetaDelta = (math.log10(lcarmaMedianThetaLoc[i]) - math.log10(ThetaMock[i]))/math.log10(ThetaMock[i])
+		lcarmaMedianThetaDist += math.pow(lcarmaMedianThetaDelta, 2.0)
+	lcarmaMedianThetaDist = math.sqrt(lcarmaMedianThetaDist)
+	lcarmaMedianThetaDist /= (P + Q + 1)
+	print 'lcarma Median Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMedianThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMedianThetaDist = 0.0
+		lcmcmcMedianThetaLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMedianThetaLoc[i] = np.median(cmcmcChain_g[i,:])
+			lcmcmcMedianThetaDelta = (math.log10(lcmcmcMedianThetaLoc[i]) - math.log10(ThetaMock[i]))/math.log10(ThetaMock[i])
+			lcmcmcMedianThetaDist += math.pow(lcmcmcMedianThetaDelta, 2.0)
+		lcmcmcMedianThetaDist = math.sqrt(lcmcmcMedianThetaDist)
+		lcmcmcMedianThetaDist /= (P + Q + 1)
+		print 'lcmcmc Median Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMedianThetaDist)
+	
+	lcarmaMLEThetaDist = 0.0
+	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
+	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
+	lcarmaMLEThetaLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
-		lcmcmcMLEThetaLoc[i] = cmcmcChain_g[i,bestSample]
-		lcmcmcMLEThetaDelta = (lcmcmcMLEThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
-		lcmcmcMLEThetaDist += math.pow(lcmcmcMLEThetaDelta, 2.0)
-	lcmcmcMLEThetaDist = math.sqrt(lcmcmcMLEThetaDist)
-	lcmcmcMLEThetaDist /= (P + Q + 1)
-	print 'lcmcmc MLE Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMLEThetaDist)
+		lcarmaMLEThetaLoc[i] = ntg.Chain[i,bestWalker,bestStep]
+		lcarmaMLEThetaDelta = (math.log10(lcarmaMLEThetaLoc[i]) - math.log10(ThetaMock[i]))/math.log10(ThetaMock[i])
+		lcarmaMLEThetaDist += math.pow(lcarmaMLEThetaDelta, 2.0)
+	lcarmaMLEThetaDist = math.sqrt(lcarmaMLEThetaDist)
+	lcarmaMLEThetaDist /= (P + Q + 1)
+	print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMLEThetaDist = 0.0
+		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
+		lcmcmcMLEThetaLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMLEThetaLoc[i] = cmcmcChain_g[i,bestSample]
+			lcmcmcMLEThetaDelta = (math.log10(lcmcmcMLEThetaLoc[i]) - math.log10(ThetaMock[i]))/math.log10(ThetaMock[i])
+			lcmcmcMLEThetaDist += math.pow(lcmcmcMLEThetaDelta, 2.0)
+		lcmcmcMLEThetaDist = math.sqrt(lcmcmcMLEThetaDist)
+		lcmcmcMLEThetaDist /= (P + Q + 1)
+		print 'lcmcmc MLE Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMLEThetaDist)
+else:
+	lcarmaMedianThetaDist = 0.0
+	lcarmaMedianThetaLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcarmaMedianThetaLoc[i] = np.median(ntg.Chain[i,:,NSTEPS/2:])
+		lcarmaMedianThetaDelta = (lcarmaMedianThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
+		lcarmaMedianThetaDist += math.pow(lcarmaMedianThetaDelta, 2.0)
+	lcarmaMedianThetaDist = math.sqrt(lcarmaMedianThetaDist)
+	lcarmaMedianThetaDist /= (P + Q + 1)
+	print 'lcarma Median Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMedianThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMedianThetaDist = 0.0
+		lcmcmcMedianThetaLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMedianThetaLoc[i] = np.median(cmcmcChain_g[i,:])
+			lcmcmcMedianThetaDelta = (lcmcmcMedianThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
+			lcmcmcMedianThetaDist += math.pow(lcmcmcMedianThetaDelta, 2.0)
+		lcmcmcMedianThetaDist = math.sqrt(lcmcmcMedianThetaDist)
+		lcmcmcMedianThetaDist /= (P + Q + 1)
+		print 'lcmcmc Median Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMedianThetaDist)
+	
+	lcarmaMLEThetaDist = 0.0
+	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
+	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
+	lcarmaMLEThetaLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcarmaMLEThetaLoc[i] = ntg.Chain[i,bestWalker,bestStep]
+		lcarmaMLEThetaDelta = (lcarmaMLEThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
+		lcarmaMLEThetaDist += math.pow(lcarmaMLEThetaDelta, 2.0)
+	lcarmaMLEThetaDist = math.sqrt(lcarmaMLEThetaDist)
+	lcarmaMLEThetaDist /= (P + Q + 1)
+	print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMLEThetaDist = 0.0
+		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
+		lcmcmcMLEThetaLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMLEThetaLoc[i] = cmcmcChain_g[i,bestSample]
+			lcmcmcMLEThetaDelta = (lcmcmcMLEThetaLoc[i] - ThetaMock[i])/ThetaMock[i]
+			lcmcmcMLEThetaDist += math.pow(lcmcmcMLEThetaDelta, 2.0)
+		lcmcmcMLEThetaDist = math.sqrt(lcmcmcMLEThetaDist)
+		lcmcmcMLEThetaDist /= (P + Q + 1)
+		print 'lcmcmc MLE Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMLEThetaDist)
 
 if args.plot:
 	fig2 = plt.figure(2, figsize = (fhgt, fhgt))
