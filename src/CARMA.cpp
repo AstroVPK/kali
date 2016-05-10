@@ -2380,20 +2380,51 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
 
+	#ifdef DEBUG_COMPUTELNPRIOR
+	printf("computeLnPrior - threadNum: %d; maxSigma:           %+4.3e\n", threadNum, maxSigma);
+	printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]):     %+4.3e\n", threadNum, sqrt(Sigma[0]));
+	#endif
+
 	if (sqrt(Sigma[0]) > maxSigma) {
 		LnPrior = -infiniteVal;
 		}
+
 	for (int i = 0; i < p; ++i) {
 		timescale = fabs(1.0/(CARw[i].real()));
 		timescaleOsc = fabs((2.0*pi)/(CARw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
-		printf("computeLnPrior - threadNum: %d; maxSigma:        %+4.3e\n", threadNum, maxSigma);
-		printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]):  %+4.3e\n", threadNum, sqrt(Sigma[0]));
-		printf("computeLnPrior - threadNum: %d; minTimescale:    %+4.3e\n", threadNum, minTimescale);
-		printf("computeLnPrior - threadNum: %d; maxTimescale:    %+4.3e\n", threadNum, maxTimescale);
-		printf("computeLnPrior - threadNum: %d; timescale:       %+4.3e\n", threadNum, timescale);
-		printf("computeLnPrior - threadNum: %d; timescaleOsc:    %+4.3e\n", threadNum, timescaleOsc);
+		printf("computeLnPrior - threadNum: %d; minTimescale:       %+4.3e\n", threadNum, minTimescale);
+		printf("computeLnPrior - threadNum: %d; maxTimescale:       %+4.3e\n", threadNum, maxTimescale);
+		printf("computeLnPrior - threadNum: %d; CARw:               %+4.3e %+4.3e\n", threadNum, CARw[i].real(), CARw[i].imag());
+		printf("computeLnPrior - threadNum: %d; timescale (CAR):    %+4.3e\n", threadNum, timescale);
+		printf("computeLnPrior - threadNum: %d; timescaleOsc (CAR): %+4.3e\n", threadNum, timescaleOsc);
+		#endif
+
+		if (timescale < minTimescale) {
+			LnPrior = -infiniteVal; 
+			}
+
+		if (timescale > maxTimescale) {
+			LnPrior = -infiniteVal;
+			}
+
+		if (timescaleOsc > 0.0) {
+			if (timescaleOsc < minTimescale) {
+				LnPrior = -infiniteVal;
+				}
+			}
+
+		}
+
+	for (int i = 0; i < q; ++i) {
+		timescale = fabs(1.0/(CMAw[i].real()));
+		timescaleOsc = fabs((2.0*pi)/(CMAw[i].imag()));
+
+		#ifdef DEBUG_COMPUTELNPRIOR
+		printf("computeLnPrior - threadNum: %d; CMAw:               %+4.3e %+4.3e\n", threadNum, CMAw[i].real(), CMAw[i].imag());
+		printf("computeLnPrior - threadNum: %d; timescale (CMA):    %+4.3e\n", threadNum, timescale);
+		printf("computeLnPrior - threadNum: %d; timescaleOsc(CMA):  %+4.3e\n", threadNum, timescaleOsc);
 		#endif
 
 		if (timescale < minTimescale) {

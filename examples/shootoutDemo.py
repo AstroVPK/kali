@@ -325,7 +325,8 @@ if carma_pack_results_g:
 	plt.tight_layout()
 	plt.figure(7)
 	plt.scatter(cmcmcTau_g[2,:], cmcmcTau_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
-	plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
+	#plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
+	plt.xlim(np.min(lcarmaTau_g[2,:,NSTEPS/2:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:]))
 	plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(lcarmaTau_g[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(lcarmaTau_g[3,:,NSTEPS/2:])))
 	plt.tight_layout()
 
