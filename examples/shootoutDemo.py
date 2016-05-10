@@ -294,7 +294,7 @@ print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
 
 if carma_pack_results_g:
 	lcmcmcMLEThetaDist = 0.0
-	bestSample = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0] ## CHANGE THIS SO IT WORKS!!!!
+	bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
 	lcmcmcMLEThetaLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
 		lcmcmcMLEThetaLoc[i] = cmcmcChain_g[i,bestSample]
@@ -307,7 +307,7 @@ if carma_pack_results_g:
 if args.plot:
 	fig2 = plt.figure(2, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-AR Coeffs')
-	scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+	scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none')
 
 	plt.axvline(x = ThetaMock[0], ymin = 0, ymax = 1, color = '#999999', linestyle = 'solid', label = r'True')
 	plt.axhline(y = ThetaMock[1], xmin = 0, xmax = 1, color = '#999999')
@@ -319,7 +319,7 @@ if args.plot:
 	plt.axhline(y = lcarmaMLEThetaLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed')
 
 	if carma_pack_results_g:
-		scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
+		scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none')
 
 		plt.axvline(x = lcmcmcMedianThetaLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median')
 		plt.axhline(y = lcmcmcMedianThetaLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted')
@@ -340,7 +340,7 @@ if args.plot:
 
 	fig3 = plt.figure(3, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-MA Coeffs')
-	scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], marker = 'o', edgecolors = 'none')
+	scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none')
 
 	plt.axvline(x = ThetaMock[2], ymin = 0, ymax = 1, color = '#999999', linestyle = 'solid', label = r'True')
 	plt.axhline(y = ThetaMock[3], xmin = 0, xmax = 1, color = '#999999')
@@ -352,7 +352,7 @@ if args.plot:
 	plt.axhline(y = lcarmaMLEThetaLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed')
 
 	if carma_pack_results_g:
-		scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:], marker = 'o', edgecolors = 'none')
+		scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none')
 
 		plt.axvline(x = lcmcmcMedianThetaLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median')
 		plt.axhline(y = lcmcmcMedianThetaLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted')
