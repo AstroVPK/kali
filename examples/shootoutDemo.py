@@ -7,6 +7,7 @@ from matplotlib import cm as cm
 from matplotlib import gridspec as gridspec
 import argparse as argparse
 import warnings as warnings
+import time as time
 import pdb
 import os as os
 
@@ -179,7 +180,11 @@ except IOError:
 	TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
 	ThetaGuess = libcarma.coeffs(P, Q, RhoGuess)
 	ntg.set(mock_sdss0g.dt, ThetaGuess)
+	startLCARMA = time.time()
 	ntg.fit(mock_sdss0g, ThetaGuess)
+	stopLCARMA = time.time()
+	timeLCARMA = stopLCARMA - startLCARMA
+	print "LCARMA took %4.3 s = %4.3f min = %4.3f hrs"%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
 	if args.save:
 		with open(libcarmaChainFilePath, 'w') as chainFile:
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
@@ -218,7 +223,11 @@ except IOError:
 	NBURNIN = NWALKERS*NSTEPS/2
 	if carma_pack:
 		carma_model_g = cmcmc.CarmaModel(mock_sdss0g.t, mock_sdss0g.y, mock_sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
+		startCMCMC = time.time()
 		carma_sample_g = carma_model_g.run_mcmc(NSAMPLES, nburnin = NBURNIN)
+		stopCMCMC = time.time()
+		timeCMCMC = stopCMCMC - startCMCMC
+		print "CMCMC took %4.3 s = %4.3f min = %4.3f hrs"%(timeCMCMC, timeCMCMC/60.0, timeCMCMC/3600.0)
 		ar_poly_g = carma_sample_g.get_samples('ar_coefs')
 		ma_poly_g = carma_sample_g.get_samples('ma_coefs')
 		sigma_g = carma_sample_g.get_samples('sigma')
