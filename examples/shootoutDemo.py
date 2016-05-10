@@ -162,9 +162,9 @@ if args.plot:
 	plt.legend()
 
 fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
-libcarmaChain_g = os.path.join(args.pwd, fileName)
+libcarmaChainFilePath = os.path.join(args.pwd, fileName)
 try:
-	chainFile = open(libcarmaChain_g, 'r')
+	chainFile = open(libcarmaChainFilePath, 'r')
 except IOError:
 	ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
 	ntg.scatterFactor = args.scatterFactor
@@ -178,7 +178,7 @@ except IOError:
 	ntg.set(mock_sdss0g.dt, ThetaGuess)
 	ntg.fit(mock_sdss0g, ThetaGuess)
 	if args.save:
-		with open(libcarmaChain_g, 'w') as chainFile:
+		with open(libcarmaChainFilePath, 'w') as chainFile:
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
 			chainFile.write(line)
 			for stepNum in xrange(NSTEPS):
@@ -207,9 +207,9 @@ else:
 	chainFile.close()
 
 fileName = args.n.split('.')[0] + '_' + args.cC + '_g.dat'
-cmcmcChain_g = os.path.join(args.pwd, fileName)
+cmcmcChainFilePath = os.path.join(args.pwd, fileName)
 try:
-	chainFile = open(cmcmcChain_g, 'r')
+	chainFile = open(cmcmcChainFilePath, 'r')
 except IOError:
 	NSAMPLES = NWALKERS*NSTEPS/2
 	NBURNIN = NWALKERS*NSTEPS/2
@@ -223,7 +223,7 @@ except IOError:
 		cmcmcChain_g = np.zeros((P + Q + 1, NSAMPLES))
 		cmcmcLnPosterior_g = np.zeros(NSAMPLES)
 		if args.save:
-			with open(cmcmcChain_g, 'w') as chainFile:
+			with open(cmcmcChainFilePath, 'w') as chainFile:
 				line = '%d %d %d\n'%(P, Q, NSAMPLES)
 				chainFile.write(line)
 				for sampleNum in xrange(NSAMPLES):
@@ -294,7 +294,7 @@ print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
 
 if carma_pack_results_g:
 	lcmcmcMLEThetaDist = 0.0
-	bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0]
+	bestSample = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0] ## CHANGE THIS SO IT WORKS!!!!
 	lcmcmcMLEThetaLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
 		lcmcmcMLEThetaLoc[i] = cmcmcChain_g[i,bestSample]
