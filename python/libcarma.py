@@ -931,7 +931,7 @@ class matchSampler(sampler):
 class task(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e1, maxEvals = 10000, xTol = 0.005, mcmcA = 2.0):
 		try:
 			assert p > q, r'p must be greater than q'
 			assert p >= 1, r'p must be greater than or equal to 1'
