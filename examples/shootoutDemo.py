@@ -307,25 +307,25 @@ if carma_pack_results_g:
 if args.plot:
 	fig2 = plt.figure(2, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-AR Coeffs')
-	scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none')
+	scatPlot1 = plt.scatter(ntg.Chain[0,:,NSTEPS/2:], ntg.Chain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none', zorder = 0)
 
-	plt.axvline(x = ThetaMock[0], ymin = 0, ymax = 1, color = '#999999', linestyle = 'solid', label = r'True')
-	plt.axhline(y = ThetaMock[1], xmin = 0, xmax = 1, color = '#999999')
+	plt.axvline(x = ThetaMock[0], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
+	plt.axhline(y = ThetaMock[1], xmin = 0, xmax = 1, color = '#000000', zorder = 10)
 
-	plt.axvline(x = lcarmaMedianThetaLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median')
-	plt.axhline(y = lcarmaMedianThetaLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed')
+	plt.axvline(x = lcarmaMedianThetaLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median', zorder = 5)
+	plt.axhline(y = lcarmaMedianThetaLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed', zorder = 5)
 
-	plt.axvline(x = lcarmaMLEThetaLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE')
-	plt.axhline(y = lcarmaMLEThetaLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed')
+	plt.axvline(x = lcarmaMLEThetaLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE', zorder = 5)
+	plt.axhline(y = lcarmaMLEThetaLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed', zorder = 5)
 
 	if carma_pack_results_g:
-		scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none')
+		scatPlot1cmcmc = plt.scatter(cmcmcChain_g[0,:], cmcmcChain_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none', zorder = -5)
 
-		plt.axvline(x = lcmcmcMedianThetaLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median')
-		plt.axhline(y = lcmcmcMedianThetaLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted')
+		plt.axvline(x = lcmcmcMedianThetaLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median', zorder = 5)
+		plt.axhline(y = lcmcmcMedianThetaLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted', zorder = 5)
 
-		plt.axvline(x = lcmcmcMLEThetaLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE')
-		plt.axhline(y = lcmcmcMLEThetaLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted')
+		plt.axvline(x = lcmcmcMLEThetaLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE', zorder = 5)
+		plt.axhline(y = lcmcmcMLEThetaLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
 
 		plt.xlim(min(np.nanmin(ntg.Chain[0,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[0,:])), max(np.nanmax(ntg.Chain[0,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[0,:])))
 		plt.ylim(min(np.nanmin(ntg.Chain[1,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[1,:])), max(np.nanmax(ntg.Chain[1,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[1,:])))
@@ -340,25 +340,25 @@ if args.plot:
 
 	fig3 = plt.figure(3, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-MA Coeffs')
-	scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none')
+	scatPlot2 = plt.scatter(ntg.Chain[2,:,NSTEPS/2:], ntg.Chain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.plasma, marker = 'o', edgecolors = 'none', zorder = 0)
 
-	plt.axvline(x = ThetaMock[2], ymin = 0, ymax = 1, color = '#999999', linestyle = 'solid', label = r'True')
-	plt.axhline(y = ThetaMock[3], xmin = 0, xmax = 1, color = '#999999')
+	plt.axvline(x = ThetaMock[2], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
+	plt.axhline(y = ThetaMock[3], xmin = 0, xmax = 1, color = '#000000', zorder = 10)
 
-	plt.axvline(x = lcarmaMedianThetaLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median')
-	plt.axhline(y = lcarmaMedianThetaLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed')
+	plt.axvline(x = lcarmaMedianThetaLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median', zorder = 5)
+	plt.axhline(y = lcarmaMedianThetaLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed', zorder = 5)
 
-	plt.axvline(x = lcarmaMLEThetaLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE')
-	plt.axhline(y = lcarmaMLEThetaLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed')
+	plt.axvline(x = lcarmaMLEThetaLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE', zorder = 5)
+	plt.axhline(y = lcarmaMLEThetaLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed', zorder = 5)
 
 	if carma_pack_results_g:
-		scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none')
+		scatPlot2cmcmc = plt.scatter(cmcmcChain_g[2,:], cmcmcChain_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.viridis, marker = 'o', edgecolors = 'none', zorder = -5)
 
-		plt.axvline(x = lcmcmcMedianThetaLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median')
-		plt.axhline(y = lcmcmcMedianThetaLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted')
+		plt.axvline(x = lcmcmcMedianThetaLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median', zorder = 5)
+		plt.axhline(y = lcmcmcMedianThetaLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted', zorder = 5)
 
-		plt.axvline(x = lcmcmcMLEThetaLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE')
-		plt.axhline(y = lcmcmcMLEThetaLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted')
+		plt.axvline(x = lcmcmcMLEThetaLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE', zorder = 5)
+		plt.axhline(y = lcmcmcMLEThetaLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
 
 
 		plt.xlim(min(np.nanmin(ntg.Chain[2,:,NSTEPS/2:]), np.nanmin(cmcmcChain_g[2,:])), max(np.nanmax(ntg.Chain[2,:,NSTEPS/2:]), np.nanmax(cmcmcChain_g[2,:])))
@@ -378,24 +378,6 @@ for stepNum in xrange(NSTEPS):
 	for walkerNum in xrange(NWALKERS):
 		lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
 		lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
-
-if args.plot:
-	plt.figure(6, figsize = (fhgt, fhgt))
-	plt.title(r'g-band C-AR Timescales')
-	plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
-	plt.axvline(x = TauMock[0], ymin = 0, ymax = 1, color = '#e34a33')
-	plt.axhline(y = TauMock[1], xmin = 0, xmax = 1, color = '#e34a33')
-	plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
-	plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
-	
-	plt.figure(7, figsize = (fhgt, fhgt))
-	plt.title(r'g-band C-MA Timescales')
-	plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
-	plt.axvline(x = TauMock[2], ymin = 0, ymax = 1, color = '#e34a33')
-	plt.axhline(y = TauMock[3], xmin = 0, xmax = 1, color = '#e34a33')
-	plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
-	plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
-
 if carma_pack_results_g:
 	cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
 	cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
@@ -407,15 +389,109 @@ if carma_pack_results_g:
 		except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 			pass
 
-	if args.plot:
+lcarmaMedianTauDist = 0.0
+lcarmaMedianTauLoc = np.zeros(P + Q + 1)
+for i in xrange(P + Q + 1):
+	lcarmaMedianTauLoc[i] = np.median(lcarmaTau_g[i,:,NSTEPS/2:])
+	lcarmaMedianTauDelta = (lcarmaMedianTauLoc[i] - TauMock[i])/TauMock[i]
+	lcarmaMedianTauDist += math.pow(lcarmaMedianTauDelta, 2.0)
+lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
+lcarmaMedianTauDist /= (P + Q + 1)
+print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
+
+if carma_pack_results_g:
+	lcmcmcMedianTauDist = 0.0
+	lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcmcmcMedianTauLoc[i] = np.median(cmcmcTau_g[i,:])
+		lcmcmcMedianTauDelta = (lcmcmcMedianTauLoc[i] - TauMock[i])/TauMock[i]
+		lcmcmcMedianTauDist += math.pow(lcmcmcMedianTauDelta, 2.0)
+	lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
+	lcmcmcMedianTauDist /= (P + Q + 1)
+	print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
+
+lcarmaMLETauDist = 0.0
+bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
+bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
+lcarmaMLETauLoc = np.zeros(P + Q + 1)
+for i in xrange(P + Q + 1):
+	lcarmaMLETauLoc[i] = lcarmaTau_g[i,bestWalker,bestStep]
+	lcarmaMLETauDelta = (lcarmaMLETauLoc[i] - TauMock[i])/TauMock[i]
+	lcarmaMLETauDist += math.pow(lcarmaMLETauDelta, 2.0)
+lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
+lcarmaMLETauDist /= (P + Q + 1)
+print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
+
+if carma_pack_results_g:
+	lcmcmcMLETauDist = 0.0
+	bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
+	lcmcmcMLETauLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcmcmcMLETauLoc[i] = cmcmcTau_g[i,bestSample]
+		lcmcmcMLETauDelta = (lcmcmcMLETauLoc[i] - TauMock[i])/TauMock[i]
+		lcmcmcMLETauDist += math.pow(lcmcmcMLETauDelta, 2.0)
+	lcmcmcMLETauDist = math.sqrt(lcmcmcMLETauDist)
+	lcmcmcMLETauDist /= (P + Q + 1)
+	print 'lcmcmc MLE Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMLETauDist)
+
+if args.plot:
+	plt.figure(6, figsize = (fhgt, fhgt))
+	plt.title(r'g-band C-AR Timescales')
+	plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+
+	plt.axvline(x = TauMock[0], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
+	plt.axhline(y = TauMock[1], xmin = 0, xmax = 1, color = '#000000', linestyle = 'solid', zorder = 10)
+
+	plt.axvline(x = lcarmaMedianTauLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median', zorder = 5)
+	plt.axhline(y = lcarmaMedianTauLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed', zorder = 5)
+
+	plt.axvline(x = lcarmaMLETauLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE', zorder = 5)
+	plt.axhline(y = lcarmaMLETauLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed', zorder = 5)
+
+	plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
+	plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
+	plt.legend()
+	
+	plt.figure(7, figsize = (fhgt, fhgt))
+	plt.title(r'g-band C-MA Timescales')
+	plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+
+	plt.axvline(x = TauMock[2], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
+	plt.axhline(y = TauMock[3], xmin = 0, xmax = 1, color = '#000000', linestyle = 'solid', zorder = 10)
+
+	plt.axvline(x = lcarmaMedianTauLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dashed', label = r'lcarma Median', zorder = 5)
+	plt.axhline(y = lcarmaMedianTauLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dashed', zorder = 5)
+
+	plt.axvline(x = lcarmaMLETauLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dashed', label = r'lcarma MLE', zorder = 5)
+	plt.axhline(y = lcarmaMLETauLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dashed', zorder = 5)
+
+	plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
+	plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
+	plt.legend()
+
+	if carma_pack_results_g:
 		plt.figure(6)
-		plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+		plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.autumn_r, marker = 'o', edgecolors = 'none', zorder = 0, alpha = 0.1)
+
+		plt.axvline(x = lcmcmcMedianTauLoc[0], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median', zorder = 5)
+		plt.axhline(y = lcmcmcMedianTauLoc[1], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted', zorder = 5)
+
+		plt.axvline(x = lcmcmcMLETauLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE', zorder = 5)
+		plt.axhline(y = lcmcmcMLETauLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
+
 		plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(lcarmaTau_g[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(lcarmaTau_g[0,:,NSTEPS/2:])))
 		plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(lcarmaTau_g[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(lcarmaTau_g[1,:,NSTEPS/2:])))
 		plt.tight_layout()
-	
+
 		plt.figure(7)
-		plt.scatter(cmcmcTau_g[2,:], cmcmcTau_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
+		plt.scatter(cmcmcTau_g[2,:], cmcmcTau_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.autumn_r, marker = 'o', edgecolors = 'none', zorder = 0, alpha = 0.1)
+
+		plt.axvline(x = lcmcmcMedianTauLoc[2], ymin = 0, ymax = 1, color = '#ef8a62', linestyle = 'dotted', label = r'lcmcmc Median', zorder = 5)
+		plt.axhline(y = lcmcmcMedianTauLoc[3], xmin = 0, xmax = 1, color = '#ef8a62', linestyle = 'dotted', zorder = 5)
+
+		plt.axvline(x = lcmcmcMLETauLoc[2], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE', zorder = 5)
+		plt.axhline(y = lcmcmcMLETauLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
+
 		#plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
 		plt.xlim(np.min(lcarmaTau_g[2,:,NSTEPS/2:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:]))
 		plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(lcarmaTau_g[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(lcarmaTau_g[3,:,NSTEPS/2:])))
