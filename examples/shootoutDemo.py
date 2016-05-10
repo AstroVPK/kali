@@ -180,6 +180,7 @@ except IOError:
 	TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
 	ThetaGuess = libcarma.coeffs(P, Q, RhoGuess)
 	ntg.set(mock_sdss0g.dt, ThetaGuess)
+	print "Starting libcarma fitting..."
 	startLCARMA = time.time()
 	ntg.fit(mock_sdss0g, ThetaGuess)
 	stopLCARMA = time.time()
@@ -223,6 +224,7 @@ except IOError:
 	NBURNIN = NWALKERS*NSTEPS/2
 	if carma_pack:
 		carma_model_g = cmcmc.CarmaModel(mock_sdss0g.t, mock_sdss0g.y, mock_sdss0g.yerr, p = P, q = Q)  # create new CARMA process model
+		print "Starting cmcmc fitting..."
 		startCMCMC = time.time()
 		carma_sample_g = carma_model_g.run_mcmc(NSAMPLES, nburnin = NBURNIN)
 		stopCMCMC = time.time()
