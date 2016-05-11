@@ -38,7 +38,7 @@ set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
-parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-n', '--name', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
