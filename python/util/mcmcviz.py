@@ -1,0 +1,92 @@
+import math as math
+import cmath as cmath
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib import cm as cm
+from matplotlib import gridspec as gridspec
+from matplotlib.collections import LineCollection
+from matplotlib.colors import ListedColormap, BoundaryNorm
+
+fwid = 16.0
+fhgt = 10.0
+
+# Data manipulation:
+
+def make_segments(x, y):
+	'''
+	Create list of line segments from x and y coordinates, in the correct format for LineCollection:
+	an array of the form   numlines x (points per line) x 2 (x and y) array
+	'''
+	# Taken from a post by dpsanders at http://nbviewer.jupyter.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+
+	points = np.array([x, y]).T.reshape(-1, 1, 2)
+	segments = np.concatenate([points[:-1], points[1:]], axis=1)
+
+	return segments
+
+
+# Interface to LineCollection:
+
+def colorline(x, y, z=None, cmap=plt.get_cmap('copper'), norm=plt.Normalize(0.0, 1.0), linewidth=3, alpha=1.0):
+	'''
+	Plot a colored line with coordinates x and y
+	Optionally specify colors in the array z
+	Optionally specify a colormap, a norm function and a line width
+	'''
+	# Taken from a post by dpsanders at http://nbviewer.jupyter.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+
+	# Default colors equally spaced on [0,1]:
+	if z is None:
+		z = np.linspace(0.0, 1.0, len(x))
+
+	# Special case if a single number:
+	if not hasattr(z, "__iter__"):  # to check for numerical input -- this is a hack
+		z = np.array([z])
+
+	z = np.asarray(z)
+
+	segments = make_segments(x, y)
+	lc = LineCollection(segments, array=z, cmap=cmap, norm=norm, linewidth=linewidth, alpha=alpha)
+
+	ax = plt.gca()
+	ax.add_collection(lc)
+
+	return lc
+
+def clear_frame(ax=None): 
+	# Taken from a post by Tony S Yu
+	if ax is None: 
+		ax = plt.gca() 
+	ax.xaxis.set_visible(False) 
+	ax.yaxis.set_visible(False) 
+	for spine in ax.spines.itervalues(): 
+		spine.set_visible(False) 
+
+def vizWalkers(mcmcChain, dim1, dim2):
+	ndim = mcmcChain.shape[0]
+	nwalkers = mcmcChain.shape[1]
+	nsteps = mcmcChain.shape[2]
+	def init():
+		line.set_data([], [])
+		step_text.set_text('stepNum: ')
+		return line, step_text
+
+	def animate(stepNum):
+		line.set_data(mcmcChain[dim1,:,stepNum].tolist(), mcmcChain[dim2,:,stepNum].tolist())
+		step_text.set_text('stepNum: %d'%(stepNum))
+		return line, step_text
+
+	fig = plt.figure(1, figsize = (fhgt, fhgt))
+	ax = fig.add_subplot(111)
+	ax.set_xlim(np.min(mcmcChain[dim1,:,:]), np.max(mcmcChain[dim1,:,:]))
+	ax.set_ylim(np.min(mcmcChain[dim2,:,:]), np.max(mcmcChain[dim2,:,:]))
+	step_text = ax.text(0.02, 0.95, '', transform = ax.transAxes) 
+	line, = ax.plot([], [], 'o', ms = 10, color = '#000000')
+
+	anim = animation.FuncAnimation(fig, animate, init_func = init, frames = nsteps, interval = 41.6666666664, blit = True)
+
+	#anim.save('/home/vish/Desktop/basicAnim.mp4', fps = 24, extra_args = ['-vcodec', 'libx264'])
+
+	plt.show()
+	return 0

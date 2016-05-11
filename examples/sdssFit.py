@@ -14,6 +14,7 @@ import pdb
 import os as os
 
 import libcarma as libcarma
+import util.mcmcviz as mcmcviz
 import sdss as sdss
 from util.mpl_settings import set_plot_params
 import util.triangle as triangle
@@ -110,6 +111,9 @@ sortedDICVals = sorted(DICDict.items(), key = operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])
 qBest = int(sortedDICVals[0][0].split()[1])
 print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
+
+bestTask = taskDict['%d %d'%(pBest, qBest)]
+res = mcmcviz.vizWalkers(bestTask.Chain, 0, 1)
 
 if args.stop:
 	pdb.set_trace()
