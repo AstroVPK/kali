@@ -113,7 +113,7 @@ qBest = int(sortedDICVals[0][0].split()[1])
 print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
 
 bestTask = taskDict['%d %d'%(pBest, qBest)]
-res = mcmcviz.vizWalkers(bestTask.Chain, 0, 1)
+res = mcmcviz.vizWalkers(bestTask.Chain, bestTask.LnPosterior, 0, 1)
 
 if args.stop:
 	pdb.set_trace()

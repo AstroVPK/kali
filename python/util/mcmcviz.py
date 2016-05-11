@@ -2,11 +2,13 @@ import math as math
 import cmath as cmath
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import matplotlib.animation as animation
 from matplotlib import cm as cm
 from matplotlib import gridspec as gridspec
 from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
+import pdb
 
 fwid = 16.0
 fhgt = 10.0
@@ -63,30 +65,40 @@ def clear_frame(ax=None):
 	for spine in ax.spines.itervalues(): 
 		spine.set_visible(False) 
 
-def vizWalkers(mcmcChain, dim1, dim2):
-	ndim = mcmcChain.shape[0]
-	nwalkers = mcmcChain.shape[1]
-	nsteps = mcmcChain.shape[2]
+def vizWalkers(Chain, LogPosterior, dim1, dim2):
+	ndim = Chain.shape[0]
+	nwalkers = Chain.shape[1]
+	nsteps = Chain.shape[2]
 	def init():
-		line.set_data([], [])
+		for walkerNum in xrange(nwalkers):
+			lineList[walkerNum].set_data([], [])
 		step_text.set_text('stepNum: ')
-		return line, step_text
+		return lineList + [step_text]
 
 	def animate(stepNum):
-		line.set_data(mcmcChain[dim1,:,stepNum].tolist(), mcmcChain[dim2,:,stepNum].tolist())
+		for walkerNum in xrange(nwalkers):
+			colorVal = scalarMap.to_rgba(LogPosterior[walkerNum,stepNum])
+			lineList[walkerNum].set_data([Chain[dim1,walkerNum,stepNum], 0.0], [Chain[dim2,walkerNum,stepNum], 0.0])
+			lineList[walkerNum].set_color(colorVal)
 		step_text.set_text('stepNum: %d'%(stepNum))
-		return line, step_text
+		return lineList + [step_text]
 
 	fig = plt.figure(1, figsize = (fhgt, fhgt))
 	ax = fig.add_subplot(111)
-	ax.set_xlim(np.min(mcmcChain[dim1,:,:]), np.max(mcmcChain[dim1,:,:]))
-	ax.set_ylim(np.min(mcmcChain[dim2,:,:]), np.max(mcmcChain[dim2,:,:]))
+	ax.set_xlim(np.min(Chain[dim1,:,:]), np.max(Chain[dim1,:,:]))
+	ax.set_ylim(np.min(Chain[dim2,:,:]), np.max(Chain[dim2,:,:]))
 	step_text = ax.text(0.02, 0.95, '', transform = ax.transAxes) 
-	line, = ax.plot([], [], 'o', ms = 10, color = '#000000')
+	jet = cmx = plt.get_cmap('jet')
+	cNorm  = colors.Normalize(vmin = np.min(LogPosterior[:,:]), vmax = np.max(LogPosterior[:,:]))
+	scalarMap = cm.ScalarMappable(norm = cNorm, cmap = jet)
+	lineList = list()
+	for walkerNum in xrange(nwalkers):
+		line, = ax.plot([], [], 'o', ms = 10, color = '#000000')
+		lineList.append(line)
 
 	anim = animation.FuncAnimation(fig, animate, init_func = init, frames = nsteps, interval = 41.6666666664, blit = True)
 
-	#anim.save('/home/vish/Desktop/basicAnim.mp4', fps = 24, extra_args = ['-vcodec', 'libx264'])
+	#anim.save('/home/vish/Desktop/basicAnim.mp4', writer = 'mencoder', fps = 24, extra_args = ['-vcodec', 'libx264'])
 
 	plt.show()
 	return 0
