@@ -81,7 +81,7 @@ sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
 
-taskDict = list()
+taskDict = dict()
 DICDict= dict()
 
 for p in xrange(args.pMin, args.pMax + 1):
@@ -95,18 +95,20 @@ for p in xrange(args.pMin, args.pMax + 1):
 		GuessRAR, GuessIAR, GuessRMA, GuessIMA = libcarma.timescales(p, q, RhoGuess)
 		TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
 		ThetaGuess = libcarma.coeffs(p, q, RhoGuess)
-		nt.set(sdssLC.dt, ThetaGuess)
+
 		print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
 		startLCARMA = time.time()
 		nt.fit(sdssLC, ThetaGuess)
 		stopLCARMA = time.time()
 		timeLCARMA = stopLCARMA - startLCARMA
 		print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
+
 		Deviances = copy.copy(nt.LnPosterior[:,args.nsteps/2:]).reshape((-1))
 		DIC = 0.5*math.pow(np.std(-2.0*Deviances),2.0) + np.mean(-2.0*Deviances)
 		print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
 		DICDict['%d %d'%(p, q)] = DIC
 		taskDict['%d %d'%(p, q)] = nt
+
 sortedDICVals = sorted(DICDict.items(), key = operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])
 qBest = int(sortedDICVals[0][0].split()[1])
