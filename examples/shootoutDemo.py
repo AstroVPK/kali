@@ -172,8 +172,8 @@ try:
 except IOError:
 	ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
 	ntg.scatterFactor = args.scatterFactor
-	minT = sdss0g.dt*sdss0g.minTimescale
-	maxT = sdss0g.T*sdss0g.maxTimescale
+	minT = 5.0*sdss0g.dt*sdss0g.minTimescale
+	maxT = 0.2*sdss0g.T*sdss0g.maxTimescale
 	RhoGuess = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
 	RhoGuess[-1] = 6.0e-2*np.std(sdss0g.y)
 	GuessRAR, GuessIAR, GuessRMA, GuessIMA = libcarma.timescales(P, Q, RhoGuess)
