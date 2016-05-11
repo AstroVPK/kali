@@ -81,8 +81,8 @@ sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
 
-taskList = list()
-dictDIC = dict()
+taskDict = list()
+DICDict= dict()
 
 for p in xrange(args.pMin, args.pMax + 1):
 	for q in xrange(args.qMin, p):
@@ -105,9 +105,9 @@ for p in xrange(args.pMin, args.pMax + 1):
 		Deviances = copy.copy(nt.LnPosterior[:,args.nsteps/2:]).reshape((-1))
 		DIC = 0.5*math.pow(np.std(-2.0*Deviances),2.0) + np.mean(-2.0*Deviances)
 		print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
-		dictDIC['%d %d'%(p, q)] = DIC
-		taskList.append(nt)
-sortedDICVals = sorted(dictDIC.items(), key = operator.itemgetter(1))
+		DICDict['%d %d'%(p, q)] = DIC
+		taskDict['%d %d'%(p, q)] = nt
+sortedDICVals = sorted(DICDict.items(), key = operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])
 qBest = int(sortedDICVals[0][0].split()[1])
 print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
