@@ -76,7 +76,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-sdssLC = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
+sdssLC = sdss.sdss_gLC(supplied = args.name, pwd = args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
@@ -114,4 +114,5 @@ pBest = int(sortedDICVals[0][0].split()[0])
 qBest = int(sortedDICVals[0][0].split()[1])
 print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
 
-pdb.set_trace()
+if args.stop:
+	pdb.set_trace()
