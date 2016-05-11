@@ -65,10 +65,6 @@ parser.add_argument('--no-log10', dest = 'log10', action = 'store_false', help =
 parser.set_defaults(log10 = False)
 args = parser.parse_args()
 
-if (args.pMax <= args.pMin):
-	raise ValueError('pMax must be greater than pMin')
-if (args.qMax <= args.qMin):
-	raise ValueError('qMax must be greater than qMin')
 if (args.qMax >= args.pMax):
 	raise ValueError('pMax must be greater than qMax')
 if (args.pMin < 1):
@@ -88,12 +84,13 @@ for p in xrange(args.pMin, args.pMax + 1):
 	for q in xrange(args.qMin, p):
 		nt = libcarma.basicTask(p, q, nwalkers = args.nwalkers, nsteps = args.nsteps, scatterFactor = args.scatterFactor)
 
-		minT = sdssLC.dt*sdssLC.minTimescale
-		maxT = sdssLC.T*sdssLC.maxTimescale
+		minT = 5.0*sdssLC.dt*sdssLC.minTimescale
+		maxT = 0.2*sdssLC.T*sdssLC.maxTimescale
 		RhoGuess = -1.0/((maxT - minT)*np.random.random(p + q + 1) + minT)
 		RhoGuess[-1] = 5.0e-2*np.std(sdssLC.y)
 		GuessRAR, GuessIAR, GuessRMA, GuessIMA = libcarma.timescales(p, q, RhoGuess)
 		TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
+		print 'Tau Guess: %s'%(str(TauGuess))
 		ThetaGuess = libcarma.coeffs(p, q, RhoGuess)
 
 		print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)

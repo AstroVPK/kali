@@ -599,10 +599,32 @@ using namespace std;
 					deltaXTemp[threadNum*ndims + dimCtr] += 1.0;
 					deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
 					}
+				#ifdef DEBUG_FIT_CARMAMODEL
+				#pragma omp critical
+				{
+				printf("threadNum: %d; walkerNum: %d; Location: ", threadNum, walkerNum);
+				for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
+					printf("%8.7e ",deltaXTemp[threadNum*ndims + dimCtr]);
+					}
+				printf("\n");
+				}
+				#endif
 				if ((set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) and (Systems[threadNum].computeLnPrior(ptr2Data) == 0.0)) {
 					goodPoint = true;
+					#ifdef DEBUG_FIT_CARMAMODEL
+					#pragma omp critical
+					{
+					printf("threadNum: %d; walkerNum: %d; Good location!\n", threadNum, walkerNum);
+					}
+					#endif
 					} else {
 					goodPoint = false;
+					#ifdef DEBUG_FIT_CARMAMODEL
+					#pragma omp critical
+					{
+					printf("threadNum: %d; walkerNum: %d; Bad location!\n", threadNum, walkerNum);
+					}
+					#endif
 					}
 				} while (goodPoint == false);
 			xVec[threadNum].clear();
