@@ -65,7 +65,7 @@ def clear_frame(ax=None):
 	for spine in ax.spines.itervalues(): 
 		spine.set_visible(False) 
 
-def vizWalkers(Chain, LogPosterior, dim1, dim2):
+def vizWalkers(Chain, LogPosterior, dim1, dim1Name, dim2, dim2Name):
 	ndim = Chain.shape[0]
 	nwalkers = Chain.shape[1]
 	nsteps = Chain.shape[2]
@@ -85,8 +85,12 @@ def vizWalkers(Chain, LogPosterior, dim1, dim2):
 
 	fig = plt.figure(1, figsize = (fhgt, fhgt))
 	ax = fig.add_subplot(111)
+	plt.gca().xaxis.get_major_formatter().set_powerlimits((0, 0))
+	plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 	ax.set_xlim(np.min(Chain[dim1,:,:]), np.max(Chain[dim1,:,:]))
 	ax.set_ylim(np.min(Chain[dim2,:,:]), np.max(Chain[dim2,:,:]))
+	ax.set_xlabel(dim1Name)
+	ax.set_ylabel(dim2Name)
 	step_text = ax.text(0.02, 0.95, '', transform = ax.transAxes) 
 	jet = cmx = plt.get_cmap('jet')
 	cNorm  = colors.Normalize(vmin = np.min(LogPosterior[:,:]), vmax = np.max(LogPosterior[:,:]))
@@ -95,6 +99,7 @@ def vizWalkers(Chain, LogPosterior, dim1, dim2):
 	for walkerNum in xrange(nwalkers):
 		line, = ax.plot([], [], 'o', ms = 10, color = '#000000')
 		lineList.append(line)
+	plt.tight_layout()
 
 	anim = animation.FuncAnimation(fig, animate, init_func = init, frames = nsteps, interval = 41.6666666664, blit = True)
 

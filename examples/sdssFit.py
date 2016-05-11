@@ -113,7 +113,38 @@ qBest = int(sortedDICVals[0][0].split()[1])
 print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
 
 bestTask = taskDict['%d %d'%(pBest, qBest)]
-res = mcmcviz.vizWalkers(bestTask.Chain, bestTask.LnPosterior, 0, 1)
+
+var = str(raw_input('Do you wish to view any MCMC walkers? (y/n):')).lower()
+if var == 'y':
+	notDone = True
+	while notDone:
+		pView = -1
+		while pView < 1 or pView > args.pMax:
+			pView = int(raw_input('C-AR model order:'))
+		qView = -1
+		while qView < 0 or qView >= pView:
+			qView = int(raw_input('C-MA model order:'))
+		dim1 = -1
+		while dim1 < 0 or dim1 > pView + qView + 1:
+			dim1 = int(raw_input('1st Dimension to view:'))
+		dim2 = -1
+		while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
+			dim2 = int(raw_input('2nd Dimension to view:'))
+
+		if dim1 < pView:
+			dim1Name = r'$a_{%d}$'%(dim1)
+		if dim1 >= pView and dim1 < pView + qView + 1:
+			dim1Name = r'$b_{%d}$'%(dim1 - pView)
+
+		if dim2 < pView:
+			dim2Name = r'$a_{%d}$'%(dim2)
+		if dim2 >= pView and dim2 < pView + qView + 1:
+			dim2Name = r'$b_{%d}$'%(dim2 - pView)
+
+		res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].Chain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
+		var = str(raw_input('Do you wish to view any more MCMC walkers? (y/n):')).lower()
+		if var == 'n':
+			notDone = False
 
 if args.stop:
 	pdb.set_trace()
