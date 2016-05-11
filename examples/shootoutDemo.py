@@ -19,7 +19,7 @@ import util.triangle as triangle
 try: 
 	os.environ['DISPLAY']
 except KeyError as Err:
-	print "No display environment! Using matplotlib backend 'Agg'"
+	warnings.warn('No display environment! Using matplotlib backend "Agg"')
 	import matplotlib
 	matplotlib.use('Agg')
 
@@ -49,7 +49,7 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
-parser.add_argument('-sFac', '--scatterFactor', type = float, default = 0.1, help = r'Scatter factgor for starting locations of walkers pre-optimization')
+parser.add_argument('-sFac', '--scatterFactor', type = float, default = 10.0, help = r'Scatter factgor for starting locations of walkers pre-optimization')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
 parser.set_defaults(stop = False)
@@ -83,7 +83,7 @@ except IOError:
 	MockRAR, MockIAR, MockRMA, MockIMA = libcarma.timescales(P, Q, RhoMock)
 	TauMock = np.array(sorted([i for i in MockRAR]) + sorted([i for i in MockIAR]) + sorted([i for i in MockRMA]) + sorted([i for i in MockIMA]) + [RhoMock[-1]])
 	ThetaMock = libcarma.coeffs(P, Q, RhoMock)
-	
+
 	newTask = libcarma.basicTask(P,Q)
 	newTask.set(sdss0g.dt, ThetaMock)
 	sdss_NtS = np.median(sdss0g.yerr/sdss0g.y)

@@ -24,6 +24,13 @@ import pdb as pdb
 import rand as rand
 import CARMATask as CARMATask
 
+def MAD(self, a):
+	medianVal = np.median(a)
+	b = np.copy(a)
+	for i in range(a.shape[0]):
+		b[i]=abs(b[i] - medianVal)
+	return np.median(b)
+
 def roots(p, q, Theta):
 	ARPoly = np.zeros(p + 1)
 	ARPoly[0] = 1.0
@@ -50,7 +57,10 @@ def coeffs(p, q, Rho):
 	MARoots = np.zeros(q, dtype = 'complex128')
 	for i in xrange(q):
 		MARoots[i] = Rho[p + i]
-	MAPoly = np.array(np.poly(MARoots))
+	if q == 0:
+		MAPoly = np.ones(1)
+	else:
+		MAPoly = np.array(np.poly(MARoots))
 	with warnings.catch_warnings():
 		warnings.simplefilter('ignore')
 		for i in xrange(q + 1):
@@ -931,7 +941,7 @@ class matchSampler(sampler):
 class task(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e1, maxEvals = 10000, xTol = 0.005, mcmcA = 2.0):
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e1, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
 		try:
 			assert p > q, r'p must be greater than q'
 			assert p >= 1, r'p must be greater than or equal to 1'
