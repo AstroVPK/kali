@@ -83,8 +83,8 @@ def timescales(p, q, Rho):
 	oscTimescales = np.zeros(numImag)
 	realRoots = set(Rho[0:p].real)
 	imagRoots = set(abs(Rho[0:p].imag)).difference(set([0.0]))
-	realAR = np.array([1.0/abs(x) for x in realRoots])
-	imagAR = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
+	realAR = sorted([1.0/abs(x) for x in realRoots])
+	imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
 	imagPairs = 0
 	for i in xrange(q):
 		if Rho[i].imag != 0.0:
@@ -95,9 +95,9 @@ def timescales(p, q, Rho):
 	oscTimescales = np.zeros(numImag)
 	realRoots = set(Rho[p:p + q].real)
 	imagRoots = set(abs(Rho[p:p + q].imag)).difference(set([0.0]))
-	realMA = np.array([1.0/abs(x) for x in realRoots])
-	imagMA = np.array([(2.0*math.pi)/abs(x) for x in imagRoots])
-	return realAR, imagAR, realMA, imagMA
+	realMA = sorted([1.0/abs(x) for x in realRoots])
+	imagMA = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
+	return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])
 
 class epoch(object):
 	"""!
@@ -941,7 +941,7 @@ class matchSampler(sampler):
 class task(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e1, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
 		try:
 			assert p > q, r'p must be greater than q'
 			assert p >= 1, r'p must be greater than or equal to 1'
@@ -956,8 +956,6 @@ class task(object):
 			assert type(nwalkers) is types.IntType, r'nwalkers must be an integer'
 			assert nsteps > 0, r'nsteps must be greater than 0'
 			assert type(nsteps) is types.IntType, r'nsteps must be an integer'
-			assert scatterFactor > 0.0, r'scatterFactor must be greater than 0'
-			assert type(scatterFactor) is types.FloatType, r'scatterFactor must be a float'
 			assert maxEvals > 0, r'maxEvals must be greater than 0'
 			assert type(maxEvals) is types.IntType, r'maxEvals must be an integer'
 			assert xTol > 0.0, r'xTol must be greater than 0'
@@ -969,12 +967,11 @@ class task(object):
 			self._nburn = nburn
 			self._nwalkers = nwalkers
 			self._nsteps = nsteps
-			self._scatterFactor = scatterFactor
 			self._maxEvals = maxEvals
 			self._xTol = xTol
 			self._mcmcA = mcmcA
-			self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-			self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+			self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
+			self._LnPosterior = np.require(np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
 			self._taskCython = CARMATask.CARMATask(self._p, self._q, self._nthreads, self._nburn)
 		except AssertionError as err:
 			raise AttributeError(str(err))
@@ -1066,19 +1063,6 @@ class task(object):
 			raise AttributeError(str(err))
 
 	@property
-	def scatterFactor(self):
-		return self._scatterFactor
-
-	@scatterFactor.setter
-	def scatterFactor(self, value):
-		try:
-			assert value >= 0.0, r'scatterFactor must be greater than or equal to 0.0'
-			assert type(value) is types.FloatType, r'scatterFactor must be a float'
-			self._scatterFactor = value
-		except AssertionError as err:
-			raise AttributeError(str(err))
-
-	@property
 	def maxEvals(self):
 		return self._maxEvals
 
@@ -1131,6 +1115,18 @@ class task(object):
 			for stepNum in xrange(self._nsteps):
 				for walkerNum in xrange(self._nwalkers):
 					self._rootChain[:, walkerNum, stepNum] = roots(self._p, self._q, Chain[:, walkerNum, stepNum])
+		return self._rootChain
+
+	@property
+	def timescaleChain(self):
+		if hasattr(self, '_timescaleChain'):
+			return self._timescaleChain
+		else:
+			rootChain = self.rootChain
+			self._timescaleChain = np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'float64')
+			for stepNum in xrange(self._nsteps):
+				for walkerNum in xrange(self._nwalkers):
+					self._timescaleChain[:, walkerNum, stepNum] = timescales(self._p, self._q, rootChain[:, walkerNum, stepNum])
 		return self._rootChain
 
 	@property
@@ -1221,6 +1217,35 @@ class task(object):
 			Rho[self.p + i] = MARoots[i]
 		Rho[self.p + self.q] = MAPoly[0]
 		return Rho
+
+	def timescales(self, Rho, tnum = None):
+		if tnum is None:
+			tnum = 0
+		imagPairs = 0
+		for i in xrange(self.p):
+			if Rho[i].imag != 0.0:
+				imagPairs += 1
+		numImag = imagPairs/2
+		numReal = numImag + (self.p - imagPairs)
+		decayTimescales = np.zeros(numReal)
+		oscTimescales = np.zeros(numImag)
+		realRoots = set(Rho[0:self.p].real)
+		imagRoots = set(abs(Rho[0:self.p].imag)).difference(set([0.0]))
+		realAR = sorted([1.0/abs(x) for x in realRoots])
+		imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
+		imagPairs = 0
+		for i in xrange(self.q):
+			if Rho[i].imag != 0.0:
+				imagPairs += 1
+		numImag = imagPairs/2
+		numReal = numImag + (self.q - imagPairs)
+		decayTimescales = np.zeros(numReal)
+		oscTimescales = np.zeros(numImag)
+		realRoots = set(Rho[self.p:self.p+self.q].real)
+		imagRoots = set(abs(Rho[self.p:self.p+self.q].imag)).difference(set([0.0]))
+		realMA = sorted([1.0/abs(x) for x in realRoots])
+		imagMA = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
+		return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])
 
 	def check(self, Theta, tnum = None):
 		if tnum is None:
@@ -1388,14 +1413,14 @@ class task(object):
 			observedLC._computedCadenceNum = -1
 		observedLC._logPrior = self.logPrior(observedLC, tnum = tnum)
 		if observedLC._computedCadenceNum == -1:
-			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
 			observedLC._logLikelihood = lnLikelihood
 			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
 			observedLC._computedCadenceNum = observedLC.numCadences - 1
 		elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
 			lnLikelihood = observedLC._logLikelihood
 		else:
-			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
 			observedLC._logLikelihood = lnLikelihood
 			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
 			observedLC._computedCadenceNum = observedLC.numCadences - 1
@@ -1416,7 +1441,7 @@ class task(object):
 		self._taskCython.compute_ACVF(num, lags, acvfs)
 		return lags, acvfs
 
-	def fit(self, observedLC, xStart, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
 			rand.rdrand(randSeed)
@@ -1430,8 +1455,30 @@ class task(object):
 		if xSeed is None:
 			rand.rdrand(randSeed)
 			xSeed = randSeed[0]
-		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.scatterFactor, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
+		minT = observedLC.dt*observedLC.minTimescale
+		maxT = observedLC.T*observedLC.maxTimescale
+		minTLog10 = math.log10(minT)
+		maxTLog10 = math.log10(maxT)
+		Std = np.std(observedLC.y)
+
+		for walkerNum in xrange(self.nwalkers):
+			noSuccess = True
+			sigmaFactor = 1.0e0
+			RhoGuess = -1.0/np.power(10.0, ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10))
+			while noSuccess:
+				RhoGuess[self.p + self.q] = sigmaFactor*Std
+				ThetaGuess = coeffs(self.p, self.q, RhoGuess)
+				self.set(observedLC.dt, ThetaGuess)
+				if self.logPrior(observedLC) == 0.0:
+					noSuccess = False
+				else:
+					sigmaFactor *= 0.31622776601 # sqrt(0.1)
+
+			for dimNum in xrange(self.ndims):
+				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
+		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 
 class basicTask(task):
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):
-		super(basicTask, self).__init__(p, q, nthreads, nburn, nwalkers, nsteps, scatterFactor, maxEvals, xTol)
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 1000, xTol = 0.005):
+		super(basicTask, self).__init__(p, q, nthreads, nburn, nwalkers, nsteps, maxEvals, xTol)

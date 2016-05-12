@@ -2152,6 +2152,14 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+	//printf("F\n");
+	//viewMatrix(p, p, F);
+	//printf("P\n");
+	//viewMatrix(p, p, P);
+	//printf("MScratch\n");
+	//viewMatrix(p, p, MScratch);
+	//printf("PMinus\n");
+	//viewMatrix(p, p, PMinus);
 	v = y[0] - H[0]*XMinus[0]; // Compute v = y - H*X
 	//printf("v[%d]: %e\n", 0, v);
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
