@@ -1127,7 +1127,7 @@ class task(object):
 			for stepNum in xrange(self._nsteps):
 				for walkerNum in xrange(self._nwalkers):
 					self._timescaleChain[:, walkerNum, stepNum] = timescales(self._p, self._q, rootChain[:, walkerNum, stepNum])
-		return self._rootChain
+		return self._timescaleChain
 
 	@property
 	def LnPosterior(self):

@@ -46,8 +46,8 @@ parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'N
 parser.add_argument('-nwalkers', '--nwalkers', type = int, default = 25*psutil.cpu_count(logical = True), help = r'Number of walkers')
 parser.add_argument('-pMax', '--pMax', type = int, default = 1, help = r'Maximum C-AR order')
 parser.add_argument('-pMin', '--pMin', type = int, default = 1, help = r'Minimum C-AR order')
-parser.add_argument('-qMax', '--qMax', type = int, default = 0, help = r'Maximum C-MA order')
-parser.add_argument('-qMin', '--qMin', type = int, default = 0, help = r'Minimum C-MA order')
+parser.add_argument('-qMax', '--qMax', type = int, default = -1, help = r'Maximum C-MA order')
+parser.add_argument('-qMin', '--qMin', type = int, default = -1, help = r'Minimum C-MA order')
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
 parser.set_defaults(plot = False)
@@ -56,7 +56,7 @@ parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
-parser.set_defaults(stop = False)
+parser.set_defaults(stop = True)
 parser.add_argument('--save', dest = 'save', action = 'store_true', help = r'Save files?')
 parser.add_argument('--no-save', dest = 'save', action = 'store_false', help = r'Do not save files?')
 parser.set_defaults(save = False)
@@ -70,6 +70,10 @@ args = parser.parse_args()
 
 if (args.qMax >= args.pMax):
 	raise ValueError('pMax must be greater than qMax')
+if (args.qMax == -1):
+	args.qMax = args.pMax - 1
+if (args.qMin == -1):
+	args.qMin = 0
 if (args.pMin < 1):
 	raise ValueError('pMin must be greater than or equal to 1')
 if (args.qMin < 0):
@@ -79,6 +83,15 @@ sdssLC = sdss.sdss_gLC(supplied = args.name, pwd = args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
+
+if args.plot:
+	plt.figure(0, figsize = (fwid, fhgt))
+	plt.errorbar(sdssLC.t, sdssLC.y, sdssLc.yerr, label = r'%s (g-band)'%(sdssLC.name), fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
+	plt.xlabel('$t$ (MJD)')
+	plt.ylabel('$F$ (Jy)')
+	plt.title(r'Light curve')
+	plt.legend()
+	plt.show(False)
 
 taskDict = dict()
 DICDict= dict()
@@ -113,12 +126,16 @@ bestTask = taskDict['%d %d'%(pBest, qBest)]
 if args.viewer:
 	notDone = True
 	while notDone:
+		whatToView = -1
+		while whatToView < 0 or whatToView > 3:
+			whatToView = int(raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA timescales (2):'))
 		pView = -1
 		while pView < 1 or pView > args.pMax:
 			pView = int(raw_input('C-AR model order:'))
 		qView = -1
 		while qView < 0 or qView >= pView:
 			qView = int(raw_input('C-MA model order:'))
+
 		dim1 = -1
 		while dim1 < 0 or dim1 > pView + qView + 1:
 			dim1 = int(raw_input('1st Dimension to view:'))
@@ -126,17 +143,43 @@ if args.viewer:
 		while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
 			dim2 = int(raw_input('2nd Dimension to view:'))
 
-		if dim1 < pView:
-			dim1Name = r'$a_{%d}$'%(dim1)
-		if dim1 >= pView and dim1 < pView + qView + 1:
-			dim1Name = r'$b_{%d}$'%(dim1 - pView)
+		if whatToView == 0:
+			if dim1 < pView:
+				dim1Name = r'$a_{%d}$'%(dim1)
+			if dim1 >= pView and dim1 < pView + qView + 1:
+				dim1Name = r'$b_{%d}$'%(dim1 - pView)
+			if dim2 < pView:
+				dim2Name = r'$a_{%d}$'%(dim2)
+			if dim2 >= pView and dim2 < pView + qView + 1:
+				dim2Name = r'$b_{%d}$'%(dim2 - pView)
+			res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].Chain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
 
-		if dim2 < pView:
-			dim2Name = r'$a_{%d}$'%(dim2)
-		if dim2 >= pView and dim2 < pView + qView + 1:
-			dim2Name = r'$b_{%d}$'%(dim2 - pView)
+		elif whatToView == 1:
+			if dim1 < pView:
+				dim1Name = r'$r_{%d}$'%(dim1)
+			if dim1 >= pView and dim1 < pView + qView:
+				dim1Name = r'$m_{%d}$'%(dim1 - pView)
+			if dim1 == pView + qView:
+				dim1Name = r'$\mathrm{Amp.}$'
+			if dim2 < pView:
+				dim2Name = r'$r_{%d}$'%(dim2)
+			if dim2 >= pView and dim2 < pView + qView:
+				dim2Name = r'$m_{%d}$'%(dim2 - pView)
+			if dim2 == pView + qView:
+				dim2Name = r'$\mathrm{Amp.}$'
+			res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].rootChain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
 
-		res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].Chain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
+		else:
+			if dim1 < pView + qView:
+				dim1Name = r'$\tau_{%d}$'%(dim1)
+			if dim1 == pView + qView:
+				dim1Name = r'$\mathrm{Amp.}$'
+			if dim2 < pView + qView:
+				dim2Name = r'$\tau_{%d}$'%(dim2)
+			if dim2 == pView + qView:
+				dim2Name = r'$\mathrm{Amp.}$'
+			res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].timescaleChain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
+
 		var = str(raw_input('Do you wish to view any more MCMC walkers? (y/n):')).lower()
 		if var == 'n':
 			notDone = False
