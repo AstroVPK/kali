@@ -973,8 +973,8 @@ class task(object):
 			self._maxEvals = maxEvals
 			self._xTol = xTol
 			self._mcmcA = mcmcA
-			self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-			self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+			self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
+			self._LnPosterior = np.require(np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
 			self._taskCython = CARMATask.CARMATask(self._p, self._q, self._nthreads, self._nburn)
 		except AssertionError as err:
 			raise AttributeError(str(err))
@@ -1416,7 +1416,7 @@ class task(object):
 		self._taskCython.compute_ACVF(num, lags, acvfs)
 		return lags, acvfs
 
-	def fit(self, observedLC, xStart, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
 			rand.rdrand(randSeed)
@@ -1430,7 +1430,41 @@ class task(object):
 		if xSeed is None:
 			rand.rdrand(randSeed)
 			xSeed = randSeed[0]
-		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.scatterFactor, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
+		minT = observedLC.dt*observedLC.minTimescale
+		maxT = observedLC.T*observedLC.maxTimescale
+		minTLog10 = math.log10(minT)
+		maxTLog10 = math.log10(maxT)
+		Std = np.std(observedLC.y)
+
+		noSuccess = True
+		sigmaFactor = 1.0e0
+		while noSuccess:
+			RhoGuess = -1.0/np.power(10.0, (maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
+			RhoGuess[self.p + self.q] = sigmaFactor*Std
+			ThetaGuess = coeffs(self.p, self.q, RhoGuess)
+			self.set(observedLC.dt, ThetaGuess)
+			if self.logPrior(observedLC) == 0.0:
+				noSuccess = False
+			else:
+				sigmaFactor *= 0.31622776601 # sqrt(0.1)
+
+		for walkerNum in xrange(self.nwalkers):
+			noSuccess = True
+			sigmaFactor = 1.0e0
+			RhoGuess = -1.0/np.power(10.0, ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10))
+			while noSuccess:
+				RhoGuess[self.p + self.q] = sigmaFactor*Std
+				ThetaGuess = coeffs(self.p, self.q, RhoGuess)
+				self.set(observedLC.dt, ThetaGuess)
+				if self.logPrior(observedLC) == 0.0:
+					noSuccess = False
+				else:
+					sigmaFactor *= 0.31622776601 # sqrt(0.1)
+
+			for dimNum in xrange(self.ndims):
+				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
+		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 
 class basicTask(task):
 	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, scatterFactor = 1.0e-1, maxEvals = 1000, xTol = 0.005):

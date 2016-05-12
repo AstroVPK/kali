@@ -80,32 +80,26 @@ sdssLC.maxSigma = args.maxSigma
 
 taskDict = dict()
 DICDict= dict()
+totalTime = 0.0
 
 for p in xrange(args.pMin, args.pMax + 1):
-	for q in xrange(args.qMin, p):
+	for q in xrange(args.qMin, min(p, args.qMax + 1)):
 		nt = libcarma.basicTask(p, q, nwalkers = args.nwalkers, nsteps = args.nsteps, scatterFactor = args.scatterFactor)
-
-		minT = 5.0*sdssLC.dt*sdssLC.minTimescale
-		maxT = 0.2*sdssLC.T*sdssLC.maxTimescale
-		RhoGuess = -1.0/((maxT - minT)*np.random.random(p + q + 1) + minT)
-		RhoGuess[-1] = 5.0e-2*np.std(sdssLC.y)
-		GuessRAR, GuessIAR, GuessRMA, GuessIMA = libcarma.timescales(p, q, RhoGuess)
-		TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
-		print 'Tau Guess: %s'%(str(TauGuess))
-		ThetaGuess = libcarma.coeffs(p, q, RhoGuess)
 
 		print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
 		startLCARMA = time.time()
-		nt.fit(sdssLC, ThetaGuess)
+		nt.fit(sdssLC)
 		stopLCARMA = time.time()
 		timeLCARMA = stopLCARMA - startLCARMA
 		print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
+		totalTime += timeLCARMA
 
 		Deviances = copy.copy(nt.LnPosterior[:,args.nsteps/2:]).reshape((-1))
-		DIC = 0.5*math.pow(np.std(-2.0*Deviances),2.0) + np.mean(-2.0*Deviances)
+		DIC = 0.5*math.pow(np.nanstd(-2.0*Deviances),2.0) + np.nanmean(-2.0*Deviances)
 		print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
 		DICDict['%d %d'%(p, q)] = DIC
 		taskDict['%d %d'%(p, q)] = nt
+print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(totalTime, totalTime/60.0, totalTime/3600.0)
 
 sortedDICVals = sorted(DICDict.items(), key = operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])

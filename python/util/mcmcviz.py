@@ -93,7 +93,7 @@ def vizWalkers(Chain, LogPosterior, dim1, dim1Name, dim2, dim2Name):
 	ax.set_ylabel(dim2Name)
 	step_text = ax.text(0.02, 0.95, '', transform = ax.transAxes) 
 	jet = cmx = plt.get_cmap('jet')
-	cNorm  = colors.Normalize(vmin = np.min(LogPosterior[:,:]), vmax = np.max(LogPosterior[:,:]))
+	cNorm  = colors.Normalize(vmin = np.nanmin(LogPosterior[:,:]), vmax = np.nanmax(LogPosterior[:,:]))
 	scalarMap = cm.ScalarMappable(norm = cNorm, cmap = jet)
 	lineList = list()
 	for walkerNum in xrange(nwalkers):

@@ -533,7 +533,7 @@ using namespace std;
 		Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 		}
 
-	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double scatterFactor, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;
 		int threadNum = omp_get_thread_num();
@@ -565,17 +565,10 @@ using namespace std;
 		Args.Systems = Systems;
 		p2Args = &Args;
 		double LnLikeVal = 0.0;
-		double *initPos = nullptr, *offsetArr = nullptr, *deltaXTemp = nullptr;
+		double *initPos = nullptr, *offsetArr = nullptr;
 		vector<vector<double>> xVec (numThreads, vector<double>(ndims));
-		VSLStreamStatePtr *xStream = (VSLStreamStatePtr*)_mm_malloc(numThreads*sizeof(VSLStreamStatePtr),64);
-		deltaXTemp = static_cast<double*>(_mm_malloc(ndims*numThreads*sizeof(double),64));
 		initPos = static_cast<double*>(_mm_malloc(nwalkers*ndims*sizeof(double),64));
 		int nthreads = numThreads;
-		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(nthreads, xStream, xSeed, nwalkers)
-		for (int i = 0; i < numThreads; ++i) {
-			vslNewStream(&xStream[i], VSL_BRNG_SFMT19937, xSeed);
-			vslSkipAheadStream(xStream[i], i*(nwalkers/nthreads));
-			}
 		nlopt::opt *optArray[numThreads];
 		for (int i = 0; i < numThreads; ++i) {
 			optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims);
@@ -585,51 +578,13 @@ using namespace std;
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;
-		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, deltaXTemp, xStream, scatterFactor, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior, ptr2Data)
+		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior, p2Args)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
-			bool goodPoint = false;
 			max_LnPosterior[threadNum] = 0.0;
-			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-				deltaXTemp[threadNum*ndims + dimCtr] = 0.0;
-				}
-			do {
-				vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, xStream[threadNum], ndims, &deltaXTemp[threadNum*ndims], 0.0, scatterFactor);
-				for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-					deltaXTemp[threadNum*ndims + dimCtr] += 1.0;
-					deltaXTemp[threadNum*ndims + dimCtr] *= xStart[dimCtr];
-					}
-				#ifdef DEBUG_FIT_CARMAMODEL
-				#pragma omp critical
-				{
-				printf("threadNum: %d; walkerNum: %d; Location: ", threadNum, walkerNum);
-				for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-					printf("%8.7e ",deltaXTemp[threadNum*ndims + dimCtr]);
-					}
-				printf("\n");
-				}
-				#endif
-				if ((set_System(dt, &deltaXTemp[threadNum*ndims], threadNum) == 0) and (Systems[threadNum].computeLnPrior(ptr2Data) == 0.0)) {
-					goodPoint = true;
-					#ifdef DEBUG_FIT_CARMAMODEL
-					#pragma omp critical
-					{
-					printf("threadNum: %d; walkerNum: %d; Good location!\n", threadNum, walkerNum);
-					}
-					#endif
-					} else {
-					goodPoint = false;
-					#ifdef DEBUG_FIT_CARMAMODEL
-					#pragma omp critical
-					{
-					printf("threadNum: %d; walkerNum: %d; Bad location!\n", threadNum, walkerNum);
-					}
-					#endif
-					}
-				} while (goodPoint == false);
 			xVec[threadNum].clear();
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
-				xVec[threadNum].push_back(deltaXTemp[threadNum*ndims + dimCtr]);
+				xVec[threadNum].push_back(xStart[walkerNum*ndims + dimCtr]);
 				}
 			#ifdef DEBUG_FIT_CARMAMODEL
 			#pragma omp critical
@@ -639,9 +594,11 @@ using namespace std;
 			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
 				printf("%e, ", xVec[threadNum][dimNum]);
 				}
-			printf("%e", xVec[threadNum][ndims  - 1]);
-			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+			printf("%e", xVec[threadNum][ndims - 1]);
+			max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
+			printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
 			fflush(0);
+			max_LnPosterior[threadNum] = 0.0;
 			}
 			#endif
 			nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
@@ -663,11 +620,8 @@ using namespace std;
 				}
 			}
 		for (int i = 0; i < numThreads; ++i) {
-			vslDeleteStream(&xStream[i]);
 			delete optArray[i];
 			}
-		_mm_free(xStream);
-		_mm_free(deltaXTemp);
 		_mm_free(max_LnPosterior);
 		EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 		newEnsemble.runMCMC(initPos);
