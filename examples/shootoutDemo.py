@@ -49,7 +49,6 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
-parser.add_argument('-sFac', '--scatterFactor', type = float, default = 10.0, help = r'Scatter factgor for starting locations of walkers pre-optimization')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
 parser.set_defaults(stop = False)
@@ -80,8 +79,7 @@ except IOError:
 	maxT = sdss0g.T*sdss0g.maxTimescale*0.1
 	RhoMock = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
 	RhoMock[-1] = 6.0e-2*np.std(sdss0g.y)
-	MockRAR, MockIAR, MockRMA, MockIMA = libcarma.timescales(P, Q, RhoMock)
-	TauMock = np.array(sorted([i for i in MockRAR]) + sorted([i for i in MockIAR]) + sorted([i for i in MockRMA]) + sorted([i for i in MockIMA]) + [RhoMock[-1]])
+	TauMock = libcarma.timescales(P, Q, RhoMock)
 	ThetaMock = libcarma.coeffs(P, Q, RhoMock)
 
 	newTask = libcarma.basicTask(P,Q)
@@ -171,18 +169,16 @@ try:
 	chainFile = open(libcarmaChainFilePath, 'r')
 except IOError:
 	ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-	ntg.scatterFactor = args.scatterFactor
 	minT = 5.0*sdss0g.dt*sdss0g.minTimescale
 	maxT = 0.2*sdss0g.T*sdss0g.maxTimescale
 	RhoGuess = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
 	RhoGuess[-1] = 6.0e-2*np.std(sdss0g.y)
-	GuessRAR, GuessIAR, GuessRMA, GuessIMA = libcarma.timescales(P, Q, RhoGuess)
-	TauGuess = np.array(sorted([i for i in GuessRAR]) + sorted([i for i in GuessIAR]) + sorted([i for i in GuessRMA]) + sorted([i for i in GuessIMA]) + [RhoGuess[-1]])
+	TauGuess = libcarma.timescales(P, Q, RhoGuess)
 	ThetaGuess = libcarma.coeffs(P, Q, RhoGuess)
 	ntg.set(mock_sdss0g.dt, ThetaGuess)
 	print "Starting libcarma fitting..."
 	startLCARMA = time.time()
-	ntg.fit(mock_sdss0g, ThetaGuess)
+	ntg.fit(mock_sdss0g)
 	stopLCARMA = time.time()
 	timeLCARMA = stopLCARMA - startLCARMA
 	print "LCARMA took %4.3f s = %4.3f min = %4.3f hrs"%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
@@ -434,26 +430,20 @@ if args.plot:
 	plt.ylabel(r'$b_{1}$')
 
 # Convert Theta -> Rho -> Tau
-lcarmaTau_g = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
-for stepNum in xrange(NSTEPS):
-	for walkerNum in xrange(NWALKERS):
-		lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
-		lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
 if carma_pack_results_g:
 	cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
 	cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
 	for sampleNum in xrange(NSAMPLES):
 		cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
-		cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 		try:
-			cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
+			cmcmcTau_g[:,sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 		except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 			cmcmcTau_g[:,sampleNum] = np.nan*np.ones(P + Q + 1)
 
 lcarmaMedianTauDist = 0.0
 lcarmaMedianTauLoc = np.zeros(P + Q + 1)
 for i in xrange(P + Q + 1):
-	lcarmaMedianTauLoc[i] = np.median(lcarmaTau_g[i,:,NSTEPS/2:])
+	lcarmaMedianTauLoc[i] = np.median(ntg.timescaleChain[i,:,NSTEPS/2:])
 	lcarmaMedianTauDelta = (lcarmaMedianTauLoc[i] - TauMock[i])/TauMock[i]
 	lcarmaMedianTauDist += math.pow(lcarmaMedianTauDelta, 2.0)
 lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
@@ -476,7 +466,7 @@ bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,N
 bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
 lcarmaMLETauLoc = np.zeros(P + Q + 1)
 for i in xrange(P + Q + 1):
-	lcarmaMLETauLoc[i] = lcarmaTau_g[i,bestWalker,bestStep]
+	lcarmaMLETauLoc[i] = ntg.timescaleChain[i,bestWalker,bestStep]
 	lcarmaMLETauDelta = (lcarmaMLETauLoc[i] - TauMock[i])/TauMock[i]
 	lcarmaMLETauDist += math.pow(lcarmaMLETauDelta, 2.0)
 lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
@@ -498,7 +488,11 @@ if carma_pack_results_g:
 if args.plot:
 	plt.figure(6, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-AR Timescales')
-	plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+	plt.scatter(ntg.timescaleChain[0,:,NSTEPS/2:], ntg.timescaleChain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+
+	if not carma_pack_results_g:
+		plt.xlim(np.min(ntg.timescaleChain[0,:,NSTEPS/2:]), np.max(ntg.timescaleChain[0,:,NSTEPS/2:]))
+		plt.ylim(np.min(ntg.timescaleChain[1,:,NSTEPS/2:]), np.max(ntg.timescaleChain[1,:,NSTEPS/2:]))
 
 	plt.axvline(x = TauMock[0], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
 	plt.axhline(y = TauMock[1], xmin = 0, xmax = 1, color = '#000000', linestyle = 'solid', zorder = 10)
@@ -512,10 +506,14 @@ if args.plot:
 	plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
 	plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
 	plt.legend()
-	
+
 	plt.figure(7, figsize = (fhgt, fhgt))
 	plt.title(r'g-band C-MA Timescales')
-	plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+	plt.scatter(ntg.timescaleChain[2,:,NSTEPS/2:], ntg.timescaleChain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.cool, marker = 'o', edgecolors = 'none', zorder = -5, alpha = 0.1)
+
+	if not carma_pack_results_g:
+		plt.xlim(np.min(ntg.timescaleChain[2,:,NSTEPS/2:]), np.max(ntg.timescaleChain[2,:,NSTEPS/2:]))
+		plt.ylim(np.min(ntg.timescaleChain[3,:,NSTEPS/2:]), np.max(ntg.timescaleChain[3,:,NSTEPS/2:]))
 
 	plt.axvline(x = TauMock[2], ymin = 0, ymax = 1, color = '#000000', linestyle = 'solid', label = r'True', zorder = 10)
 	plt.axhline(y = TauMock[3], xmin = 0, xmax = 1, color = '#000000', linestyle = 'solid', zorder = 10)
@@ -540,8 +538,8 @@ if args.plot:
 		plt.axvline(x = lcmcmcMLETauLoc[0], ymin = 0, ymax = 1, color = '#67a9cf', linestyle = 'dotted', label = r'lcmcmc MLE', zorder = 5)
 		plt.axhline(y = lcmcmcMLETauLoc[1], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
 
-		plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(lcarmaTau_g[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(lcarmaTau_g[0,:,NSTEPS/2:])))
-		plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(lcarmaTau_g[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(lcarmaTau_g[1,:,NSTEPS/2:])))
+		plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(ntg.timescaleChain[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(ntg.timescaleChain[0,:,NSTEPS/2:])))
+		plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(ntg.timescaleChain[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(ntg.timescaleChain[1,:,NSTEPS/2:])))
 		plt.tight_layout()
 
 		plt.figure(7)
@@ -554,8 +552,8 @@ if args.plot:
 		plt.axhline(y = lcmcmcMLETauLoc[3], xmin = 0, xmax = 1, color = '#67a9cf', linestyle = 'dotted', zorder = 5)
 
 		#plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
-		plt.xlim(np.min(lcarmaTau_g[2,:,NSTEPS/2:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:]))
-		plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(lcarmaTau_g[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(lcarmaTau_g[3,:,NSTEPS/2:])))
+		plt.xlim(np.min(ntg.timescaleChain[2,:,NSTEPS/2:]), np.max(ntg.timescaleChain[2,:,NSTEPS/2:]))
+		plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(ntg.timescaleChain[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(ntg.timescaleChain[3,:,NSTEPS/2:])))
 		plt.tight_layout()
 
 if args.plot:

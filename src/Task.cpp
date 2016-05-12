@@ -438,13 +438,14 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].set_dt(numeric_limits<double>::max());
+		//Systems[threadNum].set_dt(numeric_limits<double>::max());
+		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
-		printf("LnLikelihood: %e\n",LnLikelihood);
+		//printf("LnLikelihood: %e\n",LnLikelihood);
 		return LnLikelihood;
 		}
 
@@ -489,7 +490,8 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].set_dt(numeric_limits<double>::max());
+		//Systems[threadNum].set_dt(numeric_limits<double>::max());
+		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
@@ -579,11 +581,12 @@ using namespace std;
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;
-		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, optArray, initPos, xStart, ptrToSystems, xVec, max_LnPosterior, p2Args)
+		#pragma omp parallel for schedule(dynamic, 4) default(none) shared(dt, nwalkers, ndims, optArray, initPos, xStart, t, ptrToSystems, xVec, max_LnPosterior, p2Args)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
 			max_LnPosterior[threadNum] = 0.0;
 			xVec[threadNum].clear();
+			set_System(t[1] - t[0], &xStart[walkerNum*ndims], threadNum);
 			for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 				xVec[threadNum].push_back(xStart[walkerNum*ndims + dimCtr]);
 				}

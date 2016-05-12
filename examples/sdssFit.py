@@ -44,9 +44,9 @@ parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaCha
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
 parser.add_argument('-nwalkers', '--nwalkers', type = int, default = 25*psutil.cpu_count(logical = True), help = r'Number of walkers')
-parser.add_argument('-pMax', '--pMax', type = int, default = 3, help = r'Maximum C-AR order')
+parser.add_argument('-pMax', '--pMax', type = int, default = 1, help = r'Maximum C-AR order')
 parser.add_argument('-pMin', '--pMin', type = int, default = 1, help = r'Minimum C-AR order')
-parser.add_argument('-qMax', '--qMax', type = int, default = 2, help = r'Maximum C-MA order')
+parser.add_argument('-qMax', '--qMax', type = int, default = 0, help = r'Maximum C-MA order')
 parser.add_argument('-qMin', '--qMin', type = int, default = 0, help = r'Minimum C-MA order')
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
@@ -54,7 +54,6 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
-parser.add_argument('-sFac', '--scatterFactor', type = float, default = 10.0, help = r'Scatter factgor for starting locations of walkers pre-optimization')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
 parser.set_defaults(stop = False)
@@ -87,7 +86,7 @@ totalTime = 0.0
 
 for p in xrange(args.pMin, args.pMax + 1):
 	for q in xrange(args.qMin, min(p, args.qMax + 1)):
-		nt = libcarma.basicTask(p, q, nwalkers = args.nwalkers, nsteps = args.nsteps, scatterFactor = args.scatterFactor)
+		nt = libcarma.basicTask(p, q, nwalkers = args.nwalkers, nsteps = args.nsteps)
 
 		print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
 		startLCARMA = time.time()

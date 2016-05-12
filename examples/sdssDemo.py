@@ -54,7 +54,6 @@ parser.set_defaults(plot = False)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
-parser.add_argument('-sFac', '--scatterFactor', type = float, default = 0.1, help = r'Scatter factgor for starting locations of walkers pre-optimization')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
 parser.set_defaults(stop = False)
@@ -93,9 +92,7 @@ if args.g or args.r:
 		except IOError:
 			chainFile = open(libcarmaChain_g, 'w')
 			ntg = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-			ntg.scatterFactor = args.scatterFactor
-			ntg.set(sdss0g.dt, Guess)
-			ntg.fit(sdss0g, Guess)
+			ntg.fit(sdss0g)
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
 			chainFile.write(line)
 			for stepNum in xrange(NSTEPS):
@@ -207,19 +204,14 @@ if args.g or args.r:
 		plt.ylabel(r'$b_{1}$')
 
 		# Convert Theta -> Rho -> Tau
-		lcarmaTau_g = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
-		for stepNum in xrange(NSTEPS):
-			for walkerNum in xrange(NWALKERS):
-				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntg.rootChain[:, walkerNum, stepNum])
-				lcarmaTau_g[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntg.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(6, figsize = (fhgt, fhgt))
 		plt.title(r'g-band C-AR Timescales')
-		plt.scatter(lcarmaTau_g[0,:,NSTEPS/2:], lcarmaTau_g[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.scatter(ntg.timescaleChain[0,:,NSTEPS/2:], ntg.timescaleChain[1,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
 		plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
 		plt.figure(7, figsize = (fhgt, fhgt))
 		plt.title(r'g-band C-MA Timescales')
-		plt.scatter(lcarmaTau_g[2,:,NSTEPS/2:], lcarmaTau_g[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.scatter(ntg.timescaleChain[2,:,NSTEPS/2:], ntg.timescaleChain[3,:,NSTEPS/2:], c = ntg.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
 		plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
 		if carma_pack_results_g:
@@ -227,20 +219,19 @@ if args.g or args.r:
 			cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
 			for sampleNum in xrange(NSAMPLES):
 				cmcmcRho_g[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:,sampleNum])
-				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 				try:
-					cmcmcTau_g[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_g[P + Q, sampleNum]])
+					cmcmcTau_g[:,sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_g[:,sampleNum]))
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 					pass
 			plt.figure(6)
 			plt.scatter(cmcmcTau_g[0,:], cmcmcTau_g[1,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
-			plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(lcarmaTau_g[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(lcarmaTau_g[0,:,NSTEPS/2:])))
-			plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(lcarmaTau_g[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(lcarmaTau_g[1,:,NSTEPS/2:])))
+			plt.xlim(min(np.min(cmcmcTau_g[0,:]), np.min(ntg.timescaleChain[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[0,:]), np.max(ntg.timescaleChain[0,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_g[1,:]), np.min(ntg.timescaleChain[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[1,:]), np.max(ntg.timescaleChain[1,:,NSTEPS/2:])))
 			plt.tight_layout()
 			plt.figure(7)
 			plt.scatter(cmcmcTau_g[2,:], cmcmcTau_g[3,:], c = cmcmcLnPosterior_g[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
-			plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(lcarmaTau_g[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(lcarmaTau_g[2,:,NSTEPS/2:])))
-			plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(lcarmaTau_g[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(lcarmaTau_g[3,:,NSTEPS/2:])))
+			plt.xlim(min(np.min(cmcmcTau_g[2,:]), np.min(ntg.timescaleChain[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[2,:]), np.max(ntg.timescaleChain[2,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_g[3,:]), np.min(ntg.timescaleChain[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_g[3,:]), np.max(ntg.timescaleChain[3,:,NSTEPS/2:])))
 			plt.tight_layout()
 
 	if args.r:
@@ -381,19 +372,14 @@ if args.g or args.r:
 		plt.ylabel(r'$b_{1}$')
 
 		# Convert Theta -> Rho -> Tau
-		lcarmaTau_r = np.zeros((P + Q + 1, NWALKERS, NSTEPS))
-		for stepNum in xrange(NSTEPS):
-			for walkerNum in xrange(NWALKERS):
-				lcarmaRAR, lcarmaIAR, lcarmaRMA, lcarmaIMA = libcarma.timescales(P, Q, ntr.rootChain[:, walkerNum, stepNum])
-				lcarmaTau_r[:, walkerNum, stepNum] = np.array(sorted([i for i in lcarmaRAR]) + sorted([i for i in lcarmaIAR]) + sorted([i for i in lcarmaRMA]) + sorted([i for i in lcarmaIMA]) + [ntr.rootChain[P + Q, walkerNum, stepNum]])
 		plt.figure(8, figsize = (fhgt, fhgt))
 		plt.title(r'r-band C-AR Timescales')
-		plt.scatter(lcarmaTau_r[0,:,NSTEPS/2:], lcarmaTau_r[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.scatter(ntr.timescaleChain[0,:,NSTEPS/2:], ntr.timescaleChain[1,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{AR},0}$ (d)')
 		plt.ylabel(r'$\tau_{\mathrm{AR},1}$ (d)')
 		plt.figure(9, figsize = (fhgt, fhgt))
 		plt.title(r'r-band C-MA Timescales')
-		plt.scatter(lcarmaTau_r[2,:,NSTEPS/2:], lcarmaTau_r[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
+		plt.scatter(ntr.timescaleChain[2,:,NSTEPS/2:], ntr.timescaleChain[3,:,NSTEPS/2:], c = ntr.LnPosterior[:,NSTEPS/2:], cmap = cm.Blues, marker = 'o', edgecolors = 'none', zorder = 5)
 		plt.xlabel(r'$\tau_{\mathrm{MA},0}$ (d)')
 		plt.ylabel(r'$A_{\mathrm{MA}}$ (Jy)')
 		if carma_pack_results_r:
@@ -401,20 +387,19 @@ if args.g or args.r:
 			cmcmcTau_r = np.zeros((P + Q + 1, NSAMPLES))
 			for sampleNum in xrange(NSAMPLES):
 				cmcmcRho_r[:,sampleNum] = libcarma.roots(P, Q, cmcmcChain_r[:,sampleNum])
-				cmcmcRAR, cmcmcIAR, cmcmcRMA, cmcmcIMA = libcarma.timescales(P, Q, (cmcmcRho_r[:,sampleNum]))
 				try:
-					cmcmcTau_r[:,sampleNum] = np.array(sorted([i for i in cmcmcRAR]) + sorted([i for i in cmcmcIAR]) + sorted([i for i in cmcmcRMA]) + sorted([i for i in cmcmcIMA]) + [cmcmcRho_r[P + Q, sampleNum]])
+					cmcmcTau_r[:,sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_r[:,sampleNum]))
 				except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 					pass
 			plt.figure(8)
 			plt.scatter(cmcmcTau_r[0,:], cmcmcTau_r[1,:], c = cmcmcLnPosterior_r[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
-			plt.xlim(min(np.min(cmcmcTau_r[0,:]), np.min(lcarmaTau_r[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[0,:]), np.max(lcarmaTau_r[0,:,NSTEPS/2:])))
-			plt.ylim(min(np.min(cmcmcTau_r[1,:]), np.min(lcarmaTau_r[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[1,:]), np.max(lcarmaTau_r[1,:,NSTEPS/2:])))
+			plt.xlim(min(np.min(cmcmcTau_r[0,:]), np.min(ntr.timescaleChain[0,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[0,:]), np.max(ntr.timescaleChain[0,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_r[1,:]), np.min(ntr.timescaleChain[1,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[1,:]), np.max(ntr.timescaleChain[1,:,NSTEPS/2:])))
 			plt.tight_layout()
 			plt.figure(9)
 			plt.scatter(cmcmcTau_r[2,:], cmcmcTau_r[3,:], c = cmcmcLnPosterior_r[:], cmap = cm.Reds, marker = 'o', edgecolors = 'none', zorder = 0)
-			plt.xlim(min(np.min(cmcmcTau_r[2,:]), np.min(lcarmaTau_r[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[2,:]), np.max(lcarmaTau_r[2,:,NSTEPS/2:])))
-			plt.ylim(min(np.min(cmcmcTau_r[3,:]), np.min(lcarmaTau_r[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[3,:]), np.max(lcarmaTau_r[3,:,NSTEPS/2:])))
+			plt.xlim(min(np.min(cmcmcTau_r[2,:]), np.min(ntr.timescaleChain[2,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[2,:]), np.max(ntr.timescaleChain[2,:,NSTEPS/2:])))
+			plt.ylim(min(np.min(cmcmcTau_r[3,:]), np.min(ntr.timescaleChain[3,:,NSTEPS/2:])), max(np.max(cmcmcTau_r[3,:]), np.max(ntr.timescaleChain[3,:,NSTEPS/2:])))
 			plt.tight_layout()
 
 	if args.plot:
