@@ -444,6 +444,7 @@ using namespace std;
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
+		printf("LnLikelihood: %e\n",LnLikelihood);
 		return LnLikelihood;
 		}
 

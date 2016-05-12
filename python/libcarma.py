@@ -1437,7 +1437,7 @@ class task(object):
 		maxTLog10 = math.log10(maxT)
 		Std = np.std(observedLC.y)
 
-		noSuccess = True
+		'''noSuccess = True
 		sigmaFactor = 1.0e0
 		while noSuccess:
 			RhoGuess = -1.0/np.power(10.0, (maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
@@ -1447,7 +1447,7 @@ class task(object):
 			if self.logPrior(observedLC) == 0.0:
 				noSuccess = False
 			else:
-				sigmaFactor *= 0.31622776601 # sqrt(0.1)
+				sigmaFactor *= 0.31622776601 # sqrt(0.1)'''
 
 		for walkerNum in xrange(self.nwalkers):
 			noSuccess = True

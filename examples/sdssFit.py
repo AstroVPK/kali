@@ -64,6 +64,9 @@ parser.set_defaults(save = False)
 parser.add_argument('--log10', dest = 'log10', action = 'store_true', help = r'Compute distances in log space?')
 parser.add_argument('--no-log10', dest = 'log10', action = 'store_false', help = r'Do not compute distances in log space?')
 parser.set_defaults(log10 = False)
+parser.add_argument('--viewer', dest = 'viewer', action = 'store_true', help = r'Visualize MCMC walkers')
+parser.add_argument('--no-viewer', dest = 'viewer', action = 'store_false', help = r'Do not visualize MCMC walkers')
+parser.set_defaults(viewer = False)
 args = parser.parse_args()
 
 if (args.qMax >= args.pMax):
@@ -108,8 +111,7 @@ print 'Best model is C-ARMA(%d,%d)'%(pBest, qBest)
 
 bestTask = taskDict['%d %d'%(pBest, qBest)]
 
-var = str(raw_input('Do you wish to view any MCMC walkers? (y/n):')).lower()
-if var == 'y':
+if args.viewer:
 	notDone = True
 	while notDone:
 		pView = -1
