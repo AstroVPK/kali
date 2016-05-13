@@ -8,7 +8,7 @@ import libcarma as libcarma
 
 class sdss_gLC(libcarma.basicLC):
 
-	def read(self, name, path = None):
+	def read(self, name, band, path = None, **kwargs):
 		self._computedCadenceNum = -1
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0
@@ -59,7 +59,7 @@ class sdss_gLC(libcarma.basicLC):
 
 class sdss_rLC(libcarma.basicLC):
 
-	def read(self, name, path = None):
+	def read(self, name, band, path = None, **kwargs):
 		self._computedCadenceNum = -1
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0

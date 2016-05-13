@@ -177,17 +177,17 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences = None, dt = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, p = 0, q = 0, sampler = None, supplied = None, pwd = None):
+	def __init__(self, numCadences = None, dt = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, p = 0, q = 0, sampler = None, pwd = None, **kwargs):
 		"""!
 		\brief Initialize a new light curve
-		
+
 		The constructor assumes that the light curve to be constructed is regular. There is no option to construct irregular light curves. Irregular light can be obtained by reading in a supplied irregular light curve. The constructor takes an optional keyword argument (supplied = <light curve file>) that is read in using the read method. This supplied light curve can be irregular. Typically, the supplied light curve is irregular either because the user created it that way, or because the survey that produced it sampled the sky at irregular intervals.
-		
+
 		Non-keyword arguments
 		\param[in] numCadences: The number of cadences in the light curve.
 		\param[in] p          : The order of the C-ARMA model used.
 		\param[in] q          : The order of the C-ARMA model used.
-		
+
 		Keyword arguments
 		\param[in] dt:                The spacing between cadences.
 		\param[in] name:              The name of the light curve (usually the object's name).
@@ -203,8 +203,8 @@ class lc(object):
 		\param[in] supplied:          Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
 		\param[in] pwd:               Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
 		"""
-		if supplied:
-			self.read(supplied, path = pwd)
+		if name is not None and band is not None:
+			self.read(name = name, band = band, path = pwd, **kwargs)
 		else:
 			self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
 			self._simulatedCadenceNum = -1 ## How many cadences have already been simulated.
@@ -749,7 +749,7 @@ class lc(object):
 			raise NotImplemented
 
 	@abc.abstractmethod
-	def read(self, name, path = os.environ['PWD']):
+	def read(self, name, band, path = os.environ['PWD'], **kwargs):
 		"""!
 		\brief Read the light curve from disk.
 		
@@ -758,7 +758,7 @@ class lc(object):
 		raise NotImplementedError(r'Override read by subclassing lc!')
 
 	@abc.abstractmethod
-	def write(self, name, path = os.environ['PWD'], ):
+	def write(self, name, band, path = os.environ['PWD'], **kwargs):
 		"""!
 		\brief Write the light curve to disk.
 		
@@ -815,10 +815,10 @@ class basicLC(lc):
 		lccopy._stderr = np.std(lccopy.yerr)
 		return lccopy
 
-	def read(self, name, pwd):
+	def read(self, name = None, band = None, pwd = None, **kwargs):
 		pass
 
-	def write(self, name , pwd):
+	def write(self, name = None, band = None, pwd = None, **kwargs):
 		pass
 
 class sampler(object):

@@ -12,7 +12,7 @@ class K2LC(libcarma.basicLC):
 
 	def __init__(self):
 		print("\n")
-	def read(self, name, pwd):
+	def read(self, name, band = None, pwd = None, **kwargs):
 	#open Van_k2 lc fits file 
 		k2lc = astfits.open(pwd + name.split('.')[0] + '.fits')
 		k2lc.info()
@@ -29,7 +29,7 @@ class K2LC(libcarma.basicLC):
 		print('read in Vanderberg lc')
 
 class k2pdcsapLC(libcarma.basicLC):
-	def read(self, name, path = None):
+	def read(self, name, band = None, path = None, **kwargs):
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
@@ -81,13 +81,13 @@ class k2pdcsapLC(libcarma.basicLC):
 		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
 		self._yunit = r'$who the f**** knows?$' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-	def write(self, name, path = None):
+	def write(self, name, path = None, **kwrags):
 		if path is None:
 			path = os.envioron['PWD']
 		print('read in Kepler Team lc')
 
 class k2rawLC(libcarma.basicLC):
-	def read(self, name, path = None):
+	def read(self, name, band = None, path = None, **kwargs):
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
@@ -139,7 +139,7 @@ class k2rawLC(libcarma.basicLC):
 		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
 		self._yunit = r'$who the f**** knows?$' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-	def write(self, name, path = None):
+	def write(self, name, path = None, **kwargs):
 		if path is None:
 			path = os.envioron['PWD']
 		print('read in Kepler Team lc')
