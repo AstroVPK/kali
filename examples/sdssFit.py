@@ -79,7 +79,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-sdssLC = sdss.sdss_gLC(supplied = args.name, pwd = args.pwd)
+sdssLC = sdss.sdss_gLC(name = args.name, band = '', pwd = args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
