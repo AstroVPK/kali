@@ -1134,7 +1134,7 @@ class task(object):
 		return np.reshape(self._LnPosterior, newshape = (self._nwalkers, self._nsteps), order = 'F')
 
 	def __repr__(self):
-		return "libcarma.task(%d, %d, %d, %d, %d, %d, %f, %d, %f)"%(self._p, self._q, self._nthreads, self._nburn, self._nwalkers, self._nsteps, self._scatterFactor, self._maxEvals, self._xTol)
+		return "libcarma.task(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads, self._nburn, self._nwalkers, self._nsteps, self._maxEvals, self._xTol)
 
 	def __str__(self):
 		line = 'p: %d; q: %d; ndims: %d\n'%(self._p, self._q, self._ndims)
@@ -1142,7 +1142,6 @@ class task(object):
 		line += 'nburn (Number of light curve steps to burn): %d\n'%(self._nburn)
 		line += 'nwalkers (Number of MCMC walkers): %d\n'%(self._nwalkers)
 		line += 'nsteps (Number of MCMC steps): %d\n'%(self.nsteps)
-		line += 'scatterFactor (Standard Deviation of factor by which to perturb from initial guess): %f\n'%(self._scatterFactor)
 		line += 'maxEvals (Maximum number of evaluations when attempting to find starting location for MCMC): %d\n'%(self._maxEvals)
 		line += 'xTol (Fractional tolerance in optimized parameter value): %f'%(self._xTol)
 		return line
