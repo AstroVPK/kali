@@ -4,7 +4,10 @@ import astropy.io.fits as astfits
 import os as os
 import pdb
 
-import libcarma as libcarma
+try:
+	import libcarma as libcarma
+except ImportError:
+	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 
 # all classes should have inits for initializing 
 

@@ -21,8 +21,11 @@ import copy as copy
 import warnings as warnings
 import pdb as pdb
 
-import rand as rand
-import CARMATask as CARMATask
+try:
+	import rand as rand
+	import CARMATask as CARMATask
+except ImportError:
+	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 
 def MAD(self, a):
 	medianVal = np.median(a)
