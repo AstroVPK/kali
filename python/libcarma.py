@@ -342,7 +342,7 @@ class lc(object):
 	def yunit(self):
 		return self._yunit
 
-	@xunit.setter
+	@yunit.setter
 	def yunit(self, value):
 		self._yunit = str(value)
 
@@ -941,7 +941,7 @@ class matchSampler(sampler):
 class task(object):
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 1000, xTol = 0.005, mcmcA = 2.0):
+	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.001, mcmcA = 2.0):
 		try:
 			assert p > q, r'p must be greater than q'
 			assert p >= 1, r'p must be greater than or equal to 1'
