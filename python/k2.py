@@ -8,6 +8,7 @@ try:
 	import libcarma as libcarma
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+	sys.exit(1)
 
 # all classes should have inits for initializing 
 

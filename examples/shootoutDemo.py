@@ -11,10 +11,14 @@ import time as time
 import pdb
 import os as os
 
-import libcarma as libcarma
-import sdss as sdss
-from util.mpl_settings import set_plot_params
-import util.triangle as triangle
+try:
+	import libcarma as libcarma
+	import sdss as sdss
+	from util.mpl_settings import set_plot_params
+	import util.triangle as triangle
+except ImportError:
+	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+	sys.exit(1)
 
 try: 
 	os.environ['DISPLAY']
@@ -35,8 +39,9 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
 parser.add_argument('-name', '--n', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-b', '--band', type = str, default = 'g', help = r'SDSS bandpass')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
@@ -65,7 +70,7 @@ Q = args.q
 NSTEPS = args.nsteps
 NWALKERS = args.nwalkers
 
-sdss0g = sdss.sdss_gLC(supplied = args.n, pwd = args.pwd)
+sdss0g = sdss.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
 sdss0g.minTimescale = args.minTimescale
 sdss0g.maxTimescale = args.maxTimescale
 sdss0g.maxSigma = args.maxSigma

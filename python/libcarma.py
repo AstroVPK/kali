@@ -26,6 +26,7 @@ try:
 	import CARMATask as CARMATask
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+	sys.exit(1)
 
 def MAD(self, a):
 	medianVal = np.median(a)

@@ -13,11 +13,15 @@ import time as time
 import pdb
 import os as os
 
-import libcarma as libcarma
-import util.mcmcviz as mcmcviz
-import sdss as sdss
-from util.mpl_settings import set_plot_params
-import util.triangle as triangle
+try:
+	import libcarma as libcarma
+	import util.mcmcviz as mcmcviz
+	import sdss as sdss
+	from util.mpl_settings import set_plot_params
+	import util.triangle as triangle
+except ImportError:
+	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+	sys.exit(1)
 
 try: 
 	os.environ['DISPLAY']
@@ -38,8 +42,9 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = '/home/vpk24/Documents', help = r'Path to working directory')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
 parser.add_argument('-n', '--name', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-b', '--band', type = str, default = 'g', help = r'SDSS bandpass')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
@@ -50,13 +55,13 @@ parser.add_argument('-qMax', '--qMax', type = int, default = -1, help = r'Maximu
 parser.add_argument('-qMin', '--qMin', type = int, default = -1, help = r'Minimum C-MA order')
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
-parser.set_defaults(plot = False)
+parser.set_defaults(plot = True)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
 parser.add_argument('--stop', dest = 'stop', action = 'store_true', help = r'Stop at end?')
 parser.add_argument('--no-stop', dest = 'stop', action = 'store_false', help = r'Do not stop at end?')
-parser.set_defaults(stop = True)
+parser.set_defaults(stop = False)
 parser.add_argument('--save', dest = 'save', action = 'store_true', help = r'Save files?')
 parser.add_argument('--no-save', dest = 'save', action = 'store_false', help = r'Do not save files?')
 parser.set_defaults(save = False)
@@ -65,7 +70,7 @@ parser.add_argument('--no-log10', dest = 'log10', action = 'store_false', help =
 parser.set_defaults(log10 = False)
 parser.add_argument('--viewer', dest = 'viewer', action = 'store_true', help = r'Visualize MCMC walkers')
 parser.add_argument('--no-viewer', dest = 'viewer', action = 'store_false', help = r'Do not visualize MCMC walkers')
-parser.set_defaults(viewer = False)
+parser.set_defaults(viewer = True)
 args = parser.parse_args()
 
 if (args.qMax >= args.pMax):
@@ -79,16 +84,16 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-sdssLC = sdss.sdss_gLC(name = args.name, band = '', pwd = args.pwd)
+sdssLC = sdss.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
 
 if args.plot:
 	plt.figure(0, figsize = (fwid, fhgt))
-	plt.errorbar(sdssLC.t, sdssLC.y, sdssLc.yerr, label = r'%s (g-band)'%(sdssLC.name), fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
-	plt.xlabel('$t$ (MJD)')
-	plt.ylabel('$F$ (Jy)')
+	plt.errorbar(sdssLC.t, sdssLC.y, sdssLC.yerr, label = r'%s (%s-band)'%(args.name.split('.')[0], args.band), fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
+	plt.xlabel(r'$t$ (MJD)')
+	plt.ylabel(r'$F$ (Jy)')
 	plt.title(r'Light curve')
 	plt.legend()
 	plt.show(False)
