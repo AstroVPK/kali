@@ -13,38 +13,26 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
 args = parser.parse_args()
 
-T = 3500.0
-dt = 0.5
-numCadences = int(T/dt)
-IR = False
 tolIR = 1.0e-3
 fracIntrinsicVar = 0.1
 fracNoiseToSignal = 1.0e-18
 maxSigma = 2.0
-minTimescale = 5.0e-1
-maxTimescale = 2.0
+minTimescale = 2.0
+maxTimescale = 0.5
 
 p = 3
 q = 1
+Rho = np.array([-(1.0/12.0)+0j, -(1.0/7.50)+0j, -(1.0/30.0)+0j, -(1.0/5.0), 1.0e-9])
+print "Rho: " + str(Rho)
 
-Theta = np.zeros(p + q + 1)
+Tau = libcarma.timescales(p, q, Rho)
+print "Tau: " + str(Tau)
 
-r_1 = -0.73642081+0j
-r_2 = -0.01357919+0j
-r_3 = -0.52329875+0j
-sigma = 7.0e-9
-m_1 = -5.83333333
-
-ARPoly = np.poly([r_1, r_2, r_3])
-MAPoly = sigma/np.poly([m_1])
-
-Theta[0] = ARPoly[1]
-Theta[1] = ARPoly[2]
-Theta[2] = ARPoly[3]
-Theta[3] = MAPoly[0]
-Theta[4] = MAPoly[1]
-
+Theta = libcarma.coeffs(p, q, Rho)
 print "Theta: " + str(Theta)
+
+dt = 0.5
+T = 1200.0
 
 newTask = libcarma.basicTask(p, q, nwalkers = 160, nsteps = 250)
 
@@ -55,15 +43,12 @@ print "Sigma[0]: %e"%(math.sqrt(newTask.Sigma()[0,0]))
 Lags, ACVF = newTask.acvf(1.0e-4, 1.0e4, 10000, spacing = 'log')
 
 plt.figure(1)
+
 plt.plot(np.log10(Lags), ACVF)
 
-newLC = newTask.simulate(numCadences)
+newLC = newTask.simulate(T)
 
 newTask.observe(newLC)
-
-dt_start = math.sqrt(sys.float_info[0])
-
-newTask.set(dt_start, Theta)
 
 lnPrior = newTask.logPrior(newLC)
 
@@ -77,27 +62,8 @@ lnPosterior = newTask.logPosterior(newLC)
 
 print 'The log posterior is %e'%(lnPosterior)
 
-xStart = np.zeros(p + q + 1) # This must be guessed but things are not too sensitive to the guess.
-
-r_1_guess = -0.75+0j
-r_2_guess = -0.01+0j
-r_3_guess = -0.5+0j
-sigma_guess = 7.5e-9
-m_1_guess = -5.8
-
-ARPoly = np.poly([r_1_guess, r_2_guess, r_3_guess])
-MAPoly = sigma_guess/np.poly([m_1_guess])
-
-xStart[0] = ARPoly[1]
-xStart[1] = ARPoly[2]
-xStart[2] = ARPoly[3]
-xStart[3] = MAPoly[0]
-xStart[4] = MAPoly[1]
-
-print "xStart: " + str(xStart)
-
 startT = time.time()
-newTask.fit(newLC, xStart)
+newTask.fit(newLC)
 stopT = time.time()
 
 print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0, (stopT - startT)/3600.0)

@@ -1400,7 +1400,7 @@ class task(object):
 		intrinsicLC._meanerr = np.mean(intrinsicLC.yerr)
 		intrinsicLC._stderr = np.std(intrinsicLC.yerr)
 
-	def logPrior(self, observedLC, tnum = None):
+	def logPrior(self, observedLC, forced = False, tnum = None):
 		if tnum is None:
 			tnum = 0
 		return self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
