@@ -45,7 +45,7 @@ class sdssLC(libcarma.basicLC):
 		self._xunit = r'$d$ (MJD)' ## Unit in which time is measured (eg. s, sec, seconds etc...).
 		self._yunit = r'$F$ (Jy)' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-		if band == 'g':
+		if band.lower() in ['g', 'sdss-g', 'sdss_g']:
 			self.startT = float(words[12])
 			for lineNum, line in enumerate(allLines[1:]):
 				words = line.split(',')
@@ -54,7 +54,7 @@ class sdssLC(libcarma.basicLC):
 				self.y[lineNum] = float(words[27])
 				self.yerr[lineNum] = float(words[28])
 				self.mask[lineNum] = 1.0
-		elif band == 'r':
+		elif band.lower() in ['r', 'sdss-r', 'sdss_r']:
 			self.startT = float(words[15])
 			for lineNum, line in enumerate(allLines[1:]):
 				words = line.split(',')
