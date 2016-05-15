@@ -179,14 +179,18 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
 
+    fig_size = kwargs.get('fig_size', 16.0)
     if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        #fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        fig, axes = pl.subplots(K, K, figsize=(fig_size, fig_size))
     else:
         try:
             axes = np.array(fig.axes).reshape((K, K))
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
+    fig_title = kwargs.get('fig_title','MCMC Chains')
+    pl.suptitle(fig_title, **title_args)
     lb = lbdim / dim
     tr = (lbdim + plotdim) / dim
     fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
