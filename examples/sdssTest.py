@@ -1,8 +1,7 @@
-import math
-import cmath
 import numpy as np
 import argparse as argparse
 import os
+import sys
 import pdb
 
 try:
@@ -31,3 +30,5 @@ print "logPrior: %+8.7e"%(nt.logPrior(sdssLC))
 print "logLikelihood: %+8.7e"%(nt.logLikelihood(sdssLC))
 
 print "logPosterior: %+8.7e"%(nt.logPosterior(sdssLC))
+
+##NB: This test seems to end with a segfault. Something is up with the sdss.py file that is causing the segfault.

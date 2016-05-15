@@ -225,8 +225,6 @@ class lc(object):
 			self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 			self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
 			self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-			self._dt = dt ## Increment between epochs.
-			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 			self._name = str(name) ## The name of the light curve (usually the object's name).
 			self._band = str(band) ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).
 			self._xunit = r'$' + str(xunit) + '$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
@@ -238,8 +236,10 @@ class lc(object):
 			self._minTimescale = minTimescale
 			self._maxTimescale = maxTimescale
 			for i in xrange(self._numCadences):
-				self.t[i] = i*self._dt
+				self.t[i] = i*dt
 				self.mask[i] = 1.0
+			self._dt = dt ## Increment between epochs.
+			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)

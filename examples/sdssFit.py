@@ -10,8 +10,9 @@ import operator as operator
 import warnings as warnings
 import copy as copy
 import time as time
-import pdb
 import os as os
+import sys as sys
+import pdb
 
 try:
 	import libcarma as libcarma

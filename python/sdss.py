@@ -1,7 +1,7 @@
 import math as math
 import numpy as np
-import astropy.io.fits as astfits
 import os as os
+import sys as sys
 import pdb
 
 try:

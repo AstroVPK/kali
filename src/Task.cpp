@@ -397,9 +397,12 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		Systems[threadNum].set_dt(numeric_limits<double>::max());
+		double old_dt = Systems[threadNum].get_dt();
+		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnPrior;
 		}
 
@@ -418,9 +421,12 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnPrior;
 		}
 
@@ -438,14 +444,15 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		//Systems[threadNum].set_dt(numeric_limits<double>::max());
+		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
-		//printf("LnLikelihood: %e\n",LnLikelihood);
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnLikelihood;
 		}
 
@@ -464,6 +471,7 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].setX(lcX);
@@ -472,6 +480,8 @@ using namespace std;
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnLikelihood;
 		}
 
@@ -490,7 +500,7 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
-		//Systems[threadNum].set_dt(numeric_limits<double>::max());
+		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
@@ -499,6 +509,8 @@ using namespace std;
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnPosterior;
 		}
 
@@ -518,6 +530,7 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		LnLikeData *ptr2Data = &Data;
+		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].setX(lcX);
@@ -528,6 +541,8 @@ using namespace std;
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
 		return LnPosterior;
 		}
 

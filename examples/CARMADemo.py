@@ -6,6 +6,7 @@ import sys as sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import argparse as argparse
+import sys as sys
 
 import libcarma as libcarma
 
