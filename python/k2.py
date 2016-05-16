@@ -35,7 +35,7 @@ class K2LC(libcarma.basicLC):
 
 class k2LC(libcarma.basicLC):
 	def read(self, name, band = None, path = None, **kwargs):
-		sapORpdcsap = kwargs.get('type', 'sap').lower()
+		sapORpdcsap = kwargs.get('lctype', 'sap').lower()
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
@@ -80,7 +80,7 @@ class k2LC(libcarma.basicLC):
 				else:
 					self.t[i] = self.t[i - 1] + self._dt
 				self.mask[i] = 0.0
-		self._dt = np.nanmedian(self.t[1:] - self.t[:-1]) ## Increment between epochs.
+		self._dt = float(np.nanmedian(self.t[1:] - self.t[:-1])) ## Increment between epochs.
 		self._p = 0
 		self._q = 0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
