@@ -63,7 +63,7 @@ parser.add_argument('--no-save', dest = 'save', action = 'store_false', help = r
 parser.set_defaults(save = False)
 parser.add_argument('--log10', dest = 'log10', action = 'store_true', help = r'Compute distances in log space?')
 parser.add_argument('--no-log10', dest = 'log10', action = 'store_false', help = r'Do not compute distances in log space?')
-parser.set_defaults(log10 = False)
+parser.set_defaults(log10 = True)
 args = parser.parse_args()
 
 P = args.p
@@ -446,50 +446,96 @@ if carma_pack_results_g:
 		except ValueError: # Sometimes Kelly's roots are repeated!!! This should not be allowed!
 			cmcmcTau_g[:,sampleNum] = np.nan*np.ones(P + Q + 1)
 
-lcarmaMedianTauDist = 0.0
-lcarmaMedianTauLoc = np.zeros(P + Q + 1)
-for i in xrange(P + Q + 1):
-	lcarmaMedianTauLoc[i] = np.median(ntg.timescaleChain[i,:,NSTEPS/2:])
-	lcarmaMedianTauDelta = (lcarmaMedianTauLoc[i] - TauMock[i])/TauMock[i]
-	lcarmaMedianTauDist += math.pow(lcarmaMedianTauDelta, 2.0)
-lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
-lcarmaMedianTauDist /= (P + Q + 1)
-print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
-
-if carma_pack_results_g:
-	lcmcmcMedianTauDist = 0.0
-	lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
+if args.log10:
+	lcarmaMedianTauDist = 0.0
+	lcarmaMedianTauLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
-		lcmcmcMedianTauLoc[i] = np.nanmedian(cmcmcTau_g[i,:])
-		lcmcmcMedianTauDelta = (lcmcmcMedianTauLoc[i] - TauMock[i])/TauMock[i]
-		lcmcmcMedianTauDist += math.pow(lcmcmcMedianTauDelta, 2.0)
-	lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
-	lcmcmcMedianTauDist /= (P + Q + 1)
-	print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
-
-lcarmaMLETauDist = 0.0
-bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
-bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
-lcarmaMLETauLoc = np.zeros(P + Q + 1)
-for i in xrange(P + Q + 1):
-	lcarmaMLETauLoc[i] = ntg.timescaleChain[i,bestWalker,bestStep]
-	lcarmaMLETauDelta = (lcarmaMLETauLoc[i] - TauMock[i])/TauMock[i]
-	lcarmaMLETauDist += math.pow(lcarmaMLETauDelta, 2.0)
-lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
-lcarmaMLETauDist /= (P + Q + 1)
-print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-
-if carma_pack_results_g:
-	lcmcmcMLETauDist = 0.0
-	bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
-	lcmcmcMLETauLoc = np.zeros(P + Q + 1)
+		lcarmaMedianTauLoc[i] = np.median(ntg.timescaleChain[i,:,NSTEPS/2:])
+		lcarmaMedianTauDelta = (math.log10(lcarmaMedianTauLoc[i]) - math.log10(TauMock[i]))/math.log10(TauMock[i])
+		lcarmaMedianTauDist += math.pow(lcarmaMedianTauDelta, 2.0)
+	lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
+	lcarmaMedianTauDist /= (P + Q + 1)
+	print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMedianTauDist = 0.0
+		lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMedianTauLoc[i] = np.nanmedian(cmcmcTau_g[i,:])
+			lcmcmcMedianTauDelta = (math.log10(lcmcmcMedianTauLoc[i]) - math.log10(TauMock[i]))/math.log10(TauMock[i])
+			lcmcmcMedianTauDist += math.pow(lcmcmcMedianTauDelta, 2.0)
+		lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
+		lcmcmcMedianTauDist /= (P + Q + 1)
+		print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
+	
+	lcarmaMLETauDist = 0.0
+	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
+	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
+	lcarmaMLETauLoc = np.zeros(P + Q + 1)
 	for i in xrange(P + Q + 1):
-		lcmcmcMLETauLoc[i] = cmcmcTau_g[i,bestSample]
-		lcmcmcMLETauDelta = (lcmcmcMLETauLoc[i] - TauMock[i])/TauMock[i]
-		lcmcmcMLETauDist += math.pow(lcmcmcMLETauDelta, 2.0)
-	lcmcmcMLETauDist = math.sqrt(lcmcmcMLETauDist)
-	lcmcmcMLETauDist /= (P + Q + 1)
-	print 'lcmcmc MLE Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMLETauDist)
+		lcarmaMLETauLoc[i] = ntg.timescaleChain[i,bestWalker,bestStep]
+		lcarmaMLETauDelta = (math.log10(lcarmaMLETauLoc[i]) - math.log10(TauMock[i]))/math.log10(TauMock[i])
+		lcarmaMLETauDist += math.pow(lcarmaMLETauDelta, 2.0)
+	lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
+	lcarmaMLETauDist /= (P + Q + 1)
+	print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMLETauDist = 0.0
+		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
+		lcmcmcMLETauLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMLETauLoc[i] = cmcmcTau_g[i,bestSample]
+			lcmcmcMLETauDelta = (math.log10(lcmcmcMLETauLoc[i]) - math.log10(TauMock[i]))/math.log10(TauMock[i])
+			lcmcmcMLETauDist += math.pow(lcmcmcMLETauDelta, 2.0)
+		lcmcmcMLETauDist = math.sqrt(lcmcmcMLETauDist)
+		lcmcmcMLETauDist /= (P + Q + 1)
+		print 'lcmcmc MLE Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMLETauDist)
+else:
+	lcarmaMedianTauDist = 0.0
+	lcarmaMedianTauLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcarmaMedianTauLoc[i] = np.median(ntg.timescaleChain[i,:,NSTEPS/2:])
+		lcarmaMedianTauDelta = (lcarmaMedianTauLoc[i] - TauMock[i])/TauMock[i]
+		lcarmaMedianTauDist += math.pow(lcarmaMedianTauDelta, 2.0)
+	lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
+	lcarmaMedianTauDist /= (P + Q + 1)
+	print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMedianTauDist = 0.0
+		lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMedianTauLoc[i] = np.nanmedian(cmcmcTau_g[i,:])
+			lcmcmcMedianTauDelta = (lcmcmcMedianTauLoc[i] - TauMock[i])/TauMock[i]
+			lcmcmcMedianTauDist += math.pow(lcmcmcMedianTauDelta, 2.0)
+		lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
+		lcmcmcMedianTauDist /= (P + Q + 1)
+		print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
+	
+	lcarmaMLETauDist = 0.0
+	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
+	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
+	lcarmaMLETauLoc = np.zeros(P + Q + 1)
+	for i in xrange(P + Q + 1):
+		lcarmaMLETauLoc[i] = ntg.timescaleChain[i,bestWalker,bestStep]
+		lcarmaMLETauDelta = (lcarmaMLETauLoc[i] - TauMock[i])/TauMock[i]
+		lcarmaMLETauDist += math.pow(lcarmaMLETauDelta, 2.0)
+	lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
+	lcarmaMLETauDist /= (P + Q + 1)
+	print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
+	
+	if carma_pack_results_g:
+		lcmcmcMLETauDist = 0.0
+		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
+		lcmcmcMLETauLoc = np.zeros(P + Q + 1)
+		for i in xrange(P + Q + 1):
+			lcmcmcMLETauLoc[i] = cmcmcTau_g[i,bestSample]
+			lcmcmcMLETauDelta = (lcmcmcMLETauLoc[i] - TauMock[i])/TauMock[i]
+			lcmcmcMLETauDist += math.pow(lcmcmcMLETauDelta, 2.0)
+		lcmcmcMLETauDist = math.sqrt(lcmcmcMLETauDist)
+		lcmcmcMLETauDist /= (P + Q + 1)
+		print 'lcmcmc MLE Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMLETauDist)
 
 if args.plot:
 	plt.figure(6, figsize = (fhgt, fhgt))
