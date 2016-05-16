@@ -19,14 +19,20 @@ import os as os
 import reprlib as reprlib
 import copy as copy
 import warnings as warnings
+import matplotlib.pyplot as plt
 import pdb as pdb
 
 try:
 	import rand as rand
 	import CARMATask as CARMATask
+	from util.mpl_settings import set_plot_params
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)
+
+fhgt = 10
+fwid = 16
+set_plot_params(useTex = True)
 
 def MAD(self, a):
 	medianVal = np.median(a)
@@ -751,6 +757,16 @@ class lc(object):
 			return self
 		else:
 			raise NotImplemented
+
+	def plot(self):
+		plt.figure(-1, figsize = (fwid, fhgt))
+		plt.errorbar(self.t, self.y, self.yerr, label = r'%s (%s-band)'%(self.name, self.band), fmt = '.', capsize = 0, color = '#000000', markeredgecolor = 'none', zorder = 10)
+		plt.xlabel(self.xunit)
+		plt.ylabel(self.yunit)
+		plt.title(r'Light curve')
+		plt.legend()
+		plt.show(False)
+		plt.show()
 
 	@abc.abstractmethod
 	def read(self, name, band, path = os.environ['PWD'], **kwargs):

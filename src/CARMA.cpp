@@ -48,7 +48,10 @@
 //#define DEBUG_CALCLNPOSTERIOR2
 //#define DEBUG_CALCCARMALNLIKE
 //#define DEBUG_COMPUTELNPRIOR
+//#define MAXPRINT 10
+//#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
+
 
 using namespace std;
 
@@ -2152,19 +2155,19 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-	//printf("F\n");
-	//viewMatrix(p, p, F);
-	//printf("P\n");
-	//viewMatrix(p, p, P);
-	//printf("MScratch\n");
-	//viewMatrix(p, p, MScratch);
-	//printf("PMinus\n");
-	//viewMatrix(p, p, PMinus);
-	v = y[0] - H[0]*XMinus[0]; // Compute v = y - H*X
-	//printf("v[%d]: %e\n", 0, v);
+
+	v = mask[0]*(y[0] - H[0]*XMinus[0]); // Compute v = y - H*X
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
-	//printf("S[%d]: %e\n", 0, S);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("y[%d]: %e\n", 0, y[0]);
+		printf("yerr[%d]: %e\n", 0, yerr[0]);
+		printf("mask[%d]: %e\n", 0, mask[0]);
+		printf("v[%d]: %e\n", 0, v);
+		printf("S[%d]: %e\n", 0, S);
+	#endif
+
 	SInv = 1.0/S;
 	cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 	for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2184,10 +2187,14 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 			P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 			}
 		}
-	Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
-	//printf("Contrib[%d]: %e\n", 0, Contrib);
+	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("Contrib[%d]: %e\n", 0, Contrib);
+	#endif
+
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-	ptCounter = ptCounter + 1;
+	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	for (int i = 1; i < numCadences; i++) {
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
@@ -2201,11 +2208,20 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-		v = y[i] - H[0]*XMinus[0]; // Compute v = y - H*X
-		//printf("v[%d]: %e\n", i, v);
+		v = mask[i]*(y[i] - H[0]*XMinus[0]); // Compute v = y - H*X
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
-		//printf("S[%d]: %e\n", i, S);
+
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			if (i < MAXPRINT) {
+				printf("y[%d]: %e\n", i, y[i]);
+				printf("yerr[%d]: %e\n", i, yerr[i]);
+				printf("mask[%d]: %e\n", i, mask[i]);
+				printf("v[%d]: %e\n", i, v);
+				printf("S[%d]: %e\n", i, S);
+				}
+		#endif
+
 		SInv = 1.0/S;
 		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 		for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2225,26 +2241,25 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
-		//printf("Contrib[%d]: %e\n", i, Contrib);
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			if (i < MAXPRINT) {
+				printf("Contrib[%d]: %e\n", i, Contrib);
+			}
+		#endif
+
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-		ptCounter = ptCounter + 1;
+		ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 		}
 	LnLikelihood += -0.5*ptCounter*log2Pi;
-	//printf("LnLike: %e\n", LnLikelihood);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("LnLike: %e\n", LnLikelihood);
+	#endif
 
 	Data.cadenceNum = numCadences - 1;
 	Data.currentLnLikelihood = LnLikelihood;
-
-	/*printf("X\n");
-	printf("-\n");
-	viewMatrix(p, 1, X);
-	printf("\n");
-	printf("P\n");
-	printf("-\n");
-	viewMatrix(p, p, P);
-	printf("\n");*/
-
 	return LnLikelihood;
 	}
 
@@ -2268,27 +2283,24 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	double LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
 	int startCadence = cadenceNum + 1;
-
-	/*printf("X\n");
-	printf("-\n");
-	viewMatrix(p, 1, X);
-	printf("\n");
-	printf("P\n");
-	printf("-\n");
-	viewMatrix(p, p, P);
-	printf("\n");*/
-
 	H[0] = mask[startCadence];
 	R[0] = yerr[startCadence]*yerr[startCadence]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-	v = y[startCadence] - H[0]*XMinus[0]; // Compute v = y - H*X
-	//printf("v[%d]: %e\n", startCadence, v);
+	v = mask[startCadence]*(y[startCadence] - H[0]*XMinus[0]); // Compute v = y - H*X
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
-	//printf("S[%d]: %e\n", startCadence, S);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("y[%d]: %e\n", startCadence, y[startCadence]);
+		printf("yerr[%d]: %e\n", startCadence, yerr[startCadence]);
+		printf("mask[%d]: %e\n", startCadence, mask[startcadence]);
+		printf("v[%d]: %e\n", startCadence, v);
+		printf("S[%d]: %e\n", startCadence, S);
+	#endif
+
 	SInv = 1.0/S;
 	cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 	for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2308,10 +2320,14 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 			P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 			}
 		}
-	Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
-	//printf("Contrib[%d]: %e\n", startCadence, Contrib);
+	Contrib = mask[startCadence]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("Contrib[%d]: %e\n", startCadence, Contrib);
+	#endif
+
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-	ptCounter = ptCounter + 1;
+	ptCounter = ptCounter + 1*static_cast<int>(mask[startCadence]);
 	for (int i = startCadence + 1; i < numCadences; i++) {
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
@@ -2325,11 +2341,20 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-		v = y[i] - H[0]*XMinus[0]; // Compute v = y - H*X
-		//printf("v[%d]: %e\n", i, v);
+		v = mask[i]*(y[i] - H[0]*XMinus[0]); // Compute v = y - H*X
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
-		//printf("S[%d]: %e\n", i, S);
+
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			if (i < MAXPRINT) {
+				printf("y[%d]: %e\n", i, y[i]);
+				printf("yerr[%d]: %e\n", i, yerr[i]);
+				printf("mask[%d]: %e\n", i, mask[i]);
+				printf("v[%d]: %e\n", i, v);
+				printf("S[%d]: %e\n", i, S);
+				}
+		#endif
+
 		SInv = 1.0/S;
 		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
 		for (int colCounter = 0; colCounter < p; colCounter++) {
@@ -2349,13 +2374,22 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		Contrib = (-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
-		//printf("Contrib[%d]: %e\n", i, Contrib);
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			if (i < MAXPRINT) {
+				printf("Contrib[%d]: %e\n", i, Contrib);
+			}
+		#endif
+
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
-		ptCounter = ptCounter + 1;
+		ptCounter = ptCounter + 1*static_cast<int>(mask[i]);
 		}
 	LnLikelihood += -0.5*ptCounter*log2Pi;
-	//printf("LnLike: %e\n", LnLikelihood);
+
+	#ifdef DEBUG_COMPUTELNLIKELIHOOD
+		printf("LnLike: %e\n", LnLikelihood);
+	#endif
 
 	Data.cadenceNum = numCadences - 1;
 	currentLnLikelihood += LnLikelihood;

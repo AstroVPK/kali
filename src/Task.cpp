@@ -12,6 +12,7 @@
 #include "LC.hpp"
 #include "Task.hpp"
 
+//#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_FIT_CARMAMODEL
 
 using namespace std;
@@ -444,6 +445,11 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			for (int i = 0; i < numCadences; ++i) {
+				printf("y[%d]: %+8.7e\n", i, y[i]);
+				}
+		#endif
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
@@ -567,12 +573,12 @@ using namespace std;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
 		#ifdef DEBUG_FIT_CARMAMODEL
-		#pragma omp critical
-		{
-		printf("fit_CARMAModel - threadNum: %d; maxSigma: %e\n", threadNum, maxSigma);
-		printf("fit_CARMAModel - threadNum: %d; minTimescale: %e\n", threadNum, minTimescale);
-		printf("fit_CARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
-		}
+			#pragma omp critical
+			{
+			printf("fit_CARMAModel - threadNum: %d; maxSigma: %e\n", threadNum, maxSigma);
+			printf("fit_CARMAModel - threadNum: %d; minTimescale: %e\n", threadNum, minTimescale);
+			printf("fit_CARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
+			}
 		#endif
 		LnLikeData *ptr2Data = &Data;
 		LnLikeArgs Args;
@@ -606,33 +612,33 @@ using namespace std;
 				xVec[threadNum].push_back(xStart[walkerNum*ndims + dimCtr]);
 				}
 			#ifdef DEBUG_FIT_CARMAMODEL
-			#pragma omp critical
-			{
-			fflush(0);
-			printf("pre-opt xVec[%d][%d]: ", walkerNum, threadNum);
-			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
-				printf("%e, ", xVec[threadNum][dimNum]);
+				#pragma omp critical
+				{
+				fflush(0);
+				printf("pre-opt xVec[%d][%d]: ", walkerNum, threadNum);
+				for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+					printf("%e, ", xVec[threadNum][dimNum]);
+					}
+				printf("%e", xVec[threadNum][ndims - 1]);
+				max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
+				printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+				fflush(0);
+				max_LnPosterior[threadNum] = 0.0;
 				}
-			printf("%e", xVec[threadNum][ndims - 1]);
-			max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
-			printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
-			fflush(0);
-			max_LnPosterior[threadNum] = 0.0;
-			}
 			#endif
 			nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
 			#ifdef DEBUG_FIT_CARMAMODEL
-			#pragma omp critical
-			{
-			fflush(0);
-			printf("post-opt xVec[%d][%d]: ", walkerNum, threadNum);
-			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
-				printf("%e, ", xVec[threadNum][dimNum]);
+				#pragma omp critical
+				{
+				fflush(0);
+				printf("post-opt xVec[%d][%d]: ", walkerNum, threadNum);
+				for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+					printf("%e, ", xVec[threadNum][dimNum]);
+					}
+				printf("%e", xVec[threadNum][ndims  - 1]);
+				printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+				fflush(0);
 				}
-			printf("%e", xVec[threadNum][ndims  - 1]);
-			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
-			fflush(0);
-			}
 			#endif
 			for (int dimNum = 0; dimNum < ndims; ++dimNum) {
 				initPos[walkerNum*ndims + dimNum] = xVec[threadNum][dimNum];

@@ -40,7 +40,7 @@ set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
-parser.add_argument('-n', '--name', type = str, default = 'ktwo212141173-c05_llc.fits', help = r'K2 Filename')
+parser.add_argument('-n', '--name', type = str, default = 'ktwo212141173-c05_llc.csv', help = r'K2 Filename')
 parser.add_argument('-lct', '--lctype', type = str, default = 'raw', help = r'What processing to use? eg. raw, pdcsap, uncal, mast etc...')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
@@ -78,7 +78,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-LC = k2.k2LC(name = args.name, band = 'Kepler', pwd = args.pwd, lctype = args.lctype)
+LC = k2.k2LC(name = args.name, band = r'Kepler', pwd = args.pwd, lctype = args.lctype)
 
 LC.minTimescale = args.minTimescale
 LC.maxTimescale = args.maxTimescale

@@ -36,6 +36,7 @@ class K2LC(libcarma.basicLC):
 class k2LC(libcarma.basicLC):
 	def read(self, name, band = None, path = None, **kwargs):
 		sapORpdcsap = kwargs.get('lctype', 'sap').lower()
+		self._computedCadenceNum = -1
 		self._tolIR = 1.0e-3
 		self._fracIntrinsicVar = 0.0
 		self._fracNoiseToSignal = 0.0
@@ -44,23 +45,34 @@ class k2LC(libcarma.basicLC):
 		self._maxTimescale = 0.5
 		if path is None:
 			path = os.environ['PWD']
-		#open kepler k2 lc fits file
-		k2lc = astfits.open(os.path.join(path, name))
+		'''k2lc = astfits.open(os.path.join(path, name))
 		k2lc.info()
 		table = k2lc[1].data
-		cadenceIn = np.array(table[0:].field('CADENCENO'))
-		tIn = np.array(table[0:].field('TIME'))
+		cadenceIn = np.array(table[0:].field('CADENCENO')).newbyteorder().byteswap().astype('float64')
+		tIn = np.array(table[0:].field('TIME')).newbyteorder().byteswap().astype('float64')
 		if sapORpdcsap in ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']:
-			yIn = np.array(table[0:].field('SAP_FLUX'))
+			yIn = np.array(table[0:].field('SAP_FLUX')).newbyteorder().byteswap().astype('float64')
 		elif sapORpdcsap  in ['pdcsap', 'mast', 'cal', 'calibrated']:
-			yIn = np.array(table[0:].field('PDCSAP_FLUX'))
+			yIn = np.array(table[0:].field('PDCSAP_FLUX')).newbyteorder().byteswap().astype('float64')
 		else:
 			raise ValueError('Unrecognized k2LC type')
-		yerrIn = np.array(table[0:].field('PDCSAP_FLUX_ERR'))
-		maskIn = np.array(table[0:].field('SAP_QUALITY'))
-		self._numCadences = tIn.shape[0]
-		self._dt = np.nanmedian(tIn[1:] - tIn[:-1]) ## Increment between epochs.
-		self._T = tIn[-1] - tIn[0] ## Total duration of the light curve.
+		yerrIn = np.array(table[0:].field('PDCSAP_FLUX_ERR')).newbyteorder().byteswap().astype('float64')
+		maskIn = np.array(table[0:].field('SAP_QUALITY')).newbyteorder().byteswap().astype('float64')'''
+		with open(os.path.join(path, name),'r') as k2File:
+			allLines = k2File.readlines()
+		self._numCadences = len(allLines) - 1
+		startT = -1.0
+		lineNum = 1
+		while startT == -1.0:
+			words = allLines[lineNum].split()
+			nextWords = allLines[lineNum + 1].split()
+			if words[0] != '""' and nextWords[0] != '""':
+				startT = float(words[0])
+				dt = float(nextWords[0]) - float(words[0])
+			else:
+				lineNum += 1
+		self.startT = startT
+		self._dt = dt ## Increment between epochs.
 		self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -68,19 +80,39 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			self.cadence[i] = cadenceIn[i]
-			if maskIn[i] == 0:
-				self.t[i] = tIn[i]
-				self.y[i] = yIn[i]
-				self.yerr[i] = yerrIn[i]
-				self.mask[i] = 1.0
-			else:
-				if np.isnan(tIn[i]) == False:
-					self.t[i] = tIn[i]
+			words = allLines[i +1].split()
+			self.cadence[i] = int(words[2])
+			if words[9] == '0':
+				self.t[i] = float(words[0]) - self.startT
+				if sapORpdcsap in ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']:
+					try:
+						self.y[i] = float(words[3])
+						self.yerr[i] = float(words[4])
+						self.mask[i] = 1.0
+					except ValueError:
+						self.y[i] = 0.0
+						self.yerr[i] = math.sqrt(sys.float_info[0])
+						self.mask[i] = 0.0
+				elif sapORpdcsap  in ['pdcsap', 'mast', 'cal', 'calibrated']:
+					try:
+						self.y[i] = float(words[7])
+						self.yerr[i] = float(words[8])
+						self.mask[i] = 1.0
+					except ValueError:
+						self.y[i] = 0.0
+						self.yerr[i] = math.sqrt(sys.float_info[0])
+						self.mask[i] = 0.0
 				else:
-					self.t[i] = self.t[i - 1] + self._dt
+					raise ValueError('Unrecognized k2LC type')
+			else:
+				if words[0] != '""':
+					self.t[i] = float(words[0]) - self.startT
+				else:
+					self.t[i] = self.t[i - 1] + self.dt
+				self.yerr[i] = math.sqrt(sys.float_info[0])
 				self.mask[i] = 0.0
 		self._dt = float(np.nanmedian(self.t[1:] - self.t[:-1])) ## Increment between epochs.
+		self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 		self._p = 0
 		self._q = 0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
