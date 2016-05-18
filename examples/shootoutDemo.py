@@ -169,7 +169,7 @@ if args.plot:
 	plt.title(r'Light curve')
 	plt.legend()
 
-fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
+fileName = args.name.split('.')[0] + '_' + args.lC + '_g.dat'
 libcarmaChainFilePath = os.path.join(args.pwd, fileName)
 try:
 	chainFile = open(libcarmaChainFilePath, 'r')
@@ -217,7 +217,7 @@ else:
 			ntg.LnPosterior[walkerNum, stepNum] = float(words[P + Q + 1])
 	chainFile.close()
 
-fileName = args.n.split('.')[0] + '_' + args.cC + '_g.dat'
+fileName = args.name.split('.')[0] + '_' + args.cC + '_g.dat'
 cmcmcChainFilePath = os.path.join(args.pwd, fileName)
 try:
 	chainFile = open(cmcmcChainFilePath, 'r')

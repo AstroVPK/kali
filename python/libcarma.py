@@ -817,7 +817,7 @@ class lcIterator(object):
 class basicLC(lc):
 
 	def copy(self):
-		lccopy = basicLC(self._numCadences, dt = self._dt, name = self._name, band = self._band, xunit = self._xunit, yunit = self._yunit, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		lccopy = basicLC(self._numCadences, dt = self._dt, name = None, band = self._band, xunit = self._xunit, yunit = self._yunit, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		lccopy.t = np.copy(self.t)
 		lccopy.x = np.copy(self.x)
 		lccopy.y = np.copy(self.y)
