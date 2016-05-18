@@ -76,7 +76,7 @@ sdss0g.minTimescale = args.minTimescale
 sdss0g.maxTimescale = args.maxTimescale
 sdss0g.maxSigma = args.maxSigma
 
-filename_mock = args.n.split('.')[0] + '_' + args.lC + '_mock.dat'
+filename_mock = args.name.split('.')[0] + '_' + args.lC + '_mock.dat'
 file_mock = os.path.join(args.pwd, filename_mock)
 try:
 	mockFile = open(file_mock, 'r')
