@@ -1460,6 +1460,72 @@ class task(object):
 		self._taskCython.compute_ACVF(num, lags, acvfs)
 		return lags, acvfs
 
+	def _psddenominator(self, freqs, order):
+		nfreqs = freqs.shape[0]
+		aList = self.Theta()[0:self.p].tolist()
+		aList.insert(0, 1.0)
+		psddenominator = np.zeros(nfreqs)
+		if ((order % 2 == 1) or (order <= -1) or (order > 2*self.p)):
+			aList.pop(0)
+			return PSDVals
+		else:
+			for freq in xrange(nfreqs):
+				val = 0.0
+				for i in xrange(self.p + 1):
+					j = 2*self.p - i - order
+					if ((j >= 0) and (j < self.p + 1)):
+						val += (aList[i]*aList[j]*((2.0*math.pi*1j*freqs[freq])**(2*self.p - (i + j)))*pow(-1.0, self.p - j)).real
+					psddenominator[freq] = val
+			aList.pop(0)
+			return psddenominator
+
+	def _psdnumerator(self, freqs, order):
+		nfreqs = freqs.shape[0]
+		bList = self.Theta()[self.p:self.p+self.q+1].tolist()
+		psdnumerator = np.zeros(nfreqs)
+		if ((order % 2 == 1) or (order <= -1) or (order > 2*self.q)):
+			return psdnumerator
+		else:
+			for freq in xrange(nfreqs):
+				val = 0.0
+				for i in xrange(self.q + 1):
+					j = 2*self.q - i - order
+					if ((j >= 0) and (j < self.q + 1)):
+						val += (bList[i]*bList[j]*((2.0*math.pi*1j*freqs[freq])**(2*self.q - (i + j)))*pow(-1.0, self.q - j)).real
+					psdnumerator[freq] = val
+			return psdnumerator
+
+	def psd(self, start = 0.1, stop = 100.0, num = 100, endpoint = True, base  = 10.0, spacing = 'log'):
+		if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:
+			freqs = np.logspace(np.log10(start)/np.log10(base), np.log10(stop)/np.log10(base), num  = num, endpoint = endpoint, base = base)
+		elif spacing.lower() in ['linear', 'lin']:
+			freqs = np.linspace(start, stop, num  = num, endpoint = endpoint)
+		else:
+			raise RuntimeError('Unable to parse spacing')
+		maxDenomOrder = 2*self.p
+		maxNumerOrder = 2*self.q
+
+		psdnumeratorcomponent = np.zeros((num,(maxNumerOrder/2) + 1))
+		psddenominatorcomponent = np.zeros((num,(maxDenomOrder/2) + 1))
+
+		psdnumerator = np.zeros(num)
+		psddenominator = np.zeros(num)
+		psd = np.zeros(num)
+
+		for orderVal in xrange(0, maxNumerOrder + 1, 2):
+			psdnumeratorcomponent[:,orderVal/2] = self._psdnumerator(freqs, orderVal)
+
+		for orderVal in xrange(0, maxDenomOrder + 1, 2):
+			psddenominatorcomponent[:,orderVal/2] = self._psddenominator(freqs, orderVal)
+
+		for freq in xrange(num):
+			for orderVal in xrange(0, maxNumerOrder + 1, 2):
+				psdnumerator[freq] += psdnumeratorcomponent[freq, orderVal/2]
+			for orderVal in xrange(0, maxDenomOrder + 1, 2):
+				psddenominator[freq] += psddenominatorcomponent[freq, orderVal/2]
+			psd[freq] = psdnumerator[freq]/psddenominator[freq]
+		return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
+
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
