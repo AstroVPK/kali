@@ -45,19 +45,6 @@ class k2LC(libcarma.basicLC):
 		self._maxTimescale = 0.5
 		if path is None:
 			path = os.environ['PWD']
-		'''k2lc = astfits.open(os.path.join(path, name))
-		k2lc.info()
-		table = k2lc[1].data
-		cadenceIn = np.array(table[0:].field('CADENCENO')).newbyteorder().byteswap().astype('float64')
-		tIn = np.array(table[0:].field('TIME')).newbyteorder().byteswap().astype('float64')
-		if sapORpdcsap in ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']:
-			yIn = np.array(table[0:].field('SAP_FLUX')).newbyteorder().byteswap().astype('float64')
-		elif sapORpdcsap  in ['pdcsap', 'mast', 'cal', 'calibrated']:
-			yIn = np.array(table[0:].field('PDCSAP_FLUX')).newbyteorder().byteswap().astype('float64')
-		else:
-			raise ValueError('Unrecognized k2LC type')
-		yerrIn = np.array(table[0:].field('PDCSAP_FLUX_ERR')).newbyteorder().byteswap().astype('float64')
-		maskIn = np.array(table[0:].field('SAP_QUALITY')).newbyteorder().byteswap().astype('float64')'''
 		with open(os.path.join(path, name),'r') as k2File:
 			allLines = k2File.readlines()
 		self._numCadences = len(allLines) - 1
@@ -119,10 +106,26 @@ class k2LC(libcarma.basicLC):
 		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
 		self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self._isRegular = True
 		self._name = str(name.split('.')[0]) ## The name of the light curve (usually the object's name).
 		self._band = str('Kep') ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).
 		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
 		self._yunit = r'$who the f**** knows?$' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
+		count = int(np.sum(self.mask[i]))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(self.numCadences):
+			y_meanSum += self.mask[i]*self.y[i]
+			yerr_meanSum += self.mask[i]*self.yerr[i]
+		self._mean = y_meanSum/count
+		self._meanerr = yerr_meanSum/count
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(self.numCadences):
+			y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
+			yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
+		self._std = math.sqrt(y_stdSum/count)
+		self._stderr = math.sqrt(yerr_stdSum/count)
 
 	def write(self, name, path = None, **kwrags):
 		pass

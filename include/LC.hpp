@@ -35,6 +35,9 @@ using namespace std;
 		double *lcPComp;
 		LCData();
 		~LCData();
+
+		int acvf(double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum);
+		int sf(double *lagVals, double *sfVals, double * sfErrVals, int threadNum);
 	};
 
 #endif

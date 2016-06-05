@@ -244,6 +244,7 @@ class lc(object):
 			for i in xrange(self._numCadences):
 				self.t[i] = i*dt
 				self.mask[i] = 1.0
+			self._isRegular = True
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
@@ -271,6 +272,10 @@ class lc(object):
 	@property
 	def computedCadenceNum(self):
 		return self._computedCadenceNum
+
+	@property
+	def isRegular(self):
+		return self._isRegular
 
 	@property
 	def p(self):
@@ -760,7 +765,7 @@ class lc(object):
 
 	def plot(self):
 		plt.figure(-1, figsize = (fwid, fhgt))
-		plt.errorbar(self.t, self.y, self.yerr, label = r'%s (%s-band)'%(self.name, self.band), fmt = '.', capsize = 0, color = '#000000', markeredgecolor = 'none', zorder = 10)
+		plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = '.', capsize = 0, color = '#000000', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(self.xunit)
 		plt.ylabel(self.yunit)
 		plt.title(r'Light curve')
@@ -786,8 +791,98 @@ class lc(object):
 		"""
 		raise NotImplementedError(r'Override write by subclassing lc!')
 
+	def regularize(self, newdt = None):
+		"""!
+		\brief Re-sample the light curve on a grid of spacing newdt
+		
+		Creates a new LC on gridding newdt and copies in the required points.
+		"""
+		if not self.isRegular:
+			if not newdt:
+				newdt = self.dt/10.0
+			if newdt > self.dt:
+				raise ValueError('newdt cannot be greater than dt')
+			newLC = self.copy()
+			newLC.dt = newdt
+			newLC._numCadences = int(self.dt/newLC.dt)*self.numCadences
+			del newLC.t
+			del newLC.x
+			del newLC.y
+			del newLC.yerr
+			del newLC.mask
+			newLC.t = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+			newLC.x = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+			newLC.y = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
+			newLC.yerr = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed flux errors.
+			newLC.mask = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
+			for i in xrange(newLC.numCadences):
+				newLC.t[i] = i*newLC.dt + self.t[0]
+			for i in xrange(self.numCadences):
+				tOff = (self.t[i] - self.t[0])
+				index = int(math.floor(tOff/newLC.dt))
+				newLC.x[index] = self.x[i]
+				newLC.y[index] = self.y[i]
+				newLC.yerr[index] = self.yerr[i]
+				newLC.mask[index] = 1.0
+			count = int(np.sum(self.mask[i]))
+			y_meanSum = 0.0
+			yerr_meanSum = 0.0
+			for i in xrange(self.numCadences):
+				y_meanSum += self.mask[i]*self.y[i]
+				yerr_meanSum += self.mask[i]*self.yerr[i]
+			self._mean = y_meanSum/count
+			self._meanerr = yerr_meanSum/count
+			y_stdSum = 0.0
+			yerr_stdSum = 0.0
+			for i in xrange(self.numCadences):
+				y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
+				yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
+			self._std = math.sqrt(y_stdSum/count)
+			self._stderr = math.sqrt(yerr_stdSum/count)
+
+			return newLC
+		else:
+			return self
+
 	def sample(self, **kwargs):
 		return self._sampler.sample(**kwargs)
+
+	def acvf(self, newdt = None):
+		if not self.isRegular:
+			useLC = self.regularize(newdt)
+		else:
+			useLC = self
+		lags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		acvf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		acvferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		useLC._lcCython.compute_ACVF(lags, acvf, acvferr)
+		return lags, acvf, acvferr
+
+	def acf(self, newdt = None):
+		if not self.isRegular:
+			useLC = self.regularize(newdt)
+		else:
+			useLC = self
+		lags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		acvf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		acvferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		acf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		acferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		res = useLC._lcCython.compute_ACVF(lags, acvf, acvferr)
+		acf = acvf/acvf[0]
+		acferr = np.sqrt(np.power(acvf/acvf[0], 2.0)*(np.power(acvferr/acvf, 2.0) + math.pow(acvferr[0]/acvf[0], 2.0)))
+		return res
+
+	def sf(self, newdt = None):
+		if not self.isRegular:
+			useLC = self.regularize(newdt)
+		else:
+			useLC = self
+		lags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		sf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		sferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+		useLC._lcCython.compute_SF(lags, sf, sferr)
+		return lags, sf, sferr
 
 class lcIterator(object):
 	def __init__(self, t, x, y, yerr, mask):
@@ -1456,9 +1551,35 @@ class task(object):
 			lags = np.linspace(start, stop, num  = num, endpoint = endpoint)
 		else:
 			raise RuntimeError('Unable to parse spacing')
-		acvfs = np.zeros(num)
-		self._taskCython.compute_ACVF(num, lags, acvfs)
-		return lags, acvfs
+		acvf = np.zeros(num)
+		self._taskCython.compute_ACVF(num, lags, acvf)
+		return lags, acvf
+
+	def acf(self, start = 0.0, stop = 100.0, num = 100, endpoint = True, base  = 10.0, spacing = 'linear'):
+		if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:
+			lags = np.logspace(np.log10(start)/np.log10(base), np.log10(stop)/np.log10(base), num  = num, endpoint = endpoint, base = base)
+		elif spacing.lower() in ['linear', 'lin']:
+			lags = np.linspace(start, stop, num  = num, endpoint = endpoint)
+		else:
+			raise RuntimeError('Unable to parse spacing')
+		acvf = np.zeros(num)
+		acf = np.zeros(num)
+		self._taskCython.compute_ACVF(num, lags, acvf)
+		acf = acvf/acvf[0]
+		return lags, acf
+
+	def sf(self, start = 0.0, stop = 100.0, num = 100, endpoint = True, base  = 10.0, spacing = 'linear'):
+		if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:
+			lags = np.logspace(np.log10(start)/np.log10(base), np.log10(stop)/np.log10(base), num  = num, endpoint = endpoint, base = base)
+		elif spacing.lower() in ['linear', 'lin']:
+			lags = np.linspace(start, stop, num  = num, endpoint = endpoint)
+		else:
+			raise RuntimeError('Unable to parse spacing')
+		acvf = np.zeros(num)
+		sf = np.zeros(num)
+		self._taskCython.compute_ACVF(num, lags, acvf)
+		sf = 2.0*(acvf[0] - acvf)
+		return lags, sf
 
 	def _psddenominator(self, freqs, order):
 		nfreqs = freqs.shape[0]

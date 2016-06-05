@@ -27,6 +27,9 @@ cdef extern from 'LC.hpp':
 		double *lcPComp
 		LCData() except+
 
+		int acvf(double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
+		int sf(double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
+
 cdef extern from 'Task.hpp':
 	cdef cppclass Task:
 		Task(int p, int q, int numThreads, int numBurn) except+
@@ -136,6 +139,20 @@ cdef class lc:
 
 	def __getitem__(self, cadence):
 		return self.thisptr.t[cadence], self.thisptr.x[cadence], self.thisptr.y[cadence], self.thisptr.yerr[cadence], self.thisptr.mask[cadence]
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_ACVF(self, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acvfVals not None, np.ndarray[double, ndim=1, mode='c'] acvfErrVals not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.acvf(&lagVals[0], &acvfVals[0], &acvfErrVals[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_SF(self, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] sfVals not None, np.ndarray[double, ndim=1, mode='c'] sfErrVals not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.sf(&lagVals[0], &sfVals[0], &sfErrVals[0], threadNum)
 
 cdef class CARMATask:
 	cdef Task *thisptr

@@ -63,6 +63,7 @@ class sdssLC(libcarma.basicLC):
 				self.y[lineNum] = float(words[29])
 				self.yerr[lineNum] = float(words[30])
 				self.mask[lineNum] = 1.0
+		self._isRegular = False
 		self._mean = np.mean(self.y)
 		self._std = np.std(self.y)
 		self._meanerr = np.mean(self.yerr)
