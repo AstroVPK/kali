@@ -186,6 +186,12 @@ if args.viewer:
 				dim2Name = r'$\mathrm{Amp.}$'
 			res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].timescaleChain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
 
+		Theta = bestTask.Chain[:,np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[0][0],np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[1][0]]
+		nt = libcarma.basicTask(pBest, qBest)
+		nt.set(sdssLC.dt, Theta)
+		nt.smooth(sdssLC)
+		sdssLC.plot()
+
 		var = str(raw_input('Do you wish to view any more MCMC walkers? (y/n):')).lower()
 		if var == 'n':
 			notDone = False

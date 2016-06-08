@@ -102,6 +102,8 @@ class k2LC(libcarma.basicLC):
 		self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
 		self._p = 0
 		self._q = 0
+		self._isSmoothed = False ## Has the LC been smoothed?
+		self._dtSmooth = 0.0
 		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
 		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp

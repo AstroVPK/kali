@@ -34,6 +34,12 @@ fhgt = 10
 fwid = 16
 set_plot_params(useTex = True)
 
+def _f7(seq):
+	"""http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order"""
+	seen = set()
+	seen_add = seen.add
+	return [x for x in seq if not (x in seen or seen_add(x))]
+
 def MAD(self, a):
 	medianVal = np.median(a)
 	b = np.copy(a)
@@ -187,7 +193,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences = None, dt = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, p = 0, q = 0, sampler = None, pwd = None, **kwargs):
+	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, p = 0, q = 0, sampler = None, pwd = None, **kwargs):
 		"""!
 		\brief Initialize a new light curve
 
@@ -200,6 +206,7 @@ class lc(object):
 
 		Keyword arguments
 		\param[in] dt:                The spacing between cadences.
+		\param[in] dt:                The spacing between cadences after smoothing.
 		\param[in] name:              The name of the light curve (usually the object's name).
 		\param[in] band:              The name of the photometric band (eg. HSC-I or SDSS-g etc..).
 		\param[in] xunit              Unit in which time is measured (eg. s, sec, seconds etc...).
@@ -222,6 +229,8 @@ class lc(object):
 			self._computedCadenceNum = -1 ## How many cadences have been LnLikelihood'd already.
 			self._p = p ## C-ARMA model used to simulate the LC.
 			self._q = q ## C-ARMA model used to simulate the LC.
+			self._isSmoothed = False ## Has the LC been smoothed?
+			self._dtSmooth = 0.0
 			self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 			self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of observed fluxes.
@@ -247,7 +256,7 @@ class lc(object):
 			self._isRegular = True
 			self._dt = dt ## Increment between epochs.
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, dtSmooth = self._dtSmooth, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)
 		else:
@@ -276,6 +285,10 @@ class lc(object):
 	@property
 	def isRegular(self):
 		return self._isRegular
+
+	@property
+	def isSmoothed(self):
+		return self._isSmoothed
 
 	@property
 	def p(self):
@@ -320,6 +333,15 @@ class lc(object):
 	def dt(self, value):
 		self._lcCython.dt = value
 		self._dt = value
+
+	@property
+	def dtSmooth(self):
+		return self._dtSmooth
+
+	@dtSmooth.setter
+	def dtSmooth(self, value):
+		self._lcCython.dtSmooth = value
+		self._dtSmooth = value
 
 	@property
 	def T(self):
@@ -763,16 +785,6 @@ class lc(object):
 		else:
 			raise NotImplemented
 
-	def plot(self):
-		plt.figure(-1, figsize = (fwid, fhgt))
-		plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = '.', capsize = 0, color = '#000000', markeredgecolor = 'none', zorder = 10)
-		plt.xlabel(self.xunit)
-		plt.ylabel(self.yunit)
-		plt.title(r'Light curve')
-		plt.legend()
-		plt.show(False)
-		plt.show()
-
 	@abc.abstractmethod
 	def read(self, name, band, path = os.environ['PWD'], **kwargs):
 		"""!
@@ -884,6 +896,23 @@ class lc(object):
 		useLC._lcCython.compute_SF(lags, sf, sferr)
 		return lags, sf, sferr
 
+	def plot(self):
+		plt.figure(-1, figsize = (fwid, fhgt))
+		if np.sum(self.x) != 0.0:
+			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', zorder = 0)
+			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
+		plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+		if self.isSmoothed:
+			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
+			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', zorder = -5)
+			plt.fill_between(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]) - self.xerrSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]) + self.xerrSmooth, facecolor = '#ccebc5', alpha = 0.5, zorder = -5)
+		plt.xlabel(self.xunit)
+		plt.ylabel(self.yunit)
+		plt.title(r'Light curve')
+		plt.legend()
+		plt.show(False)
+		plt.show()
+
 class lcIterator(object):
 	def __init__(self, t, x, y, yerr, mask):
 		self.t = t
@@ -912,7 +941,7 @@ class lcIterator(object):
 class basicLC(lc):
 
 	def copy(self):
-		lccopy = basicLC(self._numCadences, dt = self._dt, name = None, band = self._band, xunit = self._xunit, yunit = self._yunit, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		lccopy = basicLC(self._numCadences, dt = self._dt, dtSmooth = self._dtSmooth, name = None, band = self._band, xunit = self._xunit, yunit = self._yunit, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		lccopy.t = np.copy(self.t)
 		lccopy.x = np.copy(self.x)
 		lccopy.y = np.copy(self.y)
@@ -1525,6 +1554,12 @@ class task(object):
 			tnum = 0
 		if forced == True:
 			observedLC._computedCadenceNum = -1
+		observedLC.p = self.p
+		observedLC.q = self.q
+		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		observedLC._logPrior = self.logPrior(observedLC, tnum = tnum)
 		if observedLC._computedCadenceNum == -1:
 			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
@@ -1648,6 +1683,12 @@ class task(object):
 		return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
 
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+		observedLC.p = self.p
+		observedLC.q = self.q
+		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
 			rand.rdrand(randSeed)
@@ -1683,7 +1724,63 @@ class task(object):
 
 			for dimNum in xrange(self.ndims):
 				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
-		return self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		res = self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		return res
+
+	def smooth(self, observedLC, tnum = None):
+		if tnum is None:
+			tnum = 0
+		if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
+			observedLC.dtSmooth = observedLC.dt/10.0
+
+		observedLC.p = self.p
+		observedLC.q = self.q
+		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+
+		t = observedLC.t.tolist() + np.linspace(start = observedLC.t[0], stop = observedLC.t[-1], num = int(math.ceil(observedLC.T/observedLC.dtSmooth)), endpoint = False).tolist()
+		t.sort()
+		t = _f7(t) # remove duplicates
+
+		observedLC.numCadencesSmooth = len(t)
+
+		observedLC.tSmooth = np.require(np.array(t), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.xSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.xerrSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.ySmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.yerrSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.maskSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.PSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+
+		unObsErr = math.sqrt(sys.float_info.max)
+
+		obsCtr = 0
+		for i in xrange(observedLC.numCadencesSmooth):
+			if observedLC.tSmooth[i] == observedLC.t[obsCtr]:
+				observedLC.xSmooth[i] = 0.0
+				observedLC.xerrSmooth[i] = unObsErr
+				observedLC.ySmooth[i] = observedLC.y[obsCtr]
+				observedLC.yerrSmooth[i] = observedLC.yerr[obsCtr]
+				observedLC.maskSmooth[i] = observedLC.mask[obsCtr]
+				obsCtr += 1
+			else:
+				observedLC.xSmooth[i] = 0.0
+				observedLC.xerrSmooth[i] = unObsErr
+				observedLC.ySmooth[i] = 0.0
+				observedLC.yerrSmooth[i] = unObsErr
+				observedLC.maskSmooth[i] = 0.0
+
+		res = self._taskCython.smooth_RTS(observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth, observedLC.ySmooth - np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)]), observedLC.yerrSmooth, observedLC.maskSmooth, observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
+
+		for i in xrange(observedLC.numCadencesSmooth):
+			observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.p]
+			observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.p*observedLC.p])
+		observedLC._isSmoothed = True
+
+		return res
 
 class basicTask(task):
 	def __init__(self, p, q, nthreads = psutil.cpu_count(logical = True), nburn = 1000000, nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 1000, xTol = 0.005):
