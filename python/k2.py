@@ -100,14 +100,16 @@ class k2LC(libcarma.basicLC):
 				self.mask[i] = 0.0
 		self._dt = float(np.nanmedian(self.t[1:] - self.t[:-1])) ## Increment between epochs.
 		self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
-		self._p = 0
-		self._q = 0
+		self._pSim = 0
+		self._qSim = 0
+		self._pComp = 0
+		self._qComp = 0
 		self._isSmoothed = False ## Has the LC been smoothed?
 		self._dtSmooth = 0.0
-		self.XSim = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		self.PSim = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-		self.XComp = np.require(np.zeros(self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		self.PComp = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self._isRegular = True
 		self._name = str(name.split('.')[0]) ## The name of the light curve (usually the object's name).
 		self._band = str('Kep') ## The name of the photometric band (eg. HSC-I or SDSS-g etc..).

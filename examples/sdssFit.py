@@ -143,10 +143,10 @@ if args.viewer:
 			qView = int(raw_input('C-MA model order:'))
 
 		dim1 = -1
-		while dim1 < 0 or dim1 > pView + qView + 1:
+		while dim1 < 0 or dim1 > pView + qView:
 			dim1 = int(raw_input('1st Dimension to view:'))
 		dim2 = -1
-		while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
+		while dim2 < 0 or dim2 > pView + qView or dim2 == dim1:
 			dim2 = int(raw_input('2nd Dimension to view:'))
 
 		if whatToView == 0:

@@ -193,7 +193,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, p = 0, q = 0, sampler = None, pwd = None, **kwargs):
+	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, pSim = 0, qSim = 0, pComp = 0, qComp = 0, sampler = None, pwd = None, **kwargs):
 		"""!
 		\brief Initialize a new light curve
 
@@ -227,8 +227,10 @@ class lc(object):
 			self._simulatedCadenceNum = -1 ## How many cadences have already been simulated.
 			self._observedCadenceNum = -1 ## How many cadences have already been observed.
 			self._computedCadenceNum = -1 ## How many cadences have been LnLikelihood'd already.
-			self._p = p ## C-ARMA model used to simulate the LC.
-			self._q = q ## C-ARMA model used to simulate the LC.
+			self._pSim = pSim ## C-ARMA model used to simulate the LC.
+			self._qSim = qSim ## C-ARMA model used to simulate the LC.
+			self._pComp = pComp ## C-ARMA model used to simulate the LC.
+			self._qComp = qComp ## C-ARMA model used to simulate the LC.
 			self._isSmoothed = False ## Has the LC been smoothed?
 			self._dtSmooth = 0.0
 			self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
@@ -291,39 +293,62 @@ class lc(object):
 		return self._isSmoothed
 
 	@property
-	def p(self):
-		return self._p
+	def pSim(self):
+		return self._pSim
 
-	@p.setter
-	def p(self, value):
+	@pSim.setter
+	def pSim(self, value):
 		newXSim = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
 		newPSim = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
-		newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
-		newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
 		large_number = math.sqrt(sys.float_info[0])
-		if value > self._p:
-			iterMax = self._p
+		if value > self._pSim:
+			iterMax = self._pSim
 		else:
 			iterMax = value
 		for i in xrange(iterMax):
 			newXSim[i] = self.XSim[i]
-			newXComp[i] = self.XComp[i]
 			for j in xrange(iterMax):
-				newPSim[i + j*value] = self.PSim[i + j*self._p]
-				newPComp[i + j*value] = self.PComp[i + j*self._p]
-		self._p = value
+				newPSim[i + j*value] = self.PSim[i + j*self._pSim]
+		self._pSim = value
 		self.XSim = newXSim
 		self.PSim = newPSim
+
+	@property
+	def pComp(self):
+		return self._pComp
+
+	@pComp.setter
+	def pComp(self, value):
+		newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+		newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+		large_number = math.sqrt(sys.float_info[0])
+		if value > self._pSim:
+			iterMax = self._pSim
+		else:
+			iterMax = value
+		for i in xrange(iterMax):
+			newXComp[i] = self.XComp[i]
+			for j in xrange(iterMax):
+				newPComp[i + j*value] = self.PComp[i + j*self._pComp]
+		self._pComp = value
 		self.XComp = newXComp
 		self.PComp = newPComp
 
 	@property
-	def q(self):
-		return self._q
+	def qSim(self):
+		return self._qSim
 
-	@q.setter
-	def q(self, value):
-		self._q = value
+	@qSim.setter
+	def qSim(self, value):
+		self._qSim = value
+
+	@property
+	def qComp(self):
+		return self._qComp
+
+	@qComp.setter
+	def qComp(self, value):
+		self._qComp = value
 
 	@property
 	def dt(self):
@@ -1459,7 +1484,7 @@ class task(object):
 		if tnum is None:
 			tnum = 0
 		numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum = tnum)))
-		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = tolIR, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, p = self._p, q = self._q, )
+		intrinsicLC = basicLC(numCadences, dt = self._taskCython.get_dt(threadNum = tnum), tolIR = tolIR, fracIntrinsicVar = fracIntrinsicVar, fracNoiseToSignal = fracNoiseToSignal, maxSigma = maxSigma, minTimescale = minTimescale, maxTimescale = maxTimescale, pSim = self._p, qSim = self._q)
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if burnSeed is None:
 			rand.rdrand(randSeed)
@@ -1482,8 +1507,10 @@ class task(object):
 		if noiseSeed is None:
 			rand.rdrand(randSeed)
 			noiseSeed = randSeed[0]
-		if intrinsicLC.p != self.p:
-			intrinsicLC.p = self.p
+		if intrinsicLC.pSim != self.p:
+			intrinsicLC.pSim = self.p
+		if intrinsicLC.qSim != self.q:
+			intrinsicLC.qSim = self.q
 		if gap is None:
 			gapSize = 0.0
 		else:
@@ -1554,12 +1581,8 @@ class task(object):
 			tnum = 0
 		if forced == True:
 			observedLC._computedCadenceNum = -1
-		observedLC.p = self.p
-		observedLC.q = self.q
-		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.pComp = self.p
+		observedLC.qComp = self.q
 		observedLC._logPrior = self.logPrior(observedLC, tnum = tnum)
 		if observedLC._computedCadenceNum == -1:
 			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
@@ -1683,12 +1706,8 @@ class task(object):
 		return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
 
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
-		observedLC.p = self.p
-		observedLC.q = self.q
-		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.pComp = self.p
+		observedLC.qComp = self.q
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
 			rand.rdrand(randSeed)
@@ -1733,12 +1752,8 @@ class task(object):
 		if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
 			observedLC.dtSmooth = observedLC.dt/10.0
 
-		observedLC.p = self.p
-		observedLC.q = self.q
-		observedLC.XSim = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PSim = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-		observedLC.XComp = np.require(np.zeros(observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
-		observedLC.PComp = np.require(np.zeros(observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		observedLC.pComp = self.p
+		observedLC.qComp = self.q
 
 		t = observedLC.t.tolist() + np.linspace(start = observedLC.t[0], stop = observedLC.t[-1], num = int(math.ceil(observedLC.T/observedLC.dtSmooth)), endpoint = False).tolist()
 		t.sort()
@@ -1752,8 +1767,8 @@ class task(object):
 		observedLC.ySmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 		observedLC.yerrSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 		observedLC.maskSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-		observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-		observedLC.PSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.p*observedLC.p), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+		observedLC.PSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp*observedLC.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 
 		unObsErr = math.sqrt(sys.float_info.max)
 
@@ -1776,8 +1791,8 @@ class task(object):
 		res = self._taskCython.smooth_RTS(observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth, observedLC.ySmooth - np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)]), observedLC.yerrSmooth, observedLC.maskSmooth, observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
 
 		for i in xrange(observedLC.numCadencesSmooth):
-			observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.p]
-			observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.p*observedLC.p])
+			observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp]
+			observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
 		observedLC._isSmoothed = True
 
 		return res
