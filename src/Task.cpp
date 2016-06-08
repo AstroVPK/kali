@@ -655,3 +655,34 @@ using namespace std;
 		newEnsemble.getLnLike(LnPosterior);
 		return 0;
 		}
+
+	int Task::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum) {
+		int successYN = -1;
+		LnLikeData Data;
+		Data.numCadences = numCadences;
+		Data.cadenceNum = cadenceNum;
+		Data.tolIR = tolIR;
+		Data.t = t;
+		Data.x = x;
+		Data.y = y;
+		Data.yerr = yerr;
+		Data.mask = mask;
+		Data.lcX = lcX;
+		Data.lcP = lcP;
+		LnLikeData *ptr2Data = &Data;
+		#ifdef DEBUG_COMPUTELNLIKELIHOOD
+			for (int i = 0; i < numCadences; ++i) {
+				printf("y[%d]: %+8.7e\n", i, y[i]);
+				}
+		#endif
+		double old_dt = Systems[threadNum].get_dt();
+		Systems[threadNum].set_dt(t[1] - t[0]);
+		Systems[threadNum].solveCARMA();
+		successYN = Systems[threadNum].RTSSmoother(ptr2Data, XSmooth, PSmooth);
+		Systems[threadNum].getX(lcX);
+		Systems[threadNum].getP(lcP);
+		cadenceNum = Data.cadenceNum;
+		Systems[threadNum].set_dt(old_dt);
+		Systems[threadNum].solveCARMA();
+		return successYN;
+		}

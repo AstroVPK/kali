@@ -51,6 +51,7 @@
 //#define MAXPRINT 10
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
+//#define DEBUG_RTSSMOOTHER
 
 
 using namespace std;
@@ -2698,4 +2699,256 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		_mm_free(F_acvf);
 		F_acvf = nullptr;
 		}
+	}
+
+int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	double tolIR = Data.tolIR; 
+	double t_incr = Data.t_incr;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+	double maxDouble = numeric_limits<double>::max();
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	double LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
+	lapack_int YesNo;
+
+	/* Allocate arrays to hold KScratch, XMinus, PMinus, X, and P for the backward recursion */
+	double *KScratch, *XMinusList = nullptr, *PMinusList = nullptr, *XList = nullptr, *PList = nullptr;
+	KScratch = static_cast<double*>(_mm_malloc(pSq*sizeof(double),64));
+	XMinusList = static_cast<double*>(_mm_malloc(p*numCadences*sizeof(double),64));
+	PMinusList = static_cast<double*>(_mm_malloc(pSq*numCadences*sizeof(double),64));
+	XList = static_cast<double*>(_mm_malloc(p*numCadences*sizeof(double),64));
+	PList = static_cast<double*>(_mm_malloc(pSq*numCadences*sizeof(double),64));
+	/* */
+
+	/* Forward iteration of RTS Smoother */
+	/* Iterate through first point */
+	H[0] = mask[0];
+	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
+	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+	cblas_dcopy(p, XMinus, 1, &XMinusList[0], 1); // Copy XMinus into XMinusList[0:p]
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+	cblas_dcopy(pSq, PMinus, 1, &PMinusList[0], 1); // Copy PMinus into PMinusList[0:pSq]
+	v = mask[0]*(y[0] - H[0]*XMinus[0]); // Compute v = y - H*X
+	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+	SInv = 1.0/S;
+	cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
+	for (int colCounter = 0; colCounter < p; colCounter++) {
+		#pragma omp simd
+		for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+			MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+			}
+		}
+	cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
+	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[0], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+	cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
+	cblas_dcopy(p, X, 1, &XList[0], 1); // Copy X into XList[0:p]
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
+	for (int colCounter = 0; colCounter < p; colCounter++) {
+		#pragma omp simd
+		for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+			P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+			}
+		}
+	cblas_dcopy(pSq, P, 1, &PList[0], 1); // Copy P into PList[0:pSq]
+	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
+	/* Iterate through remaining points */
+	for (int i = 1; i < numCadences; i++) {
+		t_incr = t[i] - t[i - 1];
+		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+		if (fracChange > tolIR) {
+			dt = t_incr;
+			solveCARMA();
+			}
+		H[0] = mask[i];
+		R[0] = yerr[i]*yerr[i]; // Heteroskedastic errors
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
+		cblas_dcopy(p, XMinus, 1, &XMinusList[i*p], 1); // Copy XMinus into XMinusList[i*p:(i+1)*p]
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("PMinus_{%d}\n",i);
+			viewMatrix(p,p,PMinus);
+		#endif
+		cblas_dcopy(pSq, PMinus, 1, &PMinusList[i*pSq], 1); // Copy PMinus into PMinusList[i*pSq:(i+1)*pSq]
+		v = mask[i]*(y[i] - H[0]*XMinus[0]); // Compute v = y - H*X
+		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
+		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
+		SInv = 1.0/S;
+		cblas_dscal(p, SInv, K, 1); // Compute K = SInv*K
+		for (int colCounter = 0; colCounter < p; colCounter++) {
+			#pragma omp simd
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				MScratch[rowCounter*p+colCounter] = I[colCounter*p+rowCounter] - K[colCounter]*H[rowCounter]; // Compute MScratch = I - K*H
+				}
+			}
+		cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+		cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
+		cblas_dcopy(p, X, 1, &XList[i*p], 1); // Copy X into XList[i*p:(i+1)*p]
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, P, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = P*IMinusKH_Transpose
+		for (int colCounter = 0; colCounter < p; colCounter++) {
+			#pragma omp simd
+			for (int rowCounter = 0; rowCounter < p; rowCounter++) {
+				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
+				}
+			}
+		cblas_dcopy(pSq, P, 1, &PList[i*pSq], 1); // Copy P into PList[i*pSq:(i+1)*pSq]
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
+		ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
+		}
+	LnLikelihood += -0.5*ptCounter*log2Pi;
+
+	#ifdef DEBUG_RTSSMOOTHER
+		printf("\n");
+		printf("P\n");
+		viewMatrix(p,p,P);
+		printf("PList_{%d}\n",numCadences-1);
+		viewMatrix(p,p,&PList[(numCadences-1)*pSq]);
+	#endif
+
+	/* Reverse iteration of RTS Smoother */
+	/* Iterate through last point */
+	cblas_dcopy(p, &XList[(numCadences - 1)*p], 1, &XSmooth[(numCadences - 1)*p], 1); // Compute XSmooth_{N} = X^{+}_{N}
+	cblas_dcopy(pSq, &PList[(numCadences - 1)*pSq], 1, &PSmooth[(numCadences - 1)*pSq], 1); // Compute PSmooth_{N} = P^{+}_{N}
+	#ifdef DEBUG_RTSSMOOTHER
+		printf("PSmooth_{%d}\n",numCadences-1);
+		viewMatrix(p,p,&PSmooth[(numCadences - 1)*pSq]);
+	#endif
+	/* Iterate backwards through remaining points */
+	for (int i = numCadences - 2; i > -1; --i) {
+		t_incr = t[i] - t[i - 1];
+		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+		if (fracChange > tolIR) {
+			dt = t_incr;
+			solveCARMA();
+			}
+
+		/*! Compute K_{i} = P_{i}*F_Transpose*PMinus_{i + 1}^{-1} */
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("\n");
+			printf("i:%d\n",i);
+			printf("PMinusList_{%d}\n",i+1);
+			viewMatrix(p,p,&PMinusList[(i + 1)*pSq]);
+		#endif
+		for (int colCtr = 0; colCtr < p; ++colCtr) {
+			#pragma omp simd
+			for (int rowCtr = colCtr; rowCtr < p; ++rowCtr) {
+				PMinus[rowCtr + p*colCtr] = PMinusList[(i + 1)*pSq + rowCtr + p*colCtr]; // Copy the lower-triangle of PMinus_{i + 1} into PMinus
+				}
+			#pragma omp simd
+			for (int rowCtr = 0; rowCtr < colCtr; ++rowCtr) {
+				PMinus[rowCtr + p*colCtr] = 0.0; // Copy the lower-triangle of PMinus_{i + 1} into PMinus
+				}
+			}
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("PMinus\n,");
+			viewMatrix(p,p,PMinus);
+		#endif
+		YesNo = LAPACKE_dpotrf(LAPACK_COL_MAJOR, 'L', p, PMinus, p); // Factor PMinus
+		YesNo = LAPACKE_dpotri(LAPACK_COL_MAJOR, 'L', p, PMinus, p); // Compute Inverse of factorized PMinus
+		for (int colCtr = 0; colCtr < p; ++colCtr) {
+			#pragma omp simd
+			for (int rowCtr = colCtr; rowCtr < p; ++rowCtr) {
+				MScratch[rowCtr + p*colCtr] = PMinus[rowCtr + p*colCtr]; // Copy the PMinus_Inverse into MScratch
+				MScratch[colCtr + p*rowCtr] = PMinus[rowCtr + p*colCtr]; // Copy the PMinus_Inverse into MScratch
+				}
+			}
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("MScratch = PMinus_Inverse\n");
+			viewMatrix(p,p,MScratch);
+			printf("F (before)\n");
+			viewMatrix(p,p,F);
+			printf("MScratch (before)\n");
+			viewMatrix(p,p,MScratch);
+			printf("PMinus (before)\n");
+			viewMatrix(p,p,PMinus);
+		#endif
+		cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, p, p, p, 1.0, F, p, MScratch, p, 0.0, PMinus, p); // Compute PMinus = F_Transpose*MScratch
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("F (after)\n");
+			viewMatrix(p,p,F);
+			printf("MScratch (after)\n");
+			viewMatrix(p,p,MScratch);
+			printf("PMinus (after)\n");
+			viewMatrix(p,p,PMinus);
+			printf("PList_{%d} (before)\n",i);
+			viewMatrix(p,p,&PList[i*pSq]);
+			printf("PMinus (before)\n");
+			viewMatrix(p,p,PMinus);
+			printf("KScratch (before)\n");
+			viewMatrix(p,p,KScratch);
+		#endif
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, &PList[i*pSq], p, PMinus, p, 0.0, KScratch, p); // Compute KScratch = P_{i}*PMinus
+		#ifdef DEBUG_RTSSMOOTHER
+			printf("PList_{%d} (after)\n",i);
+			viewMatrix(p,p,&PList[i*pSq]);
+			printf("PMinus (after)\n");
+			viewMatrix(p,p,PMinus);
+			printf("KScratch (after)\n");
+			viewMatrix(p,p,KScratch);
+		#endif
+
+		/*! Compute PSmooth_{i} = P_{i} + K_{i}*(PSmooth_{i + 1} - PMinus_{i + 1})*K_Transpose_{i} */
+		for (int colCtr = 0; colCtr < p; ++colCtr) {
+			#pragma omp simd
+			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+				PMinus[rowCtr + p*colCtr] = PSmooth[(i + 1)*pSq + rowCtr + p*colCtr] - PMinusList[(i + 1)*pSq + rowCtr + p*colCtr]; // Compute PMinus = PSmooth_{i + 1} - PMinus_{i + 1}
+				}
+			}
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, KScratch, p, PMinus, p, 0.0, MScratch, p); // Compute MScratch = KScratch*PMinus
+		cblas_dcopy(pSq, &PList[i*pSq], 1, PMinus, 1); // Copy PMinus = PSmooth_{i}
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, KScratch, p, 1.0, PMinus, p); // Compute PMinus = PMinus + MScratch*KScratch_Transpose
+		cblas_dcopy(pSq, PMinus, 1, &PSmooth[i*pSq], 1); // Copy PSmooth_{i} = PMinus
+
+		/*! Compute XSmooth_{i} = X_{i} + K_{i}*(XSmooth_{i + 1} - XMinus_{i + 1}) */
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			VScratch[rowCtr] = XSmooth[(i + 1)*p + rowCtr] - XMinusList[(i + 1)*p + rowCtr]; // Compute VScratch = XMinus_{i + 1} - XSmooth_{i + 1}
+			}
+		cblas_dcopy(p, &XList[i*p], 1, XMinus, 1); // Copy XMinus = XSmooth_{i}
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, KScratch, p, VScratch, 1, 1.0, XMinus, 1); // Compute XMinus = XMinus + KScratch*VScratch
+		cblas_dcopy(p, XMinus, 1, &XSmooth[i*p], 1);// Copy XSmooth_{i} = VScratch
+		}
+
+	/* Deallocate arrays used to hold MScratch2, XMinus, PMinus, X and P for backward recursion */
+	if (KScratch) {
+		_mm_free(KScratch);
+		KScratch = nullptr;
+		}
+	if (XMinusList) {
+		_mm_free(XMinusList);
+		XMinusList = nullptr;
+		}
+	if (PMinusList) {
+		_mm_free(PMinusList);
+		PMinusList = nullptr;
+		}
+	if (XList) {
+		_mm_free(XList);
+		XList = nullptr;
+		}
+	if (PList) {
+		_mm_free(PList);
+		PList = nullptr;
+		}
+	/* */
+
+	Data.cadenceNum = numCadences - 1;
+	Data.currentLnLikelihood = LnLikelihood;
+	return 0;
 	}

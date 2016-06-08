@@ -10,6 +10,7 @@ cdef extern from 'LC.hpp':
 	cdef cppclass LCData:
 		int numCadences
 		double dt
+		double dtSmooth
 		double tolIR
 		double fracIntrinsicVar
 		double fracNoiseToSignal
@@ -71,15 +72,19 @@ cdef extern from 'Task.hpp':
 
 		int fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior)
 
+		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum)
+
+
 cdef class lc:
 	cdef LCData *thisptr
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
+	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, dtSmooth = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
 		self.thisptr = new LCData()
 		self.thisptr.numCadences = t.shape[0]
 		self.thisptr.dt = dt
+		self.thisptr.dtSmooth = dtSmooth
 		self.thisptr.tolIR = tolIR
 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
 		self.thisptr.fracNoiseToSignal = fracNoiseToSignal
@@ -102,6 +107,10 @@ cdef class lc:
 	property dt:
 		def __get__(self): return self.thisptr.dt
 		def __set__(self, dt): self.thisptr.dt = dt
+
+	property dtSmooth:
+		def __get__(self): return self.thisptr.dtSmooth
+		def __set__(self, dtSmooth): self.thisptr.dtSmooth = dtSmooth
 
 	property tolIR:
 		def __get__(self): return self.thisptr.tolIR
@@ -357,3 +366,10 @@ cdef class CARMATask:
 	@cython.wraparound(False)
 	def fit_CARMAModel(self, dt, numCadences, tolIR, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):
 		return self.thisptr.fit_CARMAModel(dt, numCadences, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], threadNum)

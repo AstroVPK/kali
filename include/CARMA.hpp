@@ -155,6 +155,7 @@ public:
 	double updateLnLikelihood(LnLikeData *ptr2Data);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	void computeACVF(int numLags, double *Lags, double* ACVF);
+	int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth);
 	};
 
 struct LnLikeArgs {
