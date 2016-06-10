@@ -186,15 +186,25 @@ if args.viewer:
 				dim2Name = r'$\mathrm{Amp.}$'
 			res = mcmcviz.vizWalkers(taskDict['%d %d'%(pView, qView)].timescaleChain, taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
 
-		Theta = bestTask.Chain[:,np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[0][0],np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[1][0]]
-		nt = libcarma.basicTask(pBest, qBest)
-		nt.set(sdssLC.dt, Theta)
-		nt.smooth(sdssLC)
-		sdssLC.plot()
-
 		var = str(raw_input('Do you wish to view any more MCMC walkers? (y/n):')).lower()
 		if var == 'n':
 			notDone = False
+
+Theta = bestTask.Chain[:,np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[0][0],np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[1][0]]
+nt = libcarma.basicTask(pBest, qBest)
+nt.set(sdssLC.dt, Theta)
+nt.smooth(sdssLC)
+sdssLC.plot()
+
+plt.figure(1, figsize = (fwid, fhgt))
+lagsEst, sfEst, sferrEst = sdssLC.sf()
+lagsModel, sfModel = bestTask.sf(start = lagsEst[1], stop = lagsEst[-1], num = 5000, spacing = 'log')
+plt.loglog(lagsModel, sfModel, label = r'$SF(\delta t)$ (model)', color = '#000000', zorder = 5)
+plt.errorbar(lagsEst, sfEst, sferrEst, label = r'$SF(\delta t)$ (est)', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+plt.xlabel(r'$\log_{10}\delta t$')
+plt.ylabel(r'$\log_{10} SF$')
+plt.legend(loc = 2)
+plt.show()
 
 if args.stop:
 	pdb.set_trace()

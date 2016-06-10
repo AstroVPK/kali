@@ -37,8 +37,8 @@ using namespace std;
 		LCData();
 		~LCData();
 
-		int acvf(double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum);
-		int sf(double *lagVals, double *sfVals, double * sfErrVals, int threadNum);
+		int acvf(double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum);
+		int sf(double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *sfVals, double * sfErrVals, int threadNum);
 	};
 
 #endif

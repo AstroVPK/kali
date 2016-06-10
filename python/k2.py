@@ -121,15 +121,23 @@ class k2LC(libcarma.basicLC):
 		for i in xrange(self.numCadences):
 			y_meanSum += self.mask[i]*self.y[i]
 			yerr_meanSum += self.mask[i]*self.yerr[i]
-		self._mean = y_meanSum/count
-		self._meanerr = yerr_meanSum/count
+		if count > 0.0:
+			self._mean = y_meanSum/count
+			self._meanerr = yerr_meanSum/count
+		else:
+			self._mean = 0.0
+			self._meanerr = 0.0
 		y_stdSum = 0.0
 		yerr_stdSum = 0.0
 		for i in xrange(self.numCadences):
 			y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
 			yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-		self._std = math.sqrt(y_stdSum/count)
-		self._stderr = math.sqrt(yerr_stdSum/count)
+		if count > 0.0:
+			self._std = math.sqrt(y_stdSum/count)
+			self._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			self._std = 0.0
+			self._stderr = 0.0
 
 	def write(self, name, path = None, **kwrags):
 		pass
