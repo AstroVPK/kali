@@ -11,28 +11,6 @@ except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)
 
-# all classes should have inits for initializing 
-
-class K2LC(libcarma.basicLC):
-
-	def __init__(self):
-		print("\n")
-	def read(self, name, band = None, pwd = None, **kwargs):
-	#open Van_k2 lc fits file 
-		k2lc = astfits.open(pwd + name.split('.')[0] + '.fits')
-		k2lc.info()
-		table = k2lc[1].data
-		#print table
-		self.t = table[0:].field('T')
-		rawF = table[0:].field('FRAW')
-		self.x = np.zeros(len(rawF))
-		self.y = table[0:].field('FCOR')
-		arc = table[0:].field('ARCLENGTH')
-		#self.yerr = 
-
-	def write(self, name, pwd):
-		print('read in Vanderberg lc')
-
 class k2LC(libcarma.basicLC):
 	def read(self, name, band = None, path = None, **kwargs):
 		sapORpdcsap = kwargs.get('lctype', 'sap').lower()
@@ -138,6 +116,3 @@ class k2LC(libcarma.basicLC):
 		else:
 			self._std = 0.0
 			self._stderr = 0.0
-
-	def write(self, name, path = None, **kwrags):
-		pass
