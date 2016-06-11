@@ -976,8 +976,8 @@ class lc(object):
 		plt.loglog(1.0, 1.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acvfE, acvferrE = self.acvf()
-		if np.sum(acvfE) != 0.0:
-			plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+			if np.sum(acvfE) != 0.0:
+				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACVF$')
 		plt.title(r'AutoCovariance Function')
@@ -987,11 +987,11 @@ class lc(object):
 
 	def plotacf(self, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
+		plt.loglog(1.0, 1.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acfE, acferrE = self.acf()
-		plt.loglog(1.0, 1.0)
-		if np.sum(acfE) != 0.0:
-			plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+			if np.sum(acfE) != 0.0:
+				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACF$')
 		plt.title(r'AutoCorrelation Function')
@@ -1001,11 +1001,11 @@ class lc(object):
 
 	def plotsf(self, doShow = False):
 		plt.figure(-4, figsize = (fwid, fhgt))
+		plt.loglog(1.0, 1.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, sfE, sferrE = self.sf()
-		plt.loglog(1.0, 1.0)
-		if np.sum(sfE) != 0.0:
-			plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+			if np.sum(sfE) != 0.0:
+				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
