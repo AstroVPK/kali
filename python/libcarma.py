@@ -312,14 +312,20 @@ class lc(object):
 		newXSim = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
 		newPSim = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
 		large_number = math.sqrt(sys.float_info[0])
-		if value > self._pSim:
-			iterMax = self._pSim
-		else:
-			iterMax = value
-		for i in xrange(iterMax):
-			newXSim[i] = self.XSim[i]
-			for j in xrange(iterMax):
-				newPSim[i + j*value] = self.PSim[i + j*self._pSim]
+		if self._pSim > 0:
+			if value > self._pSim:
+				iterMax = self._pSim
+			else:
+				iterMax = value
+			for i in xrange(iterMax):
+				newXSim[i] = self.XSim[i]
+				for j in xrange(iterMax):
+					newPSim[i + j*value] = self.PSim[i + j*self._pSim]
+		elif self._pSim == 0:
+			for i in xrange(value):
+				newXSim[i] = 0.0
+				for j in xrange(value):
+					newPSim[i + j*value] = 0.0
 		self._pSim = value
 		self.XSim = newXSim
 		self.PSim = newPSim
@@ -333,14 +339,20 @@ class lc(object):
 		newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
 		newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
 		large_number = math.sqrt(sys.float_info[0])
-		if value > self._pSim:
-			iterMax = self._pSim
-		else:
-			iterMax = value
-		for i in xrange(iterMax):
-			newXComp[i] = self.XComp[i]
-			for j in xrange(iterMax):
-				newPComp[i + j*value] = self.PComp[i + j*self._pComp]
+		if self._pComp > 0:
+			if value > self._pSim:
+				iterMax = self._pSim
+			else:
+				iterMax = value
+			for i in xrange(iterMax):
+				newXComp[i] = self.XComp[i]
+				for j in xrange(iterMax):
+					newPComp[i + j*value] = self.PComp[i + j*self._pComp]
+		elif self._pComp == 0.0:
+			for i in xrange(value):
+				newXComp[i] = 0.0
+				for j in xrange(value):
+					newPComp[i + j*value] = 0.0
 		self._pComp = value
 		self.XComp = newXComp
 		self.PComp = newPComp
@@ -925,9 +937,10 @@ class lc(object):
 		acf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		acferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		res = useLC._lcCython.compute_ACVF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
-		acf = acvf/acvf[0]
-		acferr = np.sqrt(np.power(acvf/acvf[0], 2.0)*(np.power(acvferr/acvf, 2.0) + math.pow(acvferr[0]/acvf[0], 2.0)))
-		return res
+		acflags = lags[np.where(acvf != 0.0)]
+		acf = acvf[np.where(acvf != 0.0)]/acvf[0]
+		acferr = np.sqrt(np.power([np.where(acvf != 0.0)]/acvf[0], 2.0)*(np.power(acvferr[np.where(acvf != 0.0)]/acvf[np.where(acvf != 0.0)], 2.0) + math.pow(acvferr[0]/acvf[0], 2.0)))[0][0]
+		return acflags, acf, acferr
 
 	def sf(self, newdt = None):
 		if not self.isRegular:
@@ -945,7 +958,8 @@ class lc(object):
 		if np.sum(self.x) != 0.0:
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', zorder = 0)
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
-		plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+		if np.sum(self.y) != 0.0:
+			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		if self.isSmoothed:
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', zorder = -5)
@@ -953,6 +967,48 @@ class lc(object):
 		plt.xlabel(self.xunit)
 		plt.ylabel(self.yunit)
 		plt.title(r'Light curve')
+		plt.legend()
+		if doShow:
+			plt.show(False)
+
+	def plotacvf(self, doShow = False):
+		plt.figure(-2, figsize = (fwid, fhgt))
+		plt.loglog(1.0, 1.0)
+		if np.sum(self.y) != 0.0:
+			lagsE, acvfE, acvferrE = self.acvf()
+		if np.sum(acvfE) != 0.0:
+			plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log ACVF$')
+		plt.title(r'AutoCovariance Function')
+		plt.legend()
+		if doShow:
+			plt.show(False)
+
+	def plotacf(self, doShow = False):
+		plt.figure(-3, figsize = (fwid, fhgt))
+		if np.sum(self.y) != 0.0:
+			lagsE, acfE, acferrE = self.acf()
+		plt.loglog(1.0, 1.0)
+		if np.sum(acfE) != 0.0:
+			plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log ACF$')
+		plt.title(r'AutoCorrelation Function')
+		plt.legend()
+		if doShow:
+			plt.show(False)
+
+	def plotsf(self, doShow = False):
+		plt.figure(-4, figsize = (fwid, fhgt))
+		if np.sum(self.y) != 0.0:
+			lagsE, sfE, sferrE = self.sf()
+		plt.loglog(1.0, 1.0)
+		if np.sum(sfE) != 0.0:
+			plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log SF$')
+		plt.title(r'Structure Function')
 		plt.legend()
 		if doShow:
 			plt.show(False)
@@ -1588,12 +1644,12 @@ class task(object):
 		intrinsicLC._meanerr = np.mean(intrinsicLC.yerr)
 		intrinsicLC._stderr = np.std(intrinsicLC.yerr)
 
-	def logPrior(self, observedLC, forced = False, tnum = None):
+	def logPrior(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		return self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 
-	def logLikelihood(self, observedLC, forced = False, tnum = None):
+	def logLikelihood(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		if forced == True:
@@ -1615,7 +1671,7 @@ class task(object):
 			observedLC._computedCadenceNum = observedLC.numCadences - 1
 		return lnLikelihood
 
-	def logPosterior(self, observedLC, forced = False, tnum = None):
+	def logPosterior(self, observedLC, forced = True, tnum = None):
 		lnLikelihood = self.logLikelihood(observedLC, forced = forced, tnum = tnum)
 		return observedLC._logPosterior
 
@@ -1655,6 +1711,45 @@ class task(object):
 		self._taskCython.compute_ACVF(num, lags, acvf)
 		sf = 2.0*(acvf[0] - acvf)
 		return lags, sf
+
+	def plotacvf(self, LC, doShow = False):
+		plt.figure(-2, figsize = (fwid, fhgt))
+		lagsE, acvfE, acvferrE = LC.acvf()
+		lagsM, acvfM = self.acvf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		plt.loglog(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
+		plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log ACVF$')
+		plt.title(r'Autocovariance Function')
+		plt.legend()
+		if doShow:
+			plt.show(False)
+
+	def plotsf(self, LC, doShow = False):
+		plt.figure(-3, figsize = (fwid, fhgt))
+		lagsE, acfE, acferrE = LC.acf()
+		lagsM, acfM = self.acf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		plt.loglog(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
+		plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log ACF$')
+		plt.title(r'Autocorrelation Function')
+		plt.legend()
+		if doShow:
+			plt.show(False)
+
+	def plotsf(self, LC, doShow = False):
+		plt.figure(-4, figsize = (fwid, fhgt))
+		lagsE, sfE, sferrE = LC.sf()
+		lagsM, sfM = self.sf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		plt.loglog(lagsM, sfM, label = r'model Structure Function', color = '#984ea3', zorder = 5)
+		plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		plt.xlabel(r'$\delta t$')
+		plt.ylabel(r'$\log SF$')
+		plt.title(r'Structure Function')
+		plt.legend()
+		if doShow:
+			plt.show(False)
 
 	def _psddenominator(self, freqs, order):
 		nfreqs = freqs.shape[0]
