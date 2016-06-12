@@ -2297,7 +2297,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("y[%d]: %e\n", startCadence, y[startCadence]);
 		printf("yerr[%d]: %e\n", startCadence, yerr[startCadence]);
-		printf("mask[%d]: %e\n", startCadence, mask[startcadence]);
+		printf("mask[%d]: %e\n", startCadence, mask[startCadence]);
 		printf("v[%d]: %e\n", startCadence, v);
 		printf("S[%d]: %e\n", startCadence, S);
 	#endif

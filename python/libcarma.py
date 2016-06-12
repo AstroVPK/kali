@@ -1714,40 +1714,46 @@ class task(object):
 
 	def plotacvf(self, LC, doShow = False):
 		plt.figure(-2, figsize = (fwid, fhgt))
-		lagsE, acvfE, acvferrE = LC.acvf()
-		lagsM, acvfM = self.acvf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		lagsM, acvfM = self.acvf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.loglog(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
-		plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		if np.sum(LC.y) != 0.0:
+			lagsE, acvfE, acvferrE = LC.acvf()
+			if np.sum(acvfE) != 0.0:
+				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACVF$')
 		plt.title(r'Autocovariance Function')
-		plt.legend()
+		plt.legend(loc = 3)
 		if doShow:
 			plt.show(False)
 
-	def plotsf(self, LC, doShow = False):
+	def plotacf(self, LC, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
-		lagsE, acfE, acferrE = LC.acf()
-		lagsM, acfM = self.acf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		lagsM, acfM = self.acf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.loglog(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
-		plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		if np.sum(LC.y) != 0.0:
+			lagsE, acfE, acferrE = LC.acf()
+			if np.sum(acfE) != 0.0:
+				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACF$')
 		plt.title(r'Autocorrelation Function')
-		plt.legend()
+		plt.legend(loc = 3)
 		if doShow:
 			plt.show(False)
 
 	def plotsf(self, LC, doShow = False):
 		plt.figure(-4, figsize = (fwid, fhgt))
-		lagsE, sfE, sferrE = LC.sf()
-		lagsM, sfM = self.sf(start = lagsE[1], stop = lagsE[-1], num = 1000, spacing = 'log')
+		lagsM, sfM = self.sf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.loglog(lagsM, sfM, label = r'model Structure Function', color = '#984ea3', zorder = 5)
-		plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+		if np.sum(LC.y) != 0.0:
+			lagsE, sfE, sferrE = LC.sf()
+			if np.sum(sfE) != 0.0:
+				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
-		plt.legend()
+		plt.legend(loc = 2)
 		if doShow:
 			plt.show(False)
 
