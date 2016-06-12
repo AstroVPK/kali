@@ -973,13 +973,13 @@ class lc(object):
 
 	def plotacvf(self, doShow = False):
 		plt.figure(-2, figsize = (fwid, fhgt))
-		plt.loglog(1.0, 1.0)
+		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acvfE, acvferrE = self.acvf()
 			if np.sum(acvfE) != 0.0:
 				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(r'$\delta t$')
-		plt.ylabel(r'$\log ACVF$')
+		plt.ylabel(r'$ACVF$')
 		plt.title(r'AutoCovariance Function')
 		plt.legend()
 		if doShow:
@@ -987,13 +987,13 @@ class lc(object):
 
 	def plotacf(self, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
-		plt.loglog(1.0, 1.0)
+		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acfE, acferrE = self.acf()
 			if np.sum(acfE) != 0.0:
 				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlabel(r'$\delta t$')
-		plt.ylabel(r'$\log ACF$')
+		plt.ylabel(r'$ACF$')
 		plt.title(r'AutoCorrelation Function')
 		plt.legend()
 		if doShow:
@@ -1715,7 +1715,7 @@ class task(object):
 	def plotacvf(self, LC, doShow = False):
 		plt.figure(-2, figsize = (fwid, fhgt))
 		lagsM, acvfM = self.acvf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
-		plt.loglog(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
+		plt.plot(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
 		if np.sum(LC.y) != 0.0:
 			lagsE, acvfE, acvferrE = LC.acvf()
 			if np.sum(acvfE) != 0.0:
@@ -1730,7 +1730,7 @@ class task(object):
 	def plotacf(self, LC, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
 		lagsM, acfM = self.acf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
-		plt.loglog(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
+		plt.plot(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
 		if np.sum(LC.y) != 0.0:
 			lagsE, acfE, acferrE = LC.acf()
 			if np.sum(acfE) != 0.0:
