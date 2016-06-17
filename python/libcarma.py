@@ -981,7 +981,7 @@ class lc(object):
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$ACVF$')
 		plt.title(r'AutoCovariance Function')
-		plt.legend()
+		plt.legend(loc = 3)
 		if doShow:
 			plt.show(False)
 
@@ -995,7 +995,8 @@ class lc(object):
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$ACF$')
 		plt.title(r'AutoCorrelation Function')
-		plt.legend()
+		plt.legend(loc = 3)
+		plt.ylim(-1.0, 1.0)
 		if doShow:
 			plt.show(False)
 
@@ -1009,7 +1010,7 @@ class lc(object):
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
-		plt.legend()
+		plt.legend(loc = 2)
 		if doShow:
 			plt.show(False)
 
@@ -1739,6 +1740,7 @@ class task(object):
 		plt.ylabel(r'$\log ACF$')
 		plt.title(r'Autocorrelation Function')
 		plt.legend(loc = 3)
+		plt.ylim(-1.0, 1.0)
 		if doShow:
 			plt.show(False)
 
