@@ -30,5 +30,3 @@ print "logPrior: %+8.7e"%(nt.logPrior(sdssLC))
 print "logLikelihood: %+8.7e"%(nt.logLikelihood(sdssLC))
 
 print "logPosterior: %+8.7e"%(nt.logPosterior(sdssLC))
-
-##NB: This test seems to end with a segfault. Something is up with the sdss.py file that is causing the segfault.
