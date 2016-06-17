@@ -111,11 +111,12 @@ def vizWalkers(Chain, LogPosterior, dim1, dim1Name, dim2, dim2Name):
 	plt.show()
 	return 0
 
-def vizTriangle(p, q, Chain, labelList, figTitle):
+def vizTriangle(p, q, Chain, labelList, figTitle, doShow = False):
 	ndims = Chain.shape[0]
 	nwalkers = Chain.shape[1]
 	nsteps = Chain.shape[2]
 
 	flatChain = np.swapaxes(copy.copy(Chain[:,:,nsteps/2:]).reshape((ndims, -1), order = 'F'), axis1 = 0, axis2 = 1)
 	fig0, quantiles, qvalues = triangle.corner(flatChain, labels = labelList, fig_size = 10.0, show_titles = True, fig_title = figTitle, title_args = {'fontsize': 12}, quantiles = [0.16, 0.5, 0.84], verbose = False, plot_contours = True, plot_datapoints = True, plot_contour_lines = False, pcolor_cmap = cm.gist_earth)
-	plt.show()
+	if doShow:
+		plt.show()

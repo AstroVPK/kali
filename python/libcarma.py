@@ -1023,7 +1023,7 @@ class lcIterator(object):
 		self.mask = mask
 		self.index = 0
 
-	def __next__(self):
+	def next(self):
 		"""!
 		\brief Return the next epoch.
 		
