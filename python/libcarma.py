@@ -960,6 +960,7 @@ class lc(object):
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
 		if np.sum(self.y) != 0.0:
 			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+			plt.xlim(self.t[0], self.t[-1])
 		if self.isSmoothed:
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', zorder = -5)
@@ -978,6 +979,7 @@ class lc(object):
 			lagsE, acvfE, acvferrE = self.acvf()
 			if np.sum(acvfE) != 0.0:
 				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$ACVF$')
 		plt.title(r'AutoCovariance Function')
@@ -992,6 +994,7 @@ class lc(object):
 			lagsE, acfE, acferrE = self.acf()
 			if np.sum(acfE) != 0.0:
 				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$ACF$')
 		plt.title(r'AutoCorrelation Function')
@@ -1007,6 +1010,7 @@ class lc(object):
 			lagsE, sfE, sferrE = self.sf()
 			if np.sum(sfE) != 0.0:
 				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
@@ -1721,6 +1725,7 @@ class task(object):
 			lagsE, acvfE, acvferrE = LC.acvf()
 			if np.sum(acvfE) != 0.0:
 				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACVF$')
 		plt.title(r'Autocovariance Function')
@@ -1736,6 +1741,7 @@ class task(object):
 			lagsE, acfE, acferrE = LC.acf()
 			if np.sum(acfE) != 0.0:
 				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACF$')
 		plt.title(r'Autocorrelation Function')
@@ -1752,6 +1758,7 @@ class task(object):
 			lagsE, sfE, sferrE = LC.sf()
 			if np.sum(sfE) != 0.0:
 				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+				plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
