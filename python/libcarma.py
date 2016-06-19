@@ -36,7 +36,7 @@ set_plot_params(useTex = True)
 
 ln10 = math.log(10)
 
-def Mag2Flux(mag, magErr):
+def pogsonFlux(mag, magErr):
 	flux = 3631.0*math.pow(10.0, (-1.0*mag)/2.5)
 	fluxErr = (ln10/2.5)*flux*magErr
 	return flux, fluxErr
@@ -999,11 +999,11 @@ class lc(object):
 		if doShow:
 			plt.show(False)
 
-	def plotacvf(self, doShow = False):
+	def plotacvf(self, newdt = None, doShow = False):
 		plt.figure(-2, figsize = (fwid, fhgt))
 		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
-			lagsE, acvfE, acvferrE = self.acvf()
+			lagsE, acvfE, acvferrE = self.acvf(newdt)
 			if np.sum(acvfE) != 0.0:
 				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1014,11 +1014,11 @@ class lc(object):
 		if doShow:
 			plt.show(False)
 
-	def plotacf(self, doShow = False):
+	def plotacf(self, newdt = None, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
 		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
-			lagsE, acfE, acferrE = self.acf()
+			lagsE, acfE, acferrE = self.acf(newdt)
 			if np.sum(acfE) != 0.0:
 				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1030,11 +1030,11 @@ class lc(object):
 		if doShow:
 			plt.show(False)
 
-	def plotsf(self, doShow = False):
+	def plotsf(self, newdt = None, doShow = False):
 		plt.figure(-4, figsize = (fwid, fhgt))
 		plt.loglog(1.0, 1.0)
 		if np.sum(self.y) != 0.0:
-			lagsE, sfE, sferrE = self.sf()
+			lagsE, sfE, sferrE = self.sf(newdt)
 			if np.sum(sfE) != 0.0:
 				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1123,7 +1123,7 @@ class externalLC(basicLC):
 		for i in xrange(1, self.numCadences):
 			t_incr = self.t[i] - self.t[i-1]
 			fracChange = abs((t_incr - self.dt)/((t_incr + self.dt)/2.0))
-			if fracChange > tolIR:
+			if fracChange > self._tolIR:
 				self._isRegular = False
 				break
 
@@ -1171,13 +1171,13 @@ class externalLC(basicLC):
 		self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
 		self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
 		self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
-		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
+		self._xunit = r'$t$ (d)' ## Unit in which time is measured (eg. s, sec, seconds etc...).
 		self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-		self._startT = self.t[0]
-		self._t -= self.startT
-		self._dt = self.t[1] - self.t[0]
-		self._T = self.t[-1] - self.t[0]
+		self._startT = float(self.t[0])
+		self.t -= self._startT
+		self._dt = float(self.t[1] - self.t[0])
+		self._T = float(self.t[-1] - self.t[0])
 		self._checkIsRegular()
 
 		count = int(np.sum(self.mask))
@@ -1853,12 +1853,12 @@ class task(object):
 		sf = 2.0*(acvf[0] - acvf)
 		return lags, sf
 
-	def plotacvf(self, LC, doShow = False):
+	def plotacvf(self, LC, newdt = None, doShow = False):
 		plt.figure(-2, figsize = (fwid, fhgt))
 		lagsM, acvfM = self.acvf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.plot(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
 		if np.sum(LC.y) != 0.0:
-			lagsE, acvfE, acvferrE = LC.acvf()
+			lagsE, acvfE, acvferrE = LC.acvf(newdt)
 			if np.sum(acvfE) != 0.0:
 				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1869,12 +1869,12 @@ class task(object):
 		if doShow:
 			plt.show(False)
 
-	def plotacf(self, LC, doShow = False):
+	def plotacf(self, LC, newdt = None, doShow = False):
 		plt.figure(-3, figsize = (fwid, fhgt))
 		lagsM, acfM = self.acf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.plot(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
 		if np.sum(LC.y) != 0.0:
-			lagsE, acfE, acferrE = LC.acf()
+			lagsE, acfE, acferrE = LC.acf(newdt)
 			if np.sum(acfE) != 0.0:
 				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1886,12 +1886,12 @@ class task(object):
 		if doShow:
 			plt.show(False)
 
-	def plotsf(self, LC, doShow = False):
+	def plotsf(self, LC, newdt = None, doShow = False):
 		plt.figure(-4, figsize = (fwid, fhgt))
 		lagsM, sfM = self.sf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
 		plt.loglog(lagsM, sfM, label = r'model Structure Function', color = '#984ea3', zorder = 5)
 		if np.sum(LC.y) != 0.0:
-			lagsE, sfE, sferrE = LC.sf()
+			lagsE, sfE, sferrE = LC.sf(newdt)
 			if np.sum(sfE) != 0.0:
 				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
 				plt.xlim(lagsE[1], lagsE[-1])
