@@ -34,6 +34,13 @@ fhgt = 10
 fwid = 16
 set_plot_params(useTex = True)
 
+ln10 = math.log(10)
+
+def Mag2Flux(mag, magErr):
+	flux = 3631.0*math.pow(10.0, (-1.0*mag)/2.5)
+	fluxErr = (ln10/2.5)*flux*magErr
+	return flux, fluxErr
+
 def _f7(seq):
 	"""http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order"""
 	seen = set()
@@ -269,10 +276,30 @@ class lc(object):
 			self._sampler = sampler(self)
 		else:
 			self._sampler = None
-		self._mean = np.mean(self.y)
-		self._std = np.std(self.y)
-		self._meanerr = np.mean(self.yerr)
-		self._stderr = np.std(self.yerr)
+
+		count = int(np.sum(self.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(self.numCadences):
+			y_meanSum += self.mask[i]*self.y[i]
+			yerr_meanSum += self.mask[i]*self.yerr[i]
+		if count > 0.0:
+			self._mean = y_meanSum/count
+			self._meanerr = yerr_meanSum/count
+		else:
+			self._mean = 0.0
+			self._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(self.numCadences):
+			y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
+			yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
+		if count > 0.0:
+			self._std = math.sqrt(y_stdSum/count)
+			self._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			self._std = 0.0
+			self._stderr = 0.0
 
 	@property
 	def numCadences(self):
@@ -413,7 +440,7 @@ class lc(object):
 
 	@band.setter
 	def band(self, value):
-		self._band = str(band)
+		self._band = str(value)
 
 	@property
 	def xunit(self):
@@ -1056,10 +1083,31 @@ class basicLC(lc):
 		lccopy.qSim = self.qSim
 		lccopy.pComp = self.pComp
 		lccopy.qComp = self.qComp
-		lccopy._mean = np.mean(lccopy.y)
-		lccopy._std = np.std(lccopy.y)
-		lccopy._mean = np.mean(lccopy.yerr)
-		lccopy._stderr = np.std(lccopy.yerr)
+
+		count = int(np.sum(lccopy.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(lccopy.numCadences):
+			y_meanSum += lccopy.mask[i]*lccopy.y[i]
+			yerr_meanSum += lccopy.mask[i]*lccopy.yerr[i]
+		if count > 0.0:
+			lccopy._mean = y_meanSum/count
+			lccopy._meanerr = yerr_meanSum/count
+		else:
+			lccopy._mean = 0.0
+			lccopy._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(lccopy.numCadences):
+			y_stdSum += math.pow(lccopy.mask[i]*lccopy.y[i] - lccopy._mean, 2.0)
+			yerr_stdSum += math.pow(lccopy.mask[i]*lccopy.yerr[i] - lccopy._meanerr, 2.0)
+		if count > 0.0:
+			lccopy._std = math.sqrt(y_stdSum/count)
+			lccopy._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			lccopy._std = 0.0
+			lccopy._stderr = 0.0
+
 		return lccopy
 
 	def read(self, name = None, band = None, pwd = None, **kwargs):
@@ -1067,6 +1115,94 @@ class basicLC(lc):
 
 	def write(self, name = None, band = None, pwd = None, **kwargs):
 		pass
+
+class externalLC(libcarma.basicLC):
+
+	def _checkIsRegular(self):
+		self._isRegular = True
+		for i in xrange(1, self.numCadences):
+			t_incr = self.t[i] - self.t[i-1]
+			fracChange = abs((t_incr - self.dt)/((t_incr + self.dt)/2.0))
+			if fracChange > tolIR:
+				self._isRegular = False
+				break
+
+	def read(self, name, band, path = None, **kwargs):
+		self._name = name
+		self._band = band
+		self._path = path
+		t = kwargs.get('t')
+		if t is not None:
+			self.t = np.require(t, requirements=['F', 'A', 'W', 'O', 'E'])
+		else:
+			raise KeyError('Must supply key-word argument t!')
+		self._numCadences = self.t.shape[0]
+		self.x = np.require(kwargs.get('x', np.zeros(self.numCadences)), requirements=['F', 'A', 'W', 'O', 'E'])
+		y = kwargs.get('y')
+		if y is not None:
+			self.y = np.require(y, requirements=['F', 'A', 'W', 'O', 'E'])
+		else:
+			raise KeyError('Must supply key-word argument y!')
+		yerr = kwargs.get('yerr')
+		if yerr is not None:
+			self.yerr = np.require(yerr, requirements=['F', 'A', 'W', 'O', 'E'])
+		else:
+			raise Keyerror('Must supply key-word argument yerr!')
+		mask = kwargs.get('mask')
+		if mask is not None:
+			self.mask = np.require(mask, requirements=['F', 'A', 'W', 'O', 'E'])
+		else:
+			raise Keyerror('Must supply key-word argument mask!')
+
+		self._computedCadenceNum = -1
+		self._tolIR = 1.0e-3
+		self._fracIntrinsicVar = 0.0
+		self._fracNoiseToSignal = 0.0
+		self._maxSigma = 2.0
+		self._minTimescale = 2.0
+		self._maxTimescale = 0.5
+		self._pSim = 0
+		self._qSim = 0
+		self._pComp = 0
+		self._qComp = 0
+		self._isSmoothed = False ## Has the LC been smoothed?
+		self._dtSmooth = 0.0
+		self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## State of light curve at last timestamp
+		self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E']) ## Uncertainty in state of light curve at last timestamp.
+		self._xunit = r'$d$' ## Unit in which time is measured (eg. s, sec, seconds etc...).
+		self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
+
+		self._startT = self.t[0]
+		self._t -= self.startT
+		self._dt = self.t[1] - self.t[0]
+		self._T = self.t[-1] - self.t[0]
+		self._checkIsRegular()
+
+		count = int(np.sum(self.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(self.numCadences):
+			y_meanSum += self.mask[i]*self.y[i]
+			yerr_meanSum += self.mask[i]*self.yerr[i]
+		if count > 0.0:
+			self._mean = y_meanSum/count
+			self._meanerr = yerr_meanSum/count
+		else:
+			self._mean = 0.0
+			self._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(self.numCadences):
+			y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
+			yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
+		if count > 0.0:
+			self._std = math.sqrt(y_stdSum/count)
+			self._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			self._std = 0.0
+			self._stderr = 0.0
 
 class sampler(object):
 	__metaclass__ = abc.ABCMeta
