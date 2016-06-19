@@ -1116,7 +1116,7 @@ class basicLC(lc):
 	def write(self, name = None, band = None, pwd = None, **kwargs):
 		pass
 
-class externalLC(libcarma.basicLC):
+class externalLC(basicLC):
 
 	def _checkIsRegular(self):
 		self._isRegular = True
