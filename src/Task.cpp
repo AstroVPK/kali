@@ -401,9 +401,11 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnPrior;
 		}
 
@@ -425,9 +427,11 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnPrior;
 		}
 
@@ -445,20 +449,17 @@ using namespace std;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
 		LnLikeData *ptr2Data = &Data;
-		#ifdef DEBUG_COMPUTELNLIKELIHOOD
-			for (int i = 0; i < numCadences; ++i) {
-				printf("y[%d]: %+8.7e\n", i, y[i]);
-				}
-		#endif
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnLikelihood;
 		}
 
@@ -480,6 +481,7 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		Systems[threadNum].setX(lcX);
 		Systems[threadNum].setP(lcP);
 		LnLikelihood = Systems[threadNum].updateLnLikelihood(ptr2Data);
@@ -488,6 +490,7 @@ using namespace std;
 		cadenceNum = Data.cadenceNum;
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnLikelihood;
 		}
 
@@ -509,6 +512,7 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 		LnPosterior = LnPrior + LnLikelihood;
@@ -517,6 +521,7 @@ using namespace std;
 		cadenceNum = Data.cadenceNum;
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnPosterior;
 		}
 
@@ -539,6 +544,7 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		Systems[threadNum].setX(lcX);
 		Systems[threadNum].setP(lcP);
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
@@ -549,6 +555,7 @@ using namespace std;
 		cadenceNum = Data.cadenceNum;
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return LnPosterior;
 		}
 
@@ -678,11 +685,13 @@ using namespace std;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		successYN = Systems[threadNum].RTSSmoother(ptr2Data, XSmooth, PSmooth);
 		Systems[threadNum].getX(lcX);
 		Systems[threadNum].getP(lcP);
 		cadenceNum = Data.cadenceNum;
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
+		Systems[threadNum].resetState();
 		return successYN;
 		}

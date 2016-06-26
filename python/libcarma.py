@@ -336,26 +336,29 @@ class lc(object):
 
 	@pSim.setter
 	def pSim(self, value):
-		newXSim = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
-		newPSim = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
-		large_number = math.sqrt(sys.float_info[0])
-		if self._pSim > 0:
-			if value > self._pSim:
-				iterMax = self._pSim
-			else:
-				iterMax = value
-			for i in xrange(iterMax):
-				newXSim[i] = self.XSim[i]
-				for j in xrange(iterMax):
-					newPSim[i + j*value] = self.PSim[i + j*self._pSim]
-		elif self._pSim == 0:
-			for i in xrange(value):
-				newXSim[i] = 0.0
-				for j in xrange(value):
-					newPSim[i + j*value] = 0.0
-		self._pSim = value
-		self.XSim = newXSim
-		self.PSim = newPSim
+		if value != self.pSim:
+			newXSim = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+			newPSim = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+			large_number = math.sqrt(sys.float_info[0])
+			if self.pSim > 0:
+				if value > self.pSim:
+					iterMax = self.pSim
+				elif value < self.pSim:
+					iterMax = value
+				for i in xrange(iterMax):
+					newXSim[i] = self.XSim[i]
+					for j in xrange(iterMax):
+						newPSim[i + j*value] = self.PSim[i + j*self.pSim]
+			elif self.pSim == 0:
+				for i in xrange(value):
+					newXSim[i] = 0.0
+					for j in xrange(value):
+						newPSim[i + j*value] = 0.0
+			self._pSim = value
+			self.XSim = newXSim
+			self.PSim = newPSim
+		else:
+			pass
 
 	@property
 	def pComp(self):
@@ -363,26 +366,29 @@ class lc(object):
 
 	@pComp.setter
 	def pComp(self, value):
-		newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
-		newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
-		large_number = math.sqrt(sys.float_info[0])
-		if self._pComp > 0:
-			if value > self._pSim:
-				iterMax = self._pSim
-			else:
-				iterMax = value
-			for i in xrange(iterMax):
-				newXComp[i] = self.XComp[i]
-				for j in xrange(iterMax):
-					newPComp[i + j*value] = self.PComp[i + j*self._pComp]
-		elif self._pComp == 0.0:
-			for i in xrange(value):
-				newXComp[i] = 0.0
-				for j in xrange(value):
-					newPComp[i + j*value] = 0.0
-		self._pComp = value
-		self.XComp = newXComp
-		self.PComp = newPComp
+		if value != self.pComp:
+			newXComp = np.require(np.zeros(value), requirements=['F', 'A', 'W', 'O', 'E'])
+			newPComp = np.require(np.zeros(value**2), requirements=['F', 'A', 'W', 'O', 'E'])
+			large_number = math.sqrt(sys.float_info[0])
+			if self.pComp > 0:
+				if value > self.pComp:
+					iterMax = self.pComp
+				elif value < self.pComp:
+					iterMax = value
+				for i in xrange(iterMax):
+					newXComp[i] = self.XComp[i]
+					for j in xrange(iterMax):
+						newPComp[i + j*value] = self.PComp[i + j*self.pComp]
+			elif self.pComp == 0.0:
+				for i in xrange(value):
+					newXComp[i] = 0.0
+					for j in xrange(value):
+						newPComp[i + j*value] = 0.0
+			self._pComp = value
+			self.XComp = newXComp
+			self.PComp = newPComp
+		else:
+			pass
 
 	@property
 	def qSim(self):
@@ -1785,32 +1791,35 @@ class task(object):
 		intrinsicLC._meanerr = np.mean(intrinsicLC.yerr)
 		intrinsicLC._stderr = np.std(intrinsicLC.yerr)
 
-	def logPrior(self, observedLC, forced = True, tnum = None):
+	def logPrior(self, observedLC, forced = False, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		return observedLC._logPrior
 
-	def logLikelihood(self, observedLC, forced = True, tnum = None):
+	def logLikelihood(self, observedLC, forced = False, tnum = None):
 		if tnum is None:
 			tnum = 0
-		if forced == True:
-			observedLC._computedCadenceNum = -1
 		observedLC.pComp = self.p
 		observedLC.qComp = self.q
-		observedLC._logPrior = self.logPrior(observedLC, tnum = tnum)
+		observedLC._logPrior = self.logPrior(observedLC, forced = forced, tnum = tnum)
+		if forced == True:
+			observedLC._computedCadenceNum = -1
 		if observedLC._computedCadenceNum == -1:
-			lnLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
-			observedLC._logLikelihood = lnLikelihood
+			for rowCtr in  xrange(observedLC.pComp):
+				observedLC.XComp[rowCtr] = 0.0
+				for colCtr in xrange(observedLC.pComp):
+					observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
+			observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
 			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
 			observedLC._computedCadenceNum = observedLC.numCadences - 1
 		elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
-			lnLikelihood = observedLC._logLikelihood
+			pass
 		else:
-			lnLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
-			observedLC._logLikelihood = lnLikelihood
+			observedLC._logLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
 			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
 			observedLC._computedCadenceNum = observedLC.numCadences - 1
-		return lnLikelihood
+		return observedLC._logLikelihood
 
 	def logPosterior(self, observedLC, forced = True, tnum = None):
 		lnLikelihood = self.logLikelihood(observedLC, forced = forced, tnum = tnum)
