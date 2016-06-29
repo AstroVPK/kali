@@ -1537,7 +1537,7 @@ class task(object):
 
 	def __eq__(self, other):
 		if type(other) == task:
-			if (self._p == other.p) and (self._q == other.q) and (self._nthreads == other.nthreads) and (self._nburn == other.nburn) and (self._nwalkers == other.nwalkers) and (self._nsteps == other.nsteps) and (self._scatterFactor == other.scatterFactor) and (self._maxEvals == other.maxEvals) and (self.xTol == other.xTol):
+			if (self._p == other.p) and (self._q == other.q) and (self._nthreads == other.nthreads) and (self._nburn == other.nburn) and (self._nwalkers == other.nwalkers) and (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and (self.xTol == other.xTol):
 				return True
 			else:
 				return False
@@ -1585,7 +1585,7 @@ class task(object):
 		except AssertionError as err:
 			raise AttributeError(str(err))
 
-	def roots(self, tnum = None):
+	'''def roots(self, tnum = None):
 		if tnum is None:
 			tnum = 0
 		Theta = self.Theta()
@@ -1633,7 +1633,7 @@ class task(object):
 		imagRoots = set(abs(Rho[self.p:self.p+self.q].imag)).difference(set([0.0]))
 		realMA = sorted([1.0/abs(x) for x in realRoots])
 		imagMA = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
-		return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])
+		return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])'''
 
 	def check(self, Theta, tnum = None):
 		if tnum is None:
@@ -1714,7 +1714,7 @@ class task(object):
 			distSeed = randSeed[0]
 		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, burnSeed, distSeed, threadNum = tnum)
 		intrinsicLC._simulatedCadenceNum = numCadences - 1
-		intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0] 
+		intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
 		return intrinsicLC
 
 	def extend(self, intrinsicLC, duration, gap = None, distSeed = None, noiseSeed = None, tnum = None):
@@ -1774,6 +1774,30 @@ class task(object):
 		intrinsicLC.yerr = newyerr
 		intrinsicLC.mask = newmask
 
+		count = int(np.sum(self.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(intrinsicLC.numCadences):
+			y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
+			yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
+		if count > 0.0:
+			intrinsicLC._mean = y_meanSum/count
+			intrinsicLC._meanerr = yerr_meanSum/count
+		else:
+			intrinsicLC._mean = 0.0
+			intrinsicLC._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(intrinsicLC.numCadences):
+			y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
+			yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
+		if count > 0.0:
+			intrinsicLC._std = math.sqrt(y_stdSum/count)
+			intrinsicLC._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			intrinsicLC._std = 0.0
+			intrinsicLC._stderr = 0.0
+
 	def observe(self, intrinsicLC, noiseSeed = None, tnum = None):
 		if tnum is None:
 			tnum = 0
@@ -1786,10 +1810,30 @@ class task(object):
 		else:
 			self._taskCython.extend_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
 			intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1
-		intrinsicLC._mean = np.mean(intrinsicLC.y)
-		intrinsicLC._std = np.std(intrinsicLC.y)
-		intrinsicLC._meanerr = np.mean(intrinsicLC.yerr)
-		intrinsicLC._stderr = np.std(intrinsicLC.yerr)
+
+		count = int(np.sum(self.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(intrinsicLC.numCadences):
+			y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
+			yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
+		if count > 0.0:
+			intrinsicLC._mean = y_meanSum/count
+			intrinsicLC._meanerr = yerr_meanSum/count
+		else:
+			intrinsicLC._mean = 0.0
+			intrinsicLC._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(intrinsicLC.numCadences):
+			y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
+			yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
+		if count > 0.0:
+			intrinsicLC._std = math.sqrt(y_stdSum/count)
+			intrinsicLC._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			intrinsicLC._std = 0.0
+			intrinsicLC._stderr = 0.0
 
 	def logPrior(self, observedLC, forced = False, tnum = None):
 		if tnum is None:

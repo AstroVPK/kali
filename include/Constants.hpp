@@ -8,6 +8,7 @@ using namespace std;
 extern complex<double> complexZero;
 extern complex<double> complexOne;
 extern double pi;
+extern double twoPi;
 extern double piSq;
 extern double e;
 extern double infiniteVal;
