@@ -48,7 +48,6 @@ using namespace std;
 			Systems[tNum].deallocCARMA();
 			}
 		delete[] Systems;
-		delete[] setSystemsVec;
 		}
 
 	int Task::reset_Task(int pGiven, int qGiven, int numBurn) {
