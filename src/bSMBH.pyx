@@ -1,7 +1,7 @@
 # distutils: language = c++
 import math
 
-cdef extern from 'binarySMBH.hpp' namespace 'CARMA':
+cdef extern from 'binarySMBH.hpp':
 	cpdef double d2r(double)
 	cpdef double r2d(double)
 	cdef cppclass binarySMBH:

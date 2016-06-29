@@ -48,8 +48,12 @@ rand_ext = Extension(name='rand', sources=rand_List, language='c++', extra_compi
 CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'Task.cpp', 'CARMATask.pyx']
 CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in CARMATask_sourceList]
 
-
 CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
+
+bSMBHTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'binarySMBH.cpp', 'binarySMBHTask.cpp', 'bSMBHTask.pyx']
+bSMBHTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBHTask_sourceList]
+
+bSMBHTask_ext = Extension(name='bSMBHTask', sources=bSMBHTask_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 setup(
 	name = 'libcarma',
@@ -65,5 +69,5 @@ setup(
 	classifiers = ['AGN', 'C-ARMA', 'stochastic', 'binary SMBH'],
 	platforms = ['Linux', 'Mac OSX'],
 	license = 'GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
-	ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext])
+	ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext, bSMBHTask_ext])
 )
