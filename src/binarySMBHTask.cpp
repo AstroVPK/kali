@@ -13,10 +13,11 @@
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_FIT_BEAMEDMODEL
+//#define DEBUG_SETSYSTEM
 
 using namespace std;
 
-int lenTheta = 10;
+int lenTheta = 9;
 
 binarySMBHTask::binarySMBHTask(int numThreadsGiven) {
 	numThreads = numThreadsGiven;
@@ -66,6 +67,9 @@ int binarySMBHTask::set_System(double *Theta, int threadNum) {
 		} else {
 		alreadySet = false;
 		}
+	#ifdef DEBUG_SETSYSTEM
+		printf("alreadySet: %d\n", alreadySet);
+	#endif
 	if (alreadySet == false) {
 		int goodYN = Systems[threadNum].checkBinarySMBHParams(Theta);
 		if (goodYN == 1) {
@@ -73,11 +77,12 @@ int binarySMBHTask::set_System(double *Theta, int threadNum) {
 				ThetaVec[i + threadNum*lenTheta] = Theta[i];
 				}
 			double maxDouble = numeric_limits<double>::max(), sqrtMaxDouble = sqrt(maxDouble);
+			Systems[threadNum].setBinarySMBH(Theta);
 			retVal = 0;
 			setSystemsVec[threadNum] = true;
 			}
 		} else {
-		retVal = 0;
+		retVal = -1;
 		}
 	return retVal;
 	}
@@ -97,6 +102,10 @@ void binarySMBHTask::get_setSystemsVec(int *setSystems) {
 
 void binarySMBHTask::print_System(int threadNum) {
 	Systems[threadNum].print();
+	}
+
+double binarySMBHTask::get_Period(int threadNum) {
+	return Systems[threadNum].getPeriod();
 	}
 
 int binarySMBHTask::make_IntrinsicLC(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {

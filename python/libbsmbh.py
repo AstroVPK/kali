@@ -24,6 +24,7 @@ import pdb as pdb
 
 try:
 	import rand as rand
+	import libcarma
 	import bSMBHTask as bSMBHTask
 	from util.mpl_settings import set_plot_params
 except ImportError:
@@ -34,9 +35,13 @@ fhgt = 10
 fwid = 16
 set_plot_params(useTex = True)
 
-lentheta = 10
-
-class bSMBHTask(object):
+class binarySMBHTask(object):
+	lenTheta = 9
+	pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+	Parsec = 3.0857e16
+	Day = 86164.090530833
+	Year = 31557600.0
+	SolarMass = 1.98855e30
 
 	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.001, mcmcA = 2.0):
 		try:
@@ -50,9 +55,7 @@ class bSMBHTask(object):
 			assert type(maxEvals) is types.IntType, r'maxEvals must be an integer'
 			assert xTol > 0.0, r'xTol must be greater than 0'
 			assert type(xTol) is types.FloatType, r'xTol must be a float'
-			self._p = p
-			self._q = q
-			self._ndims = lenTheta
+			self._ndims = self.lenTheta
 			self._nthreads = nthreads
 			self._nwalkers = nwalkers
 			self._nsteps = nsteps
@@ -203,7 +206,7 @@ class bSMBHTask(object):
 		if tnum is None:
 			tnum = 0
 		assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
-		self._taskCython.set_System(Theta, tnum)
+		return self._taskCython.set_System(Theta, tnum)
 
 	def Theta(self, tnum = None):
 		if tnum is None:
@@ -222,11 +225,16 @@ class bSMBHTask(object):
 			tnum = 0
 		self._taskCython.print_System(tnum)
 
+	def period(self, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.get_Period(tnum)
+
 	def simulate(self, duration, dt = 0.1, fracNoiseToSignal = 0.001, tnum = None):
 		if tnum is None:
 			tnum = 0
 		numCadences = int(round(float(duration)/dt))
-		intrinsicLC = basicLC(numCadences, dt = dt, fracNoiseToSignal = fracNoiseToSignal)
+		intrinsicLC = libcarma.basicLC(numCadences, dt = dt, fracNoiseToSignal = fracNoiseToSignal)
 		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, threadNum = tnum)
 		intrinsicLC._simulatedCadenceNum = numCadences - 1
 		intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0] 
@@ -239,9 +247,9 @@ class bSMBHTask(object):
 		if noiseSeed is None:
 			rand.rdrand(randSeed)
 			noiseSeed = randSeed[0]
-		self._taskCython.add_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
+		self._taskCython.add_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
 
-		count = int(np.sum(self.mask))
+		count = int(np.sum(intrinsicLC.mask))
 		y_meanSum = 0.0
 		yerr_meanSum = 0.0
 		for i in xrange(intrinsicLC.numCadences):

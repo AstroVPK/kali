@@ -39,19 +39,26 @@ struct LnLikeData {
 
 class binarySMBH {
 private:
-	double a1, a2, m1, m2, totalMass, massRatio, reducedMass, period, ellipticity, ellipticityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, t, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, fracBeamedFlux;
+	double rPer, a1, a2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, ellipticity, ellipticityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, t, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, fracBeamedFlux;
 public:
 	binarySMBH();
-	binarySMBH(double a1, double a2, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2);
+	binarySMBH(double rPer, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2);
 	void operator()(double epoch);
-	int checkBinarySMBHParams(double *Theta);
-	void setBinarySMBHParams(double *Theta);
-	void setEpoch(double t);
+	int checkBinarySMBHParams(double *ThetaIn);
+	void setBinarySMBH(double *ThetaIn);
+	void setEpoch(double tIn);
 	double getEpoch();
 	double getPeriod();
 	double getA1();
 	double getA2();
+	double getM1();
+	double getM2();
+	double getRS1();
+	double getRS2();
 	double getEllipticity();
+	double getMeanAnomoly();
+	double getEccentricAnomoly();
+	double getTrueAnomoly();
 	double getR1();
 	double getR2();
 	double getTheta1();

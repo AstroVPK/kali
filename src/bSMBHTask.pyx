@@ -6,6 +6,18 @@ import psutil
 cimport numpy as np
 from libcpp cimport bool
 
+cdef double pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+cdef double Parsec = 3.0857e16
+cdef double Day = 86164.090530833
+cdef double Year = 31557600.0
+cdef double SolarMass = 1.98855e30
+
+cdef double d2r(double degreeVal):
+	return degreeVal*(pi/180.0)
+
+cdef double r2d(double radianVal):
+	return radianVal*(180.0/pi)
+
 cdef extern from 'binarySMBHTask.hpp':
 	cdef cppclass binarySMBHTask:
 		binarySMBHTask(int numThreads) except+
@@ -15,6 +27,7 @@ cdef extern from 'binarySMBHTask.hpp':
 		int reset_System(double timeGiven, int threadNum);
 		void get_setSystemsVec(int *setSystems);
 		int print_System(int threadNum);
+		double get_Period(int threadNum);
 
 		int make_IntrinsicLC(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
 		int add_ObservationNoise(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum);
@@ -49,7 +62,7 @@ cdef class bSMBHTask:
 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		self.thisptr.set_System(&Theta[0], threadNum)
+		return self.thisptr.set_System(&Theta[0], threadNum)
 
 	def reset_System(self, epoch, threadNum = None):
 		if threadNum == None:
@@ -65,6 +78,11 @@ cdef class bSMBHTask:
 		if threadNum == None:
 			threadNum = 0
 		self.thisptr.print_System(threadNum)
+
+	def get_Period(self, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.get_Period(threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

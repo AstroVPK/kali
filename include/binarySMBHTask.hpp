@@ -28,6 +28,7 @@ using namespace std;
 		int reset_System(double timeGiven, int threadNum);
 		void get_setSystemsVec(int *setSystems);
 		void print_System(int threadNum);
+		double get_Period(int threadNum);
 
 		int make_IntrinsicLC(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
 		//int extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum);

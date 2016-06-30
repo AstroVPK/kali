@@ -6,7 +6,7 @@ cdef extern from 'binarySMBH.hpp':
 	cpdef double r2d(double)
 	cdef cppclass binarySMBH:
 		binarySMBH() except +
-		binarySMBH(double a1, double a2, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2) except +
+		binarySMBH(double rPericenterTotal, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2) except +
 		void call 'operator()'(double epoch)
 		double getEpoch()
 		void setEpoch(double epoch)
@@ -68,7 +68,7 @@ cdef class bSMBH:
 			a2 = (rPer*m1)/(m12*(1.0 - e))
 		else:
 			raise ValueError('Separation at periapsis must be > 0.0 parsec')
-		self.thisptr = new binarySMBH(a1, a2, m1, m2, e, d2r(omega), d2r(i), tau*Day, alpha1, alpha2)
+		self.thisptr = new binarySMBH(rPer, m1, m2, e, d2r(omega), d2r(i), tau*Day, alpha1, alpha2)
 	def __dealloc__(self):
 		del self.thisptr
 	def __call__(self, epoch):
