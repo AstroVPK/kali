@@ -206,7 +206,7 @@ cdef class CARMATask:
 	def set_System(self, dt, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		self.thisptr.set_System(dt, &Theta[0], threadNum)
+		return self.thisptr.set_System(dt, &Theta[0], threadNum)
 
 	def reset_System(self, threadNum = None):
 		if threadNum == None:

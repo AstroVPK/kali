@@ -56,7 +56,7 @@
 
 using namespace std;
 
-double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	/*! Used for computing good regions */
 
 	if (!grad.empty()) {
@@ -71,16 +71,16 @@ double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void 
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA *Systems = Args.Systems;
-	double LnPosterior = 0.0;
+	double LnPrior = 0.0;
 
 	#ifdef DEBUG_CALCLNLIKE2
 	printf("calcCARMALnPosterior - threadNum: %d; Location: ",threadNum);
 	#endif
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
-		LnPosterior = 0.0;
+		LnPrior = 0.0;
 		} else {
-		LnPosterior = -infiniteVal;
+		LnPrior = -infiniteVal;
 		}
 
 	#ifdef DEBUG_CALCCARMALNLIKE
@@ -88,11 +88,10 @@ double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void 
 	fflush(0);
 	#endif
 
-	return LnPosterior;
-
+	return LnPrior;
 	}
 
-double calcCARMALnPosterior(double *walkerPos, void *func_args) {
+double calcLnPrior(double *walkerPos, void *func_args) {
 	/*! Used for computing good regions */
 
 	int threadNum = omp_get_thread_num();
@@ -100,7 +99,7 @@ double calcCARMALnPosterior(double *walkerPos, void *func_args) {
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
 	CARMA* Systems = Args.Systems;
-	double LnPosterior = 0.0;
+	double LnPrior = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
@@ -113,7 +112,7 @@ double calcCARMALnPosterior(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System good!\n",threadNum);
 		#endif
 
-		LnPosterior = 0.0;
+		LnPrior = 0.0;
 		} else {
 
 		#ifdef DEBUG_FUNC2
@@ -125,10 +124,9 @@ double calcCARMALnPosterior(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
 		#endif
 
-		LnPosterior = -infiniteVal;
+		LnPrior = -infiniteVal;
 		}
-	return LnPosterior;
-
+	return LnPrior;
 	}
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
@@ -332,7 +330,6 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 		} else {
 		LnPosterior = -infiniteVal;
 		}
-
 	return LnPosterior;
 	}
 

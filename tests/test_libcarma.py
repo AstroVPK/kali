@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 try:
-	import libcarma as libcarma
+	import libcarma
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)

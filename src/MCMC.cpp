@@ -7,7 +7,6 @@
 #include <fstream>
 #include <iostream>
 #include "MCMC.hpp"
-//#include "CARMA.hpp"
 #include "Constants.hpp"
 
 //#define WRITE_ZS
@@ -223,7 +222,7 @@ void EnsembleSampler::runMCMC(double* initPos) {
 		}
 	#endif
 
-	#pragma omp parallel for schedule(dynamic, 4) default(none) shared(nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnLike,p2Func,p2FuncArgs,initPos)
+	#pragma omp parallel for default(none) shared(nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnLike,p2Func,p2FuncArgs,initPos)
 	for (int walkerNum = 0; walkerNum < nwalkers; walkerNum++) {
 
 		#ifdef DEBUG_RUNMCMC_OMP

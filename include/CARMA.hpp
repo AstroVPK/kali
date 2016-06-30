@@ -10,9 +10,9 @@
 
 using namespace std;
 
-double calcCARMALnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
+double calcCARMALnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcCARMALnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcCARMALnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
@@ -152,7 +152,7 @@ public:
 	void observeNoise(LnLikeData *ptr2LnLikeData, unsigned int noiseSeed, double* noiseRand);
 	void extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
-	double updateLnLikelihood(LnLikeData *ptr2Data);
+	double updateLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	void computeACVF(int numLags, double *Lags, double* ACVF);
 	int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth);

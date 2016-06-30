@@ -1647,7 +1647,7 @@ class task(object):
 		assert dt > 0.0, r'dt must be greater than 0.0'
 		assert type(dt) is types.FloatType, r'dt must be a float'
 		assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
-		self._taskCython.set_System(dt, Theta, tnum)
+		return self._taskCython.set_System(dt, Theta, tnum)
 
 	def dt(self, tnum = None):
 		if tnum is None:
@@ -2051,8 +2051,8 @@ class task(object):
 			while noSuccess:
 				RhoGuess[self.p + self.q] = sigmaFactor*Std
 				ThetaGuess = coeffs(self.p, self.q, RhoGuess)
-				self.set(observedLC.dt, ThetaGuess)
-				if self.logPrior(observedLC) == 0.0:
+				res = self.set(observedLC.dt, ThetaGuess)
+				if res == 0 and self.logPrior(observedLC) == 0.0:
 					noSuccess = False
 				else:
 					sigmaFactor *= 0.31622776601 # sqrt(0.1)
