@@ -11,6 +11,7 @@ import numpy as np
 import math as math
 import scipy.stats as spstats
 import cmath as cmath
+import random
 import sys as sys
 import abc as abc
 import psutil as psutil
@@ -37,13 +38,15 @@ set_plot_params(useTex = True)
 
 class binarySMBHTask(object):
 	lenTheta = 9
+	G = 6.67408e-11
+	c = 299792458.0
 	pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
 	Parsec = 3.0857e16
 	Day = 86164.090530833
 	Year = 31557600.0
 	SolarMass = 1.98855e30
 
-	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.001, mcmcA = 2.0):
+	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10, xTol = 0.1, mcmcA = 2.0):
 		try:
 			assert nthreads > 0, r'nthreads must be greater than 0'
 			assert type(nthreads) is types.IntType, r'nthreads must be an integer'
@@ -272,3 +275,71 @@ class binarySMBHTask(object):
 		else:
 			intrinsicLC._std = 0.0
 			intrinsicLC._stderr = 0.0
+
+	def logPrior(self, observedLC, forced = False, tnum = None):
+		if tnum is None:
+			tnum = 0
+		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
+		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
+		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		return observedLC._logPrior
+
+	def logLikelihood(self, observedLC, forced = False, tnum = None):
+		if tnum is None:
+			tnum = 0
+		observedLC._logPrior = self.logPrior(observedLC, forced = forced, tnum = tnum)
+		if forced == True:
+			observedLC._computedCadenceNum = -1
+		if observedLC._computedCadenceNum == -1:
+			observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, tnum)
+			observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
+			observedLC._computedCadenceNum = observedLC.numCadences - 1
+		else:
+			pass
+		return observedLC._logLikelihood
+
+	def logPosterior(self, observedLC, forced = True, tnum = None):
+		lnLikelihood = self.logLikelihood(observedLC, forced = forced, tnum = tnum)
+		return observedLC._logPosterior
+
+	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+		randSeed = np.zeros(1, dtype = 'uint32')
+		if zSSeed is None:
+			rand.rdrand(randSeed)
+			zSSeed = randSeed[0]
+		if walkerSeed is None:
+			rand.rdrand(randSeed)
+			walkerSeed = randSeed[0]
+		if moveSeed is None:
+			rand.rdrand(randSeed)
+			moveSeed = randSeed[0]
+		if xSeed is None:
+			rand.rdrand(randSeed)
+			xSeed = randSeed[0]
+		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
+		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
+		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
+
+		for walkerNum in xrange(self.nwalkers):
+			noSuccess = True
+			while noSuccess:
+				m1Guess = math.pow(10.0, random.uniform(-1.0, 4.0))
+				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess)))
+				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec)
+				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec)
+				rPerGuess = math.pow(10.0, random.uniform(math.log10(10.0*(rS1Guess + rS1Guess)), 1.0))
+				eGuess = random.uniform(0.0, 1.0)
+				omegaGuess = random.uniform(0.0, 2*math.pi)
+				inclinationGuess = random.uniform(0.0, math.pi)
+				tauGuess = random.uniform(0.0, 10.0*(observedLC.t[-1] - observedLC.t[0]))
+				totalFluxGuess = random.gauss(observedLC._mean, 0.5*observedLC._mean)
+				fracBeamedFluxGuess = random.uniform(0.0, 1.0)
+				ThetaGuess = np.array([rPerGuess, m1Guess, m2Guess, eGuess, omegaGuess, inclinationGuess, tauGuess, totalFluxGuess, fracBeamedFluxGuess])
+				res = self.set(ThetaGuess)
+				if res == 0 and self.logPrior(observedLC) == 0.0:
+					noSuccess = False
+			for dimNum in xrange(self.ndims):
+				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
+
+		res = self._taskCython.fit_BinarySMBHModel(observedLC.numCadences, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		return res

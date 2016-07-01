@@ -31,13 +31,16 @@ cdef extern from 'binarySMBHTask.hpp':
 
 		int make_IntrinsicLC(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
 		int add_ObservationNoise(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum);
+		double compute_LnPrior(int numCadences, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
+		double compute_LnLikelihood(int numCadences, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
+		int fit_BinarySMBHModel(int numCadences, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior);
 
 cdef class bSMBHTask:
 	cdef binarySMBHTask *thisptr
 
 	def __cinit__(self, numThreads = None):
 		if numThreads == None:
-			numThreads = int(psutil.cpu_count(logical = False))
+			numThreads = int(psutil.cpu_count(logical = True))
 		self.thisptr = new binarySMBHTask(numThreads)
 
 	def __dealloc__(self):
@@ -97,3 +100,22 @@ cdef class bSMBHTask:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.add_ObservationNoise(numCadences, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], noiseSeed, threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_LnPrior(self, numCadences, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.compute_LnPrior(numCadences, lowestFlux, highestFlux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_LnLikelihood(self, numCadences, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def fit_BinarySMBHModel(self, numCadences, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):
+		return self.thisptr.fit_BinarySMBHModel(numCadences, lowestFlux, highestFlux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])

@@ -5,6 +5,14 @@
 
 using namespace std;
 
+double calcLnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
+
+double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
+
+double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
+
+double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
+
 double d2r(double degreeVal);
 double r2d(double radianVal);
 
@@ -18,13 +26,9 @@ double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data);
 struct LnLikeData {
 	int numCadences;
 	int cadenceNum;
-	double tolIR;
-	double t_incr;
-	double fracIntrinsicVar;
 	double fracNoiseToSignal;
-	double maxSigma;
-	double minTimescale;
-	double maxTimescale;
+	double lowestFlux;
+	double highestFlux;
 	double currentLnPrior;
 	double currentLnLikelihood;
 	double currentLnPosterior;
@@ -76,8 +80,17 @@ public:
 	double durationInHardState(double sigmaStars, double rhoStars, double H);
 	double ejectedMass(double sigmaStars, double rhoStars, double H);
 	void print();
+
 	void simulateSystem(LnLikeData *ptr2Data);
 	void observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
+	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
+	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 };
+
+struct LnLikeArgs {
+	int numThreads;
+	binarySMBH *Systems;
+	LnLikeData *Data;
+	};
 
 #endif

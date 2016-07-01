@@ -3,6 +3,7 @@
 #include <mkl_types.h>
 #include <omp.h>
 #include <nlopt.hpp>
+#include <limits>
 #include <vector>
 #include <iostream>
 #include "Constants.hpp"
@@ -10,13 +11,136 @@
 //#define DEBUG
 //#define DEBUG_KEPLEREQN
 //#define DEBUG_SIMULATESYSTEM
-//#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+//#define DEBUG_CHECKBINARYSMBHPARAMS
+//#define DEBUG_CALCLNPOSTERIOR
 
 #if defined(WRITE)
 	#include <stdio.h>
 #endif
 
+int lenThetaAlso = 9;
+
 using namespace std;
+
+double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+	/*! Used for computing good regions */
+	if (!grad.empty()) {
+		#pragma omp simd
+		for (int i = 0; i < x.size(); ++i) {
+			grad[i] = 0.0;
+			}
+		}
+	int threadNum = omp_get_thread_num();
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	LnLikeArgs Args = *ptr2Args;
+	binarySMBH *Systems = Args.Systems;
+	double LnPrior = 0.0;
+
+	if (Systems[threadNum].checkBinarySMBHParams(const_cast<double*>(&x[0])) == 1) {
+		LnPrior = 0.0;
+		} else {
+		LnPrior = -infiniteVal;
+		}
+	return LnPrior;
+	}
+
+double calcLnPrior(double *walkerPos, void *func_args) {
+	/*! Used for computing good regions */
+	int threadNum = omp_get_thread_num();
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
+	LnLikeArgs Args = *ptr2Args;
+	binarySMBH* Systems = Args.Systems;
+	double LnPrior = 0.0;
+	if (Systems[threadNum].checkBinarySMBHParams(walkerPos) == 1) {
+		LnPrior = 0.0;
+		} else {
+		LnPrior = -infiniteVal;
+		}
+	return LnPrior;
+	}
+
+double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+	if (!grad.empty()) {
+		#pragma omp simd
+		for (int i = 0; i < x.size(); ++i) {
+			grad[i] = 0.0;
+			}
+		}
+	int threadNum = omp_get_thread_num();
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	LnLikeArgs Args = *ptr2Args;
+	LnLikeData *ptr2Data = Args.Data;
+	binarySMBH *Systems = Args.Systems;
+	double LnPosterior = 0.0, old_dt = 0.0;
+	if (Systems[threadNum].checkBinarySMBHParams(const_cast<double*>(&x[0])) == 1) {
+		Systems[threadNum].setBinarySMBH(const_cast<double*>(&x[0]));
+		#ifdef DEBUG_CALCLNPOSTERIOR
+		#pragma omp critical
+		{
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < lenThetaAlso; dimNum++) {
+				printf("%+17.16e ", x[dimNum]);
+				}
+			printf("\n");
+			fflush(0);
+		}
+		#endif
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
+		#ifdef DEBUG_CALCLNPOSTERIOR
+		#pragma omp critical
+		{
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < lenThetaAlso; dimNum++) {
+				printf("%+17.16e ", x[dimNum]);
+				}
+			printf("LnLike: %f\n",LnPosterior);
+			printf("\n");
+		}
+		#endif
+		} else {
+		LnPosterior = -infiniteVal;
+		}
+	return LnPosterior;
+	}
+
+double calcLnPosterior(double *walkerPos, void *func_args) {
+	int threadNum = omp_get_thread_num();
+	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
+	LnLikeArgs Args = *ptr2Args;
+	LnLikeData *Data = Args.Data;
+	binarySMBH *Systems = Args.Systems;
+	LnLikeData *ptr2Data = Data;
+	double LnPosterior = 0.0, old_dt = 0.0;
+	if (Systems[threadNum].checkBinarySMBHParams(walkerPos) == 1) {
+		Systems[threadNum].setBinarySMBH(walkerPos);
+		#ifdef DEBUG_CALCLNPOSTERIOR
+		#pragma omp critical
+		{
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < lenThetaAlso; dimNum++) {
+				printf("%+17.16e ", walkerPos[dimNum]);
+				}
+			printf("\n");
+			fflush(0);
+		}
+		#endif
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
+		#ifdef DEBUG_CALCLNPOSTERIOR
+		#pragma omp critical
+		{
+			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
+			for (int dimNum = 0; dimNum < lenThetaAlso; dimNum++) {
+				printf("%+17.16e ", walkerPos[dimNum]);
+				}
+			printf("LnLike: %f\n",LnPosterior);
+			printf("\n");
+		}
+		#endif
+		} else {
+		LnPosterior = -infiniteVal;
+		}
+	return LnPosterior;
+	}
 
 double d2r(double degreeVal) {
 	return degreeVal*(pi/180.0);
@@ -170,27 +294,104 @@ void binarySMBH::operator()(double epoch) {
 	}
 
 int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
-	double rPerVal = Parsec*ThetaIn[0];
-	double m1Val = SolarMass*1.0e6*ThetaIn[1];
-	double m2Val = SolarMass*1.0e6*ThetaIn[2];
+	int retVal = 1;
+
+	double m1Val = 1.0e-6*SolarMass*ThetaIn[1];
+	double m2Val = 1.0e-6*SolarMass*ThetaIn[2];
+	if (m1Val < 1.0e-2*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1LLim: %4.3e\n",1.0e-2*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2LLim: %4.3e\n",1.0e-2*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1uLim: %4.3e\n",1.0e4*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m2Val > m1Val) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1ULim: %4.3e\n",1.0e4*1.0e-6*SolarMass);
+		#endif
+		}
+
 	double rS1Val = (2.0*G*m1Val)/(pow(c, 2.0));
 	double rS2Val = (2.0*G*m2Val)/(pow(c, 2.0));
-	double ellipticityVal = ThetaIn[3];
-	double omega1Val = d2r(ThetaIn[4]);
-	double inclinationVal = d2r(ThetaIn[5]);
-	double tauVal = ThetaIn[6]*Day;
-	double totalFluxVal = ThetaIn[7];
-	double fracBeamedFluxVal = ThetaIn[8];
-	if ((m1Val > 0.0) and (m2Val > 0.0) and (ellipticityVal >= 0.0) and (ellipticity < 1.0) and (omega1Val >= 0.0) and (omega1Val < twoPi) and (inclinationVal >= 0.0) and (inclinationVal <= pi) and (tauVal >= 0.0) and (totalFluxVal > 0.0) and (fracBeamedFluxVal > 0.0) and (fracBeamedFluxVal <= 1.0)) {
-		if (rPerVal > (10.0*(rS1Val + rS2Val))) {
-			return 1;
-			} else {
-			printf("rPer = %+4.3e pc < %+4.3e pc i.e. 10.0*(rs1 + rs2); Binaries approach too close!\n", rPerVal/Parsec, (10.0*(rS1Val + rS2Val))/Parsec);
-			return 0;
-			}
-		} else {
-		return 0;
+	double rPerVal = Parsec*ThetaIn[0];
+	if (rPerVal < (10.0*(rS1Val + rS2Val))) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("rPer: %+4.3e\n",rPerVal);
+			printf("rPerLLim: %+4.3e\n", 10.0*(rS1Val + rS2Val));
+		#endif
 		}
+	if (rPerVal > 10.0*Parsec) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("rPer: %4.3e\n",rPerVal);
+			printf("rPerULim: %4.3e\n",10.0*Parsec);
+		#endif
+		}
+
+	double ellipticityVal = ThetaIn[3];
+	if (ellipticityVal < 0.0) {
+		retVal = 0;
+		}
+	if (ellipticityVal >= 1.0) {
+		retVal = 0;
+		}
+
+	double omega1Val = d2r(ThetaIn[4]);
+	if (omega1Val < 0.0) {
+		retVal = 0;
+		}
+	if (omega1Val >= twoPi) {
+		retVal = 0;
+		}
+
+	double inclinationVal = d2r(ThetaIn[5]);
+	if (inclinationVal < 0.0) {
+		retVal = 0;
+		}
+	if (inclinationVal >= pi) {
+		retVal = 0;
+		}
+
+	double periodVal = twoPi*sqrt(pow(rPerVal/(1.0 + ellipticityVal), 3.0)/(G*(m1Val + m2Val)));
+	double tauVal = ThetaIn[6]*Day;
+	if (tauVal < 0.0) {
+		retVal = 0;
+		}
+	if (tauVal > periodVal) {
+		retVal = 0;
+		}
+
+	double totalFluxVal = ThetaIn[7];
+	if (totalFluxVal < 0.0) {
+		retVal = 0;
+		}
+
+	double fracBeamedFluxVal = ThetaIn[8];
+	if (fracBeamedFluxVal < 0.0) {
+		retVal = 0;
+		}
+	if (fracBeamedFluxVal > 1.0) {
+		retVal = 0;
+		}
+
+	return retVal;
 	}
 
 void binarySMBH::setBinarySMBH(double *Theta) {
@@ -361,4 +562,62 @@ void binarySMBH::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, doub
 		y[i] = x[i] + noiseRand[i];
 		yerr[i] = noiseLvl;
 		}
+	}
+
+double binarySMBH::computeLnLikelihood(LnLikeData *ptr2Data) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+	double maxDouble = numeric_limits<double>::max();
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	double LnLikelihood = 0.0, Contrib = 0.0, ptCounter = 0.0, runSum = 0.0;
+
+	for (int i = 0; i < numCadences; ++i) {
+		(*this)(t[i]*Day);
+		Contrib = mask[i]*(-1.0*(log2(yerr[i])/log2OfE) -0.5*pow((y[i] - (totalFlux*fracBeamedFlux*getBeamingFactor2() + totalFlux*(1.0 - fracBeamedFlux)))/yerr[i], 2.0));
+		LnLikelihood = LnLikelihood + Contrib;
+		ptCounter += mask[i];
+		}
+	LnLikelihood += -0.5*ptCounter*log2Pi;
+
+	Data.cadenceNum = numCadences - 1;
+	Data.currentLnLikelihood = LnLikelihood;
+	return LnLikelihood;
+	}
+
+double binarySMBH::computeLnPrior(LnLikeData *ptr2Data) {
+	LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	double currentLnPrior = Data.currentLnPrior;
+	double *t = Data.t;
+	double *y = Data.y;
+	double *yerr = Data.yerr;
+	double *mask = Data.mask;
+	double lowestFlux = Data.lowestFlux;
+	double highestFlux = Data.highestFlux;
+	double maxDouble = numeric_limits<double>::max();
+
+	#ifdef DEBUG_COMPUTELNPRIOR
+	int threadNum = omp_get_thread_num();
+	#endif
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
+
+	if (totalFlux < lowestFlux) {
+		LnPrior = -infiniteVal;
+		}
+	if (totalFlux > highestFlux) {
+		LnPrior = -infiniteVal;
+		}
+
+	Data.currentLnPrior = LnPrior;
+
+	return LnPrior;
 	}
