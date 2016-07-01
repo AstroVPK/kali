@@ -46,7 +46,7 @@ class binarySMBHTask(object):
 	Year = 31557600.0
 	SolarMass = 1.98855e30
 
-	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10, xTol = 0.1, mcmcA = 2.0):
+	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.01, mcmcA = 2.0):
 		try:
 			assert nthreads > 0, r'nthreads must be greater than 0'
 			assert type(nthreads) is types.IntType, r'nthreads must be an integer'
