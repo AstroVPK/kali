@@ -600,10 +600,13 @@ using namespace std;
 		int nthreads = numThreads;
 		nlopt::opt *optArray[numThreads];
 		for (int i = 0; i < numThreads; ++i) {
-			optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims);
+			//optArray[i] = new nlopt::opt(nlopt::LN_BOBYQA, ndims); // Fastest
+			optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
+			//optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
 			optArray[i]->set_max_objective(calcLnPosterior, p2Args);
 			optArray[i]->set_maxeval(maxEvals);
 			optArray[i]->set_xtol_rel(xTol);
+			//optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 		CARMA *ptrToSystems = Systems;

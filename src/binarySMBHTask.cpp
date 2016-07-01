@@ -208,11 +208,13 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 	int nthreads = numThreads;
 	nlopt::opt *optArray[numThreads];
 	for (int i = 0; i < numThreads; ++i) {
-		optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims);
+		//optArray[i] = new nlopt::opt(nlopt::LN_BOBYQA, ndims); // Fastest
+		//optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
+		optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
 		optArray[i]->set_max_objective(calcLnPosterior, p2Args);
 		optArray[i]->set_maxeval(maxEvals);
 		optArray[i]->set_xtol_rel(xTol);
-		optArray[i]->set_maxtime(60.0);
+		optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
 		}
 	double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 	binarySMBH *ptrToSystems = Systems;
@@ -225,63 +227,17 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 			xVec[threadNum].push_back(xStart[walkerNum*ndims + dimCtr]);
 			}
-		#ifdef DEBUG_FIT_BINARYSMBHMODEL
-			#pragma omp critical
-			{
-			fflush(0);
-			printf("pre-opt xVec[%d][%d]: ", walkerNum, threadNum);
-			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
-				printf("%e, ", xVec[threadNum][dimNum]);
-				}
-			printf("%e", xVec[threadNum][ndims - 1]);
-			max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
-			printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
-			fflush(0);
-			max_LnPosterior[threadNum] = 0.0;
-			}
-		#endif
 		nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
-		#ifdef DEBUG_FIT_BINARYSMBHMODEL
-			#pragma omp critical
-			{
-			fflush(0);
-			printf("post-opt xVec[%d][%d]: ", walkerNum, threadNum);
-			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
-				printf("%e, ", xVec[threadNum][dimNum]);
-				}
-			printf("%e", xVec[threadNum][ndims  - 1]);
-			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
-			fflush(0);
-			}
-		#endif
 		for (int dimNum = 0; dimNum < ndims; ++dimNum) {
 			initPos[walkerNum*ndims + dimNum] = xVec[threadNum][dimNum];
 			}
-		#ifdef DEBUG_FIT_BINARYSMBHMODEL
-			printf("Initial position copied for walker %d\n", walkerNum);
-		#endif
 		}
-	#ifdef DEBUG_FIT_BINARYSMBHMODEL
-		printf("Optimization done!\n");
-	#endif
 	for (int i = 0; i < numThreads; ++i) {
 		delete optArray[i];
 		}
-	#ifdef DEBUG_FIT_BINARYSMBHMODEL
-		printf("Opt array deleted!\n");
-	#endif
 	_mm_free(max_LnPosterior);
-	#ifdef DEBUG_FIT_BINARYSMBHMODEL
-		printf("LnPosterior array freed!\n");
-	#endif
 	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
-	#ifdef DEBUG_FIT_BINARYSMBHMODEL
-		printf("Starting MCMC...\n");
-	#endif
 	newEnsemble.runMCMC(initPos);
-	#ifdef DEBUG_FIT_BINARYSMBHMODEL
-		printf("MCMC done!\n");
-	#endif
 	_mm_free(initPos);
 	newEnsemble.getChain(Chain);
 	newEnsemble.getLnLike(LnPosterior);

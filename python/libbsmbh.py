@@ -46,7 +46,7 @@ class binarySMBHTask(object):
 	Year = 31557600.0
 	SolarMass = 1.98855e30
 
-	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.01, mcmcA = 2.0):
+	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.005, mcmcA = 2.0):
 		try:
 			assert nthreads > 0, r'nthreads must be greater than 0'
 			assert type(nthreads) is types.IntType, r'nthreads must be an integer'
@@ -323,20 +323,22 @@ class binarySMBHTask(object):
 		for walkerNum in xrange(self.nwalkers):
 			noSuccess = True
 			while noSuccess:
-				m1Guess = math.pow(10.0, random.uniform(-1.0, 4.0))
-				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess)))
-				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec)
-				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec)
-				rPerGuess = math.pow(10.0, random.uniform(math.log10(10.0*(rS1Guess + rS1Guess)), 1.0))
+				m1Guess = math.pow(10.0, random.uniform(-1.0, 3.0)) # m1 in 1e6*SolarMass
+				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess))) # m1 in 1e6SolarMass
+				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS1 in Parsec
+				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS2 in Parsec
+				rPerGuess = math.pow(10.0, random.uniform(math.log10(10.0*(rS1Guess + rS1Guess)), 1.0)) #rPer in Parsec
 				eGuess = random.uniform(0.0, 1.0)
 				omegaGuess = random.uniform(0.0, 2*math.pi)
 				inclinationGuess = random.uniform(0.0, math.pi)
-				tauGuess = random.uniform(0.0, 10.0*(observedLC.t[-1] - observedLC.t[0]))
-				totalFluxGuess = random.gauss(observedLC._mean, 0.5*observedLC._mean)
+				periodGuess = (2.0*math.pi*math.sqrt((math.pow((self.Parsec*rPerGuess)/(1.0 + eGuess), 3.0))/(self.G*(m1Guess + m2Guess)*1.0e6*self.SolarMass)))/self.Day
+				tauGuess = random.uniform(0.0, periodGuess)
+				totalFluxGuess = random.uniform(lowestFlux, highestFlux)
 				fracBeamedFluxGuess = random.uniform(0.0, 1.0)
 				ThetaGuess = np.array([rPerGuess, m1Guess, m2Guess, eGuess, omegaGuess, inclinationGuess, tauGuess, totalFluxGuess, fracBeamedFluxGuess])
 				res = self.set(ThetaGuess)
-				if res == 0 and self.logPrior(observedLC) == 0.0:
+				lnPrior = self.logPrior(observedLC)
+				if res == 0 and lnPrior == 0.0:
 					noSuccess = False
 			for dimNum in xrange(self.ndims):
 				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]

@@ -2052,7 +2052,8 @@ class task(object):
 				RhoGuess[self.p + self.q] = sigmaFactor*Std
 				ThetaGuess = coeffs(self.p, self.q, RhoGuess)
 				res = self.set(observedLC.dt, ThetaGuess)
-				if res == 0 and self.logPrior(observedLC) == 0.0:
+				lnPrior = self.logPrior(observedLC)
+				if res == 0 and lnPrior == 0.0:
 					noSuccess = False
 				else:
 					sigmaFactor *= 0.31622776601 # sqrt(0.1)

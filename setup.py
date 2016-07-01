@@ -17,9 +17,9 @@ CPPFLAGS = ['-O3', '-xHost', '-ip', '-parallel', '-funroll-loops', '-fno-alias',
 
 ALIGHFLAGS = ['-falign-functions']
 
-MKLFLAGS = ['-qopenmp', '-I$MKLROOT/include', '-limf']
+MKLFLAGS = ['-I$MKLROOT/include', '-limf']
 
-OMPFLAGS = ['-qopenmp', '-qopenmp-simd']
+OMPFLAGS = ['-qopenmp', '-qopenmp-simd','-qopt-report=5', '-qopt-report-phase=all']
 
 OMPLIBS = ['-liomp5']
 
@@ -38,22 +38,22 @@ MKLDIR = MKLLIBS[0][2:-1]
 bSMBH_sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
 bSMBH_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBH_sourceList]
 
-bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
+bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + OMPLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 rand_sourceList = ['rand.pyx', 'rdrand.cpp']
 rand_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in rand_sourceList]
 
-rand_ext = Extension(name='rand', sources=rand_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
+rand_ext = Extension(name='rand', sources=rand_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + OMPLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'Task.cpp', 'CARMATask.pyx']
 CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in CARMATask_sourceList]
 
-CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
+CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 bSMBHTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp', 'MCMC.cpp', 'binarySMBH.cpp', 'binarySMBHTask.cpp', 'bSMBHTask.pyx']
 bSMBHTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBHTask_sourceList]
 
-bSMBHTask_ext = Extension(name='bSMBHTask', sources=bSMBHTask_List, language='c++', extra_compile_args = VERFLAGS + CPPFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
+bSMBHTask_ext = Extension(name='bSMBHTask', sources=bSMBHTask_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 setup(
 	name = 'libcarma',

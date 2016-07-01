@@ -302,28 +302,28 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("m1: %4.3e\n",m1Val);
-			printf("m1LLim: %4.3e\n",1.0e-2*1.0e-6*SolarMass);
+			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("m2: %4.3e\n",m2Val);
-			printf("m2LLim: %4.3e\n",1.0e-2*1.0e-6*SolarMass);
+			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("m1: %4.3e\n",m1Val);
-			printf("m1uLim: %4.3e\n",1.0e4*1.0e-6*SolarMass);
+			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m2Val > m1Val) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("m1: %4.3e\n",m1Val);
-			printf("m1ULim: %4.3e\n",1.0e4*1.0e-6*SolarMass);
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2ULim: %4.3e\n",m1Val);
 		#endif
 		}
 
@@ -341,54 +341,98 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("rPer: %4.3e\n",rPerVal);
-			printf("rPerULim: %4.3e\n",10.0*Parsec);
+			printf("rPerULim: %4.3e\n",1.0*Parsec);
 		#endif
 		}
 
 	double ellipticityVal = ThetaIn[3];
 	if (ellipticityVal < 0.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("ellipticity: %4.3e\n",ellipticityVal);
+			printf("ellipticityLLim: %4.3e\n",0.0);
+		#endif
 		}
 	if (ellipticityVal >= 1.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("ellipticity: %4.3e\n",ellipticityVal);
+			printf("ellipticityULim: %4.3e\n",1.0);
+		#endif
 		}
 
 	double omega1Val = d2r(ThetaIn[4]);
 	if (omega1Val < 0.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("omega1: %4.3e\n",omega1Val);
+			printf("omega1LLim: %4.3e\n",0.0);
+		#endif
 		}
 	if (omega1Val >= twoPi) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("omega1: %4.3e\n",omega1Val);
+			printf("omega1ULim: %4.3e\n",twoPi);
+		#endif
 		}
 
 	double inclinationVal = d2r(ThetaIn[5]);
 	if (inclinationVal < 0.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("inclination: %4.3e\n",inclinationVal);
+			printf("inclinationLLim: %4.3e\n",0.0);
+		#endif
 		}
 	if (inclinationVal >= pi) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("inclination: %4.3e\n",inclinationVal);
+			printf("inclinationULim: %4.3e\n",pi);
+		#endif
 		}
 
 	double periodVal = twoPi*sqrt(pow(rPerVal/(1.0 + ellipticityVal), 3.0)/(G*(m1Val + m2Val)));
 	double tauVal = ThetaIn[6]*Day;
 	if (tauVal < 0.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("tau: %4.3e\n",tauVal);
+			printf("tauLLim: %4.3e\n",0.0);
+		#endif
 		}
 	if (tauVal > periodVal) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("tau: %4.3e\n",tauVal);
+			printf("tauULim: %4.3e\n",periodVal);
+		#endif
 		}
 
 	double totalFluxVal = ThetaIn[7];
 	if (totalFluxVal < 0.0) {
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("totalFlux: %4.3e\n",totalFluxVal);
+			printf("totalFluxLLim: %4.3e\n",0.0);
+		#endif
 		retVal = 0;
 		}
 
 	double fracBeamedFluxVal = ThetaIn[8];
-	if (fracBeamedFluxVal < 0.0) {
+	if (fracBeamedFluxVal <= 0.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("fracBeamedFlux: %4.3e\n",fracBeamedFluxVal);
+			printf("fracBeamedFluxLLim: %4.3e\n",0.0);
+		#endif
 		}
 	if (fracBeamedFluxVal > 1.0) {
 		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("fracBeamedFlux: %4.3e\n",fracBeamedFluxVal);
+			printf("fracBeamedFluxULim: %4.3e\n",1.0);
+		#endif
 		}
 
 	return retVal;

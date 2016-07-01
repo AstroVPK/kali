@@ -1,3 +1,6 @@
+# Optimization report files
+*.optrpt
+
 # Compiled Object files
 *.slo
 *.lo
