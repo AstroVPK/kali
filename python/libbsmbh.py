@@ -46,7 +46,7 @@ class binarySMBHTask(object):
 	Year = 31557600.0
 	SolarMass = 1.98855e30
 
-	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.005, mcmcA = 2.0):
+	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.1, mcmcA = 2.0):
 		try:
 			assert nthreads > 0, r'nthreads must be greater than 0'
 			assert type(nthreads) is types.IntType, r'nthreads must be an integer'
@@ -276,7 +276,7 @@ class binarySMBHTask(object):
 			intrinsicLC._std = 0.0
 			intrinsicLC._stderr = 0.0
 
-	def logPrior(self, observedLC, forced = False, tnum = None):
+	def logPrior(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
@@ -284,7 +284,7 @@ class binarySMBHTask(object):
 		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 		return observedLC._logPrior
 
-	def logLikelihood(self, observedLC, forced = False, tnum = None):
+	def logLikelihood(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		observedLC._logPrior = self.logPrior(observedLC, forced = forced, tnum = tnum)

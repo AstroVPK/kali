@@ -1,3 +1,6 @@
+# py.test files
+lastfailed
+
 # Optimization report files
 *.optrpt
 

@@ -19,7 +19,7 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
-package, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
+package, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
 Python, Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
 the use of g++ etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
 if you wish to use the older depracted `cffi` interface to the `c++` code.
@@ -211,7 +211,26 @@ build. You can get the most recent version using
 
   1. `future` Version 0.15.2
 
-8. `cffi`
+8. `py.test`
+
+  `py.test` is used for testing purposes. `py.test` can be installed into Anaconda using
+
+
+  `bash-prompt$ conda update conda`
+
+
+  `bash-prompt$ conda update --all`
+
+
+  `bash-prompt$ conda install pytest`
+
+
+  This software has been tested with
+
+
+  1. `py.test` Version 2.9.2
+
+9. `cffi`
 
 
   The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. Use of 
@@ -235,7 +254,8 @@ build. You can get the most recent version using
 
   `bash-prompt$ conda install cffi`
 
-9. `carma_pack`
+
+10. `carma_pack`
 
 
   Brandon Kelly's `carma_pack` is a C-ARMA analysis package written in C++ and Python. It may be obtained at
@@ -256,6 +276,9 @@ To make `libcarma` after cloning the repository, simply run
 
 
 `bash-prompt$ source ./bin/setup.sh`
+
+
+followed by
 
 
 `bash-prompt$ python setup.py build_ext`
@@ -294,6 +317,17 @@ package out by running
 
 
 `cffi` version: `bash-prompt$/usr/bin/time -p -v python cffi/scripts/DemoScript.py <path to libcarma>/cffi/examples/Demo01/ Config.ini | tee <path to libcarma>/cffi/examples/Demo01/timing.dat`
+
+
+NB: You may encounter the following error when running `bash-prompt$ python setup.py build_ext` - 
+`icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
+compiler is installed in a non-standard location and can be resolved by setting the environment variable 
+`GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
+`g++` compiler, execute the command
+
+`bash-prompt$ g++ --print-search-dirs`
+
+and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
 
 A preliminary user guide is now available at `<path to libcarma>/guide/Introduction.ipynb`.

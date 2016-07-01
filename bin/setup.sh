@@ -10,5 +10,4 @@ LIBCARMA_CYTHON_LIB=$(cd "$(dirname "$BASH_SOURCE")/../lib"; pwd)
 export LIBCARMA
 export PYTHONPATH="$LIBCARMA_CYTHON:$PYTHONPATH"
 export PYTHONPATH="$LIBCARMA_CYTHON_LIB:$PYTHONPATH"
-export OMP_NUM_THREADS=4
 echo "notice: libcarma tools have been set up."

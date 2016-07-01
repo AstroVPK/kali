@@ -6,17 +6,18 @@
 #include <limits>
 #include <vector>
 #include <iostream>
+#include <stdio.h>
 #include "Constants.hpp"
 #include "binarySMBH.hpp"
-//#define DEBUG
+
 //#define DEBUG_KEPLEREQN
 //#define DEBUG_SIMULATESYSTEM
 //#define DEBUG_CHECKBINARYSMBHPARAMS
 //#define DEBUG_CALCLNPOSTERIOR
 
-#if defined(WRITE)
-	#include <stdio.h>
-#endif
+//#if defined(DEBUG_KEPLEREQN) || defined(DEBUG_SIMULATESYSTEM) || defined(DEBUG_CHECKBINARYSMBHPARAMS) || defined(DEBUG_CALCLNPOSTERIOR)
+//	#include <stdio.h>
+//#endif
 
 int lenThetaAlso = 9;
 

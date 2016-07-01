@@ -12,7 +12,7 @@
 #include "binarySMBHTask.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
-//#define DEBUG_FIT_BINARYSMBHMODEL
+#define DEBUG_FIT_BINARYSMBHMODEL
 //#define DEBUG_SETSYSTEM
 
 using namespace std;
@@ -209,8 +209,8 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 	nlopt::opt *optArray[numThreads];
 	for (int i = 0; i < numThreads; ++i) {
 		//optArray[i] = new nlopt::opt(nlopt::LN_BOBYQA, ndims); // Fastest
-		//optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
-		optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
+		optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
+		//optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
 		optArray[i]->set_max_objective(calcLnPosterior, p2Args);
 		optArray[i]->set_maxeval(maxEvals);
 		optArray[i]->set_xtol_rel(xTol);
@@ -227,7 +227,35 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 		for (int dimCtr = 0; dimCtr < ndims; ++dimCtr) {
 			xVec[threadNum].push_back(xStart[walkerNum*ndims + dimCtr]);
 			}
+		#ifdef DEBUG_FIT_BINARYSMBHMODEL
+			#pragma omp critical
+			{
+			fflush(0);
+			printf("pre-opt xVec[%d][%d]: ", walkerNum, threadNum);
+			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+				printf("%e, ", xVec[threadNum][dimNum]);
+				}
+			printf("%e", xVec[threadNum][ndims - 1]);
+			max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
+			printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+			fflush(0);
+			max_LnPosterior[threadNum] = 0.0;
+			}
+		#endif
 		nlopt::result yesno = optArray[threadNum]->optimize(xVec[threadNum], max_LnPosterior[threadNum]);
+		#ifdef DEBUG_FIT_BINARYSMBHMODEL
+			#pragma omp critical
+			{
+			fflush(0);
+			printf("post-opt xVec[%d][%d]: ", walkerNum, threadNum);
+			for (int dimNum = 0; dimNum < ndims - 1; ++dimNum) {
+				printf("%e, ", xVec[threadNum][dimNum]);
+				}
+			printf("%e", xVec[threadNum][ndims  - 1]);
+			printf("; max_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
+			fflush(0);
+			}
+		#endif
 		for (int dimNum = 0; dimNum < ndims; ++dimNum) {
 			initPos[walkerNum*ndims + dimNum] = xVec[threadNum][dimNum];
 			}

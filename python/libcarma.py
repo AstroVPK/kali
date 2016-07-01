@@ -1835,13 +1835,13 @@ class task(object):
 			intrinsicLC._std = 0.0
 			intrinsicLC._stderr = 0.0
 
-	def logPrior(self, observedLC, forced = False, tnum = None):
+	def logPrior(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 		return observedLC._logPrior
 
-	def logLikelihood(self, observedLC, forced = False, tnum = None):
+	def logLikelihood(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
 		observedLC.pComp = self.p
