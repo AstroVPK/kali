@@ -8,7 +8,6 @@
 #include <mkl.h>
 
 #include "CARMA.hpp"
-#include "LC.hpp"
 #include "Constants.hpp"
 
 using namespace std;

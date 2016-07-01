@@ -9,7 +9,6 @@
 #include "CARMA.hpp"
 #include "MCMC.hpp"
 #include "Constants.hpp"
-#include "LC.hpp"
 #include "Task.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
