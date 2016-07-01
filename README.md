@@ -17,6 +17,8 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 3. Mac OS X 10.10.5 Yosemite
 
+4. Fedora 23
+
 
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
 package, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
