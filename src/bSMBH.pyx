@@ -7,13 +7,13 @@ cdef extern from 'binarySMBH.hpp':
 	cdef cppclass binarySMBH:
 		binarySMBH() except +
 		binarySMBH(double rPericenterTotal, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2) except +
-		void call 'operator()'(double epoch)
-		double getEpoch()
+		#void call 'operator()'(double epoch)
 		void setEpoch(double epoch)
+		double getEpoch()
 		double getPeriod()
 		double getA1()
 		double getA2()
-		double getEllipticity()
+		double getEccentricity()
 		double getR1()
 		double getR2()
 		double getTheta1()
@@ -47,9 +47,9 @@ cdef double RhoOoM = 1000.0*SolarMassPerCubicParsec # SolarMasses/pc^3
 
 cdef class bSMBH:
 	cdef binarySMBH *thisptr      # hold a C++ instance which we're wrapping
-	def __cinit__(self, rPer = 0.01, m12 = 1.0e7, q = 1.0, e = 0.0, omega = 90.0, i = 90.0, tau = 0.0, alpha1 = -0.44, alpha2 = -0.44):
+	def __cinit__(self, rPer = 0.01, m12 = 1.0e1, q = 1.0, e = 0.0, omega = 90.0, i = 90.0, tau = 0.0, alpha1 = -0.44, alpha2 = -0.44):
 		if m12 > 0.0:
-			m12 = m12*SolarMass
+			m12 = m12
 		else:
 			raise ValueError('Total mass of binary SMBH must be > 0.0 M_sun')
 		if q <= 0.0:
@@ -63,7 +63,7 @@ cdef class bSMBH:
 		cdef double a1
 		cdef double a2
 		if rPer > 0.0:
-			rPer = rPer*Parsec
+			rPer = rPer
 			a1 = (rPer*m2)/(m12*(1.0 - e))
 			a2 = (rPer*m1)/(m12*(1.0 - e))
 		else:
@@ -71,24 +71,24 @@ cdef class bSMBH:
 		self.thisptr = new binarySMBH(rPer, m1, m2, e, d2r(omega), d2r(i), tau*Day, alpha1, alpha2)
 	def __dealloc__(self):
 		del self.thisptr
-	def __call__(self, epoch):
+	'''def __call__(self, epoch):
 		if (epoch != self.thisptr.getEpoch()):
-			self.thisptr.call(epoch*Year)
+			self.thisptr.call(epoch*Year)'''
 	def getEpoch(self):
-		return self.thisptr.getEpoch()/Year
+		return self.thisptr.getEpoch()
 	def setEpoch(self, epoch):
-		self.thisptr.setEpoch(epoch*Year)
+		self.thisptr.setEpoch(epoch)
 	def getPeriod(self):
-		return self.thisptr.getPeriod()/Year
+		return self.thisptr.getPeriod()
 	def getA1(self):
-		return self.thisptr.getA1()/Parsec
+		return self.thisptr.getA1()
 	def getA2(self):
-		return self.thisptr.getA2()/Parsec
-	def getEllipticity(self):
-		return self.thisptr.getEllipticity()
+		return self.thisptr.getA2()
+	def getEccentricity(self):
+		return self.thisptr.getEccentricity()
 	def getCoordinates(self, which, epoch):
 		if (epoch != self.thisptr.getEpoch()):
-			self.thisptr.call(epoch*Year)
+			self.thisptr.setEpoch(epoch)
 		if which == 'm1':
 			return self.thisptr.getR1()/Parsec, r2d(self.thisptr.getTheta1()), self.thisptr.getBeta1(), self.thisptr.getRadialBeta1(), self.thisptr.getDopplerFactor1(), self.thisptr.getBeamingFactor1()
 		if which == 'm2':

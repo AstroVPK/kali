@@ -19,7 +19,7 @@ extern double AU = 1.4960e11; // m
 extern double Parsec = 3.0857e16; // m
 extern double Day = 86164.090530833; //s
 extern double Year = 31557600.0; // s
-extern double kms = 1.0e3; // m/s
+extern double kms2ms = 1.0e3; // m/s
 extern double SolarMass = 1.98855e30; // kg
 extern double SolarMassPerCubicParsec = SolarMass/pow(Parsec, 3.0); // kg/m^3
 

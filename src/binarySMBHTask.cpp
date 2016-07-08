@@ -17,7 +17,7 @@
 
 using namespace std;
 
-int lenTheta = 9;
+int lenTheta = 8;
 
 binarySMBHTask::binarySMBHTask(int numThreadsGiven) {
 	numThreads = numThreadsGiven;
@@ -87,13 +87,6 @@ int binarySMBHTask::set_System(double *Theta, int threadNum) {
 	return retVal;
 	}
 
-int binarySMBHTask::reset_System(double timeGiven, int threadNum) {
-	int retVal = -1;
-	Systems[threadNum](timeGiven*Day);
-	retVal = 0;
-	return retVal;
-	}
-
 void binarySMBHTask::get_setSystemsVec(int *setSystems) {
 	for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
 		setSystems[threadNum] = static_cast<int>(setSystemsVec[threadNum]);
@@ -104,13 +97,166 @@ void binarySMBHTask::print_System(int threadNum) {
 	Systems[threadNum].print();
 	}
 
+void binarySMBHTask::set_Epoch(double epochIn, int threadNum) {
+	Systems[threadNum].setEpoch(epochIn);
+	}
+
+double binarySMBHTask::get_Epoch(int threadNum) {
+	return Systems[threadNum].getEpoch();
+	}
+
 double binarySMBHTask::get_Period(int threadNum) {
 	return Systems[threadNum].getPeriod();
 	}
 
-int binarySMBHTask::make_IntrinsicLC(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double binarySMBHTask::get_A1(int threadNum) {
+	return Systems[threadNum].getA1();
+	}
+
+double binarySMBHTask::get_A2(int threadNum) {
+	return Systems[threadNum].getA2();
+	}
+
+double binarySMBHTask::get_M1(int threadNum) {
+	return Systems[threadNum].getM1();
+	}
+
+double binarySMBHTask::get_M2(int threadNum) {
+	return Systems[threadNum].getM2();
+	}
+
+double binarySMBHTask::get_RPeri1(int threadNum) {
+	return Systems[threadNum].getRPeri1();
+	}
+
+double binarySMBHTask::get_RPeri2(int threadNum) {
+	return Systems[threadNum].getRPeri2();
+	}
+
+double binarySMBHTask::get_RApo1(int threadNum) {
+	return Systems[threadNum].getRApo1();
+	}
+
+double binarySMBHTask::get_RApo2(int threadNum) {
+	return Systems[threadNum].getRApo2();
+	}
+
+double binarySMBHTask::get_RPeriTot(int threadNum) {
+	return Systems[threadNum].getRPeriTot();
+	}
+
+double binarySMBHTask::get_RApoTot(int threadNum) {
+	return Systems[threadNum].getRApoTot();
+	}
+
+double binarySMBHTask::get_RS1(int threadNum) {
+	return Systems[threadNum].getRS1();
+	}
+
+double binarySMBHTask::get_RS2(int threadNum) {
+	return Systems[threadNum].getRS2();
+	}
+
+double binarySMBHTask::get_Eccentricity(int threadNum) {
+	return Systems[threadNum].getEccentricity();
+	}
+
+double binarySMBHTask::get_Omega1(int threadNum) {
+	return Systems[threadNum].getOmega1();
+	}
+
+double binarySMBHTask::get_Omega2(int threadNum) {
+	return Systems[threadNum].getOmega2();
+	}
+
+double binarySMBHTask::get_Inclination(int threadNum) {
+	return Systems[threadNum].getInclination();
+	}
+
+double binarySMBHTask::get_Tau(int threadNum) {
+	return Systems[threadNum].getTau();
+	}
+
+double binarySMBHTask::get_MeanAnomoly(int threadNum) {
+	return Systems[threadNum].getMeanAnomoly();
+	}
+
+double binarySMBHTask::get_EccentricAnomoly(int threadNum) {
+	return Systems[threadNum].getEccentricAnomoly();
+	}
+
+double binarySMBHTask::get_TrueAnomoly(int threadNum) {
+	return Systems[threadNum].getTrueAnomoly();
+	}
+
+double binarySMBHTask::get_R1(int threadNum) {
+	return Systems[threadNum].getR1();
+	}
+
+double binarySMBHTask::get_R2(int threadNum) {
+	return Systems[threadNum].getR2();
+	}
+
+double binarySMBHTask::get_Theta1(int threadNum) {
+	return Systems[threadNum].getTheta1();
+	}
+
+double binarySMBHTask::get_Theta2(int threadNum) {
+	return Systems[threadNum].getTheta2();
+	}
+
+double binarySMBHTask::get_Beta1(int threadNum) {
+	return Systems[threadNum].getBeta1();
+	}
+
+double binarySMBHTask::get_Beta2(int threadNum) {
+	return Systems[threadNum].getBeta2();
+	}
+
+double binarySMBHTask::get_RadialBeta1(int threadNum) {
+	return Systems[threadNum].getRadialBeta1();
+	}
+
+double binarySMBHTask::get_RadialBeta2(int threadNum) {
+	return Systems[threadNum].getRadialBeta2();
+	}
+
+double binarySMBHTask::get_DopplerFactor1(int threadNum) {
+	return Systems[threadNum].getDopplerFactor1();
+	}
+
+double binarySMBHTask::get_DopplerFactor2(int threadNum) {
+	return Systems[threadNum].getDopplerFactor2();
+	}
+
+double binarySMBHTask::get_BeamingFactor1(int threadNum) {
+	return Systems[threadNum].getBeamingFactor1();
+	}
+
+double binarySMBHTask::get_BeamingFactor2(int threadNum) {
+	return Systems[threadNum].getBeamingFactor2();
+	}
+
+double binarySMBHTask::get_aH(double sigmaStars, int threadNum) {
+	return Systems[threadNum].aH(sigmaStars);
+	}
+
+double binarySMBHTask::get_aGW(double sigmaStars, double rhoStars, double H, int threadNum) {
+	return Systems[threadNum].aGW(sigmaStars, rhoStars, H);
+	}
+
+double binarySMBHTask::get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum) {
+	return Systems[threadNum].durationInHardState(sigmaStars, rhoStars, H);
+	}
+
+double binarySMBHTask::get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum) {
+	return Systems[threadNum].ejectedMass(sigmaStars, rhoStars, H);
+	}
+
+int binarySMBHTask::make_IntrinsicLC(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	LnLikeData Data;
 	Data.numCadences = numCadences;
+	Data.dt = dt;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
@@ -121,9 +267,10 @@ int binarySMBHTask::make_IntrinsicLC(int numCadences, double fracNoiseToSignal, 
 	return 0;
 	}
 
-int binarySMBHTask::add_ObservationNoise(int numCadences, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+int binarySMBHTask::add_ObservationNoise(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
 	LnLikeData Data;
 	Data.numCadences = numCadences;
+	Data.dt = dt;
 	Data.fracNoiseToSignal = fracNoiseToSignal;
 	Data.t = t;
 	Data.x = x;
@@ -141,10 +288,11 @@ int binarySMBHTask::add_ObservationNoise(int numCadences, double fracNoiseToSign
 	return 0;
 	}
 
-double binarySMBHTask::compute_LnPrior(int numCadences, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double binarySMBHTask::compute_LnPrior(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnPrior = 0.0;
 	LnLikeData Data;
 	Data.numCadences = numCadences;
+	Data.dt = dt;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
@@ -159,10 +307,11 @@ double binarySMBHTask::compute_LnPrior(int numCadences, double lowestFlux, doubl
 	return LnPrior;
 	}
 
-double binarySMBHTask::compute_LnLikelihood(int numCadences, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double binarySMBHTask::compute_LnLikelihood(int numCadences, double dt, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnLikelihood = 0.0;
 	LnLikeData Data;
 	Data.numCadences = numCadences;
+	Data.dt = dt;
 	Data.cadenceNum = cadenceNum;
 	Data.t = t;
 	Data.x = x;
@@ -171,13 +320,14 @@ double binarySMBHTask::compute_LnLikelihood(int numCadences, int cadenceNum, dou
 	Data.mask = mask;
 	LnLikeData *ptr2Data = &Data;
 
+	Systems[threadNum].setEpoch(t[0]);
 	LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
 	cadenceNum = Data.cadenceNum;
 
 	return LnLikelihood;
 	}
 
-int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 	#ifdef DEBUG_FIT_BINARYSMBHMODEL
 		printf("numThreads: %d\n",numThreads);
 	#endif
@@ -186,6 +336,7 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 	int threadNum = omp_get_thread_num();
 	LnLikeData Data;
 	Data.numCadences = numCadences;
+	Data.dt = dt;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
@@ -214,7 +365,7 @@ int binarySMBHTask::fit_BinarySMBHModel(int numCadences, double lowestFlux, doub
 		optArray[i]->set_max_objective(calcLnPosterior, p2Args);
 		optArray[i]->set_maxeval(maxEvals);
 		optArray[i]->set_xtol_rel(xTol);
-		optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
+		//optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
 		}
 	double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
 	binarySMBH *ptrToSystems = Systems;

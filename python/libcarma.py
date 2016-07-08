@@ -11,6 +11,7 @@ import numpy as np
 import math as math
 import scipy.stats as spstats
 import cmath as cmath
+import operator as operator
 import sys as sys
 import abc as abc
 import psutil as psutil
@@ -18,6 +19,7 @@ import types as types
 import os as os
 import reprlib as reprlib
 import copy as copy
+from scipy.interpolate import UnivariateSpline
 import warnings as warnings
 import matplotlib.pyplot as plt
 import pdb as pdb
@@ -1051,6 +1053,57 @@ class lc(object):
 		if doShow:
 			plt.show(False)
 
+	def spline(self, ptFactor = 10, degree = 3):
+		unObsUncertVal = math.sqrt(sys.float_info[0])
+		newLC = self.copy()
+		del newLC.t
+		del newLC.x
+		del newLC.y
+		del newLC.yerr
+		del newLC.mask
+		newLC.numCadences = self.numCadences*ptFactor
+		newLC.T = self.T
+		newLC.dt = newLC.T/newLC.numCadences
+		newLC.t = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.x = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.y = np.require(np.zeros(newLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.yerr = np.require(np.array(newLC.numCadences*[unObsUncertVal]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.mask = np.require(np.array(newLC.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+		spl = UnivariateSpline(self.t[np.where(self.mask == 1.0)], self.y[np.where(self.mask == 1.0)], 1.0/self.yerr[np.where(self.mask == 1.0)], k = degree, check_finite = True)
+		for i in xrange(newLC.numCadences):
+			newLC.t[i] = self.t[0] + i*newLC.dt
+			newLC.x[i] = spl(newLC.t[i])
+		return newLC
+
+	def fold(self, foldPeriod):
+		numFolds = int(math.floor(self.T/foldPeriod))
+		newLC = self.copy()
+		del newLC.t
+		del newLC.x
+		del newLC.y
+		del newLC.yerr
+		del newLC.mask
+		tList = list()
+		xList = list()
+		yList = list()
+		yerrList = list()
+		maskList = list()
+		for i in xrange(self.numCadences):
+			tList.append(self.t[i]%foldPeriod)
+			xList.append(self.x[i])
+			yList.append(self.y[i])
+			yerrList.append(self.yerr[i])
+			maskList.append(self.mask[i])
+		sortedLists = zip(*sorted(zip(tList,xList,yList,yerrList,maskList), key=operator.itemgetter(0)))
+		newLC.t = np.require(np.array(sortedLists[0]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.x = np.require(np.array(sortedLists[1]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.y = np.require(np.array(sortedLists[2]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.yerr = np.require(np.array(sortedLists[3]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.mask = np.require(np.array(sortedLists[4]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.dt = float(newLC.t[1] - newLC.t[0])
+		newLC.T = float(newLC.t[-1] - newLC.t[0])
+		return newLC
+
 class lcIterator(object):
 	def __init__(self, t, x, y, yerr, mask):
 		self.t = t
@@ -1811,7 +1864,7 @@ class task(object):
 			self._taskCython.extend_ObservationNoise(intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum = tnum)
 			intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1
 
-		count = int(np.sum(self.mask))
+		count = int(np.sum(intrinsicLC.mask))
 		y_meanSum = 0.0
 		yerr_meanSum = 0.0
 		for i in xrange(intrinsicLC.numCadences):
