@@ -56,7 +56,7 @@ def MAD(self, a):
 		b[i]=abs(b[i] - medianVal)
 	return np.median(b)
 
-def roots(p, q, Theta):
+def _old_roots(p, q, Theta):
 	ARPoly = np.zeros(p + 1)
 	ARPoly[0] = 1.0
 	for i in xrange(p):
@@ -74,7 +74,27 @@ def roots(p, q, Theta):
 	Rho[p + q] = MAPoly[0]
 	return Rho
 
-def coeffs(p, q, Rho):
+def roots(p, q, Theta):
+	ARPoly = np.zeros(p + 1)
+	ARPoly[0] = 1.0
+	for i in xrange(p):
+		ARPoly[i + 1] = Theta[i]
+	ARRoots = np.array(np.roots(ARPoly))
+	MAPoly = np.zeros(q + 1)
+	for i in xrange(q + 1):
+		MAPoly[i] = Theta[p + q - i]
+	MARoots = np.array(np.roots(MAPoly))
+	Rho = np.zeros(p + q + 1, dtype = 'complex128')
+	for i in xrange(p):
+		Rho[i] = ARRoots[i]
+	for i in xrange(q):
+		Rho[p + i] = MARoots[i]
+	Sigma = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
+	CARMATask.get_Sigma(p, q, np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E']), Sigma)
+	Rho[p + q] = Sigma[0]
+	return Rho
+
+def _old_coeffs(p, q, Rho):
 	ARRoots = np.zeros(p, dtype = 'complex128')
 	for i in xrange(p):
 		ARRoots[i] = Rho[i]
@@ -90,6 +110,34 @@ def coeffs(p, q, Rho):
 		warnings.simplefilter('ignore')
 		for i in xrange(q + 1):
 			MAPoly[i] = Rho[-1]*MAPoly[i]
+	Theta = np.zeros(p + q + 1, dtype = 'float64')
+	for i in xrange(p):
+		Theta[i] = ARPoly[i + 1].real
+	for i in xrange(q + 1):
+		Theta[p + i] = MAPoly[q - i].real
+	return Theta
+
+def coeffs(p, q, Rho):
+	ARRoots = np.zeros(p, dtype = 'complex128')
+	for i in xrange(p):
+		ARRoots[i] = Rho[i]
+	ARPoly = np.array(np.poly(ARRoots))
+	MARoots = np.zeros(q, dtype = 'complex128')
+	for i in xrange(q):
+		MARoots[i] = Rho[p + i]
+	if q == 0:
+		MAPoly = np.ones(1)
+	else:
+		MAPoly = np.array(np.poly(MARoots))
+	Sigma0 = Rho[p + q]
+	ThetaPrime = np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1])
+	SigmaPrime = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
+	CARMATask.get_Sigma(p, q, ThetaPrime, SigmaPrime)
+	bQ = math.sqrt(Sigma0/SigmaPrime[0])
+	with warnings.catch_warnings():
+		warnings.simplefilter('ignore')
+		for i in xrange(q + 1):
+			MAPoly[i] = bQ*MAPoly[i]
 	Theta = np.zeros(p + q + 1, dtype = 'float64')
 	for i in xrange(p):
 		Theta[i] = ARPoly[i + 1].real

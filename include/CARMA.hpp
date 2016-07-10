@@ -18,6 +18,8 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Ar
 
 double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
+void getSigma(int numP, int numQ, double *Theta, double *SigmaOut);
+
 struct LnLikeData {
 	int numCadences;
 	int cadenceNum;

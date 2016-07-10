@@ -423,6 +423,178 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 		}
 	}
 
+void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
+
+	int p = numP, q = numQ, pSq = p*p, qSq = q*q;
+	lapack_int YesNo;
+	complex<double> alpha = complexOne, beta = complexZero;
+
+	complex<double> *A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	complex<double> *ACopy = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	complex<double> *AScratch = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	complex<double> *w = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+	complex<double> *vr = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	complex<double> *vrInv = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	lapack_int *ilo = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
+	lapack_int *ihi = static_cast<lapack_int*>(_mm_malloc(1*sizeof(lapack_int),64));
+	double *abnrm = static_cast<double*>(_mm_malloc(1*sizeof(double),64));
+	lapack_int *ipiv = static_cast<lapack_int*>(_mm_malloc(p*sizeof(lapack_int),64));
+	double *scale = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	double *rconde = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	double *rcondv = static_cast<double*>(_mm_malloc(p*sizeof(double),64));
+	complex<double> *C = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
+	complex<double> *B = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+	complex<double> *BScratch = static_cast<complex<double>*>(_mm_malloc(p*sizeof(complex<double>),64));
+
+	ilo[0] = 0;
+	ihi[0] = 0;
+	abnrm[0] = 0.0;
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		B[colCtr] = complexZero;
+		BScratch[colCtr] = complexZero;
+		ipiv[colCtr] = 0;
+		scale[colCtr] = 0.0;
+		rconde[colCtr] = 0.0;
+		rcondv[colCtr] = 0.0;
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			A[rowCtr + colCtr*p] = complexZero;
+			ACopy[rowCtr + colCtr*p] = complexZero;
+			AScratch[rowCtr + colCtr*p] = complexZero;
+			w[rowCtr + colCtr*p] = complexZero;
+			vr[rowCtr + colCtr*p] = complexZero;
+			vrInv[rowCtr + colCtr*p] = complexZero;
+			C[rowCtr + colCtr*p] = complexZero;
+			}
+		}
+
+	A[0] = -1.0*complexOne*Theta[0];
+	#pragma omp simd
+	for (int i = 1; i < p; ++i) {
+		A[i] = -1.0*complexOne*Theta[i];
+		A[i*p + (i - 1)] = complexOne;
+		}
+
+	cblas_zcopy(pSq, A, 1, ACopy, 1); // Copy A into ACopy so that we can keep a clean working version of it.
+
+	YesNo = LAPACKE_zgeevx(LAPACK_COL_MAJOR, 'B', 'N', 'V', 'N', p, ACopy, p, w, vrInv, 1, vr, p, ilo, ihi, scale, abnrm, rconde, rcondv); // Compute w and vr
+
+	YesNo = LAPACKE_zlacpy(LAPACK_COL_MAJOR, 'B', p, p, vr, p, vrInv, p); // Copy vr into vrInv
+
+	YesNo = LAPACKE_zgetrf(LAPACK_COL_MAJOR, p, p, vrInv, p, ipiv); // Compute LU factorization of vrInv == vr
+
+	YesNo = LAPACKE_zgetri(LAPACK_COL_MAJOR, p, vrInv, p, ipiv); // Compute vrInv = inverse of vr from LU decomposition
+
+	#pragma omp simd
+	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
+		B[p - 1 - rowCtr] = complexOne*Theta[p + rowCtr];
+		}
+
+	// Start computation of C
+
+	cblas_zgemv(CblasColMajor, CblasNoTrans, p, p, &alpha, vrInv, p, B, 1, &beta, BScratch, 1); // BScratch = vrInv*B
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			ACopy[rowCtr + colCtr*p] = BScratch[rowCtr]*B[colCtr]; // ACopy = BScratch*trans(B) = vrInv*b*trans(B)
+			}
+		}
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p); // AScratch = ACopy*trans(vrInv) = vrInv*b*trans(B)*trans(vrInv)
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			C[rowCtr + colCtr*p] = (AScratch[rowCtr + colCtr*p] + AScratch[colCtr + rowCtr*p])/2.0; // C = (AScratch + trans(AScratch))/2 to ensure symmetry!
+			}
+		}
+
+	for (int colNum = 0; colNum < p; ++colNum) {
+		#pragma omp simd
+		for (int rowNum = 0; rowNum < p; ++rowNum) {
+			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - complexOne)*(complexOne/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
+		}
+	}
+
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, ACopy, p, &beta, AScratch, p); // AScratch = vr*ACopy
+	cblas_zgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, &alpha, AScratch, p, vr, p, &beta, ACopy, p); // ACopy = AScratch*trans(vr)
+
+	for (int colCtr = 0; colCtr < p; ++colCtr) {
+		#pragma omp simd
+		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
+			SigmaOut[rowCtr + colCtr*p] = ACopy[rowCtr + colCtr*p].real(); // Sigma = ACopy
+			}
+		}
+
+	if (ilo) {
+		_mm_free(ilo);
+		ilo = nullptr;
+		}
+	if (ihi) {
+		_mm_free(ihi);
+		ihi = nullptr;
+		}
+	if (abnrm) {
+		_mm_free(abnrm);
+		abnrm = nullptr;
+		}
+	if (ipiv) {
+		_mm_free(ipiv);
+		ipiv = nullptr;
+		}
+	if (scale) {
+		_mm_free(scale);
+		scale = nullptr;
+		}
+	if (rconde) {
+		_mm_free(rconde);
+		rconde = nullptr;
+		}
+	if (rcondv) {
+		_mm_free(rcondv);
+		rcondv = nullptr;
+		}
+	if (A) {
+		_mm_free(A);
+		A = nullptr;
+		}
+	if (ACopy) {
+		_mm_free(ACopy);
+		ACopy = nullptr;
+		}
+	if (AScratch) {
+		_mm_free(AScratch);
+		AScratch = nullptr;
+		}
+	if (w) {
+		_mm_free(w);
+		w = nullptr;
+		}
+	if (vr) {
+		_mm_free(vr);
+		vr = nullptr;
+		}
+	if (vrInv) {
+		_mm_free(vrInv);
+		vrInv = nullptr;
+		}
+	if (B) {
+		_mm_free(B);
+		B = nullptr;
+		}
+	if (BScratch) {
+		_mm_free(BScratch);
+		BScratch = nullptr;
+		}
+	if (C) {
+		_mm_free(C);
+		C = nullptr;
+		}
+
+	}
+
 CARMA::CARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/
 	#ifdef DEBUG_CTORDLM
@@ -1527,7 +1699,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	printf("\n");
 	#endif
 
-	//#pragma omp simd
+	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
 		B[p - 1 - rowCtr] = complexOne*Theta[p + rowCtr];
 		}

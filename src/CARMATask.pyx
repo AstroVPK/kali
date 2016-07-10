@@ -6,6 +6,9 @@ import psutil
 cimport numpy as np
 from libcpp cimport bool
 
+cdef extern from 'CARMA.hpp':
+	void getSigma(int numP, int numQ, double *Theta, double *SigmaOut)
+
 cdef extern from 'LC.hpp':
 	cdef cppclass LCData:
 		int numCadences
@@ -74,6 +77,10 @@ cdef extern from 'Task.hpp':
 
 		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def get_Sigma(pNum, qNum, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None):
+	getSigma(pNum, qNum, &Theta[0], &Sigma[0])
 
 cdef class lc:
 	cdef LCData *thisptr
