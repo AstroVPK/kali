@@ -556,10 +556,11 @@ class binarySMBHTask(object):
 			periodEst = model.best_period
 			foldedLC = dzdtLC.fold(periodEst)
 			foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, check_finite = True)
+			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/(2.5e2*foldedLC.yerr[np.where(foldedLC.mask == 1.0)]), k = 3, s = None, check_finite = True)
 			splinedLC = foldedLC.copy()
 			for i in xrange(splinedLC.numCadences):
 				splinedLC.x[i] = spl(splinedLC.t[i])
+			#splinedLC.x = savgol_filter(foldedLC.y, 5, 2)
 			tMin = splinedLC.t[np.where(np.min(splinedLC.x) == splinedLC.x)[0][0]]
 			tMax = splinedLC.t[np.where(np.max(splinedLC.x) == splinedLC.x)[0][0]]
 			tZeros = spl.roots()
