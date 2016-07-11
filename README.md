@@ -1,7 +1,7 @@
-# Kālī
-`kali` is a software library to model time series data using various stochastic processes such as
-Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the This library is written in C++ and is exposed to Python using 
-`cython` and `cffi` (deprecated).
+# `Kālī`
+`Kālī` is a software library to model time series data using various stochastic processes such as
+Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the This library is written in 
+C++ and is exposed to Python using `cython` and `cffi` (deprecated).
 
 
 Version: 1.0.0
@@ -25,7 +25,7 @@ You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLO
 package, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
 Python, Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
 the use of g++ etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
-if you wish to use the older depracted `cffi` interface to the `c++` code.
+if you wish to use the older deprecated `cffi` interface to the `c++` code.
 
 1. Anaconda Python
 
@@ -175,7 +175,7 @@ replace it with an alternative. Intel MKL may be obtained from
 
 6. `cython`
 
-  `cython` is used to wrap the `c++` parts of libcarma in Python. Make sure that you have the latest `cython` 
+  `cython` is used to wrap the `c++` parts of `Kālī` in Python. Make sure that you have the latest `cython` 
 build. You can get the most recent version using
 
 
@@ -279,7 +279,7 @@ package. Please read
   `bash-prompt$ KellyAnalysis --help` and the python docstring for usage instructions.
 
 
-To make `kali` after cloning the repository, simply run
+To make `Kālī` after cloning the repository, simply run
 
 
 `bash-prompt$ source ./bin/setup.sh`
@@ -300,7 +300,7 @@ files located in `python/`. You must re-run
 `bash-prompt$ source ./bin/setup.sh`
 
 
-in every new terminal that you use `libcarma` in. You may consider adding 
+in every new terminal that you use `Kālī` in. You may consider adding 
 
 
 `source <path to kali>/bin/setup.sh`
