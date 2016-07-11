@@ -1,7 +1,8 @@
 # `Kālī`
 `Kālī` is a software library to model time series data using various stochastic processes such as
-Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the This library is written in 
-C++ and is exposed to Python using `cython` and `cffi` (deprecated).
+Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the Hindu goddess Kālī, who is 
+the goddess of time and change. This library is written in `c++` and is exposed to `python` using `cython` and
+`cffi` (deprecated).
 
 
 Version: 1.0.0
@@ -23,8 +24,8 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
 package, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
-Python, Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
-the use of g++ etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
+Python, the Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
+the use of `g++` etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
 if you wish to use the older deprecated `cffi` interface to the `c++` code.
 
 1. Anaconda Python
