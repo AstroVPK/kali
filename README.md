@@ -1,6 +1,7 @@
-# libcarma
-A library to model a time series as a Continuous-time ARMA (C-ARMA) process. This library is written in C++ 
-and is exposed to Python using `cython` and `cffi` (deprecated)
+# k\={a}li
+`kali` is a software library to model time series data using various stochastic processes such as
+Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the This library is written in C++ and is exposed to Python using 
+`cython` and `cffi` (deprecated).
 
 
 Version: 1.0.0
@@ -171,6 +172,7 @@ replace it with an alternative. Intel MKL may be obtained from
 
   1. NLOpt Version 2.4.2
 
+
 6. `cython`
 
   `cython` is used to wrap the `c++` parts of libcarma in Python. Make sure that you have the latest `cython` 
@@ -193,6 +195,7 @@ build. You can get the most recent version using
 
   2. Cython Version 0.24
 
+
 7. `future`
 
   `future` is a Python 2 package that makes a number of useful Python 3 modules useable in Python 2. You can 
@@ -213,6 +216,7 @@ build. You can get the most recent version using
 
   1. `future` Version 0.15.2
 
+
 8. `py.test`
 
   `py.test` is used for testing purposes. `py.test` can be installed into Anaconda using
@@ -231,6 +235,7 @@ build. You can get the most recent version using
 
 
   1. `py.test` Version 2.9.2
+
 
 9. `cffi`
 
@@ -274,7 +279,7 @@ package. Please read
   `bash-prompt$ KellyAnalysis --help` and the python docstring for usage instructions.
 
 
-To make `libcarma` after cloning the repository, simply run
+To make `kali` after cloning the repository, simply run
 
 
 `bash-prompt$ source ./bin/setup.sh`
@@ -298,27 +303,27 @@ files located in `python/`. You must re-run
 in every new terminal that you use `libcarma` in. You may consider adding 
 
 
-`source <path to libcarma>/bin/setup.sh`
+`source <path to kali>/bin/setup.sh`
 
 
 to your `.bashrc`. To clean the library, just delete the `build/` directory and any files inside  `lib/`. You 
 may consider adding 
 
 
-`source <path to libcarma>/bin/setup.sh`
+`source <path to kali>/bin/setup.sh`
 
 
 to your `.bashrc`. This covers installation. Please feel free to try the 
 package out by running
 
 
-`bash-prompt$ source <path to libcarma>/bin/setup.sh`
+`bash-prompt$ source <path to kali>/bin/setup.sh`
 
 
 `cython` version: `bash-prompt$/usr/bin/time -p -v python cython/examples/CARMADemo.py`
 
 
-`cffi` version: `bash-prompt$/usr/bin/time -p -v python cffi/scripts/DemoScript.py <path to libcarma>/cffi/examples/Demo01/ Config.ini | tee <path to libcarma>/cffi/examples/Demo01/timing.dat`
+`cffi` version: `bash-prompt$/usr/bin/time -p -v python cffi/scripts/DemoScript.py <path to kali>/cffi/examples/Demo01/ Config.ini | tee <path to kali>/cffi/examples/Demo01/timing.dat`
 
 
 NB: You may encounter the following error when running `bash-prompt$ python setup.py build_ext` - 
@@ -332,4 +337,4 @@ compiler is installed in a non-standard location and can be resolved by setting 
 and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
 
-A preliminary user guide is now available at `<path to libcarma>/guide/Introduction.ipynb`.
+A preliminary user guide is now available at `<path to kali>/guide/Introduction.ipynb`.

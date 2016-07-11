@@ -56,16 +56,16 @@ bSMBHTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in
 bSMBHTask_ext = Extension(name='bSMBHTask', sources=bSMBHTask_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])
 
 setup(
-	name = 'libcarma',
+	name = 'kali',
 	version = '1.0.0',
 	author = 'Vishal Pramod Kasliwal',
 	author_email = 'vishal.kasliwal@gmail.com',
 	maintainer = 'Vishal Pramod Kasliwal',
 	maintainer_email = 'vishal.kasliwal@gmail.com',
-	url = 'https://github.com/AstroVPK/libcarma',
+	url = 'https://github.com/AstroVPK/kali',
 	description = 'Tools to study stochastic light curves',
-	long_description = 'Tools to model stochastic light curves as a C-ARMA process. Tools also include components to model binary SMBHs with relativistic beaming.',
-	download_url = 'https://github.com/AstroVPK/libcarma',
+	long_description = 'Tools to model stochastic light curves using various stochastic process. Tools also include components to model binary SMBHs with relativistic beaming.',
+	download_url = 'https://github.com/AstroVPK/kali',
 	classifiers = ['AGN', 'C-ARMA', 'stochastic', 'binary SMBH'],
 	platforms = ['Linux', 'Mac OSX'],
 	license = 'GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
