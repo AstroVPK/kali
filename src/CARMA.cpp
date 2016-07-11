@@ -457,12 +457,12 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 		scale[colCtr] = 0.0;
 		rconde[colCtr] = 0.0;
 		rcondv[colCtr] = 0.0;
+		w[colCtr] = complexZero;
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 			A[rowCtr + colCtr*p] = complexZero;
 			ACopy[rowCtr + colCtr*p] = complexZero;
 			AScratch[rowCtr + colCtr*p] = complexZero;
-			w[rowCtr + colCtr*p] = complexZero;
 			vr[rowCtr + colCtr*p] = complexZero;
 			vrInv[rowCtr + colCtr*p] = complexZero;
 			C[rowCtr + colCtr*p] = complexZero;

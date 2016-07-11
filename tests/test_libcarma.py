@@ -1,7 +1,9 @@
 import math
 import numpy as np
+import copy
 import unittest
-import matplotlib.pyplot as plt
+import random
+import pdb
 
 try:
 	import libcarma
@@ -11,9 +13,22 @@ except ImportError:
 
 class TestCoeffs(unittest.TestCase):
 	def test_coeffs(self):
-		Rho = np.array([-1.0/10.0, 1.0])
-		Theta = libcarma.coeffs(1, 0, Rho)
-		self.assertAlmostEqual(-1.0*Theta[0], Rho[0])
+		for p in xrange(1, 10):
+			for q in xrange(0, p):
+				oldRho = np.zeros(p + q + 1)
+				for i in xrange(p + q):
+					oldRho[i] = -1.0/random.uniform(1.0, 100.0)
+				oldRho[p + q] = 1.0
+				oldTheta = libcarma._old_coeffs(p, q, oldRho)
+				dt = 1.0
+				nt = libcarma.basicTask(p, q)
+				nt.set(dt, oldTheta)
+				sigma00 = nt.Sigma()[0,0]
+				newRho = copy.copy(oldRho)
+				newRho[p + q] = math.sqrt(sigma00)
+				newTheta = libcarma.coeffs(p, q, newRho)
+				for i in xrange(p + q + 1):
+					self.assertAlmostEqual(oldTheta[i], newTheta[i])
 
 if __name__ == "__main__":
 	unittest.main()

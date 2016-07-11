@@ -90,8 +90,9 @@ def roots(p, q, Theta):
 	for i in xrange(q):
 		Rho[p + i] = MARoots[i]
 	Sigma = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
-	CARMATask.get_Sigma(p, q, np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E']), Sigma)
-	Rho[p + q] = Sigma[0]
+	ThetaC = np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E'])
+	CARMATask.get_Sigma(p, q, ThetaC, Sigma)
+	Rho[p + q] = math.sqrt(Sigma[0])
 	return Rho
 
 def _old_coeffs(p, q, Rho):
@@ -129,11 +130,11 @@ def coeffs(p, q, Rho):
 		MAPoly = np.ones(1)
 	else:
 		MAPoly = np.array(np.poly(MARoots))
-	Sigma0 = Rho[p + q]
-	ThetaPrime = np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1])
+	Sigma00 = math.pow(Rho[p + q], 2.0)
+	ThetaPrime = np.require(np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1]), requirements=['F', 'A', 'W', 'O', 'E'])
 	SigmaPrime = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
 	CARMATask.get_Sigma(p, q, ThetaPrime, SigmaPrime)
-	bQ = math.sqrt(Sigma0/SigmaPrime[0])
+	bQ = math.sqrt(Sigma00/SigmaPrime[0])
 	with warnings.catch_warnings():
 		warnings.simplefilter('ignore')
 		for i in xrange(q + 1):
@@ -1601,7 +1602,7 @@ class task(object):
 			return self._rootChain
 		else:
 			Chain = self.Chain
-			self._rootChain = np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'complex128')
+			self._rootChain = np.require(np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'complex128'), requirements=['F', 'A', 'W', 'O', 'E'])
 			for stepNum in xrange(self._nsteps):
 				for walkerNum in xrange(self._nwalkers):
 					self._rootChain[:, walkerNum, stepNum] = roots(self._p, self._q, Chain[:, walkerNum, stepNum])
@@ -1613,7 +1614,7 @@ class task(object):
 			return self._timescaleChain
 		else:
 			rootChain = self.rootChain
-			self._timescaleChain = np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'float64')
+			self._timescaleChain = np.require(np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype = 'float64'), requirements=['F', 'A', 'W', 'O', 'E'])
 			for stepNum in xrange(self._nsteps):
 				for walkerNum in xrange(self._nwalkers):
 					self._timescaleChain[:, walkerNum, stepNum] = timescales(self._p, self._q, rootChain[:, walkerNum, stepNum])
@@ -1758,12 +1759,12 @@ class task(object):
 	def Theta(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		Theta = np.zeros(self._ndims)
+		Theta = np.require(np.zeros(self._ndims), requirements=['F', 'A', 'W', 'O', 'E'])
 		self._taskCython.get_Theta(Theta, tnum)
 		return Theta
 
 	def list(self):
-		setSystems = np.zeros(self._nthreads, dtype = 'int32')
+		setSystems = np.require(np.zeros(self._nthreads, dtype = 'int32'), requirements=['F', 'A', 'W', 'O', 'E'])
 		self._taskCython.get_setSystemsVec(setSystems)
 		return setSystems.astype(np.bool_)
 
@@ -1775,7 +1776,7 @@ class task(object):
 	def Sigma(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		Sigma = np.zeros(self._p*self._p)
+		Sigma = np.require(np.zeros(self._p*self._p), requirements=['F', 'A', 'W', 'O', 'E'])
 		self._taskCython.get_Sigma(Sigma, tnum)
 		return np.reshape(Sigma, newshape = (self._p, self._p), order = 'F')
 
