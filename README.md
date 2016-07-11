@@ -1,4 +1,4 @@
-# k\={a}li
+# Kālī
 `kali` is a software library to model time series data using various stochastic processes such as
 Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the This library is written in C++ and is exposed to Python using 
 `cython` and `cffi` (deprecated).
