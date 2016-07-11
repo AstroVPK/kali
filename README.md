@@ -1,8 +1,9 @@
 # `Kālī`
 `Kālī` is a software library to model time series data using various stochastic processes such as
 Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the Hindu goddess Kālī, who is 
-the goddess of time and change. This library is written in `c++` and is exposed to `python` using `cython` and
-`cffi` (deprecated).
+the goddess of time and change. It also stands for KArma (C-ARMA) LIbrary because the library began as a tool 
+to model C-ARMA light curves. `Kālī` is written in `c++` and is exposed to `python` using `cython` and `cffi` 
+(deprecated).
 
 
 Version: 1.0.0
