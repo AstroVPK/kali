@@ -130,11 +130,16 @@ def coeffs(p, q, Rho):
 		MAPoly = np.ones(1)
 	else:
 		MAPoly = np.array(np.poly(MARoots))
-	Sigma00 = math.pow(Rho[p + q], 2.0)
 	ThetaPrime = np.require(np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1]), requirements=['F', 'A', 'W', 'O', 'E'])
 	SigmaPrime = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
 	CARMATask.get_Sigma(p, q, ThetaPrime, SigmaPrime)
-	bQ = math.sqrt(Sigma00/SigmaPrime[0])
+	with warnings.catch_warnings():
+		warnings.simplefilter('ignore')
+		Sigma00 = math.pow(Rho[p + q], 2.0)
+	try:
+		bQ = math.sqrt(Sigma00/SigmaPrime[0])
+	except ValueError:
+		bQ = 1.0
 	with warnings.catch_warnings():
 		warnings.simplefilter('ignore')
 		for i in xrange(q + 1):
@@ -1037,12 +1042,16 @@ class lc(object):
 		useLC._lcCython.compute_SF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
-	def plot(self, doShow = False):
+	def plot(self, tStart = None, tStop = None, doShow = False, clearFig = True):
 		plt.figure(-1, figsize = (fwid, fhgt))
-		if np.sum(self.x) != 0.0:
+		if clearFig:
+			plt.clf()
+		if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
+			plt.plot(self.t, self.x, color = '#984ea3', zorder = 0)
+			plt.plot(self.t, self.x, color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
+		if np.sum(self.y) != 0.0:
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', zorder = 0)
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
-		if np.sum(self.y) != 0.0:
 			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 			plt.xlim(self.t[0], self.t[-1])
 		if self.isSmoothed:
@@ -1686,56 +1695,6 @@ class task(object):
 			self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
 		except AssertionError as err:
 			raise AttributeError(str(err))
-
-	'''def roots(self, tnum = None):
-		if tnum is None:
-			tnum = 0
-		Theta = self.Theta()
-		ARPoly = np.zeros(self.p + 1)
-		ARPoly[0] = 1.0
-		for i in xrange(self.p):
-			ARPoly[i + 1] = Theta[i]
-		ARRoots = np.roots(ARPoly)
-		MAPoly = np.zeros(self.q + 1)
-		for i in xrange(self.q + 1):
-			MAPoly[i] = Theta[self.p + self.q - i]
-		MARoots = np.roots(MAPoly)
-		Rho = np.zeros(self.p + self.q + 1, dtype = 'complex128')
-		for i in xrange(self.p):
-			Rho[i] = ARRoots[i]
-		for i in xrange(self.q):
-			Rho[self.p + i] = MARoots[i]
-		Rho[self.p + self.q] = MAPoly[0]
-		return Rho
-
-	def timescales(self, Rho, tnum = None):
-		if tnum is None:
-			tnum = 0
-		imagPairs = 0
-		for i in xrange(self.p):
-			if Rho[i].imag != 0.0:
-				imagPairs += 1
-		numImag = imagPairs/2
-		numReal = numImag + (self.p - imagPairs)
-		decayTimescales = np.zeros(numReal)
-		oscTimescales = np.zeros(numImag)
-		realRoots = set(Rho[0:self.p].real)
-		imagRoots = set(abs(Rho[0:self.p].imag)).difference(set([0.0]))
-		realAR = sorted([1.0/abs(x) for x in realRoots])
-		imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
-		imagPairs = 0
-		for i in xrange(self.q):
-			if Rho[i].imag != 0.0:
-				imagPairs += 1
-		numImag = imagPairs/2
-		numReal = numImag + (self.q - imagPairs)
-		decayTimescales = np.zeros(numReal)
-		oscTimescales = np.zeros(numImag)
-		realRoots = set(Rho[self.p:self.p+self.q].real)
-		imagRoots = set(abs(Rho[self.p:self.p+self.q].imag)).difference(set([0.0]))
-		realMA = sorted([1.0/abs(x) for x in realRoots])
-		imagMA = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
-		return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])'''
 
 	def check(self, Theta, tnum = None):
 		if tnum is None:
