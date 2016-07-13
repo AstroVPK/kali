@@ -1042,18 +1042,21 @@ class lc(object):
 		useLC._lcCython.compute_SF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
-	def plot(self, tStart = None, tStop = None, doShow = False, clearFig = True):
+	def plot(self, doShow = False, clearFig = True):
 		plt.figure(-1, figsize = (fwid, fhgt))
 		if clearFig:
 			plt.clf()
 		if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
 			plt.plot(self.t, self.x, color = '#984ea3', zorder = 0)
 			plt.plot(self.t, self.x, color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
-		if np.sum(self.y) != 0.0:
+		if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
+			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+			plt.xlim(self.t[0], self.t[-1])
+		if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', zorder = 0)
 			plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#984ea3', marker = 'o', markeredgecolor = 'none', zorder = 0)
 			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
-			plt.xlim(self.t[0], self.t[-1])
+		plt.xlim(self.t[0], self.t[-1])
 		if self.isSmoothed:
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
 			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', zorder = -5)
@@ -1152,6 +1155,35 @@ class lc(object):
 			yList.append(self.y[i])
 			yerrList.append(self.yerr[i])
 			maskList.append(self.mask[i])
+		sortedLists = zip(*sorted(zip(tList,xList,yList,yerrList,maskList), key=operator.itemgetter(0)))
+		newLC.t = np.require(np.array(sortedLists[0]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.x = np.require(np.array(sortedLists[1]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.y = np.require(np.array(sortedLists[2]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.yerr = np.require(np.array(sortedLists[3]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.mask = np.require(np.array(sortedLists[4]), requirements=['F', 'A', 'W', 'O', 'E'])
+		newLC.dt = float(newLC.t[1] - newLC.t[0])
+		newLC.T = float(newLC.t[-1] - newLC.t[0])
+		return newLC
+
+	def bin(self, binRatio = 10):
+		newLC = self.copy()
+		newLC.numCadences = self.numCadences/binRatio
+		del newLC.t
+		del newLC.x
+		del newLC.y
+		del newLC.yerr
+		del newLC.mask
+		tList = list()
+		xList = list()
+		yList = list()
+		yerrList = list()
+		maskList = list()
+		for i in xrange(newLC.numCadences):
+			tList.append(np.mean(self.t[i*binRatio:(i + 1)*binRatio]))
+			xList.append(np.mean(self.x[i*binRatio:(i + 1)*binRatio]))
+			yList.append(np.mean(self.y[i*binRatio:(i + 1)*binRatio]))
+			yerrList.append(math.sqrt(np.mean(np.power(self.yerr[i*binRatio:(i + 1)*binRatio], 2.0))))
+			maskList.append(1.0)
 		sortedLists = zip(*sorted(zip(tList,xList,yList,yerrList,maskList), key=operator.itemgetter(0)))
 		newLC.t = np.require(np.array(sortedLists[0]), requirements=['F', 'A', 'W', 'O', 'E'])
 		newLC.x = np.require(np.array(sortedLists[1]), requirements=['F', 'A', 'W', 'O', 'E'])
