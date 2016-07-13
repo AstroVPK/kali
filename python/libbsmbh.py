@@ -24,7 +24,7 @@ import warnings as warnings
 import matplotlib.pyplot as plt
 import pdb as pdb
 
-from gatspy.periodic import LombScargleFast
+from gatspy.periodic import LombScargleFast, SuperSmoother
 
 try:
 	import rand as rand
@@ -528,10 +528,22 @@ class binarySMBHTask(object):
 		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
 		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
 		meanFlux = np.mean(observedLC.y[np.where(observedLC.mask == 1.0)])
-		numIntrinsicFlux = 10
+		numIntrinsicFlux = 100
 		maxPeriodFactor = 10.0
 		intrinsicFlux = np.linspace(lowestFlux, highestFlux, num = numIntrinsicFlux)
-		for f in xrange(3,numIntrinsicFlux-3):
+
+		intrinsicFluxList = list()
+		totalIntegralList = list()
+
+		#USING LOMBSCARGLEFAST
+		model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
+		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
+		model.optimizer.period_range=(2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
+		periodEst = model.best_period
+		print "period: %e"%(periodEst)
+
+		for f in xrange(1, numIntrinsicFlux - 1):
+
 			beamedLC = observedLC.copy()
 			beamedLC.x = np.require(np.zeros(beamedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 			for i in xrange(beamedLC.numCadences):
@@ -542,46 +554,118 @@ class binarySMBHTask(object):
 			dopplerLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 			for i in xrange(observedLC.numCadences):
 				dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
-				dopplerLC.yerr[i] = 3.44*math.fabs((dopplerLC.y[i]*(1.0/3.44)*beamedLC.yerr[i])/beamedLC.y[i]) # 3.44 is a magic number here!
+				dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
 
 			dzdtLC = dopplerLC.copy()
 			dzdtLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 			for i in xrange(observedLC.numCadences):
 				dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
-				dzdtLC.yerr[i] = 1.428641*math.fabs(dzdtLC.y[i])*(dopplerLC.yerr[i]/dopplerLC.y[i]) # 1.428641 is a magic number here!
+				dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
 
+			#USING LOMBSCARGLEFAST
+			'''
 			model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
-			periods, power = model.periodogram_auto(nyquist_factor=100)
-			model.optimizer.period_range=(2.0*dzdtLC.dt, maxPeriodFactor*dzdtLC.T)
+			periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
+			model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+			'''
+
+			# USING SUPERSMOOTHER
+			'''
+			model = SuperSmoother(fit_period = True)
+			model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+			model.fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
+			'''
+
+			'''
 			periodEst = model.best_period
+			print "period: %e"%(periodEst)
+			'''
+
 			foldedLC = dzdtLC.fold(periodEst)
 			foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/(2.5e2*foldedLC.yerr[np.where(foldedLC.mask == 1.0)]), k = 3, s = None, check_finite = True)
-			splinedLC = foldedLC.copy()
-			for i in xrange(splinedLC.numCadences):
-				splinedLC.x[i] = spl(splinedLC.t[i])
-			#splinedLC.x = savgol_filter(foldedLC.y, 5, 2)
-			tMin = splinedLC.t[np.where(np.min(splinedLC.x) == splinedLC.x)[0][0]]
-			tMax = splinedLC.t[np.where(np.max(splinedLC.x) == splinedLC.x)[0][0]]
-			tZeros = spl.roots()
-			pdb.set_trace()
-			if tZeros.shape[0] != 2:
+
+			minVal = np.min(dzdtLC.y)
+			maxVal = np.max(dzdtLC.y)
+			if (minVal > 0.0) or (maxVal < 0.0):
 				continue
-			if tMin < tMax:
-				tFirst = tMin
-				tSecond = tMax
-				tMinLesstMax = True
-			else:
-				tFirst = tMax
-				tSecond = tMin
-				tMinLesstMax = False
-			if tFirst < tZeros[0]:
-				orderedTList = [tFirst, tZeros[0], tSecond, tZeros[1]]
-				tFirstLesstZeros0 = True
-			else:
-				orderedTList = [tZeros[0], tFirst, tZeros[1], tSecond]
-				tFirstLesstZeros0 = False
-			pdb.set_trace()
+
+			'''
+			# POLYNOMIAL FIT
+			polyCoeffs = np.polyfit(binnedLC.t[np.where(binnedLC.mask == 1.0)], binnedLC.y[np.where(binnedLC.mask == 1.0)], 7, w = 0.1/binnedLC.yerr[np.where(binnedLC.mask == 1.0)])
+			for i in xrange(fitLC.numCadences):
+				polyLC.x[i] = np.polyval(polyCoeffs, polyLC.t[i])
+			'''
+
+			# SMOOTHING SPLINE FIT
+			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = None, check_finite = True)
+			totalIntegral = math.fabs(spl.integral(foldedLC.t[0], foldedLC.t[-1]))
+
+			intrinsicFluxList.append(intrinsicFlux[f])
+			totalIntegralList.append(totalIntegral)
+
+		intrinsicFlux = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
+		for i in xrange(beamedLC.numCadences):
+			beamedLC.y[i] = observedLC.y[i]/intrinsicFlux
+			beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFlux
+			dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
+			dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
+			dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
+			dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
+		model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
+		periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
+		model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+		periodEst = model.best_period
+		foldedLC = dzdtLC.fold(periodEst)
+		foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+		spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = 2*foldedLC.numCadences, check_finite = True)
+		totalIntegral = math.fabs(spl.integral(foldedLC.t[0], foldedLC.t[-1]))
+		tZeros = spl.roots()
+
+		fitLC = foldedLC.copy()
+		for i in xrange(fitLC.numCadences):
+			fitLC.x[i] = spl(fitLC.t[i])
+
+		tMin = fitLC.t[np.where(np.min(fitLC.x) == fitLC.x)[0][0]]
+		tMax = fitLC.t[np.where(np.max(fitLC.x) == fitLC.x)[0][0]]
+		alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x) == fitLC.x)[0][0]])
+		beta = math.fabs(fitLC.x[np.where(np.min(fitLC.x) == fitLC.x)[0][0]])
+		K = 0.5*(alpha + beta)
+
+		if tMin < tMax:
+			tFirst = tMin
+			tSecond = tMax
+			tMinLesstMax = True
+		else:
+			tFirst = tMax
+			tSecond = tMin
+			tMinLesstMax = False
+		if tFirst < np.min(tZeros):
+			orderedTList = [tFirst, np.min(tZeros), tSecond, np.max(tZeros)]
+			tFirstLesstZeros0 = True
+		else:
+			orderedTList = [np.min(tZeros), tFirst, np.max(tZeros), tSecond]
+			tFirstLesstZeros0 = False
+
+		delta1 = math.fabs(spl.integral(orderedTList[0], orderedTList[1]))
+		delta2 = math.fabs(spl.integral(orderedTList[1], orderedTList[2]))
+
+		eCosOmega = (beta - alpha)/(alpha + beta) #(alpha - beta)/(alpha + beta)
+		eSinOmega = ((2.0*math.sqrt(alpha*beta))/(alpha + beta))*((delta2 - delta1)/(delta2 + delta1))
+		eccentricityEst = math.sqrt(math.pow(eCosOmega, 2.0) + math.pow(eSinOmega, 2.0))
+		tanOmega = math.fabs(eSinOmega/eCosOmega)
+		if (eCosOmega/math.fabs(eCosOmega) == 1.0) and (eSinOmega/math.fabs(eSinOmega) == 1.0):
+			omega1Est = math.atan(tanOmega)*(180.0/math.pi)
+		if (eCosOmega/math.fabs(eCosOmega) == -1.0) and (eSinOmega/math.fabs(eSinOmega) == 1.0):
+			omega1Est = 180.0 - math.atan(tanOmega)*(180.0/math.pi)
+		if (eCosOmega/math.fabs(eCosOmega) == -1.0) and (eSinOmega/math.fabs(eSinOmega) == -1.0):
+			omega1Est = 180.0 + math.atan(tanOmega)*(180.0/math.pi)
+		if (eCosOmega/math.fabs(eCosOmega) == 1.0) and (eSinOmega/math.fabs(eSinOmega) == -1.0):
+			omega1Est = 360.0 - math.atan(tanOmega)*(180.0/math.pi)
+
+		zDot = K*(1.0 + eccentricityEst)*math.cos(eCosOmega/eccentricityEst)
+		val = np.where(fitLC.x == zDot)
+
+		pdb.set_trace()
 
 		''''ThetaGuess = np.array([0.001, 75.0, 10.0, 0.0, 0.0, 90.0, 0.0, 100.0, 0.5])
 		for dimNum in xrange(self.ndims):

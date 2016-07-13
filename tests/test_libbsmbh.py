@@ -234,9 +234,9 @@ class TestFitNoNoise(unittest.TestCase):
 		self.rPeriTot = 0.001
 		self.m1 = 75.0
 		self.m2 = 10.0
-		self.eccentricity = 0.75
-		self.omega1_1 = 0.0
-		self.omega1_2 = 0.0
+		self.eccentricity = 0.5
+		self.omega1_1 = 15.0
+		self.omega1_2 = self.omega1_1
 		self.inclination = 90.0
 		self.tau = 0.0
 		self.flux = 100.0
@@ -259,14 +259,12 @@ class TestFitNoNoise(unittest.TestCase):
 
 	def test_lightCurveFit(self):
 		n2s = 1.0e-3
-		nl1 = self.nt1.simulate(self.nt1.period()*25.0, fracNoiseToSignal = n2s)
-		#nl1 = self.nt1.simulate(0.4, dt = 0.2, fracNoiseToSignal = n2s)
+		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = n2s)
 		self.nt1.observe(nl1)
-		#self.nt1.logLikelihood(nl1)
-		#import pdb; pdb.set_trace()
-
+		print "True Period: %e"%(self.nt1.period())
 		self.nt2.fit(nl1)
 		import pdb; pdb.set_trace()
+
 		walkerBest = np.where(np.nanmax(self.nt2.LnPosterior[:,:]) == self.nt2.LnPosterior[:,:])[0][0]
 		stepBest = np.where(np.nanmax(self.nt2.LnPosterior[:,:]) == self.nt2.LnPosterior[:,:])[1][0]
 		ThetaBest = self.nt2.Chain[:,walkerBest,stepBest]
