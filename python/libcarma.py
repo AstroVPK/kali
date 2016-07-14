@@ -1136,7 +1136,9 @@ class lc(object):
 			newLC.x[i] = spl(newLC.t[i])
 		return newLC
 
-	def fold(self, foldPeriod):
+	def fold(self, foldPeriod, tStart = None):
+		if tStart is None:
+			tStart = self.t[0]
 		numFolds = int(math.floor(self.T/foldPeriod))
 		newLC = self.copy()
 		del newLC.t
@@ -1150,7 +1152,7 @@ class lc(object):
 		yerrList = list()
 		maskList = list()
 		for i in xrange(self.numCadences):
-			tList.append(self.t[i]%foldPeriod)
+			tList.append((self.t[i] - tStart)%foldPeriod)
 			xList.append(self.x[i])
 			yList.append(self.y[i])
 			yerrList.append(self.yerr[i])

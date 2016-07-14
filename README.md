@@ -22,12 +22,14 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 4. Fedora 23
 
+5. Mac OS X 10.11.2 El Capitan
 
-You will need to have Anaconda Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` 
-package, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda 
-Python, the Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
-the use of `g++` etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only required 
-if you wish to use the older deprecated `cffi` interface to the `c++` code.
+If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda 
+Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` package, `py.test`, `cffi` 
+(optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, the Intel C++
+ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
+the use of `g++` etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only 
+required if you wish to use the older deprecated `cffi` interface to the `c++` code.
 
 1. Anaconda Python
 
