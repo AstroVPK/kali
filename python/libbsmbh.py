@@ -540,7 +540,6 @@ class binarySMBHTask(object):
 		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
 		model.optimizer.period_range=(2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
 		periodEst = model.best_period
-		print "period: %e"%(periodEst)
 
 		for f in xrange(1, numIntrinsicFlux - 1):
 
@@ -562,25 +561,6 @@ class binarySMBHTask(object):
 				dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
 				dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
 
-			#USING LOMBSCARGLEFAST
-			'''
-			model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
-			periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
-			model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
-			'''
-
-			# USING SUPERSMOOTHER
-			'''
-			model = SuperSmoother(fit_period = True)
-			model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
-			model.fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
-			'''
-
-			'''
-			periodEst = model.best_period
-			print "period: %e"%(periodEst)
-			'''
-
 			foldedLC = dzdtLC.fold(periodEst)
 			foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 
@@ -589,14 +569,6 @@ class binarySMBHTask(object):
 			if (minVal > 0.0) or (maxVal < 0.0):
 				continue
 
-			'''
-			# POLYNOMIAL FIT
-			polyCoeffs = np.polyfit(binnedLC.t[np.where(binnedLC.mask == 1.0)], binnedLC.y[np.where(binnedLC.mask == 1.0)], 7, w = 0.1/binnedLC.yerr[np.where(binnedLC.mask == 1.0)])
-			for i in xrange(fitLC.numCadences):
-				polyLC.x[i] = np.polyval(polyCoeffs, polyLC.t[i])
-			'''
-
-			# SMOOTHING SPLINE FIT
 			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = None, check_finite = True)
 			totalIntegral = math.fabs(spl.integral(foldedLC.t[0], foldedLC.t[-1]))
 
@@ -615,21 +587,36 @@ class binarySMBHTask(object):
 		periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
 		model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
 		periodEst = model.best_period
-		foldedLC = dzdtLC.fold(periodEst)
+
+		# Find first rising
+		risingSpline = UnivariateSpline(dzdtLC.t[np.where(dzdtLC.mask == 1.0)], dzdtLC.y[np.where(dzdtLC.mask == 1.0)], 1.0/dzdtLC.yerr[np.where(dzdtLC.mask == 1.0)], k = 3, s = None, check_finite = True)
+		risingSplineRoots = risingSpline.roots()
+		fullSplinedLC = dzdtLC.copy()
+		for i in xrange(fullSplinedLC.numCadences):
+			fullSplinedLC.x[i] = risingSpline(fullSplinedLC.t[i])
+
+		# Lets look at the first root
+		firstRoot = risingSplineRoots[0]
+		if risingSpline.derivatives(risingSplineRoots[0])[1] > 0.0:
+			tRising = risingSplineRoots[0]
+		else:
+			tRising = risingSplineRoots[1]
+
+		foldedLC = dzdtLC.fold(periodEst, tStart = tRising)
 		foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-		spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = 2*foldedLC.numCadences, check_finite = True)
-		totalIntegral = math.fabs(spl.integral(foldedLC.t[0], foldedLC.t[-1]))
-		tZeros = spl.roots()
+		foldedSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = 2*foldedLC.numCadences, check_finite = True)
+		totalIntegral = math.fabs(foldedSpline.integral(foldedLC.t[0], foldedLC.t[-1]))
+		tZeros = foldedSpline.roots()
 
 		fitLC = foldedLC.copy()
 		for i in xrange(fitLC.numCadences):
-			fitLC.x[i] = spl(fitLC.t[i])
+			fitLC.x[i] = foldedSpline(fitLC.t[i])
 
 		tMin = fitLC.t[np.where(np.min(fitLC.x) == fitLC.x)[0][0]]
 		tMax = fitLC.t[np.where(np.max(fitLC.x) == fitLC.x)[0][0]]
 		alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x) == fitLC.x)[0][0]])
 		beta = math.fabs(fitLC.x[np.where(np.min(fitLC.x) == fitLC.x)[0][0]])
-		K = 0.5*(alpha + beta)
+		KEst = 0.5*(alpha + beta)
 
 		if tMin < tMax:
 			tFirst = tMin
@@ -646,24 +633,43 @@ class binarySMBHTask(object):
 			orderedTList = [np.min(tZeros), tFirst, np.max(tZeros), tSecond]
 			tFirstLesstZeros0 = False
 
-		delta1 = math.fabs(spl.integral(orderedTList[0], orderedTList[1]))
-		delta2 = math.fabs(spl.integral(orderedTList[1], orderedTList[2]))
+		delta2 = math.fabs(foldedSpline.integral(0.0, orderedTList[0]))
+		delta1 = math.fabs(foldedSpline.integral(orderedTList[0], orderedTList[1]))
 
-		eCosOmega = (beta - alpha)/(alpha + beta) #(alpha - beta)/(alpha + beta)
-		eSinOmega = ((2.0*math.sqrt(alpha*beta))/(alpha + beta))*((delta2 - delta1)/(delta2 + delta1))
-		eccentricityEst = math.sqrt(math.pow(eCosOmega, 2.0) + math.pow(eSinOmega, 2.0))
-		tanOmega = math.fabs(eSinOmega/eCosOmega)
-		if (eCosOmega/math.fabs(eCosOmega) == 1.0) and (eSinOmega/math.fabs(eSinOmega) == 1.0):
-			omega1Est = math.atan(tanOmega)*(180.0/math.pi)
-		if (eCosOmega/math.fabs(eCosOmega) == -1.0) and (eSinOmega/math.fabs(eSinOmega) == 1.0):
-			omega1Est = 180.0 - math.atan(tanOmega)*(180.0/math.pi)
-		if (eCosOmega/math.fabs(eCosOmega) == -1.0) and (eSinOmega/math.fabs(eSinOmega) == -1.0):
-			omega1Est = 180.0 + math.atan(tanOmega)*(180.0/math.pi)
-		if (eCosOmega/math.fabs(eCosOmega) == 1.0) and (eSinOmega/math.fabs(eSinOmega) == -1.0):
-			omega1Est = 360.0 - math.atan(tanOmega)*(180.0/math.pi)
+		eCosOmega2 = (alpha - beta)/(alpha + beta)
+		eSinOmega2 = ((2.0*math.sqrt(alpha*beta))/(alpha + beta))*((delta2 - delta1)/(delta2 + delta1))
+		eccentricityEst = math.sqrt(math.pow(eCosOmega2, 2.0) + math.pow(eSinOmega2, 2.0))
+		tanOmega2 = math.fabs(eSinOmega2/eCosOmega2)
+		if (eCosOmega2/math.fabs(eCosOmega2) == 1.0) and (eSinOmega2/math.fabs(eSinOmega2) == 1.0):
+			omega2Est = math.atan(tanOmega2)*(180.0/math.pi)
+		if (eCosOmega2/math.fabs(eCosOmega2) == -1.0) and (eSinOmega2/math.fabs(eSinOmega2) == 1.0):
+			omega2Est = 180.0 - math.atan(tanOmega2)*(180.0/math.pi)
+		if (eCosOmega2/math.fabs(eCosOmega2) == -1.0) and (eSinOmega2/math.fabs(eSinOmega2) == -1.0):
+			omega2Est = 180.0 + math.atan(tanOmega2)*(180.0/math.pi)
+		if (eCosOmega2/math.fabs(eCosOmega2) == 1.0) and (eSinOmega2/math.fabs(eSinOmega2) == -1.0):
+			omega2Est = 360.0 - math.atan(tanOmega2)*(180.0/math.pi)
+		omega1Est = omega2Est - 180.0
 
-		zDot = K*(1.0 + eccentricityEst)*math.cos(eCosOmega/eccentricityEst)
-		val = np.where(fitLC.x == zDot)
+		zDot = KEst*(1.0 + eccentricityEst)*(eCosOmega2/eccentricityEst)
+		zDotLC = dzdtLC.copy()
+		for i in xrange(zDotLC.numCadences):
+			zDotLC.y[i] = zDotLC.y[i] - zDot
+		zDotSpline = UnivariateSpline(zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)], 1.0/zDotLC.yerr[np.where(zDotLC.mask == 1.0)], k = 3, s = 2*zDotLC.numCadences, check_finite = True)
+		for i in xrange(zDotLC.numCadences):
+			zDotLC.x[i] = zDotSpline(zDotLC.t[i])
+		zDotZeros = zDotSpline.roots()
+		zDotFoldedLC = dzdtLC.fold(periodEst)
+		zDotFoldedSpline = UnivariateSpline(zDotFoldedLC.t[np.where(zDotFoldedLC.mask == 1.0)], zDotFoldedLC.y[np.where(zDotFoldedLC.mask == 1.0)], 1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k = 3, s = 2*zDotFoldedLC.numCadences, check_finite = True)
+		for i in xrange(zDotFoldedLC.numCadences):
+			zDotFoldedLC.x[i] = zDotFoldedSpline(zDotFoldedLC.t[i])
+		tC = zDotFoldedLC.t[np.where(np.max(zDotFoldedLC.x) == zDotFoldedLC.x)[0][0]]
+		nuC = (360.0 - omega2Est)%360.0
+		tE = zDotFoldedLC.t[np.where(np.min(zDotFoldedLC.x) == zDotFoldedLC.x)[0][0]]
+		nuE = (180.0 - omega2Est)%360.0
+		if math.fabs(360.0 - nuC) < math.fabs(360 - nuE):
+			tauEst = zDotZeros[np.where(zDotZeros > tC)[0][0]]
+		else:
+			tauEst = zDotZeros[np.where(zDotZeros > tE)[0][0]]
 
 		pdb.set_trace()
 
@@ -678,9 +684,8 @@ class binarySMBHTask(object):
 				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess))) # m1 in 1e6SolarMass
 				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS1 in Parsec
 				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS2 in Parsec
-				eccentricityGuess = random.uniform(0.0, 1.0)
-				rPeriEst = math.pow(((self.G*math.pow(periodEst*self.Day, 2.0)*((m1Guess + m2Guess)*1.0e6*self.SolarMass)*math.pow(1.0 + eccentricityGuess, 3.0))/math.pow(self.twoPi, 2.0)),1.0/3.0)/self.Parsec
-				a1Est = (m2Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityGuess));
+				rPeriEst = math.pow(((self.G*math.pow(periodEst*self.Day, 2.0)*((m1Guess + m2Guess)*1.0e6*self.SolarMass)*math.pow(1.0 + eccentricityEst, 3.0))/math.pow(self.twoPi, 2.0)),1.0/3.0)/self.Parsec
+				a1Est = (m2Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
 				inclinationGuess = random.uniform(0.0, 90.0)
 				tauGuess = random.uniform(0.0, periodEst)
 				totalFluxGuess = 0.0
@@ -688,7 +693,6 @@ class binarySMBHTask(object):
 					totalFluxGuess = random.gauss(meanFlux, (highestFlux - lowestFlux)/6.0)
 
 				foldedLC = observedLC.fold(periodEst)
-				pdb.set_trace()
 				maxD = math.pow(np.max(foldedLC.y[np.where(observedLC.mask == 1.0)])/totalFlux,1.0/3.44)
 				minD = math.pow(np.min(foldedLC.y[np.where(observedLC.mask == 1.0)])/totalFlux,1.0/3.44)
 				Alpha = 1.0 - (1.0/maxD)

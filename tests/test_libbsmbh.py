@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import unittest
+import sys
 import matplotlib.pyplot as plt
 
 try:
@@ -238,7 +239,7 @@ class TestFitNoNoise(unittest.TestCase):
 		self.omega1_1 = 15.0
 		self.omega1_2 = self.omega1_1
 		self.inclination = 90.0
-		self.tau = 0.0
+		self.tau = 135.0
 		self.flux = 100.0
 		nstepsVal = 1
 		nwalkersVal = 200
