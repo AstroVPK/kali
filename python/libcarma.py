@@ -1042,7 +1042,7 @@ class lc(object):
 		useLC._lcCython.compute_SF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
-	def plot(self, num = -1, oShow = False, clearFig = True):
+	def plot(self, num = -1, doShow = False, clearFig = True):
 		plt.figure(num, figsize = (fwid, fhgt))
 		if clearFig:
 			plt.clf()
