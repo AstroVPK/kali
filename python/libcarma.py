@@ -1042,8 +1042,8 @@ class lc(object):
 		useLC._lcCython.compute_SF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
-	def plot(self, doShow = False, clearFig = True):
-		plt.figure(-1, figsize = (fwid, fhgt))
+	def plot(self, num = -1, oShow = False, clearFig = True):
+		plt.figure(num, figsize = (fwid, fhgt))
 		if clearFig:
 			plt.clf()
 		if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
