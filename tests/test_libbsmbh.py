@@ -263,10 +263,10 @@ class TestFitNoNoise(unittest.TestCase):
 		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = n2s)
 		self.nt1.observe(nl1)
 		print "True Period: %e"%(self.nt1.period())
-		self.nt2.fit(nl1)
+		intrinsicFluxEst, periodEst = self.nt2.estimate(nl1)
 		import pdb; pdb.set_trace()
 
-		walkerBest = np.where(np.nanmax(self.nt2.LnPosterior[:,:]) == self.nt2.LnPosterior[:,:])[0][0]
+		'''walkerBest = np.where(np.nanmax(self.nt2.LnPosterior[:,:]) == self.nt2.LnPosterior[:,:])[0][0]
 		stepBest = np.where(np.nanmax(self.nt2.LnPosterior[:,:]) == self.nt2.LnPosterior[:,:])[1][0]
 		ThetaBest = self.nt2.Chain[:,walkerBest,stepBest]
 		ntBest = libbsmbh.binarySMBHTask()
@@ -278,7 +278,7 @@ class TestFitNoNoise(unittest.TestCase):
 		nlBest.plot()
 		plt.show()
 
-		import pdb; pdb.set_trace()
+		import pdb; pdb.set_trace()'''
 
 if __name__ == "__main__":
 	unittest.main()

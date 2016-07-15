@@ -510,6 +510,61 @@ class binarySMBHTask(object):
 			pdb.set_trace()
 		return omega1
 
+	def estimate(self, observedLC):
+		"""!
+		Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini 
+		"""
+		# IntrinsicFluxEst
+		model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
+		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
+		model.optimizer.period_range=(2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
+		periodEst = model.best_period
+		numIntrinsicFlux = 100
+		maxPeriodFactor = 10.0
+		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
+		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
+		intrinsicFlux = np.linspace(np.min(observedLC.y[np.where(observedLC.mask == 1.0)]), np.max(observedLC.y[np.where(observedLC.mask == 1.0)]), num = numIntrinsicFlux)
+		intrinsicFluxList = list()
+		totalIntegralList = list()
+		for f in xrange(1, numIntrinsicFlux - 1):
+			beamedLC = observedLC.copy()
+			beamedLC.x = np.require(np.zeros(beamedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			for i in xrange(beamedLC.numCadences):
+				beamedLC.y[i] = observedLC.y[i]/intrinsicFlux[f]
+				beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFlux[f]
+			dopplerLC = beamedLC.copy()
+			dopplerLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			for i in xrange(observedLC.numCadences):
+				dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
+				dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
+			dzdtLC = dopplerLC.copy()
+			dzdtLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			for i in xrange(observedLC.numCadences):
+				dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
+				dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
+			foldedLC = dzdtLC.fold(periodEst)
+			foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			integralSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = None, check_finite = True)
+			totalIntegral = math.fabs(integralSpline.integral(foldedLC.t[0], foldedLC.t[-1]))
+			intrinsicFluxList.append(intrinsicFlux[f])
+			totalIntegralList.append(totalIntegral)
+		intrinsicFluxEst = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
+
+		# PeriodEst
+		for i in xrange(beamedLC.numCadences):
+			beamedLC.y[i] = observedLC.y[i]/intrinsicFluxEst
+			beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFluxEst
+			dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
+			dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
+			dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
+			dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
+		model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
+		periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
+		model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+		periodEst = model.best_period
+
+		return intrinsicFluxEst, periodEst
+
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
 		if zSSeed is None:
@@ -649,6 +704,8 @@ class binarySMBHTask(object):
 		if (eCosOmega2/math.fabs(eCosOmega2) == 1.0) and (eSinOmega2/math.fabs(eSinOmega2) == -1.0):
 			omega2Est = 360.0 - math.atan(tanOmega2)*(180.0/math.pi)
 		omega1Est = omega2Est - 180.0
+
+		pdb.set_trace()
 
 		zDot = KEst*(1.0 + eccentricityEst)*(eCosOmega2/eccentricityEst)
 		zDotLC = dzdtLC.copy()
