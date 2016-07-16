@@ -247,7 +247,29 @@ class TestFitNoNoise(unittest.TestCase):
 	def tearDown(self):
 		del self.nt1
 
+	def checkAsserts(self, intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst):
+		self.assertAlmostEqual(math.fabs((intrinsicFluxEst - self.flux)/self.flux), 0.0, places = 1)
+		self.assertAlmostEqual(math.fabs((periodEst - self.nt1.period())/self.nt1.period()), 0.0, places = 1)
+		self.assertAlmostEqual(math.fabs((eccentricityEst - self.eccentricity)/self.eccentricity), 0.0, delta = 0.25)
+		self.assertAlmostEqual(math.fabs((math.cos(omega1Est*(math.pi/180.0)) - math.cos(self.omega1*(math.pi/180.0)))/math.cos(self.omega1*(math.pi/180.0))), 0.0, delta = 0.1)
+		self.assertAlmostEqual(math.fabs(((self.meanMotion*tauEst) - (self.meanMotion*self.tau))/(self.meanMotion*self.tau)), 0.0, delta = 1.0)
+		self.assertAlmostEqual(math.fabs((a2sinInclinationEst - self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))), 0.0, delta = 1.0)
+
 	def test_estimates1(self):
+		self.eccentricity = 0.4
+		self.omega1 = 15.0
+		self.inclination = 90.0
+		self.tau = 135.0
+		self.flux = 100.0
+		self.Theta1 = np.array([self.rPeriTot, self.m1, self.m2, self.eccentricity, self.omega1, self.inclination, self.tau, self.flux])
+		self.nt1.set(self.Theta1)
+		self.meanMotion = (2.0*math.pi)/self.nt1.period()
+		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = self.n2s)
+		self.nt1.observe(nl1)
+		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
+		self.checkAsserts(intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
+
+	def test_estimates2(self):
 		self.eccentricity = 0.5
 		self.omega1 = 15.0
 		self.inclination = 90.0
@@ -255,16 +277,25 @@ class TestFitNoNoise(unittest.TestCase):
 		self.flux = 100.0
 		self.Theta1 = np.array([self.rPeriTot, self.m1, self.m2, self.eccentricity, self.omega1, self.inclination, self.tau, self.flux])
 		self.nt1.set(self.Theta1)
+		self.meanMotion = (2.0*math.pi)/self.nt1.period()
 		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = self.n2s)
 		self.nt1.observe(nl1)
 		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
+		self.checkAsserts(intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
-		self.assertAlmostEqual(math.fabs((intrinsicFluxEst - self.flux)/self.flux), 0.0, places = 1)
-		self.assertAlmostEqual(math.fabs((periodEst - self.nt1.period())/self.nt1.period()), 0.0, places = 1)
-		self.assertAlmostEqual(math.fabs((eccentricityEst - self.eccentricity)/self.eccentricity), 0.0, delta = 0.1)
-		self.assertAlmostEqual(math.fabs((math.cos(omega1Est*(math.pi/180.0)) - math.cos(self.omega1*(math.pi/180.0)))/math.cos(self.omega1*(math.pi/180.0))), 0.0, delta = 0.1)
-		self.assertAlmostEqual(math.fabs((tauEst - self.tau)/self.tau), 0.0, places = 1)
-		self.assertAlmostEqual(math.fabs((a2sinInclinationEst - self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))), 0.0, delta = 1.0)
+	def test_estimates3(self):
+		self.eccentricity = 0.6
+		self.omega1 = 15.0
+		self.inclination = 90.0
+		self.tau = 135.0
+		self.flux = 100.0
+		self.Theta1 = np.array([self.rPeriTot, self.m1, self.m2, self.eccentricity, self.omega1, self.inclination, self.tau, self.flux])
+		self.nt1.set(self.Theta1)
+		self.meanMotion = (2.0*math.pi)/self.nt1.period()
+		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = self.n2s)
+		self.nt1.observe(nl1)
+		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
+		self.checkAsserts(intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
 if __name__ == "__main__":
 	unittest.main()
