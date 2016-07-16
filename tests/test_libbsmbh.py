@@ -238,17 +238,16 @@ class TestInclinationNoise(unittest.TestCase):
 class TestFitNoNoise(unittest.TestCase):
 
 	def setUp(self):
+		self.n2s = 1.0e-3
 		self.rPeriTot = 0.001
 		self.m1 = 75.0
 		self.m2 = 10.0
-
 		self.nt1 = libbsmbh.binarySMBHTask()
 
 	def tearDown(self):
 		del self.nt1
 
 	def test_estimates1(self):
-		n2s = 1.0e-3
 		self.eccentricity = 0.5
 		self.omega1 = 15.0
 		self.inclination = 90.0
@@ -256,7 +255,7 @@ class TestFitNoNoise(unittest.TestCase):
 		self.flux = 100.0
 		self.Theta1 = np.array([self.rPeriTot, self.m1, self.m2, self.eccentricity, self.omega1, self.inclination, self.tau, self.flux])
 		self.nt1.set(self.Theta1)
-		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = n2s)
+		nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal = self.n2s)
 		self.nt1.observe(nl1)
 		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
 
