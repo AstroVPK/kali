@@ -514,13 +514,13 @@ class binarySMBHTask(object):
 		"""!
 		Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini 
 		"""
-		# IntrinsicFluxEst
+		## intrinsicFluxEst
+		maxPeriodFactor = 10.0
 		model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
 		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
-		model.optimizer.period_range=(2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
+		model.optimizer.period_range = (2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
 		periodEst = model.best_period
 		numIntrinsicFlux = 100
-		maxPeriodFactor = 10.0
 		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
 		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
 		intrinsicFlux = np.linspace(np.min(observedLC.y[np.where(observedLC.mask == 1.0)]), np.max(observedLC.y[np.where(observedLC.mask == 1.0)]), num = numIntrinsicFlux)
@@ -550,7 +550,7 @@ class binarySMBHTask(object):
 			totalIntegralList.append(totalIntegral)
 		intrinsicFluxEst = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
 
-		# PeriodEst
+		## periodEst
 		for i in xrange(beamedLC.numCadences):
 			beamedLC.y[i] = observedLC.y[i]/intrinsicFluxEst
 			beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFluxEst
@@ -560,137 +560,67 @@ class binarySMBHTask(object):
 			dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
 		model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
 		periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
-		model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+		model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
 		periodEst = model.best_period
 
-		return intrinsicFluxEst, periodEst
-
-	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
-		randSeed = np.zeros(1, dtype = 'uint32')
-		if zSSeed is None:
-			rand.rdrand(randSeed)
-			zSSeed = randSeed[0]
-		if walkerSeed is None:
-			rand.rdrand(randSeed)
-			walkerSeed = randSeed[0]
-		if moveSeed is None:
-			rand.rdrand(randSeed)
-			moveSeed = randSeed[0]
-		if xSeed is None:
-			rand.rdrand(randSeed)
-			xSeed = randSeed[0]
-		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
-		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
-		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
-		meanFlux = np.mean(observedLC.y[np.where(observedLC.mask == 1.0)])
-		numIntrinsicFlux = 100
-		maxPeriodFactor = 10.0
-		intrinsicFlux = np.linspace(lowestFlux, highestFlux, num = numIntrinsicFlux)
-
-		intrinsicFluxList = list()
-		totalIntegralList = list()
-
-		#USING LOMBSCARGLEFAST
-		model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
-		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
-		model.optimizer.period_range=(2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
-		periodEst = model.best_period
-
-		for f in xrange(1, numIntrinsicFlux - 1):
-
-			beamedLC = observedLC.copy()
-			beamedLC.x = np.require(np.zeros(beamedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			for i in xrange(beamedLC.numCadences):
-				beamedLC.y[i] = observedLC.y[i]/intrinsicFlux[f]
-				beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFlux[f]
-
-			dopplerLC = beamedLC.copy()
-			dopplerLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			for i in xrange(observedLC.numCadences):
-				dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
-				dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
-
-			dzdtLC = dopplerLC.copy()
-			dzdtLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			for i in xrange(observedLC.numCadences):
-				dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
-				dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
-
-			foldedLC = dzdtLC.fold(periodEst)
-			foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-
-			minVal = np.min(dzdtLC.y)
-			maxVal = np.max(dzdtLC.y)
-			if (minVal > 0.0) or (maxVal < 0.0):
-				continue
-
-			spl = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = None, check_finite = True)
-			totalIntegral = math.fabs(spl.integral(foldedLC.t[0], foldedLC.t[-1]))
-
-			intrinsicFluxList.append(intrinsicFlux[f])
-			totalIntegralList.append(totalIntegral)
-
-		intrinsicFlux = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
-		for i in xrange(beamedLC.numCadences):
-			beamedLC.y[i] = observedLC.y[i]/intrinsicFlux
-			beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFlux
-			dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
-			dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
-			dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
-			dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
-		model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
-		periods, power = model.periodogram_auto(nyquist_factor = dzdtLC.numCadences)
-		model.optimizer.period_range=(2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
-		periodEst = model.best_period
-
-		# Find first rising
+		## eccentricityEst & omega2Est
+		# First find a full period going from rising to falling. 
 		risingSpline = UnivariateSpline(dzdtLC.t[np.where(dzdtLC.mask == 1.0)], dzdtLC.y[np.where(dzdtLC.mask == 1.0)], 1.0/dzdtLC.yerr[np.where(dzdtLC.mask == 1.0)], k = 3, s = None, check_finite = True)
 		risingSplineRoots = risingSpline.roots()
-		fullSplinedLC = dzdtLC.copy()
-		for i in xrange(fullSplinedLC.numCadences):
-			fullSplinedLC.x[i] = risingSpline(fullSplinedLC.t[i])
-
-		# Lets look at the first root
 		firstRoot = risingSplineRoots[0]
 		if risingSpline.derivatives(risingSplineRoots[0])[1] > 0.0:
 			tRising = risingSplineRoots[0]
 		else:
 			tRising = risingSplineRoots[1]
-
+		# Now fold the LC starting at tRising and going for a full period.
 		foldedLC = dzdtLC.fold(periodEst, tStart = tRising)
 		foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-		foldedSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = 2*foldedLC.numCadences, check_finite = True)
-		totalIntegral = math.fabs(foldedSpline.integral(foldedLC.t[0], foldedLC.t[-1]))
-		tZeros = foldedSpline.roots()
-
+		# Fit the folded LC with a spline to figure out alpha and beta
 		fitLC = foldedLC.copy()
+		foldedSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k = 3, s = 2*foldedLC.numCadences, check_finite = True)
 		for i in xrange(fitLC.numCadences):
 			fitLC.x[i] = foldedSpline(fitLC.t[i])
-
-		tMin = fitLC.t[np.where(np.min(fitLC.x) == fitLC.x)[0][0]]
-		tMax = fitLC.t[np.where(np.max(fitLC.x) == fitLC.x)[0][0]]
-		alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x) == fitLC.x)[0][0]])
-		beta = math.fabs(fitLC.x[np.where(np.min(fitLC.x) == fitLC.x)[0][0]])
+		# Now get the roots and find the falling root
+		tZeros = foldedSpline.roots()
+		if tZeros.shape[0] == 1: # We have found just tFalling
+			tFalling = tZeros[0]
+			tRising = fitLC.t[0]
+			startIndex = 0
+			tFull = fitLC.t[-1]
+			stopIndex = fitLC.numCadences
+		elif tZeros.shape[0] == 2: # We have found tFalling and one of tRising or tFull
+			if foldedSpline.derivatives(tZeros[0])[1] < 0.0:
+				tFalling = tZeros[0]
+				tFull = tZeros[1]
+				stopIndex = np.where(fitLC.t < tFull)[0][-1]
+				tRising = fitLC.t[0]
+				startIndex = 0
+			elif foldedSpline.derivatives(tZeros[0])[1] > 0.0:
+				if foldedSpline.derivatives(tZeros[1])[1] < 0.0:
+					tRising = tZeros[0]
+					startIndex = np.where(fitLC.t > tRising)[0][0]
+					tFalling = tZeros[1]
+					tFull = fitLC.t[-1]
+					stopIndex = fitLC.numCadences
+				else:
+					raise RuntimeError('Could not determine alpha & omega correctly because the first root is rising but the second root is not falling!')
+		elif tZeros.shape[0] == 3:
+			tRising = tZeros[0]
+			startIndex = np.where(fitLC.t > tRising)[0][0]
+			tFalling = tZeros[1]
+			tFull = tZeros[2]
+			stopIndex = np.where(fitLC.t < tFull)[0][-1]
+		else:
+			raise RuntimeError('Could not determine alpha & omega correctly because tZeros has %d roots!'%(tZeros.shape[0]))
+		# One full period now goes from tRising to periodEst. The maxima occurs between tRising and tFalling while the minima occurs between tFalling and tRising + periodEst  
+		# Find the minima and maxima
+		alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]])
+		beta = math.fabs(fitLC.x[np.where(np.min(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]])
+		peakLoc = fitLC.t[np.where(np.max(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]]
+		troughLoc = fitLC.t[np.where(np.min(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]]
 		KEst = 0.5*(alpha + beta)
-
-		if tMin < tMax:
-			tFirst = tMin
-			tSecond = tMax
-			tMinLesstMax = True
-		else:
-			tFirst = tMax
-			tSecond = tMin
-			tMinLesstMax = False
-		if tFirst < np.min(tZeros):
-			orderedTList = [tFirst, np.min(tZeros), tSecond, np.max(tZeros)]
-			tFirstLesstZeros0 = True
-		else:
-			orderedTList = [np.min(tZeros), tFirst, np.max(tZeros), tSecond]
-			tFirstLesstZeros0 = False
-
-		delta2 = math.fabs(foldedSpline.integral(0.0, orderedTList[0]))
-		delta1 = math.fabs(foldedSpline.integral(orderedTList[0], orderedTList[1]))
-
+		delta2 = (math.fabs(foldedSpline.integral(tRising, peakLoc)) + math.fabs(foldedSpline.integral(troughLoc, tFull)))/2.0
+		delta1 = (math.fabs(foldedSpline.integral(peakLoc, tFalling)) + math.fabs(foldedSpline.integral(tFalling, troughLoc)))/2.0
 		eCosOmega2 = (alpha - beta)/(alpha + beta)
 		eSinOmega2 = ((2.0*math.sqrt(alpha*beta))/(alpha + beta))*((delta2 - delta1)/(delta2 + delta1))
 		eccentricityEst = math.sqrt(math.pow(eCosOmega2, 2.0) + math.pow(eSinOmega2, 2.0))
@@ -705,8 +635,7 @@ class binarySMBHTask(object):
 			omega2Est = 360.0 - math.atan(tanOmega2)*(180.0/math.pi)
 		omega1Est = omega2Est - 180.0
 
-		pdb.set_trace()
-
+		## tauEst
 		zDot = KEst*(1.0 + eccentricityEst)*(eCosOmega2/eccentricityEst)
 		zDotLC = dzdtLC.copy()
 		for i in xrange(zDotLC.numCadences):
@@ -727,6 +656,27 @@ class binarySMBHTask(object):
 			tauEst = zDotZeros[np.where(zDotZeros > tC)[0][0]]
 		else:
 			tauEst = zDotZeros[np.where(zDotZeros > tE)[0][0]]
+
+		## a2sinInclinationEst
+		a2sinInclinationEst = ((KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(eccentricityEst, 2.0)))/self.twoPi)/self.Parsec
+
+		return intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst
+
+	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
+		randSeed = np.zeros(1, dtype = 'uint32')
+		if zSSeed is None:
+			rand.rdrand(randSeed)
+			zSSeed = randSeed[0]
+		if walkerSeed is None:
+			rand.rdrand(randSeed)
+			walkerSeed = randSeed[0]
+		if moveSeed is None:
+			rand.rdrand(randSeed)
+			moveSeed = randSeed[0]
+		if xSeed is None:
+			rand.rdrand(randSeed)
+			xSeed = randSeed[0]
+		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
 
 		pdb.set_trace()
 
