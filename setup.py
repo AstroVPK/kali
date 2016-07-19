@@ -70,5 +70,6 @@ setup(
 	classifiers = ['AGN', 'C-ARMA', 'stochastic', 'binary SMBH'],
 	platforms = ['Linux', 'Mac OSX'],
 	license = 'GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
-	ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext, bSMBHTask_ext])
+	#ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext, bSMBHTask_ext])
+	ext_modules = cythonize([rand_ext, CARMATask_ext, bSMBHTask_ext])
 )
