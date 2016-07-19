@@ -54,14 +54,14 @@ using namespace std;
 			errSum = 0.0;
 			for (int pointNum = 0; pointNum < numCadences - lagCad; ++pointNum) {
 				acvfVals[lagCad] += maskIn[pointNum]*maskIn[pointNum + lagCad]*(yIn[pointNum] - meanVal)*(yIn[pointNum + lagCad] - meanVal);
-				fSq = pow((yIn[pointNum + lagCad] - meanVal), 2.0)*pow((yIn[pointNum] - meanVal), 2.0);
+				fSq = pow((yIn[pointNum + lagCad] - meanVal)*(yIn[pointNum] - meanVal), 2.0);
 				t1 = (pow(yerrIn[pointNum + lagCad], 2.0) + meanErrSq)/pow(yIn[pointNum + lagCad] - meanVal, 2.0);
 				t2 = (pow(yerrIn[pointNum], 2.0) + meanErrSq)/pow(yIn[pointNum] - meanVal, 2.0);
 				errSum += maskIn[pointNum]*maskIn[pointNum + lagCad]*fSq*(t1 + t2);
 				}
 			if (count > 0.0) {
 				acvfVals[lagCad] /= count;
-				acvfErrVals[lagCad] = sqrt(errSum)/count;
+				acvfErrVals[lagCad] = sqrt(errSum/count);
 				}
 			}
 		return 0;

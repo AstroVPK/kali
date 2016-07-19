@@ -1028,7 +1028,9 @@ class lc(object):
 		res = useLC._lcCython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
 		acflags = lags[np.where(acvf != 0.0)]
 		acf = acvf[np.where(acvf != 0.0)]/acvf[0]
-		acferr = np.sqrt(np.power([np.where(acvf != 0.0)]/acvf[0], 2.0)*(np.power(acvferr[np.where(acvf != 0.0)]/acvf[np.where(acvf != 0.0)], 2.0) + math.pow(acvferr[0]/acvf[0], 2.0)))[0][0]
+		constErr = math.pow(acvferr[0]/acvf[0], 2.0)
+		for i in xrange(useLC.numCadences):
+			acferr[i] = (acvf[i]/acvf[0])*np.sqrt(np.power(acvferr[i]/acvf[i], 2.0) + constErr)
 		return acflags, acf, acferr
 
 	def sf(self, newdt = None):
@@ -1042,8 +1044,8 @@ class lc(object):
 		useLC._lcCython.compute_SF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
-	def plot(self, num = -1, doShow = False, clearFig = True):
-		plt.figure(num, figsize = (fwid, fhgt))
+	def plot(self, fig = -1, doShow = False, clearFig = True):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
 		if clearFig:
 			plt.clf()
 		if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
@@ -1067,9 +1069,10 @@ class lc(object):
 		plt.legend()
 		if doShow:
 			plt.show(False)
+		return newFig
 
-	def plotacvf(self, newdt = None, doShow = False):
-		plt.figure(-2, figsize = (fwid, fhgt))
+	def plotacvf(self, fig = -2, newdt = None, doShow = False):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
 		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acvfE, acvferrE = self.acvf(newdt)
@@ -1082,9 +1085,10 @@ class lc(object):
 		plt.legend(loc = 3)
 		if doShow:
 			plt.show(False)
+		return newFig
 
-	def plotacf(self, newdt = None, doShow = False):
-		plt.figure(-3, figsize = (fwid, fhgt))
+	def plotacf(self, fig = -3, newdt = None, doShow = False):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
 		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, acfE, acferrE = self.acf(newdt)
@@ -1098,9 +1102,10 @@ class lc(object):
 		plt.ylim(-1.0, 1.0)
 		if doShow:
 			plt.show(False)
+		return newFig
 
-	def plotsf(self, newdt = None, doShow = False):
-		plt.figure(-4, figsize = (fwid, fhgt))
+	def plotsf(self, fig = -4, newdt = None, doShow = False):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
 		plt.loglog(1.0, 1.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, sfE, sferrE = self.sf(newdt)
@@ -1113,6 +1118,7 @@ class lc(object):
 		plt.legend(loc = 2)
 		if doShow:
 			plt.show(False)
+		return newFig
 
 	def spline(self, ptFactor = 10, degree = 3):
 		unObsUncertVal = math.sqrt(sys.float_info[0])
@@ -2001,31 +2007,40 @@ class task(object):
 		sf = 2.0*(acvf[0] - acvf)
 		return lags, sf
 
-	def plotacvf(self, LC, newdt = None, doShow = False):
-		plt.figure(-2, figsize = (fwid, fhgt))
-		lagsM, acvfM = self.acvf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
+	def plotacvf(self, fig = -2, LC = None, newdt = None, doShow = False):
+		newFig = plt.figure(-2, figsize = (fwid, fhgt))
+		if LC is not None:
+			lagsM, acvfM = self.acvf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'linear')
+		else:
+			lagsM, acvfM = self.acvf(start = 0.0, stop = 1000.0, num = 1000, spacing = 'linear')
 		plt.plot(lagsM, acvfM, label = r'model Autocovariance Function', color = '#984ea3', zorder = 5)
-		if np.sum(LC.y) != 0.0:
-			lagsE, acvfE, acvferrE = LC.acvf(newdt)
-			if np.sum(acvfE) != 0.0:
-				plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
-				plt.xlim(lagsE[1], lagsE[-1])
+		if LC is not None:
+			if np.sum(LC.y) != 0.0:
+				lagsE, acvfE, acvferrE = LC.acvf(newdt)
+				if np.sum(acvfE) != 0.0:
+					plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label = r'obs. Autocovariance Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+					plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACVF$')
 		plt.title(r'Autocovariance Function')
 		plt.legend(loc = 3)
 		if doShow:
 			plt.show(False)
+		return newFig
 
-	def plotacf(self, LC, newdt = None, doShow = False):
-		plt.figure(-3, figsize = (fwid, fhgt))
-		lagsM, acfM = self.acf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
+	def plotacf(self, fig = -3, LC = None, newdt = None, doShow = False):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
+		if LC is not None:
+			lagsM, acfM = self.acf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'linear')
+		else:
+			lagsM, acfM = self.acf(start = 0.0, stop = 1000.0, num = 1000, spacing = 'linear')
 		plt.plot(lagsM, acfM, label = r'model Autocorrelation Function', color = '#984ea3', zorder = 5)
-		if np.sum(LC.y) != 0.0:
-			lagsE, acfE, acferrE = LC.acf(newdt)
-			if np.sum(acfE) != 0.0:
-				plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
-				plt.xlim(lagsE[1], lagsE[-1])
+		if LC is not None:
+			if np.sum(LC.y) != 0.0:
+				lagsE, acfE, acferrE = LC.acf(newdt)
+				if np.sum(acfE) != 0.0:
+					plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label = r'obs. Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+					plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log ACF$')
 		plt.title(r'Autocorrelation Function')
@@ -2033,22 +2048,28 @@ class task(object):
 		plt.ylim(-1.0, 1.0)
 		if doShow:
 			plt.show(False)
+		return newFig
 
-	def plotsf(self, LC, newdt = None, doShow = False):
-		plt.figure(-4, figsize = (fwid, fhgt))
-		lagsM, sfM = self.sf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
+	def plotsf(self, fig = -4, LC = None, newdt = None, doShow = False):
+		newFig = plt.figure(-4, figsize = (fwid, fhgt))
+		if LC is not None:
+			lagsM, sfM = self.sf(start = LC.dt, stop = LC.T, num = 1000, spacing = 'log')
+		else:
+			lagsM, sfM = self.sf(start = 0.001, stop = 1000.0, num = 1000, spacing = 'log')
 		plt.loglog(lagsM, sfM, label = r'model Structure Function', color = '#984ea3', zorder = 5)
-		if np.sum(LC.y) != 0.0:
-			lagsE, sfE, sferrE = LC.sf(newdt)
-			if np.sum(sfE) != 0.0:
-				plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
-				plt.xlim(lagsE[1], lagsE[-1])
+		if LC is not None:
+			if np.sum(LC.y) != 0.0:
+				lagsE, sfE, sferrE = LC.sf(newdt)
+				if np.sum(sfE) != 0.0:
+					plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 0)
+					plt.xlim(lagsE[1], lagsE[-1])
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
 		plt.legend(loc = 2)
 		if doShow:
 			plt.show(False)
+		return newFig
 
 	def _psddenominator(self, freqs, order):
 		nfreqs = freqs.shape[0]
