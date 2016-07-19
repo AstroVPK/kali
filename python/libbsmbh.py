@@ -321,12 +321,12 @@ class binarySMBHTask(object):
 	def omega1(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_omega1(tnum)
+		return self._taskCython.get_Omega1(tnum)
 
 	def omega2(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_omega2(tnum)
+		return self._taskCython.get_Omega2(tnum)
 
 	def inclination(self, tnum = None):
 		if tnum is None:
@@ -687,6 +687,8 @@ class binarySMBHTask(object):
 		for walkerNum in xrange(self.nwalkers):
 			noSuccess = True
 			while noSuccess:
+				sinInclinationGuess = random.uniform(-1.0, 1.0)
+				inclinationGuess = (180.0/math.pi)*math.asin(sinInclinationGuess)
 				m1Guess = math.pow(10.0, random.uniform(-1.0, 3.0)) # m1 in 1e6*SolarMass
 				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess))) # m1 in 1e6SolarMass
 				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS1 in Parsec
@@ -694,7 +696,7 @@ class binarySMBHTask(object):
 				rPeriEst = math.pow(((self.G*math.pow(periodEst*self.Day, 2.0)*((m1Guess + m2Guess)*1.0e6*self.SolarMass)*math.pow(1.0 + eccentricityEst, 3.0))/math.pow(self.twoPi, 2.0)),1.0/3.0)/self.Parsec
 				a1Est = (m2Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
 				a2Est = (m1Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
-				inclinationGuess = random.uniform(0.0, 90.0)
+
 
 				ThetaGuess = np.array([rPeriEst, m1Guess, m2Guess, eccentricityGuess, omega1Est, inclinationGuess, tauGuess, totalFluxGuess])
 				res = self.set(ThetaGuess)
