@@ -35,7 +35,7 @@ using namespace std;
 		lcPComp = nullptr;
 	}
 
-	int LCData::acvf(double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum) {
+	int LCData::acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum) {
 		double meanVal = 0.0;
 		double errInMean = 0.0, meanErr = 0.0, meanErrSq = 0.0, fSq = 0.0, t1 = 0.0, t2 = 0.0, errSum = 0.0;
 		double count = 0.0;
@@ -67,7 +67,7 @@ using namespace std;
 		return 0;
 		}
 
-	int LCData::sf(double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum) {
+	int LCData::sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum) {
 		double count = 0.0, valSum = 0.0, errSum = 0.0;
 		#ifdef DEBUG_SF
 			printf("numCadences: %d\n",numCadences);

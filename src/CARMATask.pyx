@@ -31,8 +31,8 @@ cdef extern from 'LC.hpp':
 		double *lcPComp
 		LCData() except+
 
-		int acvf(double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
-		int sf(double *tIn, double *xIn, double *yIn, double *yerrIn, double*maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
+		int acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
+		int sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double*maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
 
 cdef extern from 'Task.hpp':
 	cdef cppclass Task:
@@ -159,17 +159,17 @@ cdef class lc:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def compute_ACVF(self, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acvfVals not None, np.ndarray[double, ndim=1, mode='c'] acvfErrVals not None, threadNum = None):
+	def compute_ACVF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acvfVals not None, np.ndarray[double, ndim=1, mode='c'] acvfErrVals not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.acvf(&tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acvfVals[0], &acvfErrVals[0], threadNum)
+		return self.thisptr.acvf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acvfVals[0], &acvfErrVals[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def compute_SF(self, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] sfVals not None, np.ndarray[double, ndim=1, mode='c'] sfErrVals not None, threadNum = None):
+	def compute_SF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] sfVals not None, np.ndarray[double, ndim=1, mode='c'] sfErrVals not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.sf(&tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &sfVals[0], &sfErrVals[0], threadNum)
+		return self.thisptr.sf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &sfVals[0], &sfErrVals[0], threadNum)
 
 cdef class CARMATask:
 	cdef Task *thisptr

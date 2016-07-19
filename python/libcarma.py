@@ -1012,7 +1012,7 @@ class lc(object):
 		lags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 		acvf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		acvferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-		useLC._lcCython.compute_ACVF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
+		useLC._lcCython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
 		return lags, acvf, acvferr
 
 	def acf(self, newdt = None):
@@ -1025,7 +1025,7 @@ class lc(object):
 		acvferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		acf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		acferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-		res = useLC._lcCython.compute_ACVF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
+		res = useLC._lcCython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, acvf, acvferr)
 		acflags = lags[np.where(acvf != 0.0)]
 		acf = acvf[np.where(acvf != 0.0)]/acvf[0]
 		acferr = np.sqrt(np.power([np.where(acvf != 0.0)]/acvf[0], 2.0)*(np.power(acvferr[np.where(acvf != 0.0)]/acvf[np.where(acvf != 0.0)], 2.0) + math.pow(acvferr[0]/acvf[0], 2.0)))[0][0]
@@ -1039,7 +1039,7 @@ class lc(object):
 		lags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 		sf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 		sferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-		useLC._lcCython.compute_SF(useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
+		useLC._lcCython.compute_SF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, lags, sf, sferr)
 		return lags, sf, sferr
 
 	def plot(self, num = -1, doShow = False, clearFig = True):
