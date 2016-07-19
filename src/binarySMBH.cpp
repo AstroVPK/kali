@@ -213,14 +213,19 @@ binarySMBH::binarySMBH() {
 	//fracBeamedFlux = 0.0;
 	}
 
-binarySMBH::binarySMBH(double rPeriTotVal, double m1Val, double m2Val, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
+binarySMBH::binarySMBH(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
+	a1 = a1Val*Parsec;
+	a2 = a2Val*Parsec;
+	period = periodVal*Year;
+	totalMass = ;
+	massRatio = a1/a2;
+	
 	rPeriTot = rPeriTotVal*Parsec;
 	m1 = m1Val*1.0e6*SolarMass;
 	m2 = m2Val*1.0e6*SolarMass;
 	rS1 = 2.0*G*m1/pow(c, 2.0);
 	rS2 = 2.0*G*m2/pow(c, 2.0);
-	totalMass = m1 + m2;
-	massRatio = m2/m1;
+	//totalMass = m1 + m2;
 	reducedMass = m1*m2/(m1 + m2);
 	eccentricity = eccentricityVal;
 	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
@@ -236,7 +241,7 @@ binarySMBH::binarySMBH(double rPeriTotVal, double m1Val, double m2Val, double ec
 	tau = tauVal*Day;
 	alpha1 = alpha1Val;
 	alpha2 = alpha2Val;
-	period = twoPi*sqrt(pow(a1 + a2, 3.0)/(G*totalMass));
+	//period = twoPi*sqrt(pow(a1 + a2, 3.0)/(G*totalMass));
 	epoch = 0.0;
 	M = twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);

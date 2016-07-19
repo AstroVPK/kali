@@ -10,6 +10,7 @@ extern complex<double> complexOne;
 extern double pi;
 extern double twoPi;
 extern double piSq;
+extern double fourPiSq;
 extern double e;
 extern double infiniteVal;
 
