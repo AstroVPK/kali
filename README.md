@@ -29,7 +29,17 @@ Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` pac
 (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, the Intel C++
  Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow 
 the use of `g++` etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only 
-required if you wish to use the older deprecated `cffi` interface to the `c++` code.
+required if you wish to use the older deprecated `cffi` interface to the `c++` code. 
+
+You may encounter the following error when running `bash-prompt$ python setup.py build_ext` - 
+`icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
+compiler is installed in a non-standard location and can be resolved by setting the environment variable 
+`GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
+`g++` compiler, execute the command
+
+`bash-prompt$ g++ --print-search-dirs`
+
+and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
 1. Anaconda Python
 
@@ -310,7 +320,8 @@ in every new terminal that you use `Kālī` in. You may consider adding
 `source <path to kali>/bin/setup.sh`
 
 
-to your `.bashrc`. To clean the library, just delete the `build/` directory and any files inside  `lib/`. You 
+to your `.bashrc`. To clean the library, just delete the `build/` directory and any files inside  `lib/` 
+except, of course, the `__init__.py` file. You 
 may consider adding 
 
 
@@ -324,21 +335,5 @@ package out by running
 `bash-prompt$ source <path to kali>/bin/setup.sh`
 
 
-`cython` version: `bash-prompt$/usr/bin/time -p -v python cython/examples/CARMADemo.py`
-
-
-`cffi` version: `bash-prompt$/usr/bin/time -p -v python cffi/scripts/DemoScript.py <path to kali>/cffi/examples/Demo01/ Config.ini | tee <path to kali>/cffi/examples/Demo01/timing.dat`
-
-
-NB: You may encounter the following error when running `bash-prompt$ python setup.py build_ext` - 
-`icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
-compiler is installed in a non-standard location and can be resolved by setting the environment variable 
-`GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
-`g++` compiler, execute the command
-
-`bash-prompt$ g++ --print-search-dirs`
-
-and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
-
-
-A preliminary user guide is now available at `<path to kali>/guide/Introduction.ipynb`.
+and following through the user guide available at `<path to kali>/guide/Introduction.ipynb`. More example code
+can be found in the folders `<path to kali>/examples` and `<path to kali>/tests`.
