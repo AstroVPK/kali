@@ -678,7 +678,7 @@ class binarySMBHTask(object):
 			xSeed = randSeed[0]
 		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
 
-		pdb.set_trace()
+		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.estimate(observedLC)
 
 		''''ThetaGuess = np.array([0.001, 75.0, 10.0, 0.0, 0.0, 90.0, 0.0, 100.0, 0.5])
 		for dimNum in xrange(self.ndims):
@@ -693,21 +693,9 @@ class binarySMBHTask(object):
 				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS2 in Parsec
 				rPeriEst = math.pow(((self.G*math.pow(periodEst*self.Day, 2.0)*((m1Guess + m2Guess)*1.0e6*self.SolarMass)*math.pow(1.0 + eccentricityEst, 3.0))/math.pow(self.twoPi, 2.0)),1.0/3.0)/self.Parsec
 				a1Est = (m2Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
+				a2Est = (m1Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
 				inclinationGuess = random.uniform(0.0, 90.0)
-				tauGuess = random.uniform(0.0, periodEst)
-				totalFluxGuess = 0.0
-				while ((totalFluxGuess < lowestFlux) or (totalFluxGuess > highestFlux)):
-					totalFluxGuess = random.gauss(meanFlux, (highestFlux - lowestFlux)/6.0)
 
-				foldedLC = observedLC.fold(periodEst)
-				maxD = math.pow(np.max(foldedLC.y[np.where(observedLC.mask == 1.0)])/totalFlux,1.0/3.44)
-				minD = math.pow(np.min(foldedLC.y[np.where(observedLC.mask == 1.0)])/totalFlux,1.0/3.44)
-				Alpha = 1.0 - (1.0/maxD)
-				Beta = 1.0 - (1.0/minD)
-				OneOverE = ((maxBetaParallel + minBetaParallel)/(maxBetaParallel + minBetaParallel))
-
-				#fracBeamedFluxGuess = random.uniform(0.0, 1.0)
-				#ThetaGuess = np.array([rPerGuess, m1Guess, m2Guess, eGuess, omegaGuess, inclinationGuess, tauGuess, totalFluxGuess, fracBeamedFluxGuess])
 				ThetaGuess = np.array([rPeriEst, m1Guess, m2Guess, eccentricityGuess, omega1Est, inclinationGuess, tauGuess, totalFluxGuess])
 				res = self.set(ThetaGuess)
 				lnPrior = self.logPrior(observedLC)
