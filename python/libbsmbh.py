@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt
 import pdb as pdb
 
 from gatspy.periodic import LombScargleFast, SuperSmoother
+from sklearn.cluster import KMeans
 
 try:
 	import rand as rand
@@ -273,35 +274,45 @@ class binarySMBHTask(object):
 			tnum = 0
 		return self._taskCython.get_M2(tnum)
 
-	def rPeri1(self, tnum = None):
+	def m12(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RPeri1(tnum)
+		return self._taskCython.get_M12(tnum)
 
-	def rPeri2(self, tnum = None):
+	def q(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RPeri2(tnum)
+		return self._taskCython.get_M2OverM1(tnum)
 
-	def rApo1(self, tnum = None):
+	def rPeribothron1(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RApo1(tnum)
+		return self._taskCython.get_RPeribothron1(tnum)
 
-	def rApo2(self, tnum = None):
+	def rPeribothron2(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RApo2(tnum)
+		return self._taskCython.get_RPeribothron2(tnum)
 
-	def rPeri(self, tnum = None):
+	def rApobothron1(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RPeriTot(tnum)
+		return self._taskCython.get_RApobothron1(tnum)
 
-	def rApo(self, tnum = None):
+	def rApobothron2(self, tnum = None):
 		if tnum is None:
 			tnum = 0
-		return self._taskCython.get_RApoTot(tnum)
+		return self._taskCython.get_RApobothron2(tnum)
+
+	def rPeribothron(self, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.get_RPeribothronTot(tnum)
+
+	def rApobothron(self, tnum = None):
+		if tnum is None:
+			tnum = 0
+		return self._taskCython.get_RApobothronTot(tnum)
 
 	def rS1(self, tnum = None):
 		if tnum is None:
@@ -438,7 +449,10 @@ class binarySMBHTask(object):
 			tnum = 0
 		if dt is None:
 			dt = self.period()/100.0
-		numCadences = int(round(float(duration)/dt))
+		try:
+			numCadences = int(round(float(duration)/dt))
+		except ZeroDivisionError:
+			pdb.set_trace()
 		intrinsicLC = libcarma.basicLC(numCadences, dt = dt, fracNoiseToSignal = fracNoiseToSignal)
 		self._taskCython.make_IntrinsicLC(intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, threadNum = tnum)
 		intrinsicLC._simulatedCadenceNum = numCadences - 1
@@ -514,7 +528,7 @@ class binarySMBHTask(object):
 		"""!
 		Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini 
 		"""
-		## intrinsicFluxEst
+		## fluxEst
 		maxPeriodFactor = 10.0
 		model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
 		periods, power = model.periodogram_auto(nyquist_factor = observedLC.numCadences)
@@ -548,12 +562,12 @@ class binarySMBHTask(object):
 			totalIntegral = math.fabs(integralSpline.integral(foldedLC.t[0], foldedLC.t[-1]))
 			intrinsicFluxList.append(intrinsicFlux[f])
 			totalIntegralList.append(totalIntegral)
-		intrinsicFluxEst = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
+		fluxEst = intrinsicFluxList[np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
 
 		## periodEst
 		for i in xrange(beamedLC.numCadences):
-			beamedLC.y[i] = observedLC.y[i]/intrinsicFluxEst
-			beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFluxEst
+			beamedLC.y[i] = observedLC.y[i]/fluxEst
+			beamedLC.yerr[i] = observedLC.yerr[i]/fluxEst
 			dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
 			dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
 			dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
@@ -582,6 +596,7 @@ class binarySMBHTask(object):
 			fitLC.x[i] = foldedSpline(fitLC.t[i])
 		# Now get the roots and find the falling root
 		tZeros = foldedSpline.roots()
+
 		if tZeros.shape[0] == 1: # We have found just tFalling
 			tFalling = tZeros[0]
 			tRising = fitLC.t[0]
@@ -611,7 +626,48 @@ class binarySMBHTask(object):
 			tFull = tZeros[2]
 			stopIndex = np.where(fitLC.t < tFull)[0][-1]
 		else:
-			raise RuntimeError('Could not determine alpha & omega correctly because tZeros has %d roots!'%(tZeros.shape[0]))
+			# More than 3 roots!!! Use K-Means to cluster the roots assuming we have 3 groups
+
+			root_groups = KMeans(n_clusters = 3).fit_predict(tZeros.reshape(-1,1))
+			RisingGroupNumber = root_groups[0]
+			FullGroupNumber = root_groups[-1]
+			RisingSet = set(root_groups[np.where(root_groups != RisingGroupNumber)[0]])
+			FullSet = set(root_groups[np.where(root_groups != FullGroupNumber)[0]])
+			FallingSet = RisingSet.intersection(FullSet)
+			FallingGroupNumber = FallingSet.pop()
+			numRisingRoots =  np.where(root_groups == RisingGroup)[0].shape[0]
+			numFallingGroups = np.where(root_groups == FallingGroup)[0].shape[0]
+			numFullGroups = np.where(root_groups == FullGroup)[0].shape[0]
+
+			if numRisingRoots == 1:
+				tRising = tZeros[np.where(root_groups == RisingGroupNumber)[0]][0]
+			else:
+				RisingRootCands = tZeros[np.where(root_groups == RisingGroupNumber)[0]]
+				for i in xrange(RisingRootCands.shape[0]):
+					if foldedSpline.derivatives(RisingRootCands[i])[1] > 0.0:
+						tRising = RisingRootCands[i]
+						break
+
+			if numFallingRoots == 1:
+				tFalling = tZeros[np.where(root_groups == FallingGroupNumber)[0]][0]
+			else:
+				FallingRootCands = tZeros[np.where(root_groups == FallingGroupNumber)[0]]
+				for i in xrange(FallingRootCands.shape[0]):
+					if foldedSpline.derivatives(FallingRootCands[i])[1] < 0.0:
+						tFalling = FallingRootCands[i]
+						break
+
+			if numFullRoots == 1:
+				tFull = tZeros[np.where(root_groups == FullGroupNumber)[0]][0]
+			else:
+				FullRootCands = tZeros[np.where(root_groups == FullGroupNumber)[0]]
+				for i in xrange(FullRootCands.shape[0]):
+					if foldedSpline.derivatives(FullRootCands[i])[1] > 0.0:
+						tFull = FullRootCands[i]
+						break
+
+			pdb.set_trace()
+
 		# One full period now goes from tRising to periodEst. The maxima occurs between tRising and tFalling while the minima occurs between tFalling and tRising + periodEst  
 		# Find the minima and maxima
 		alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]])
@@ -633,7 +689,10 @@ class binarySMBHTask(object):
 			omega2Est = 180.0 + math.atan(tanOmega2)*(180.0/math.pi)
 		if (eCosOmega2/math.fabs(eCosOmega2) == 1.0) and (eSinOmega2/math.fabs(eSinOmega2) == -1.0):
 			omega2Est = 360.0 - math.atan(tanOmega2)*(180.0/math.pi)
-		omega1Est = omega2Est - 180.0
+		if omega2Est >= 180.0:
+			omega1Est = omega2Est - 180.0
+		if omega2Est < 180.0:
+			omega1Est = omega2Est + 180.0
 
 		## tauEst
 		zDot = KEst*(1.0 + eccentricityEst)*(eCosOmega2/eccentricityEst)
@@ -660,7 +719,15 @@ class binarySMBHTask(object):
 		## a2sinInclinationEst
 		a2sinInclinationEst = ((KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(eccentricityEst, 2.0)))/self.twoPi)/self.Parsec
 
-		return intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst
+		return fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst
+
+	def guess(self, a2SinInclinationEst):
+		#a2Guess = random.uniform(a2SinInclinationEst, 1.0)
+		a2Guess = a2SinInclinationEst
+		#inclinationGuess = math.asin(a2SinInclinationEst/a2Guess)*(180.0/math.pi)
+		inclinationGuess = 90.0
+		a1Guess  = random.uniform(0.0, a2Guess)
+		return a1Guess, a2Guess, inclinationGuess
 
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		randSeed = np.zeros(1, dtype = 'uint32')
@@ -678,7 +745,7 @@ class binarySMBHTask(object):
 			xSeed = randSeed[0]
 		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
 
-		intrinsicFluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.estimate(observedLC)
+		fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.estimate(observedLC)
 
 		''''ThetaGuess = np.array([0.001, 75.0, 10.0, 0.0, 0.0, 90.0, 0.0, 100.0, 0.5])
 		for dimNum in xrange(self.ndims):

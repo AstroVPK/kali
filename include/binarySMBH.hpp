@@ -45,11 +45,11 @@ struct LnLikeData {
 class binarySMBH {
 private:
 	//double rPeriTot, rApoTot, a1, a2, rPeri1, rPeri2, rApo1, rApo2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, fracBeamedFlux, _radialBetaFactor1, _radialBetaFactor2;
-	double rPeriTot, rApoTot, a1, a2, rPeri1, rPeri2, rApo1, rApo2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, _radialBetaFactor1, _radialBetaFactor2;
+	double rPeribothronTot, rApobothronTot, a1, a2, rPeribothron1, rPeribothron2, rApobothron1, rApobothron2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, _radialBetaFactor1, _radialBetaFactor2;
 	void operator()();
 public:
 	binarySMBH();
-	binarySMBH(double rPeriTot, double m1, double m2, double eccentricity, double omega, double inclination, double tau, double alpha1, double alpha2);
+	binarySMBH(double a1Val, double a2Val, double periodVal, double eccentricity, double omega, double inclination, double tau, double alpha1, double alpha2);
 	int checkBinarySMBHParams(double *ThetaIn);
 	void setBinarySMBH(double *ThetaIn);
 	void setEpoch(double epochIn);
@@ -57,14 +57,16 @@ public:
 	double getPeriod();
 	double getA1();
 	double getA2();
-	double getRPeri1();
-	double getRPeri2();
-	double getRApo1();
-	double getRApo2();
-	double getRPeriTot();
-	double getRApoTot();
+	double getRPeribothron1();
+	double getRPeribothron2();
+	double getRApobothron1();
+	double getRApobothron2();
+	double getRPeribothronTot();
+	double getRApobothronTot();
 	double getM1();
 	double getM2();
+	double getM12();
+	double getM2OverM1();
 	double getRS1();
 	double getRS2();
 	double getEccentricity();

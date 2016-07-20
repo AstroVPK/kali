@@ -6,7 +6,7 @@
         "depends": [
             "/home/vish/anaconda2/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h", 
             "/home/vish/anaconda2/lib/python2.7/site-packages/numpy/core/include/numpy/ufuncobject.h", 
-            "/home/vish/code/trunk/libcarma/include/binarySMBHTask.hpp"
+            "/home/vish/code/trunk/kali/include/binarySMBHTask.hpp"
         ], 
         "extra_compile_args": [
             "-O3", 
@@ -41,7 +41,7 @@
             "-lnlopt"
         ], 
         "include_dirs": [
-            "/home/vish/code/trunk/libcarma/include", 
+            "/home/vish/code/trunk/kali/include", 
             "/home/vish/anaconda2/lib/python2.7/site-packages/numpy/core/include"
         ], 
         "language": "c++", 
@@ -862,7 +862,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
-/* "bSMBHTask.pyx":76
+/* "bSMBHTask.pyx":78
  * 		int fit_BinarySMBHModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior);
  * 
  * cdef class bSMBHTask:             # <<<<<<<<<<<<<<
@@ -1452,43 +1452,45 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
 static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_26get_M2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_28get_RPeri1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_RPeri2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RApo1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_34get_RApo2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RPeriTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_cadenceNum, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_100fit_BinarySMBHModel(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_28get_M12(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_M2OverM1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RPeribothron1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_34get_RPeribothron2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RApobothron1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApobothron2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RPeribothronTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RApobothronTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_RS1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_RS2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Eccentricity(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Omega1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Omega2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_Inclination(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_Tau(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_MeanAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_EccentricAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_TrueAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_R1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_R2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Theta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Theta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_Beta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_Beta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_RadialBeta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_RadialBeta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_DopplerFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_DopplerFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_BeamingFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_BeamingFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_aH(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_aGW(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92get_durationInHardState(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94get_ejectedMass(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96make_IntrinsicLC(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98add_ObservationNoise(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_100compute_LnPrior(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_102compute_LnLikelihood(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_cadenceNum, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_104fit_BinarySMBHModel(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_9bSMBHTask_bSMBHTask(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -1581,7 +1583,7 @@ static double __pyx_f_9bSMBHTask_r2d(double __pyx_v_radianVal) {
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":79
+/* "bSMBHTask.pyx":81
  * 	cdef binarySMBHTask *thisptr
  * 
  * 	def __cinit__(self, numThreads = None):             # <<<<<<<<<<<<<<
@@ -1617,7 +1619,7 @@ static int __pyx_pw_9bSMBHTask_9bSMBHTask_1__cinit__(PyObject *__pyx_v_self, PyO
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 79, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 81, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1630,7 +1632,7 @@ static int __pyx_pw_9bSMBHTask_9bSMBHTask_1__cinit__(PyObject *__pyx_v_self, PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 79, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 81, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1655,44 +1657,44 @@ static int __pyx_pf_9bSMBHTask_9bSMBHTask___cinit__(struct __pyx_obj_9bSMBHTask_
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_numThreads);
 
-  /* "bSMBHTask.pyx":80
+  /* "bSMBHTask.pyx":82
  * 
  * 	def __cinit__(self, numThreads = None):
  * 		if numThreads == None:             # <<<<<<<<<<<<<<
  * 			numThreads = int(psutil.cpu_count(logical = True))
  * 		self.thisptr = new binarySMBHTask(numThreads)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_numThreads, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_numThreads, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":81
+    /* "bSMBHTask.pyx":83
  * 	def __cinit__(self, numThreads = None):
  * 		if numThreads == None:
  * 			numThreads = int(psutil.cpu_count(logical = True))             # <<<<<<<<<<<<<<
  * 		self.thisptr = new binarySMBHTask(numThreads)
  * 
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_psutil); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_psutil); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cpu_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cpu_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_logical, Py_True) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_logical, Py_True) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF_SET(__pyx_v_numThreads, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "bSMBHTask.pyx":80
+    /* "bSMBHTask.pyx":82
  * 
  * 	def __cinit__(self, numThreads = None):
  * 		if numThreads == None:             # <<<<<<<<<<<<<<
@@ -1701,23 +1703,23 @@ static int __pyx_pf_9bSMBHTask_9bSMBHTask___cinit__(struct __pyx_obj_9bSMBHTask_
  */
   }
 
-  /* "bSMBHTask.pyx":82
+  /* "bSMBHTask.pyx":84
  * 		if numThreads == None:
  * 			numThreads = int(psutil.cpu_count(logical = True))
  * 		self.thisptr = new binarySMBHTask(numThreads)             # <<<<<<<<<<<<<<
  * 
  * 	def __dealloc__(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_numThreads); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_numThreads); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
   try {
     __pyx_t_6 = new binarySMBHTask(__pyx_t_5);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 82, __pyx_L1_error)
+    __PYX_ERR(0, 84, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_6;
 
-  /* "bSMBHTask.pyx":79
+  /* "bSMBHTask.pyx":81
  * 	cdef binarySMBHTask *thisptr
  * 
  * 	def __cinit__(self, numThreads = None):             # <<<<<<<<<<<<<<
@@ -1740,7 +1742,7 @@ static int __pyx_pf_9bSMBHTask_9bSMBHTask___cinit__(struct __pyx_obj_9bSMBHTask_
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":84
+/* "bSMBHTask.pyx":86
  * 		self.thisptr = new binarySMBHTask(numThreads)
  * 
  * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1763,7 +1765,7 @@ static void __pyx_pf_9bSMBHTask_9bSMBHTask_2__dealloc__(struct __pyx_obj_9bSMBHT
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "bSMBHTask.pyx":85
+  /* "bSMBHTask.pyx":87
  * 
  * 	def __dealloc__(self):
  * 		del self.thisptr             # <<<<<<<<<<<<<<
@@ -1772,7 +1774,7 @@ static void __pyx_pf_9bSMBHTask_9bSMBHTask_2__dealloc__(struct __pyx_obj_9bSMBHT
  */
   delete __pyx_v_self->thisptr;
 
-  /* "bSMBHTask.pyx":84
+  /* "bSMBHTask.pyx":86
  * 		self.thisptr = new binarySMBHTask(numThreads)
  * 
  * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1784,7 +1786,7 @@ static void __pyx_pf_9bSMBHTask_9bSMBHTask_2__dealloc__(struct __pyx_obj_9bSMBHT
   __Pyx_RefNannyFinishContext();
 }
 
-/* "bSMBHTask.pyx":89
+/* "bSMBHTask.pyx":91
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def check_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -1825,7 +1827,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_5check_Theta(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "check_Theta") < 0)) __PYX_ERR(0, 89, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "check_Theta") < 0)) __PYX_ERR(0, 91, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1840,13 +1842,13 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_5check_Theta(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("check_Theta", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 89, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("check_Theta", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 91, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.check_Theta", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 91, __pyx_L1_error)
   __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_Theta, __pyx_v_threadNum);
 
   /* function exit code */
@@ -1875,23 +1877,23 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(struct __pyx_obj_9b
   __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 91, __pyx_L1_error)
   }
   __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":90
+  /* "bSMBHTask.pyx":92
  * 	@cython.wraparound(False)
  * 	def check_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.check_Theta(&Theta[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":91
+    /* "bSMBHTask.pyx":93
  * 	def check_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -1901,7 +1903,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":90
+    /* "bSMBHTask.pyx":92
  * 	@cython.wraparound(False)
  * 	def check_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -1910,7 +1912,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":92
+  /* "bSMBHTask.pyx":94
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.check_Theta(&Theta[0], threadNum)             # <<<<<<<<<<<<<<
@@ -1919,14 +1921,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(struct __pyx_obj_9b
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->check_Theta((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->check_Theta((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":89
+  /* "bSMBHTask.pyx":91
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def check_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -1955,7 +1957,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_4check_Theta(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":96
+/* "bSMBHTask.pyx":98
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -1996,7 +1998,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_7get_Theta(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta") < 0)) __PYX_ERR(0, 96, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta") < 0)) __PYX_ERR(0, 98, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2011,13 +2013,13 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_7get_Theta(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Theta", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 96, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Theta", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 98, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Theta", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 96, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_Theta, __pyx_v_threadNum);
 
   /* function exit code */
@@ -2046,23 +2048,23 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(struct __pyx_obj_9bSM
   __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 96, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 98, __pyx_L1_error)
   }
   __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":97
+  /* "bSMBHTask.pyx":99
  * 	@cython.wraparound(False)
  * 	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		self.thisptr.get_Theta(&Theta[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":98
+    /* "bSMBHTask.pyx":100
  * 	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2072,7 +2074,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(struct __pyx_obj_9bSM
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":97
+    /* "bSMBHTask.pyx":99
  * 	@cython.wraparound(False)
  * 	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2081,7 +2083,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(struct __pyx_obj_9bSM
  */
   }
 
-  /* "bSMBHTask.pyx":99
+  /* "bSMBHTask.pyx":101
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		self.thisptr.get_Theta(&Theta[0], threadNum)             # <<<<<<<<<<<<<<
@@ -2089,10 +2091,10 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(struct __pyx_obj_9bSM
  * 	@cython.boundscheck(False)
  */
   __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 101, __pyx_L1_error)
   __pyx_v_self->thisptr->get_Theta((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4);
 
-  /* "bSMBHTask.pyx":96
+  /* "bSMBHTask.pyx":98
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def get_Theta(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2123,7 +2125,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_6get_Theta(struct __pyx_obj_9bSM
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":103
+/* "bSMBHTask.pyx":105
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2164,7 +2166,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_9set_System(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_System") < 0)) __PYX_ERR(0, 103, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_System") < 0)) __PYX_ERR(0, 105, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2179,13 +2181,13 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_9set_System(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_System", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 103, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_System", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 105, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.set_System", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 103, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Theta), __pyx_ptype_5numpy_ndarray, 0, "Theta", 0))) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_Theta, __pyx_v_threadNum);
 
   /* function exit code */
@@ -2214,23 +2216,23 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(struct __pyx_obj_9bS
   __pyx_pybuffernd_Theta.rcbuffer = &__pyx_pybuffer_Theta;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Theta.rcbuffer->pybuffer, (PyObject*)__pyx_v_Theta, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 105, __pyx_L1_error)
   }
   __pyx_pybuffernd_Theta.diminfo[0].strides = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Theta.diminfo[0].shape = __pyx_pybuffernd_Theta.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":104
+  /* "bSMBHTask.pyx":106
  * 	@cython.wraparound(False)
  * 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.set_System(&Theta[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":105
+    /* "bSMBHTask.pyx":107
  * 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2240,7 +2242,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(struct __pyx_obj_9bS
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":104
+    /* "bSMBHTask.pyx":106
  * 	@cython.wraparound(False)
  * 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2249,7 +2251,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(struct __pyx_obj_9bS
  */
   }
 
-  /* "bSMBHTask.pyx":106
+  /* "bSMBHTask.pyx":108
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.set_System(&Theta[0], threadNum)             # <<<<<<<<<<<<<<
@@ -2258,14 +2260,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(struct __pyx_obj_9bS
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->set_System((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->set_System((&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Theta.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_Theta.diminfo[0].strides))), __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":103
+  /* "bSMBHTask.pyx":105
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def set_System(self, np.ndarray[double, ndim=1, mode='c'] Theta not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2294,7 +2296,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_8set_System(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":110
+/* "bSMBHTask.pyx":112
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def get_setSystemsVec(self, np.ndarray[int, ndim=1, mode='c'] setSystems not None):             # <<<<<<<<<<<<<<
@@ -2308,7 +2310,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_11get_setSystemsVec(PyObject *__
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_setSystemsVec (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_setSystems), __pyx_ptype_5numpy_ndarray, 0, "setSystems", 0))) __PYX_ERR(0, 110, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_setSystems), __pyx_ptype_5numpy_ndarray, 0, "setSystems", 0))) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_10get_setSystemsVec(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), ((PyArrayObject *)__pyx_v_setSystems));
 
   /* function exit code */
@@ -2333,11 +2335,11 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_10get_setSystemsVec(struct __pyx
   __pyx_pybuffernd_setSystems.rcbuffer = &__pyx_pybuffer_setSystems;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_setSystems.rcbuffer->pybuffer, (PyObject*)__pyx_v_setSystems, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 110, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_setSystems.rcbuffer->pybuffer, (PyObject*)__pyx_v_setSystems, &__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
   }
   __pyx_pybuffernd_setSystems.diminfo[0].strides = __pyx_pybuffernd_setSystems.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_setSystems.diminfo[0].shape = __pyx_pybuffernd_setSystems.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":111
+  /* "bSMBHTask.pyx":113
  * 	@cython.wraparound(False)
  * 	def get_setSystemsVec(self, np.ndarray[int, ndim=1, mode='c'] setSystems not None):
  * 		self.thisptr.get_setSystemsVec(&setSystems[0])             # <<<<<<<<<<<<<<
@@ -2347,7 +2349,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_10get_setSystemsVec(struct __pyx
   __pyx_t_1 = 0;
   __pyx_v_self->thisptr->get_setSystemsVec((&(*__Pyx_BufPtrCContig1d(int *, __pyx_pybuffernd_setSystems.rcbuffer->pybuffer.buf, __pyx_t_1, __pyx_pybuffernd_setSystems.diminfo[0].strides))));
 
-  /* "bSMBHTask.pyx":110
+  /* "bSMBHTask.pyx":112
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def get_setSystemsVec(self, np.ndarray[int, ndim=1, mode='c'] setSystems not None):             # <<<<<<<<<<<<<<
@@ -2376,7 +2378,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_10get_setSystemsVec(struct __pyx
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":113
+/* "bSMBHTask.pyx":115
  * 		self.thisptr.get_setSystemsVec(&setSystems[0])
  * 
  * 	def print_System(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2412,7 +2414,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_13print_System(PyObject *__pyx_v
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "print_System") < 0)) __PYX_ERR(0, 113, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "print_System") < 0)) __PYX_ERR(0, 115, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2425,7 +2427,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_13print_System(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("print_System", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 113, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("print_System", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 115, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.print_System", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2447,19 +2449,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_12print_System(struct __pyx_obj_
   __Pyx_RefNannySetupContext("print_System", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":114
+  /* "bSMBHTask.pyx":116
  * 
  * 	def print_System(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		self.thisptr.print_System(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":115
+    /* "bSMBHTask.pyx":117
  * 	def print_System(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2469,7 +2471,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_12print_System(struct __pyx_obj_
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":114
+    /* "bSMBHTask.pyx":116
  * 
  * 	def print_System(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2478,17 +2480,17 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_12print_System(struct __pyx_obj_
  */
   }
 
-  /* "bSMBHTask.pyx":116
+  /* "bSMBHTask.pyx":118
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		self.thisptr.print_System(threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	def set_Epoch(self, epochIn, threadNum = None):
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_self->thisptr->print_System(__pyx_t_3);
 
-  /* "bSMBHTask.pyx":113
+  /* "bSMBHTask.pyx":115
  * 		self.thisptr.get_setSystemsVec(&setSystems[0])
  * 
  * 	def print_System(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2510,7 +2512,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_12print_System(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":118
+/* "bSMBHTask.pyx":120
  * 		self.thisptr.print_System(threadNum)
  * 
  * 	def set_Epoch(self, epochIn, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2551,7 +2553,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_15set_Epoch(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_Epoch") < 0)) __PYX_ERR(0, 118, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_Epoch") < 0)) __PYX_ERR(0, 120, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2566,7 +2568,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_15set_Epoch(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_Epoch", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 118, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_Epoch", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 120, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.set_Epoch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2589,19 +2591,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_14set_Epoch(struct __pyx_obj_9bS
   __Pyx_RefNannySetupContext("set_Epoch", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":119
+  /* "bSMBHTask.pyx":121
  * 
  * 	def set_Epoch(self, epochIn, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		self.thisptr.set_Epoch(epochIn, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":120
+    /* "bSMBHTask.pyx":122
  * 	def set_Epoch(self, epochIn, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2611,7 +2613,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_14set_Epoch(struct __pyx_obj_9bS
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":119
+    /* "bSMBHTask.pyx":121
  * 
  * 	def set_Epoch(self, epochIn, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2620,18 +2622,18 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_14set_Epoch(struct __pyx_obj_9bS
  */
   }
 
-  /* "bSMBHTask.pyx":121
+  /* "bSMBHTask.pyx":123
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		self.thisptr.set_Epoch(epochIn, threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	def get_Epoch(self, threadNum = None):
  */
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_epochIn); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_epochIn); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_self->thisptr->set_Epoch(__pyx_t_3, __pyx_t_4);
 
-  /* "bSMBHTask.pyx":118
+  /* "bSMBHTask.pyx":120
  * 		self.thisptr.print_System(threadNum)
  * 
  * 	def set_Epoch(self, epochIn, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2653,7 +2655,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_14set_Epoch(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":123
+/* "bSMBHTask.pyx":125
  * 		self.thisptr.set_Epoch(epochIn, threadNum)
  * 
  * 	def get_Epoch(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2689,7 +2691,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_17get_Epoch(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Epoch") < 0)) __PYX_ERR(0, 123, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Epoch") < 0)) __PYX_ERR(0, 125, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2702,7 +2704,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_17get_Epoch(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Epoch", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 123, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Epoch", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 125, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Epoch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2724,19 +2726,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_16get_Epoch(struct __pyx_obj_9bS
   __Pyx_RefNannySetupContext("get_Epoch", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":124
+  /* "bSMBHTask.pyx":126
  * 
  * 	def get_Epoch(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Epoch(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":125
+    /* "bSMBHTask.pyx":127
  * 	def get_Epoch(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2746,7 +2748,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_16get_Epoch(struct __pyx_obj_9bS
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":124
+    /* "bSMBHTask.pyx":126
  * 
  * 	def get_Epoch(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2755,7 +2757,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_16get_Epoch(struct __pyx_obj_9bS
  */
   }
 
-  /* "bSMBHTask.pyx":126
+  /* "bSMBHTask.pyx":128
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Epoch(threadNum)             # <<<<<<<<<<<<<<
@@ -2763,14 +2765,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_16get_Epoch(struct __pyx_obj_9bS
  * 	def get_Period(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Epoch(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Epoch(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":123
+  /* "bSMBHTask.pyx":125
  * 		self.thisptr.set_Epoch(epochIn, threadNum)
  * 
  * 	def get_Epoch(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2790,7 +2792,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_16get_Epoch(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":128
+/* "bSMBHTask.pyx":130
  * 		return self.thisptr.get_Epoch(threadNum)
  * 
  * 	def get_Period(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2826,7 +2828,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_19get_Period(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Period") < 0)) __PYX_ERR(0, 128, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Period") < 0)) __PYX_ERR(0, 130, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2839,7 +2841,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_19get_Period(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Period", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 128, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Period", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 130, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Period", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2861,19 +2863,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_18get_Period(struct __pyx_obj_9b
   __Pyx_RefNannySetupContext("get_Period", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":129
+  /* "bSMBHTask.pyx":131
  * 
  * 	def get_Period(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Period(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":130
+    /* "bSMBHTask.pyx":132
  * 	def get_Period(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -2883,7 +2885,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_18get_Period(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":129
+    /* "bSMBHTask.pyx":131
  * 
  * 	def get_Period(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -2892,7 +2894,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_18get_Period(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":131
+  /* "bSMBHTask.pyx":133
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Period(threadNum)             # <<<<<<<<<<<<<<
@@ -2900,14 +2902,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_18get_Period(struct __pyx_obj_9b
  * 	def get_A1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Period(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Period(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":128
+  /* "bSMBHTask.pyx":130
  * 		return self.thisptr.get_Epoch(threadNum)
  * 
  * 	def get_Period(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2927,7 +2929,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_18get_Period(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":133
+/* "bSMBHTask.pyx":135
  * 		return self.thisptr.get_Period(threadNum)
  * 
  * 	def get_A1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -2963,7 +2965,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_21get_A1(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_A1") < 0)) __PYX_ERR(0, 133, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_A1") < 0)) __PYX_ERR(0, 135, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2976,7 +2978,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_21get_A1(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_A1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 133, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_A1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 135, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_A1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2998,19 +3000,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_A1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":134
+  /* "bSMBHTask.pyx":136
  * 
  * 	def get_A1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_A1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":135
+    /* "bSMBHTask.pyx":137
  * 	def get_A1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -3020,7 +3022,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":134
+    /* "bSMBHTask.pyx":136
  * 
  * 	def get_A1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -3029,7 +3031,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":136
+  /* "bSMBHTask.pyx":138
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_A1(threadNum)             # <<<<<<<<<<<<<<
@@ -3037,14 +3039,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
  * 	def get_A2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_A1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_A1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":133
+  /* "bSMBHTask.pyx":135
  * 		return self.thisptr.get_Period(threadNum)
  * 
  * 	def get_A1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3064,7 +3066,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_20get_A1(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":138
+/* "bSMBHTask.pyx":140
  * 		return self.thisptr.get_A1(threadNum)
  * 
  * 	def get_A2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3100,7 +3102,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_23get_A2(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_A2") < 0)) __PYX_ERR(0, 138, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_A2") < 0)) __PYX_ERR(0, 140, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3113,7 +3115,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_23get_A2(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_A2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 138, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_A2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 140, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_A2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3135,19 +3137,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_A2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":139
+  /* "bSMBHTask.pyx":141
  * 
  * 	def get_A2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_A2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":140
+    /* "bSMBHTask.pyx":142
  * 	def get_A2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -3157,7 +3159,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":139
+    /* "bSMBHTask.pyx":141
  * 
  * 	def get_A2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -3166,7 +3168,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":141
+  /* "bSMBHTask.pyx":143
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_A2(threadNum)             # <<<<<<<<<<<<<<
@@ -3174,14 +3176,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBH
  * 	def get_M1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_A2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_A2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":138
+  /* "bSMBHTask.pyx":140
  * 		return self.thisptr.get_A1(threadNum)
  * 
  * 	def get_A2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3201,7 +3203,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_22get_A2(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":143
+/* "bSMBHTask.pyx":145
  * 		return self.thisptr.get_A2(threadNum)
  * 
  * 	def get_M1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3237,7 +3239,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_25get_M1(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M1") < 0)) __PYX_ERR(0, 143, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M1") < 0)) __PYX_ERR(0, 145, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3250,7 +3252,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_25get_M1(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_M1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 143, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_M1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 145, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3272,19 +3274,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_M1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":144
+  /* "bSMBHTask.pyx":146
  * 
  * 	def get_M1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_M1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":145
+    /* "bSMBHTask.pyx":147
  * 	def get_M1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -3294,7 +3296,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":144
+    /* "bSMBHTask.pyx":146
  * 
  * 	def get_M1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -3303,7 +3305,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":146
+  /* "bSMBHTask.pyx":148
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_M1(threadNum)             # <<<<<<<<<<<<<<
@@ -3311,14 +3313,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBH
  * 	def get_M2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 146, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":143
+  /* "bSMBHTask.pyx":145
  * 		return self.thisptr.get_A2(threadNum)
  * 
  * 	def get_M1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3338,7 +3340,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_24get_M1(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":148
+/* "bSMBHTask.pyx":150
  * 		return self.thisptr.get_M1(threadNum)
  * 
  * 	def get_M2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3374,7 +3376,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_27get_M2(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M2") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M2") < 0)) __PYX_ERR(0, 150, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3387,7 +3389,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_27get_M2(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_M2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_M2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 150, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3409,19 +3411,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_26get_M2(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_M2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":149
+  /* "bSMBHTask.pyx":151
  * 
  * 	def get_M2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_M2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":150
+    /* "bSMBHTask.pyx":152
  * 	def get_M2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -3431,7 +3433,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_26get_M2(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":149
+    /* "bSMBHTask.pyx":151
  * 
  * 	def get_M2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -3440,22 +3442,22 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_26get_M2(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":151
+  /* "bSMBHTask.pyx":153
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_M2(threadNum)             # <<<<<<<<<<<<<<
  * 
- * 	def get_RPeri1(self, threadNum = None):
+ * 	def get_M12(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":148
+  /* "bSMBHTask.pyx":150
  * 		return self.thisptr.get_M1(threadNum)
  * 
  * 	def get_M2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -3475,21 +3477,21 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_26get_M2(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":153
+/* "bSMBHTask.pyx":155
  * 		return self.thisptr.get_M2(threadNum)
  * 
- * 	def get_RPeri1(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_M12(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_RPeri1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_RPeri1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_M12(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_M12(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RPeri1 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("get_M12 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
     PyObject* values[1] = {0};
@@ -3511,7 +3513,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_RPeri1(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeri1") < 0)) __PYX_ERR(0, 153, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M12") < 0)) __PYX_ERR(0, 155, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3524,215 +3526,78 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_29get_RPeri1(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RPeri1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 153, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_M12", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 155, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeri1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M12", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_28get_RPeri1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_28get_M12(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_28get_RPeri1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_28get_M12(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RPeri1", 0);
+  __Pyx_RefNannySetupContext("get_M12", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
-
-  /* "bSMBHTask.pyx":154
- * 
- * 	def get_RPeri1(self, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeri1(threadNum)
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 154, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "bSMBHTask.pyx":155
- * 	def get_RPeri1(self, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RPeri1(threadNum)
- * 
- */
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
-
-    /* "bSMBHTask.pyx":154
- * 
- * 	def get_RPeri1(self, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeri1(threadNum)
- */
-  }
 
   /* "bSMBHTask.pyx":156
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeri1(threadNum)             # <<<<<<<<<<<<<<
  * 
- * 	def get_RPeri2(self, threadNum = None):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeri1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "bSMBHTask.pyx":153
- * 		return self.thisptr.get_M2(threadNum)
- * 
- * 	def get_RPeri1(self, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeri1", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "bSMBHTask.pyx":158
- * 		return self.thisptr.get_RPeri1(threadNum)
- * 
- * 	def get_RPeri2(self, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_31get_RPeri2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_31get_RPeri2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_threadNum = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RPeri2 (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
-    PyObject* values[1] = {0};
-    values[0] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[0] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeri2") < 0)) __PYX_ERR(0, 158, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_threadNum = values[0];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RPeri2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 158, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeri2", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_30get_RPeri2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_RPeri2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RPeri2", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
-
-  /* "bSMBHTask.pyx":159
- * 
- * 	def get_RPeri2(self, threadNum = None):
+ * 	def get_M12(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RPeri2(threadNum)
+ * 		return self.thisptr.get_M12(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":160
- * 	def get_RPeri2(self, threadNum = None):
+    /* "bSMBHTask.pyx":157
+ * 	def get_M12(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RPeri2(threadNum)
+ * 		return self.thisptr.get_M12(threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":159
+    /* "bSMBHTask.pyx":156
  * 
- * 	def get_RPeri2(self, threadNum = None):
+ * 	def get_M12(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RPeri2(threadNum)
+ * 		return self.thisptr.get_M12(threadNum)
  */
   }
-
-  /* "bSMBHTask.pyx":161
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeri2(threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	def get_RApo1(self, threadNum = None):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeri2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
 
   /* "bSMBHTask.pyx":158
- * 		return self.thisptr.get_RPeri1(threadNum)
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_M12(threadNum)             # <<<<<<<<<<<<<<
  * 
- * 	def get_RPeri2(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_M2OverM1(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M12(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":155
+ * 		return self.thisptr.get_M2(threadNum)
+ * 
+ * 	def get_M12(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -3740,7 +3605,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_RPeri2(struct __pyx_obj_9b
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeri2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M12", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_threadNum);
@@ -3749,21 +3614,21 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_RPeri2(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":163
- * 		return self.thisptr.get_RPeri2(threadNum)
+/* "bSMBHTask.pyx":160
+ * 		return self.thisptr.get_M12(threadNum)
  * 
- * 	def get_RApo1(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_M2OverM1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RApo1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RApo1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_31get_M2OverM1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_31get_M2OverM1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RApo1 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("get_M2OverM1 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
     PyObject* values[1] = {0};
@@ -3785,7 +3650,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RApo1(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApo1") < 0)) __PYX_ERR(0, 163, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_M2OverM1") < 0)) __PYX_ERR(0, 160, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3798,78 +3663,78 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RApo1(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RApo1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 163, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_M2OverM1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 160, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApo1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M2OverM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_32get_RApo1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_30get_M2OverM1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RApo1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_30get_M2OverM1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RApo1", 0);
+  __Pyx_RefNannySetupContext("get_M2OverM1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":164
+  /* "bSMBHTask.pyx":161
  * 
- * 	def get_RApo1(self, threadNum = None):
+ * 	def get_M2OverM1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApo1(threadNum)
+ * 		return self.thisptr.get_M2OverM1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":165
- * 	def get_RApo1(self, threadNum = None):
+    /* "bSMBHTask.pyx":162
+ * 	def get_M2OverM1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RApo1(threadNum)
+ * 		return self.thisptr.get_M2OverM1(threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":164
+    /* "bSMBHTask.pyx":161
  * 
- * 	def get_RApo1(self, threadNum = None):
+ * 	def get_M2OverM1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApo1(threadNum)
+ * 		return self.thisptr.get_M2OverM1(threadNum)
  */
   }
-
-  /* "bSMBHTask.pyx":166
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.get_RApo1(threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	def get_RApo2(self, threadNum = None):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApo1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
 
   /* "bSMBHTask.pyx":163
- * 		return self.thisptr.get_RPeri2(threadNum)
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_M2OverM1(threadNum)             # <<<<<<<<<<<<<<
  * 
- * 	def get_RApo1(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_RPeribothron1(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_M2OverM1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":160
+ * 		return self.thisptr.get_M12(threadNum)
+ * 
+ * 	def get_M2OverM1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -3877,7 +3742,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RApo1(struct __pyx_obj_9bS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApo1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_M2OverM1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_threadNum);
@@ -3886,21 +3751,21 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RApo1(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":168
- * 		return self.thisptr.get_RApo1(threadNum)
+/* "bSMBHTask.pyx":165
+ * 		return self.thisptr.get_M2OverM1(threadNum)
  * 
- * 	def get_RApo2(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_RPeribothron1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RApo2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RApo2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RPeribothron1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RPeribothron1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RApo2 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("get_RPeribothron1 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
     PyObject* values[1] = {0};
@@ -3922,7 +3787,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RApo2(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApo2") < 0)) __PYX_ERR(0, 168, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeribothron1") < 0)) __PYX_ERR(0, 165, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3935,215 +3800,78 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RApo2(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RApo2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 168, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RPeribothron1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 165, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApo2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothron1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_34get_RApo2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_32get_RPeribothron1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_34get_RApo2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_32get_RPeribothron1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RApo2", 0);
+  __Pyx_RefNannySetupContext("get_RPeribothron1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":169
+  /* "bSMBHTask.pyx":166
  * 
- * 	def get_RApo2(self, threadNum = None):
+ * 	def get_RPeribothron1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApo2(threadNum)
+ * 		return self.thisptr.get_RPeribothron1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":170
- * 	def get_RApo2(self, threadNum = None):
+    /* "bSMBHTask.pyx":167
+ * 	def get_RPeribothron1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RApo2(threadNum)
+ * 		return self.thisptr.get_RPeribothron1(threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":169
+    /* "bSMBHTask.pyx":166
  * 
- * 	def get_RApo2(self, threadNum = None):
+ * 	def get_RPeribothron1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApo2(threadNum)
+ * 		return self.thisptr.get_RPeribothron1(threadNum)
  */
   }
-
-  /* "bSMBHTask.pyx":171
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.get_RApo2(threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	def get_RPeriTot(self, threadNum = None):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApo2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
 
   /* "bSMBHTask.pyx":168
- * 		return self.thisptr.get_RApo1(threadNum)
- * 
- * 	def get_RApo2(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApo2", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_threadNum);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "bSMBHTask.pyx":173
- * 		return self.thisptr.get_RApo2(threadNum)
+ * 		return self.thisptr.get_RPeribothron1(threadNum)             # <<<<<<<<<<<<<<
  * 
- * 	def get_RPeriTot(self, threadNum = None):             # <<<<<<<<<<<<<<
- * 		if threadNum == None:
- * 			threadNum = 0
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RPeriTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RPeriTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_threadNum = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RPeriTot (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
-    PyObject* values[1] = {0};
-    values[0] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[0] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeriTot") < 0)) __PYX_ERR(0, 173, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_threadNum = values[0];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RPeriTot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 173, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeriTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_36get_RPeriTot(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RPeriTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RPeriTot", 0);
-  __Pyx_INCREF(__pyx_v_threadNum);
-
-  /* "bSMBHTask.pyx":174
- * 
- * 	def get_RPeriTot(self, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeriTot(threadNum)
- */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 174, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "bSMBHTask.pyx":175
- * 	def get_RPeriTot(self, threadNum = None):
- * 		if threadNum == None:
- * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RPeriTot(threadNum)
- * 
- */
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
-
-    /* "bSMBHTask.pyx":174
- * 
- * 	def get_RPeriTot(self, threadNum = None):
- * 		if threadNum == None:             # <<<<<<<<<<<<<<
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeriTot(threadNum)
- */
-  }
-
-  /* "bSMBHTask.pyx":176
- * 		if threadNum == None:
- * 			threadNum = 0
- * 		return self.thisptr.get_RPeriTot(threadNum)             # <<<<<<<<<<<<<<
- * 
- * 	def get_RApoTot(self, threadNum = None):
+ * 	def get_RPeribothron2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeriTot(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeribothron1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":173
- * 		return self.thisptr.get_RApo2(threadNum)
+  /* "bSMBHTask.pyx":165
+ * 		return self.thisptr.get_M2OverM1(threadNum)
  * 
- * 	def get_RPeriTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_RPeribothron1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -4151,7 +3879,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RPeriTot(struct __pyx_obj_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeriTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothron1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_threadNum);
@@ -4160,21 +3888,21 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RPeriTot(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":178
- * 		return self.thisptr.get_RPeriTot(threadNum)
+/* "bSMBHTask.pyx":170
+ * 		return self.thisptr.get_RPeribothron1(threadNum)
  * 
- * 	def get_RApoTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_RPeribothron2(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApoTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApoTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RPeribothron2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RPeribothron2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_RApoTot (wrapper)", 0);
+  __Pyx_RefNannySetupContext("get_RPeribothron2 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
     PyObject* values[1] = {0};
@@ -4196,7 +3924,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApoTot(PyObject *__pyx_v_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApoTot") < 0)) __PYX_ERR(0, 178, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeribothron2") < 0)) __PYX_ERR(0, 170, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4209,78 +3937,626 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApoTot(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RApoTot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 178, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RPeribothron2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 170, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApoTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothron2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_34get_RPeribothron2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_34get_RPeribothron2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  __Pyx_RefNannySetupContext("get_RApoTot", 0);
+  __Pyx_RefNannySetupContext("get_RPeribothron2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":179
+  /* "bSMBHTask.pyx":171
  * 
- * 	def get_RApoTot(self, threadNum = None):
+ * 	def get_RPeribothron2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApoTot(threadNum)
+ * 		return self.thisptr.get_RPeribothron2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":180
- * 	def get_RApoTot(self, threadNum = None):
+    /* "bSMBHTask.pyx":172
+ * 	def get_RPeribothron2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.get_RApoTot(threadNum)
+ * 		return self.thisptr.get_RPeribothron2(threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":179
+    /* "bSMBHTask.pyx":171
  * 
- * 	def get_RApoTot(self, threadNum = None):
+ * 	def get_RPeribothron2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.get_RApoTot(threadNum)
+ * 		return self.thisptr.get_RPeribothron2(threadNum)
  */
   }
 
-  /* "bSMBHTask.pyx":181
+  /* "bSMBHTask.pyx":173
  * 		if threadNum == None:
  * 			threadNum = 0
- * 		return self.thisptr.get_RApoTot(threadNum)             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.get_RPeribothron2(threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	def get_RApobothron1(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeribothron2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":170
+ * 		return self.thisptr.get_RPeribothron1(threadNum)
+ * 
+ * 	def get_RPeribothron2(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothron2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bSMBHTask.pyx":175
+ * 		return self.thisptr.get_RPeribothron2(threadNum)
+ * 
+ * 	def get_RApobothron1(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RApobothron1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RApobothron1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_RApobothron1 (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
+    PyObject* values[1] = {0};
+    values[0] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[0] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApobothron1") < 0)) __PYX_ERR(0, 175, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_threadNum = values[0];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_RApobothron1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 175, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothron1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_36get_RApobothron1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_36get_RApobothron1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  __Pyx_RefNannySetupContext("get_RApobothron1", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+
+  /* "bSMBHTask.pyx":176
+ * 
+ * 	def get_RApobothron1(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron1(threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "bSMBHTask.pyx":177
+ * 	def get_RApobothron1(self, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.get_RApobothron1(threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "bSMBHTask.pyx":176
+ * 
+ * 	def get_RApobothron1(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron1(threadNum)
+ */
+  }
+
+  /* "bSMBHTask.pyx":178
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron1(threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	def get_RApobothron2(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApobothron1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":175
+ * 		return self.thisptr.get_RPeribothron2(threadNum)
+ * 
+ * 	def get_RApobothron1(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothron1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bSMBHTask.pyx":180
+ * 		return self.thisptr.get_RApobothron1(threadNum)
+ * 
+ * 	def get_RApobothron2(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApobothron2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApobothron2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_RApobothron2 (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
+    PyObject* values[1] = {0};
+    values[0] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[0] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApobothron2") < 0)) __PYX_ERR(0, 180, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_threadNum = values[0];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_RApobothron2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 180, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothron2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApobothron2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApobothron2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  __Pyx_RefNannySetupContext("get_RApobothron2", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+
+  /* "bSMBHTask.pyx":181
+ * 
+ * 	def get_RApobothron2(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron2(threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "bSMBHTask.pyx":182
+ * 	def get_RApobothron2(self, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.get_RApobothron2(threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "bSMBHTask.pyx":181
+ * 
+ * 	def get_RApobothron2(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron2(threadNum)
+ */
+  }
+
+  /* "bSMBHTask.pyx":183
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothron2(threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	def get_RPeribothronTot(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApobothron2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":180
+ * 		return self.thisptr.get_RApobothron1(threadNum)
+ * 
+ * 	def get_RApobothron2(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothron2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bSMBHTask.pyx":185
+ * 		return self.thisptr.get_RApobothron2(threadNum)
+ * 
+ * 	def get_RPeribothronTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RPeribothronTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RPeribothronTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_RPeribothronTot (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
+    PyObject* values[1] = {0};
+    values[0] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[0] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RPeribothronTot") < 0)) __PYX_ERR(0, 185, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_threadNum = values[0];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_RPeribothronTot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 185, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothronTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_40get_RPeribothronTot(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RPeribothronTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  __Pyx_RefNannySetupContext("get_RPeribothronTot", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+
+  /* "bSMBHTask.pyx":186
+ * 
+ * 	def get_RPeribothronTot(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "bSMBHTask.pyx":187
+ * 	def get_RPeribothronTot(self, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "bSMBHTask.pyx":186
+ * 
+ * 	def get_RPeribothronTot(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)
+ */
+  }
+
+  /* "bSMBHTask.pyx":188
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	def get_RApobothronTot(self, threadNum = None):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RPeribothronTot(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bSMBHTask.pyx":185
+ * 		return self.thisptr.get_RApobothron2(threadNum)
+ * 
+ * 	def get_RPeribothronTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RPeribothronTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bSMBHTask.pyx":190
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)
+ * 
+ * 	def get_RApobothronTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RApobothronTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RApobothronTot(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_RApobothronTot (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_threadNum,0};
+    PyObject* values[1] = {0};
+    values[0] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[0] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RApobothronTot") < 0)) __PYX_ERR(0, 190, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_threadNum = values[0];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_RApobothronTot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 190, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothronTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_42get_RApobothronTot(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RApobothronTot(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  __Pyx_RefNannySetupContext("get_RApobothronTot", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+
+  /* "bSMBHTask.pyx":191
+ * 
+ * 	def get_RApobothronTot(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothronTot(threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "bSMBHTask.pyx":192
+ * 	def get_RApobothronTot(self, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.get_RApobothronTot(threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "bSMBHTask.pyx":191
+ * 
+ * 	def get_RApobothronTot(self, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothronTot(threadNum)
+ */
+  }
+
+  /* "bSMBHTask.pyx":193
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.get_RApobothronTot(threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	def get_RS1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApoTot(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RApobothronTot(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":178
- * 		return self.thisptr.get_RPeriTot(threadNum)
+  /* "bSMBHTask.pyx":190
+ * 		return self.thisptr.get_RPeribothronTot(threadNum)
  * 
- * 	def get_RApoTot(self, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def get_RApobothronTot(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -4288,7 +4564,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(struct __pyx_obj_9
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApoTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RApobothronTot", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_threadNum);
@@ -4297,8 +4573,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(struct __pyx_obj_9
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":183
- * 		return self.thisptr.get_RApoTot(threadNum)
+/* "bSMBHTask.pyx":195
+ * 		return self.thisptr.get_RApobothronTot(threadNum)
  * 
  * 	def get_RS1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
@@ -4306,8 +4582,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_38get_RApoTot(struct __pyx_obj_9
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RS1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RS1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_RS1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_RS1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -4333,7 +4609,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RS1(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RS1") < 0)) __PYX_ERR(0, 183, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RS1") < 0)) __PYX_ERR(0, 195, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4346,20 +4622,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RS1(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RS1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 183, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RS1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 195, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RS1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_44get_RS1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_RS1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4368,19 +4644,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
   __Pyx_RefNannySetupContext("get_RS1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":184
+  /* "bSMBHTask.pyx":196
  * 
  * 	def get_RS1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_RS1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":185
+    /* "bSMBHTask.pyx":197
  * 	def get_RS1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -4390,7 +4666,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":184
+    /* "bSMBHTask.pyx":196
  * 
  * 	def get_RS1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -4399,7 +4675,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
  */
   }
 
-  /* "bSMBHTask.pyx":186
+  /* "bSMBHTask.pyx":198
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_RS1(threadNum)             # <<<<<<<<<<<<<<
@@ -4407,15 +4683,15 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
  * 	def get_RS2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RS1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RS1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":183
- * 		return self.thisptr.get_RApoTot(threadNum)
+  /* "bSMBHTask.pyx":195
+ * 		return self.thisptr.get_RApobothronTot(threadNum)
  * 
  * 	def get_RS1(self, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
@@ -4434,7 +4710,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":188
+/* "bSMBHTask.pyx":200
  * 		return self.thisptr.get_RS1(threadNum)
  * 
  * 	def get_RS2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4443,8 +4719,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_40get_RS1(struct __pyx_obj_9bSMB
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RS2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RS2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_RS2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_RS2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -4470,7 +4746,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RS2(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RS2") < 0)) __PYX_ERR(0, 188, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RS2") < 0)) __PYX_ERR(0, 200, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4483,20 +4759,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RS2(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RS2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 188, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RS2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 200, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RS2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_46get_RS2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_RS2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4505,19 +4781,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
   __Pyx_RefNannySetupContext("get_RS2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":189
+  /* "bSMBHTask.pyx":201
  * 
  * 	def get_RS2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_RS2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":190
+    /* "bSMBHTask.pyx":202
  * 	def get_RS2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -4527,7 +4803,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":189
+    /* "bSMBHTask.pyx":201
  * 
  * 	def get_RS2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -4536,7 +4812,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
  */
   }
 
-  /* "bSMBHTask.pyx":191
+  /* "bSMBHTask.pyx":203
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_RS2(threadNum)             # <<<<<<<<<<<<<<
@@ -4544,14 +4820,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
  * 	def get_Eccentricity(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RS2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RS2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":188
+  /* "bSMBHTask.pyx":200
  * 		return self.thisptr.get_RS1(threadNum)
  * 
  * 	def get_RS2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4571,7 +4847,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":193
+/* "bSMBHTask.pyx":205
  * 		return self.thisptr.get_RS2(threadNum)
  * 
  * 	def get_Eccentricity(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4580,8 +4856,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_42get_RS2(struct __pyx_obj_9bSMB
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_Eccentricity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_Eccentricity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Eccentricity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Eccentricity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -4607,7 +4883,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_Eccentricity(PyObject *__p
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Eccentricity") < 0)) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Eccentricity") < 0)) __PYX_ERR(0, 205, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4620,20 +4896,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_45get_Eccentricity(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Eccentricity", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 193, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Eccentricity", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 205, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Eccentricity", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_48get_Eccentricity(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Eccentricity(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4642,19 +4918,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
   __Pyx_RefNannySetupContext("get_Eccentricity", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":194
+  /* "bSMBHTask.pyx":206
  * 
  * 	def get_Eccentricity(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Eccentricity(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":195
+    /* "bSMBHTask.pyx":207
  * 	def get_Eccentricity(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -4664,7 +4940,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":194
+    /* "bSMBHTask.pyx":206
  * 
  * 	def get_Eccentricity(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -4673,7 +4949,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
  */
   }
 
-  /* "bSMBHTask.pyx":196
+  /* "bSMBHTask.pyx":208
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Eccentricity(threadNum)             # <<<<<<<<<<<<<<
@@ -4681,14 +4957,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
  * 	def get_Omega1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Eccentricity(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Eccentricity(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":193
+  /* "bSMBHTask.pyx":205
  * 		return self.thisptr.get_RS2(threadNum)
  * 
  * 	def get_Eccentricity(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4708,7 +4984,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":198
+/* "bSMBHTask.pyx":210
  * 		return self.thisptr.get_Eccentricity(threadNum)
  * 
  * 	def get_Omega1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4717,8 +4993,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_44get_Eccentricity(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_Omega1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_Omega1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Omega1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Omega1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -4744,7 +5020,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_Omega1(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Omega1") < 0)) __PYX_ERR(0, 198, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Omega1") < 0)) __PYX_ERR(0, 210, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4757,20 +5033,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_47get_Omega1(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Omega1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 198, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Omega1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 210, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Omega1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_50get_Omega1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Omega1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4779,19 +5055,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
   __Pyx_RefNannySetupContext("get_Omega1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":199
+  /* "bSMBHTask.pyx":211
  * 
  * 	def get_Omega1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Omega1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":200
+    /* "bSMBHTask.pyx":212
  * 	def get_Omega1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -4801,7 +5077,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":199
+    /* "bSMBHTask.pyx":211
  * 
  * 	def get_Omega1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -4810,7 +5086,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":201
+  /* "bSMBHTask.pyx":213
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Omega1(threadNum)             # <<<<<<<<<<<<<<
@@ -4818,14 +5094,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
  * 	def get_Omega2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Omega1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Omega1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":198
+  /* "bSMBHTask.pyx":210
  * 		return self.thisptr.get_Eccentricity(threadNum)
  * 
  * 	def get_Omega1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4845,7 +5121,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":203
+/* "bSMBHTask.pyx":215
  * 		return self.thisptr.get_Omega1(threadNum)
  * 
  * 	def get_Omega2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4854,8 +5130,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_46get_Omega1(struct __pyx_obj_9b
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Omega2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Omega2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Omega2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Omega2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -4881,7 +5157,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Omega2(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Omega2") < 0)) __PYX_ERR(0, 203, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Omega2") < 0)) __PYX_ERR(0, 215, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4894,20 +5170,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Omega2(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Omega2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 203, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Omega2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 215, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Omega2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_52get_Omega2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Omega2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4916,19 +5192,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
   __Pyx_RefNannySetupContext("get_Omega2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":204
+  /* "bSMBHTask.pyx":216
  * 
  * 	def get_Omega2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Omega2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":205
+    /* "bSMBHTask.pyx":217
  * 	def get_Omega2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -4938,7 +5214,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":204
+    /* "bSMBHTask.pyx":216
  * 
  * 	def get_Omega2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -4947,7 +5223,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":206
+  /* "bSMBHTask.pyx":218
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Omega2(threadNum)             # <<<<<<<<<<<<<<
@@ -4955,14 +5231,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
  * 	def get_Inclination(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Omega2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Omega2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":203
+  /* "bSMBHTask.pyx":215
  * 		return self.thisptr.get_Omega1(threadNum)
  * 
  * 	def get_Omega2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4982,7 +5258,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":208
+/* "bSMBHTask.pyx":220
  * 		return self.thisptr.get_Omega2(threadNum)
  * 
  * 	def get_Inclination(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -4991,8 +5267,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_48get_Omega2(struct __pyx_obj_9b
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Inclination(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Inclination(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_Inclination(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_Inclination(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5018,7 +5294,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Inclination(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Inclination") < 0)) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Inclination") < 0)) __PYX_ERR(0, 220, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5031,20 +5307,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Inclination(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Inclination", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 208, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Inclination", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 220, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Inclination", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_54get_Inclination(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_Inclination(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5053,19 +5329,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
   __Pyx_RefNannySetupContext("get_Inclination", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":209
+  /* "bSMBHTask.pyx":221
  * 
  * 	def get_Inclination(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Inclination(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":210
+    /* "bSMBHTask.pyx":222
  * 	def get_Inclination(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5075,7 +5351,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":209
+    /* "bSMBHTask.pyx":221
  * 
  * 	def get_Inclination(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5084,7 +5360,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":211
+  /* "bSMBHTask.pyx":223
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Inclination(threadNum)             # <<<<<<<<<<<<<<
@@ -5092,14 +5368,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
  * 	def get_Tau(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Inclination(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Inclination(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":208
+  /* "bSMBHTask.pyx":220
  * 		return self.thisptr.get_Omega2(threadNum)
  * 
  * 	def get_Inclination(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5119,7 +5395,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":213
+/* "bSMBHTask.pyx":225
  * 		return self.thisptr.get_Inclination(threadNum)
  * 
  * 	def get_Tau(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5128,8 +5404,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_50get_Inclination(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Tau(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Tau(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_Tau(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_Tau(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5155,7 +5431,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Tau(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Tau") < 0)) __PYX_ERR(0, 213, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Tau") < 0)) __PYX_ERR(0, 225, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5168,20 +5444,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Tau(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Tau", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 213, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Tau", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 225, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Tau", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_56get_Tau(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_Tau(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5190,19 +5466,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
   __Pyx_RefNannySetupContext("get_Tau", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":214
+  /* "bSMBHTask.pyx":226
  * 
  * 	def get_Tau(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Tau(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":215
+    /* "bSMBHTask.pyx":227
  * 	def get_Tau(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5212,7 +5488,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":214
+    /* "bSMBHTask.pyx":226
  * 
  * 	def get_Tau(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5221,7 +5497,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
  */
   }
 
-  /* "bSMBHTask.pyx":216
+  /* "bSMBHTask.pyx":228
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Tau(threadNum)             # <<<<<<<<<<<<<<
@@ -5229,14 +5505,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
  * 	def get_MeanAnamoly(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 216, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Tau(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Tau(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":213
+  /* "bSMBHTask.pyx":225
  * 		return self.thisptr.get_Inclination(threadNum)
  * 
  * 	def get_Tau(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5256,7 +5532,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":218
+/* "bSMBHTask.pyx":230
  * 		return self.thisptr.get_Tau(threadNum)
  * 
  * 	def get_MeanAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5265,8 +5541,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_52get_Tau(struct __pyx_obj_9bSMB
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_MeanAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_MeanAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_MeanAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_MeanAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5292,7 +5568,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_MeanAnamoly(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_MeanAnamoly") < 0)) __PYX_ERR(0, 218, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_MeanAnamoly") < 0)) __PYX_ERR(0, 230, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5305,20 +5581,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_55get_MeanAnamoly(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_MeanAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 218, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_MeanAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 230, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_MeanAnamoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_58get_MeanAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_MeanAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5327,19 +5603,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
   __Pyx_RefNannySetupContext("get_MeanAnamoly", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":219
+  /* "bSMBHTask.pyx":231
  * 
  * 	def get_MeanAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_MeanAnomoly(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":220
+    /* "bSMBHTask.pyx":232
  * 	def get_MeanAnamoly(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5349,7 +5625,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":219
+    /* "bSMBHTask.pyx":231
  * 
  * 	def get_MeanAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5358,7 +5634,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":221
+  /* "bSMBHTask.pyx":233
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_MeanAnomoly(threadNum)             # <<<<<<<<<<<<<<
@@ -5366,14 +5642,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
  * 	def get_EccentricAnamoly(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 221, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_MeanAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_MeanAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":218
+  /* "bSMBHTask.pyx":230
  * 		return self.thisptr.get_Tau(threadNum)
  * 
  * 	def get_MeanAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5393,7 +5669,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":223
+/* "bSMBHTask.pyx":235
  * 		return self.thisptr.get_MeanAnomoly(threadNum)
  * 
  * 	def get_EccentricAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5402,8 +5678,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_54get_MeanAnamoly(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_EccentricAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_EccentricAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_EccentricAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_EccentricAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5429,7 +5705,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_EccentricAnamoly(PyObject 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_EccentricAnamoly") < 0)) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_EccentricAnamoly") < 0)) __PYX_ERR(0, 235, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5442,20 +5718,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_57get_EccentricAnamoly(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_EccentricAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 223, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_EccentricAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 235, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_EccentricAnamoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_60get_EccentricAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_EccentricAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5464,19 +5740,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
   __Pyx_RefNannySetupContext("get_EccentricAnamoly", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":224
+  /* "bSMBHTask.pyx":236
  * 
  * 	def get_EccentricAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_EccentricAnomoly(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":225
+    /* "bSMBHTask.pyx":237
  * 	def get_EccentricAnamoly(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5486,7 +5762,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":224
+    /* "bSMBHTask.pyx":236
  * 
  * 	def get_EccentricAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5495,7 +5771,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
  */
   }
 
-  /* "bSMBHTask.pyx":226
+  /* "bSMBHTask.pyx":238
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_EccentricAnomoly(threadNum)             # <<<<<<<<<<<<<<
@@ -5503,14 +5779,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
  * 	def get_TrueAnamoly(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_EccentricAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_EccentricAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":223
+  /* "bSMBHTask.pyx":235
  * 		return self.thisptr.get_MeanAnomoly(threadNum)
  * 
  * 	def get_EccentricAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5530,7 +5806,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":228
+/* "bSMBHTask.pyx":240
  * 		return self.thisptr.get_EccentricAnomoly(threadNum)
  * 
  * 	def get_TrueAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5539,8 +5815,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_56get_EccentricAnamoly(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_TrueAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_TrueAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_TrueAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_TrueAnamoly(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5566,7 +5842,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_TrueAnamoly(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_TrueAnamoly") < 0)) __PYX_ERR(0, 228, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_TrueAnamoly") < 0)) __PYX_ERR(0, 240, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5579,20 +5855,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_59get_TrueAnamoly(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_TrueAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 228, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_TrueAnamoly", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 240, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_TrueAnamoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_62get_TrueAnamoly(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_TrueAnamoly(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5601,19 +5877,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
   __Pyx_RefNannySetupContext("get_TrueAnamoly", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":229
+  /* "bSMBHTask.pyx":241
  * 
  * 	def get_TrueAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_TrueAnomoly(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":230
+    /* "bSMBHTask.pyx":242
  * 	def get_TrueAnamoly(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5623,7 +5899,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":229
+    /* "bSMBHTask.pyx":241
  * 
  * 	def get_TrueAnamoly(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5632,7 +5908,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":231
+  /* "bSMBHTask.pyx":243
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_TrueAnomoly(threadNum)             # <<<<<<<<<<<<<<
@@ -5640,14 +5916,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
  * 	def get_R1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 231, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_TrueAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_TrueAnomoly(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":228
+  /* "bSMBHTask.pyx":240
  * 		return self.thisptr.get_EccentricAnomoly(threadNum)
  * 
  * 	def get_TrueAnamoly(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5667,7 +5943,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":233
+/* "bSMBHTask.pyx":245
  * 		return self.thisptr.get_TrueAnomoly(threadNum)
  * 
  * 	def get_R1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5676,8 +5952,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_58get_TrueAnamoly(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_R1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_R1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_R1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_R1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5703,7 +5979,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_R1(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_R1") < 0)) __PYX_ERR(0, 233, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_R1") < 0)) __PYX_ERR(0, 245, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5716,20 +5992,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_61get_R1(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_R1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 233, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_R1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 245, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_R1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_64get_R1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_R1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5738,19 +6014,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_R1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":234
+  /* "bSMBHTask.pyx":246
  * 
  * 	def get_R1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_R1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":235
+    /* "bSMBHTask.pyx":247
  * 	def get_R1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5760,7 +6036,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":234
+    /* "bSMBHTask.pyx":246
  * 
  * 	def get_R1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5769,7 +6045,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":236
+  /* "bSMBHTask.pyx":248
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_R1(threadNum)             # <<<<<<<<<<<<<<
@@ -5777,14 +6053,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
  * 	def get_R2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_R1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_R1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":233
+  /* "bSMBHTask.pyx":245
  * 		return self.thisptr.get_TrueAnomoly(threadNum)
  * 
  * 	def get_R1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5804,7 +6080,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":238
+/* "bSMBHTask.pyx":250
  * 		return self.thisptr.get_R1(threadNum)
  * 
  * 	def get_R2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5813,8 +6089,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_60get_R1(struct __pyx_obj_9bSMBH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_R2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_R2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_R2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_R2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5840,7 +6116,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_R2(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_R2") < 0)) __PYX_ERR(0, 238, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_R2") < 0)) __PYX_ERR(0, 250, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5853,20 +6129,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_63get_R2(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_R2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 238, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_R2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 250, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_R2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_66get_R2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_R2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5875,19 +6151,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_R2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":239
+  /* "bSMBHTask.pyx":251
  * 
  * 	def get_R2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_R2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":240
+    /* "bSMBHTask.pyx":252
  * 	def get_R2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -5897,7 +6173,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":239
+    /* "bSMBHTask.pyx":251
  * 
  * 	def get_R2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -5906,7 +6182,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":241
+  /* "bSMBHTask.pyx":253
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_R2(threadNum)             # <<<<<<<<<<<<<<
@@ -5914,14 +6190,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
  * 	def get_Theta1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_R2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_R2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":238
+  /* "bSMBHTask.pyx":250
  * 		return self.thisptr.get_R1(threadNum)
  * 
  * 	def get_R2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5941,7 +6217,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":243
+/* "bSMBHTask.pyx":255
  * 		return self.thisptr.get_R2(threadNum)
  * 
  * 	def get_Theta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -5950,8 +6226,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_62get_R2(struct __pyx_obj_9bSMBH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_Theta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_Theta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Theta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Theta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5977,7 +6253,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_Theta1(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta1") < 0)) __PYX_ERR(0, 243, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta1") < 0)) __PYX_ERR(0, 255, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5990,20 +6266,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_65get_Theta1(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Theta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 243, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Theta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 255, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Theta1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_68get_Theta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Theta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6012,19 +6288,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
   __Pyx_RefNannySetupContext("get_Theta1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":244
+  /* "bSMBHTask.pyx":256
  * 
  * 	def get_Theta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Theta1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":245
+    /* "bSMBHTask.pyx":257
  * 	def get_Theta1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6034,7 +6310,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":244
+    /* "bSMBHTask.pyx":256
  * 
  * 	def get_Theta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6043,7 +6319,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":246
+  /* "bSMBHTask.pyx":258
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Theta1(threadNum)             # <<<<<<<<<<<<<<
@@ -6051,14 +6327,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
  * 	def get_Theta2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 246, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Theta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Theta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":243
+  /* "bSMBHTask.pyx":255
  * 		return self.thisptr.get_R2(threadNum)
  * 
  * 	def get_Theta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6078,7 +6354,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":248
+/* "bSMBHTask.pyx":260
  * 		return self.thisptr.get_Theta1(threadNum)
  * 
  * 	def get_Theta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6087,8 +6363,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_64get_Theta1(struct __pyx_obj_9b
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_Theta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_Theta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Theta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Theta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6114,7 +6390,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_Theta2(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta2") < 0)) __PYX_ERR(0, 248, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Theta2") < 0)) __PYX_ERR(0, 260, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6127,20 +6403,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_67get_Theta2(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Theta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 248, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Theta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 260, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Theta2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_70get_Theta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Theta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6149,19 +6425,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
   __Pyx_RefNannySetupContext("get_Theta2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":249
+  /* "bSMBHTask.pyx":261
  * 
  * 	def get_Theta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Theta2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":250
+    /* "bSMBHTask.pyx":262
  * 	def get_Theta2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6171,7 +6447,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":249
+    /* "bSMBHTask.pyx":261
  * 
  * 	def get_Theta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6180,7 +6456,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
  */
   }
 
-  /* "bSMBHTask.pyx":251
+  /* "bSMBHTask.pyx":263
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Theta2(threadNum)             # <<<<<<<<<<<<<<
@@ -6188,14 +6464,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
  * 	def get_Beta1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 251, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Theta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Theta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":248
+  /* "bSMBHTask.pyx":260
  * 		return self.thisptr.get_Theta1(threadNum)
  * 
  * 	def get_Theta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6215,7 +6491,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":253
+/* "bSMBHTask.pyx":265
  * 		return self.thisptr.get_Theta2(threadNum)
  * 
  * 	def get_Beta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6224,8 +6500,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_66get_Theta2(struct __pyx_obj_9b
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Beta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Beta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_Beta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_Beta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6251,7 +6527,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Beta1(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Beta1") < 0)) __PYX_ERR(0, 253, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Beta1") < 0)) __PYX_ERR(0, 265, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6264,20 +6540,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Beta1(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Beta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 253, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Beta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 265, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Beta1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_72get_Beta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_Beta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6286,19 +6562,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
   __Pyx_RefNannySetupContext("get_Beta1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":254
+  /* "bSMBHTask.pyx":266
  * 
  * 	def get_Beta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Beta1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":255
+    /* "bSMBHTask.pyx":267
  * 	def get_Beta1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6308,7 +6584,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":254
+    /* "bSMBHTask.pyx":266
  * 
  * 	def get_Beta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6317,7 +6593,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
  */
   }
 
-  /* "bSMBHTask.pyx":256
+  /* "bSMBHTask.pyx":268
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Beta1(threadNum)             # <<<<<<<<<<<<<<
@@ -6325,14 +6601,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
  * 	def get_Beta2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 256, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Beta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Beta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":253
+  /* "bSMBHTask.pyx":265
  * 		return self.thisptr.get_Theta2(threadNum)
  * 
  * 	def get_Beta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6352,7 +6628,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":258
+/* "bSMBHTask.pyx":270
  * 		return self.thisptr.get_Beta1(threadNum)
  * 
  * 	def get_Beta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6361,8 +6637,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_68get_Beta1(struct __pyx_obj_9bS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Beta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Beta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_Beta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_Beta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6388,7 +6664,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Beta2(PyObject *__pyx_v_se
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Beta2") < 0)) __PYX_ERR(0, 258, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_Beta2") < 0)) __PYX_ERR(0, 270, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6401,20 +6677,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Beta2(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_Beta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 258, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_Beta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 270, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_Beta2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_74get_Beta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_Beta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6423,19 +6699,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
   __Pyx_RefNannySetupContext("get_Beta2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":259
+  /* "bSMBHTask.pyx":271
  * 
  * 	def get_Beta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_Beta2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 259, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":260
+    /* "bSMBHTask.pyx":272
  * 	def get_Beta2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6445,7 +6721,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":259
+    /* "bSMBHTask.pyx":271
  * 
  * 	def get_Beta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6454,7 +6730,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
  */
   }
 
-  /* "bSMBHTask.pyx":261
+  /* "bSMBHTask.pyx":273
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_Beta2(threadNum)             # <<<<<<<<<<<<<<
@@ -6462,14 +6738,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
  * 	def get_RadialBeta1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 261, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Beta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_Beta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":258
+  /* "bSMBHTask.pyx":270
  * 		return self.thisptr.get_Beta1(threadNum)
  * 
  * 	def get_Beta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6489,7 +6765,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":263
+/* "bSMBHTask.pyx":275
  * 		return self.thisptr.get_Beta2(threadNum)
  * 
  * 	def get_RadialBeta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6498,8 +6774,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_70get_Beta2(struct __pyx_obj_9bS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_RadialBeta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_RadialBeta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_RadialBeta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_RadialBeta1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6525,7 +6801,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_RadialBeta1(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RadialBeta1") < 0)) __PYX_ERR(0, 263, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RadialBeta1") < 0)) __PYX_ERR(0, 275, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6538,20 +6814,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_73get_RadialBeta1(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RadialBeta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 263, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RadialBeta1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 275, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RadialBeta1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_76get_RadialBeta1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_RadialBeta1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6560,19 +6836,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
   __Pyx_RefNannySetupContext("get_RadialBeta1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":264
+  /* "bSMBHTask.pyx":276
  * 
  * 	def get_RadialBeta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_RadialBeta1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 264, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":265
+    /* "bSMBHTask.pyx":277
  * 	def get_RadialBeta1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6582,7 +6858,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":264
+    /* "bSMBHTask.pyx":276
  * 
  * 	def get_RadialBeta1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6591,7 +6867,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":266
+  /* "bSMBHTask.pyx":278
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_RadialBeta1(threadNum)             # <<<<<<<<<<<<<<
@@ -6599,14 +6875,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
  * 	def get_RadialBeta2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 266, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RadialBeta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RadialBeta1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":263
+  /* "bSMBHTask.pyx":275
  * 		return self.thisptr.get_Beta2(threadNum)
  * 
  * 	def get_RadialBeta1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6626,7 +6902,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":268
+/* "bSMBHTask.pyx":280
  * 		return self.thisptr.get_RadialBeta1(threadNum)
  * 
  * 	def get_RadialBeta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6635,8 +6911,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_72get_RadialBeta1(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_RadialBeta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_RadialBeta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_RadialBeta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_RadialBeta2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6662,7 +6938,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_RadialBeta2(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RadialBeta2") < 0)) __PYX_ERR(0, 268, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_RadialBeta2") < 0)) __PYX_ERR(0, 280, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6675,20 +6951,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_75get_RadialBeta2(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_RadialBeta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 268, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_RadialBeta2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 280, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_RadialBeta2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_78get_RadialBeta2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_RadialBeta2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6697,19 +6973,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
   __Pyx_RefNannySetupContext("get_RadialBeta2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":269
+  /* "bSMBHTask.pyx":281
  * 
  * 	def get_RadialBeta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_RadialBeta2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":270
+    /* "bSMBHTask.pyx":282
  * 	def get_RadialBeta2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6719,7 +6995,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":269
+    /* "bSMBHTask.pyx":281
  * 
  * 	def get_RadialBeta2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6728,7 +7004,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":271
+  /* "bSMBHTask.pyx":283
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_RadialBeta2(threadNum)             # <<<<<<<<<<<<<<
@@ -6736,14 +7012,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
  * 	def get_DopplerFactor1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 271, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RadialBeta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_RadialBeta2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":268
+  /* "bSMBHTask.pyx":280
  * 		return self.thisptr.get_RadialBeta1(threadNum)
  * 
  * 	def get_RadialBeta2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6763,7 +7039,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":273
+/* "bSMBHTask.pyx":285
  * 		return self.thisptr.get_RadialBeta2(threadNum)
  * 
  * 	def get_DopplerFactor1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6772,8 +7048,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_74get_RadialBeta2(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_DopplerFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_DopplerFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_DopplerFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_DopplerFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6799,7 +7075,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_DopplerFactor1(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_DopplerFactor1") < 0)) __PYX_ERR(0, 273, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_DopplerFactor1") < 0)) __PYX_ERR(0, 285, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6812,20 +7088,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_77get_DopplerFactor1(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_DopplerFactor1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 273, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_DopplerFactor1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 285, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_DopplerFactor1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_80get_DopplerFactor1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_DopplerFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6834,19 +7110,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
   __Pyx_RefNannySetupContext("get_DopplerFactor1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":274
+  /* "bSMBHTask.pyx":286
  * 
  * 	def get_DopplerFactor1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_DopplerFactor1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":275
+    /* "bSMBHTask.pyx":287
  * 	def get_DopplerFactor1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6856,7 +7132,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":274
+    /* "bSMBHTask.pyx":286
  * 
  * 	def get_DopplerFactor1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -6865,7 +7141,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
  */
   }
 
-  /* "bSMBHTask.pyx":276
+  /* "bSMBHTask.pyx":288
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_DopplerFactor1(threadNum)             # <<<<<<<<<<<<<<
@@ -6873,14 +7149,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
  * 	def get_DopplerFactor2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 276, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_DopplerFactor1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 288, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_DopplerFactor1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":273
+  /* "bSMBHTask.pyx":285
  * 		return self.thisptr.get_RadialBeta2(threadNum)
  * 
  * 	def get_DopplerFactor1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6900,7 +7176,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":278
+/* "bSMBHTask.pyx":290
  * 		return self.thisptr.get_DopplerFactor1(threadNum)
  * 
  * 	def get_DopplerFactor2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -6909,8 +7185,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_76get_DopplerFactor1(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_DopplerFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_DopplerFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_DopplerFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_DopplerFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6936,7 +7212,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_DopplerFactor2(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_DopplerFactor2") < 0)) __PYX_ERR(0, 278, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_DopplerFactor2") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6949,20 +7225,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_79get_DopplerFactor2(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_DopplerFactor2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 278, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_DopplerFactor2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_DopplerFactor2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_82get_DopplerFactor2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_DopplerFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6971,19 +7247,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
   __Pyx_RefNannySetupContext("get_DopplerFactor2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":279
+  /* "bSMBHTask.pyx":291
  * 
  * 	def get_DopplerFactor2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_DopplerFactor2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":280
+    /* "bSMBHTask.pyx":292
  * 	def get_DopplerFactor2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -6993,7 +7269,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":279
+    /* "bSMBHTask.pyx":291
  * 
  * 	def get_DopplerFactor2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7002,7 +7278,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
  */
   }
 
-  /* "bSMBHTask.pyx":281
+  /* "bSMBHTask.pyx":293
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_DopplerFactor2(threadNum)             # <<<<<<<<<<<<<<
@@ -7010,14 +7286,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
  * 	def get_BeamingFactor1(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_DopplerFactor2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_DopplerFactor2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":278
+  /* "bSMBHTask.pyx":290
  * 		return self.thisptr.get_DopplerFactor1(threadNum)
  * 
  * 	def get_DopplerFactor2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7037,7 +7313,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":283
+/* "bSMBHTask.pyx":295
  * 		return self.thisptr.get_DopplerFactor2(threadNum)
  * 
  * 	def get_BeamingFactor1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7046,8 +7322,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_78get_DopplerFactor2(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_BeamingFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_BeamingFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_BeamingFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_BeamingFactor1(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -7073,7 +7349,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_BeamingFactor1(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_BeamingFactor1") < 0)) __PYX_ERR(0, 283, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_BeamingFactor1") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7086,20 +7362,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_81get_BeamingFactor1(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_BeamingFactor1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 283, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_BeamingFactor1", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_BeamingFactor1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_84get_BeamingFactor1(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_BeamingFactor1(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7108,19 +7384,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
   __Pyx_RefNannySetupContext("get_BeamingFactor1", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":284
+  /* "bSMBHTask.pyx":296
  * 
  * 	def get_BeamingFactor1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_BeamingFactor1(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":285
+    /* "bSMBHTask.pyx":297
  * 	def get_BeamingFactor1(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7130,7 +7406,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":284
+    /* "bSMBHTask.pyx":296
  * 
  * 	def get_BeamingFactor1(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7139,7 +7415,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
  */
   }
 
-  /* "bSMBHTask.pyx":286
+  /* "bSMBHTask.pyx":298
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_BeamingFactor1(threadNum)             # <<<<<<<<<<<<<<
@@ -7147,14 +7423,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
  * 	def get_BeamingFactor2(self, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 286, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_BeamingFactor1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_BeamingFactor1(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":283
+  /* "bSMBHTask.pyx":295
  * 		return self.thisptr.get_DopplerFactor2(threadNum)
  * 
  * 	def get_BeamingFactor1(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7174,7 +7450,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":288
+/* "bSMBHTask.pyx":300
  * 		return self.thisptr.get_BeamingFactor1(threadNum)
  * 
  * 	def get_BeamingFactor2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7183,8 +7459,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_80get_BeamingFactor1(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_BeamingFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_BeamingFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_BeamingFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_BeamingFactor2(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -7210,7 +7486,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_BeamingFactor2(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_BeamingFactor2") < 0)) __PYX_ERR(0, 288, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_BeamingFactor2") < 0)) __PYX_ERR(0, 300, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7223,20 +7499,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_83get_BeamingFactor2(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_BeamingFactor2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 288, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_BeamingFactor2", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 300, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_BeamingFactor2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_86get_BeamingFactor2(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_BeamingFactor2(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7245,19 +7521,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
   __Pyx_RefNannySetupContext("get_BeamingFactor2", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":289
+  /* "bSMBHTask.pyx":301
  * 
  * 	def get_BeamingFactor2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_BeamingFactor2(threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 289, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 289, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 301, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":290
+    /* "bSMBHTask.pyx":302
  * 	def get_BeamingFactor2(self, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7267,7 +7543,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":289
+    /* "bSMBHTask.pyx":301
  * 
  * 	def get_BeamingFactor2(self, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7276,7 +7552,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
  */
   }
 
-  /* "bSMBHTask.pyx":291
+  /* "bSMBHTask.pyx":303
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_BeamingFactor2(threadNum)             # <<<<<<<<<<<<<<
@@ -7284,14 +7560,14 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
  * 	def get_aH(self, sigmaStars, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_BeamingFactor2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_BeamingFactor2(__pyx_t_3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":288
+  /* "bSMBHTask.pyx":300
  * 		return self.thisptr.get_BeamingFactor1(threadNum)
  * 
  * 	def get_BeamingFactor2(self, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7311,7 +7587,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":293
+/* "bSMBHTask.pyx":305
  * 		return self.thisptr.get_BeamingFactor2(threadNum)
  * 
  * 	def get_aH(self, sigmaStars, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7320,8 +7596,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_82get_BeamingFactor2(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_aH(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_aH(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_aH(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_aH(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_sigmaStars = 0;
   PyObject *__pyx_v_threadNum = 0;
   PyObject *__pyx_r = 0;
@@ -7352,7 +7628,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_aH(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_aH") < 0)) __PYX_ERR(0, 293, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_aH") < 0)) __PYX_ERR(0, 305, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7367,20 +7643,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_85get_aH(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_aH", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 293, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_aH", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 305, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_aH", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_88get_aH(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_aH(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7390,19 +7666,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
   __Pyx_RefNannySetupContext("get_aH", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":294
+  /* "bSMBHTask.pyx":306
  * 
  * 	def get_aH(self, sigmaStars, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_aH(sigmaStars, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":295
+    /* "bSMBHTask.pyx":307
  * 	def get_aH(self, sigmaStars, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7412,7 +7688,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":294
+    /* "bSMBHTask.pyx":306
  * 
  * 	def get_aH(self, sigmaStars, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7421,7 +7697,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
  */
   }
 
-  /* "bSMBHTask.pyx":296
+  /* "bSMBHTask.pyx":308
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_aH(sigmaStars, threadNum)             # <<<<<<<<<<<<<<
@@ -7429,15 +7705,15 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_aH(__pyx_t_3, __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 308, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 308, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_aH(__pyx_t_3, __pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":293
+  /* "bSMBHTask.pyx":305
  * 		return self.thisptr.get_BeamingFactor2(threadNum)
  * 
  * 	def get_aH(self, sigmaStars, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7457,7 +7733,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":298
+/* "bSMBHTask.pyx":310
  * 		return self.thisptr.get_aH(sigmaStars, threadNum)
  * 
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7466,8 +7742,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_84get_aH(struct __pyx_obj_9bSMBH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_aGW(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_aGW(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_sigmaStars = 0;
   PyObject *__pyx_v_rhoStars = 0;
   PyObject *__pyx_v_H = 0;
@@ -7498,12 +7774,12 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoStars)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, 1); __PYX_ERR(0, 298, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, 1); __PYX_ERR(0, 310, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_H)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, 2); __PYX_ERR(0, 298, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, 2); __PYX_ERR(0, 310, __pyx_L3_error)
         }
         case  3:
         if (kw_args > 0) {
@@ -7512,7 +7788,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_aGW") < 0)) __PYX_ERR(0, 298, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_aGW") < 0)) __PYX_ERR(0, 310, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7531,20 +7807,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 298, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_aGW", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 310, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_aGW", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_90get_aGW(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_aGW(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7556,19 +7832,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
   __Pyx_RefNannySetupContext("get_aGW", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":299
+  /* "bSMBHTask.pyx":311
  * 
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_aGW(sigmaStars, rhoStars, H, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 311, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":300
+    /* "bSMBHTask.pyx":312
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7578,7 +7854,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":299
+    /* "bSMBHTask.pyx":311
  * 
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7587,7 +7863,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
  */
   }
 
-  /* "bSMBHTask.pyx":301
+  /* "bSMBHTask.pyx":313
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_aGW(sigmaStars, rhoStars, H, threadNum)             # <<<<<<<<<<<<<<
@@ -7595,17 +7871,17 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_aGW(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_aGW(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":298
+  /* "bSMBHTask.pyx":310
  * 		return self.thisptr.get_aH(sigmaStars, threadNum)
  * 
  * 	def get_aGW(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7625,7 +7901,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":303
+/* "bSMBHTask.pyx":315
  * 		return self.thisptr.get_aGW(sigmaStars, rhoStars, H, threadNum)
  * 
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7634,8 +7910,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_86get_aGW(struct __pyx_obj_9bSMB
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93get_durationInHardState(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93get_durationInHardState(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_sigmaStars = 0;
   PyObject *__pyx_v_rhoStars = 0;
   PyObject *__pyx_v_H = 0;
@@ -7666,12 +7942,12 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState(PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoStars)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, 1); __PYX_ERR(0, 303, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, 1); __PYX_ERR(0, 315, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_H)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, 2); __PYX_ERR(0, 303, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, 2); __PYX_ERR(0, 315, __pyx_L3_error)
         }
         case  3:
         if (kw_args > 0) {
@@ -7680,7 +7956,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState(PyObje
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_durationInHardState") < 0)) __PYX_ERR(0, 303, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_durationInHardState") < 0)) __PYX_ERR(0, 315, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7699,20 +7975,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 303, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_durationInHardState", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 315, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_durationInHardState", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_92get_durationInHardState(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92get_durationInHardState(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7724,19 +8000,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
   __Pyx_RefNannySetupContext("get_durationInHardState", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":304
+  /* "bSMBHTask.pyx":316
  * 
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_durationInHardState(sigmaStars, rhoStars, H, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 304, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":305
+    /* "bSMBHTask.pyx":317
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7746,7 +8022,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":304
+    /* "bSMBHTask.pyx":316
  * 
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7755,7 +8031,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
  */
   }
 
-  /* "bSMBHTask.pyx":306
+  /* "bSMBHTask.pyx":318
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_durationInHardState(sigmaStars, rhoStars, H, threadNum)             # <<<<<<<<<<<<<<
@@ -7763,17 +8039,17 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_durationInHardState(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_durationInHardState(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":303
+  /* "bSMBHTask.pyx":315
  * 		return self.thisptr.get_aGW(sigmaStars, rhoStars, H, threadNum)
  * 
  * 	def get_durationInHardState(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7793,7 +8069,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":308
+/* "bSMBHTask.pyx":320
  * 		return self.thisptr.get_durationInHardState(sigmaStars, rhoStars, H, threadNum)
  * 
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7802,8 +8078,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_88get_durationInHardState(struct
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95get_ejectedMass(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95get_ejectedMass(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_sigmaStars = 0;
   PyObject *__pyx_v_rhoStars = 0;
   PyObject *__pyx_v_H = 0;
@@ -7834,12 +8110,12 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass(PyObject *__py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoStars)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, 1); __PYX_ERR(0, 308, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, 1); __PYX_ERR(0, 320, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_H)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, 2); __PYX_ERR(0, 308, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, 2); __PYX_ERR(0, 320, __pyx_L3_error)
         }
         case  3:
         if (kw_args > 0) {
@@ -7848,7 +8124,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_ejectedMass") < 0)) __PYX_ERR(0, 308, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_ejectedMass") < 0)) __PYX_ERR(0, 320, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7867,20 +8143,20 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 308, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_ejectedMass", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 320, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.get_ejectedMass", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_94get_ejectedMass(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_sigmaStars, __pyx_v_rhoStars, __pyx_v_H, __pyx_v_threadNum);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94get_ejectedMass(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7892,19 +8168,19 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
   __Pyx_RefNannySetupContext("get_ejectedMass", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
 
-  /* "bSMBHTask.pyx":309
+  /* "bSMBHTask.pyx":321
  * 
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.get_ejectedMass(sigmaStars, rhoStars, H, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 309, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 321, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":310
+    /* "bSMBHTask.pyx":322
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -7914,7 +8190,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":309
+    /* "bSMBHTask.pyx":321
  * 
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -7923,7 +8199,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":311
+  /* "bSMBHTask.pyx":323
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.get_ejectedMass(sigmaStars, rhoStars, H, threadNum)             # <<<<<<<<<<<<<<
@@ -7931,17 +8207,17 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_ejectedMass(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_sigmaStars); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_rhoStars); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_H); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->get_ejectedMass(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":308
+  /* "bSMBHTask.pyx":320
  * 		return self.thisptr.get_durationInHardState(sigmaStars, rhoStars, H, threadNum)
  * 
  * 	def get_ejectedMass(self, sigmaStars, rhoStars, H, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7961,7 +8237,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":315
+/* "bSMBHTask.pyx":327
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def make_IntrinsicLC(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -7970,8 +8246,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_90get_ejectedMass(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97make_IntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97make_IntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_dt = 0;
   PyObject *__pyx_v_fracNoiseToSignal = 0;
@@ -8012,37 +8288,37 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__p
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 1); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 1); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 2); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 2); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 3); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 3); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 4); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 4); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 5); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 5); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 6); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 6); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 7); __PYX_ERR(0, 315, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, 7); __PYX_ERR(0, 327, __pyx_L3_error)
         }
         case  8:
         if (kw_args > 0) {
@@ -8051,7 +8327,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__p
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_IntrinsicLC") < 0)) __PYX_ERR(0, 315, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_IntrinsicLC") < 0)) __PYX_ERR(0, 327, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -8080,18 +8356,18 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 315, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 8, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 327, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.make_IntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 315, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 315, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 315, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 315, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 315, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_96make_IntrinsicLC(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -8102,7 +8378,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC(PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96make_IntrinsicLC(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -8150,43 +8426,43 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
   __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 327, __pyx_L1_error)
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 327, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 327, __pyx_L1_error)
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 327, __pyx_L1_error)
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 327, __pyx_L1_error)
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":316
+  /* "bSMBHTask.pyx":328
  * 	@cython.wraparound(False)
  * 	def make_IntrinsicLC(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.make_IntrinsicLC(numCadences, dt, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 328, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":317
+    /* "bSMBHTask.pyx":329
  * 	def make_IntrinsicLC(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -8196,7 +8472,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":316
+    /* "bSMBHTask.pyx":328
  * 	@cython.wraparound(False)
  * 	def make_IntrinsicLC(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -8205,7 +8481,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
  */
   }
 
-  /* "bSMBHTask.pyx":318
+  /* "bSMBHTask.pyx":330
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.make_IntrinsicLC(numCadences, dt, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)             # <<<<<<<<<<<<<<
@@ -8213,22 +8489,22 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
   __pyx_t_6 = 0;
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_IntrinsicLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_IntrinsicLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":315
+  /* "bSMBHTask.pyx":327
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def make_IntrinsicLC(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8265,7 +8541,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":322
+/* "bSMBHTask.pyx":334
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def add_ObservationNoise(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, noiseSeed, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8274,8 +8550,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_92make_IntrinsicLC(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99add_ObservationNoise(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99add_ObservationNoise(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_dt = 0;
   PyObject *__pyx_v_fracNoiseToSignal = 0;
@@ -8318,42 +8594,42 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 1); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 1); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 2); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 2); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 3); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 3); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 4); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 4); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 5); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 5); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 6); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 6); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 7); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 7); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_noiseSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 8); __PYX_ERR(0, 322, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, 8); __PYX_ERR(0, 334, __pyx_L3_error)
         }
         case  9:
         if (kw_args > 0) {
@@ -8362,7 +8638,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_ObservationNoise") < 0)) __PYX_ERR(0, 322, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_ObservationNoise") < 0)) __PYX_ERR(0, 334, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -8393,18 +8669,18 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 322, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("add_ObservationNoise", 0, 9, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 334, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.add_ObservationNoise", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 322, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 322, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 322, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 322, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 322, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_noiseSeed, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_98add_ObservationNoise(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_noiseSeed, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -8415,7 +8691,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98add_ObservationNoise(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -8464,43 +8740,43 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
   __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 334, __pyx_L1_error)
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 334, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 334, __pyx_L1_error)
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 334, __pyx_L1_error)
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 334, __pyx_L1_error)
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":323
+  /* "bSMBHTask.pyx":335
  * 	@cython.wraparound(False)
  * 	def add_ObservationNoise(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, noiseSeed, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.add_ObservationNoise(numCadences, dt, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], noiseSeed, threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":324
+    /* "bSMBHTask.pyx":336
  * 	def add_ObservationNoise(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, noiseSeed, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -8510,7 +8786,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":323
+    /* "bSMBHTask.pyx":335
  * 	@cython.wraparound(False)
  * 	def add_ObservationNoise(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, noiseSeed, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -8519,7 +8795,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
  */
   }
 
-  /* "bSMBHTask.pyx":325
+  /* "bSMBHTask.pyx":337
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.add_ObservationNoise(numCadences, dt, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], noiseSeed, threadNum)             # <<<<<<<<<<<<<<
@@ -8527,23 +8803,23 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 325, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 325, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 325, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 337, __pyx_L1_error)
   __pyx_t_6 = 0;
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_v_noiseSeed); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 325, __pyx_L1_error)
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 325, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->add_ObservationNoise(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11, __pyx_t_12)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 325, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_v_noiseSeed); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->add_ObservationNoise(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11, __pyx_t_12)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":322
+  /* "bSMBHTask.pyx":334
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def add_ObservationNoise(self, numCadences, dt, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, noiseSeed, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8580,7 +8856,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":329
+/* "bSMBHTask.pyx":341
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def compute_LnPrior(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8589,8 +8865,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_94add_ObservationNoise(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_dt = 0;
   PyObject *__pyx_v_lowestFlux = 0;
@@ -8633,42 +8909,42 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 1); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 1); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lowestFlux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 2); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 2); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_highestFlux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 3); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 3); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 4); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 4); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 5); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 5); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 6); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 6); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 7); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 7); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 8); __PYX_ERR(0, 329, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, 8); __PYX_ERR(0, 341, __pyx_L3_error)
         }
         case  9:
         if (kw_args > 0) {
@@ -8677,7 +8953,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnPrior") < 0)) __PYX_ERR(0, 329, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnPrior") < 0)) __PYX_ERR(0, 341, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -8708,18 +8984,18 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 329, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 9, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 341, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.compute_LnPrior", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_lowestFlux, __pyx_v_highestFlux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 341, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_100compute_LnPrior(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_lowestFlux, __pyx_v_highestFlux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -8730,7 +9006,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_100compute_LnPrior(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -8779,43 +9055,43 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
   __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 341, __pyx_L1_error)
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 341, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 341, __pyx_L1_error)
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 341, __pyx_L1_error)
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 341, __pyx_L1_error)
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":330
+  /* "bSMBHTask.pyx":342
  * 	@cython.wraparound(False)
  * 	def compute_LnPrior(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.compute_LnPrior(numCadences, dt, lowestFlux, highestFlux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 342, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":331
+    /* "bSMBHTask.pyx":343
  * 	def compute_LnPrior(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -8825,7 +9101,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":330
+    /* "bSMBHTask.pyx":342
  * 	@cython.wraparound(False)
  * 	def compute_LnPrior(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -8834,7 +9110,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
  */
   }
 
-  /* "bSMBHTask.pyx":332
+  /* "bSMBHTask.pyx":344
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.compute_LnPrior(numCadences, dt, lowestFlux, highestFlux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)             # <<<<<<<<<<<<<<
@@ -8842,23 +9118,23 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_highestFlux); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_highestFlux); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
   __pyx_t_11 = 0;
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnPrior(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_12)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnPrior(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_12)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":329
+  /* "bSMBHTask.pyx":341
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def compute_LnPrior(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8895,7 +9171,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":336
+/* "bSMBHTask.pyx":348
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def compute_LnLikelihood(self, numCadences, dt, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -8904,8 +9180,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_96compute_LnPrior(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_103compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_103compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_dt = 0;
   PyObject *__pyx_v_cadenceNum = 0;
@@ -8946,37 +9222,37 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 1); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 1); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadenceNum)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 2); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 2); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 3); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 3); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 4); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 4); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 5); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 5); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 6); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 6); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 7); __PYX_ERR(0, 336, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, 7); __PYX_ERR(0, 348, __pyx_L3_error)
         }
         case  8:
         if (kw_args > 0) {
@@ -8985,7 +9261,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnLikelihood") < 0)) __PYX_ERR(0, 336, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnLikelihood") < 0)) __PYX_ERR(0, 348, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -9014,18 +9290,18 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 336, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 8, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 348, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.compute_LnLikelihood", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 336, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 336, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 336, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 336, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 336, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_cadenceNum, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_102compute_LnLikelihood(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_cadenceNum, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -9036,7 +9312,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_cadenceNum, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_102compute_LnLikelihood(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_cadenceNum, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -9084,43 +9360,43 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
   __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 348, __pyx_L1_error)
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 348, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 348, __pyx_L1_error)
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 348, __pyx_L1_error)
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 348, __pyx_L1_error)
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":337
+  /* "bSMBHTask.pyx":349
  * 	@cython.wraparound(False)
  * 	def compute_LnLikelihood(self, numCadences, dt, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
  * 		return self.thisptr.compute_LnLikelihood(numCadences, dt, cadenceNum, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 337, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "bSMBHTask.pyx":338
+    /* "bSMBHTask.pyx":350
  * 	def compute_LnLikelihood(self, numCadences, dt, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
@@ -9130,7 +9406,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
-    /* "bSMBHTask.pyx":337
+    /* "bSMBHTask.pyx":349
  * 	@cython.wraparound(False)
  * 	def compute_LnLikelihood(self, numCadences, dt, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
@@ -9139,7 +9415,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
  */
   }
 
-  /* "bSMBHTask.pyx":339
+  /* "bSMBHTask.pyx":351
  * 		if threadNum == None:
  * 			threadNum = 0
  * 		return self.thisptr.compute_LnLikelihood(numCadences, dt, cadenceNum, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)             # <<<<<<<<<<<<<<
@@ -9147,22 +9423,22 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_cadenceNum); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_cadenceNum); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 351, __pyx_L1_error)
   __pyx_t_6 = 0;
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 339, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnLikelihood(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnLikelihood(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_11)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":336
+  /* "bSMBHTask.pyx":348
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def compute_LnLikelihood(self, numCadences, dt, cadenceNum, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
@@ -9199,7 +9475,7 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
   return __pyx_r;
 }
 
-/* "bSMBHTask.pyx":343
+/* "bSMBHTask.pyx":355
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def fit_BinarySMBHModel(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):             # <<<<<<<<<<<<<<
@@ -9207,8 +9483,8 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_98compute_LnLikelihood(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_105fit_BinarySMBHModel(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_105fit_BinarySMBHModel(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_dt = 0;
   PyObject *__pyx_v_lowestFlux = 0;
@@ -9272,106 +9548,106 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 1); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 1); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lowestFlux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 2); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 2); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_highestFlux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 3); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 3); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 4); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 4); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 5); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 5); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 6); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 6); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 7); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 7); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 8); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 8); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case  9:
         if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nwalkers)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 9); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 9); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 10:
         if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nsteps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 10); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 10); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 11:
         if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxEvals)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 11); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 11); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 12:
         if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xTol)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 12); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 12); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 13:
         if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mcmcA)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 13); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 13); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 14:
         if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_zSSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 14); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 14); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 15:
         if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_walkerSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 15); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 15); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 16:
         if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_moveSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 16); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 16); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 17:
         if (likely((values[17] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 17); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 17); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 18:
         if (likely((values[18] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xStart)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 18); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 18); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 19:
         if (likely((values[19] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Chain)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 19); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 19); __PYX_ERR(0, 355, __pyx_L3_error)
         }
         case 20:
         if (likely((values[20] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_LnPosterior)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 20); __PYX_ERR(0, 343, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, 20); __PYX_ERR(0, 355, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fit_BinarySMBHModel") < 0)) __PYX_ERR(0, 343, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fit_BinarySMBHModel") < 0)) __PYX_ERR(0, 355, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 21) {
       goto __pyx_L5_argtuple_error;
@@ -9422,21 +9698,21 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 343, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fit_BinarySMBHModel", 1, 21, 21, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 355, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("bSMBHTask.bSMBHTask.fit_BinarySMBHModel", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xStart), __pyx_ptype_5numpy_ndarray, 0, "xStart", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Chain), __pyx_ptype_5numpy_ndarray, 0, "Chain", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_LnPosterior), __pyx_ptype_5numpy_ndarray, 0, "LnPosterior", 0))) __PYX_ERR(0, 343, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_100fit_BinarySMBHModel(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_lowestFlux, __pyx_v_highestFlux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_nwalkers, __pyx_v_nsteps, __pyx_v_maxEvals, __pyx_v_xTol, __pyx_v_mcmcA, __pyx_v_zSSeed, __pyx_v_walkerSeed, __pyx_v_moveSeed, __pyx_v_xSeed, __pyx_v_xStart, __pyx_v_Chain, __pyx_v_LnPosterior);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xStart), __pyx_ptype_5numpy_ndarray, 0, "xStart", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Chain), __pyx_ptype_5numpy_ndarray, 0, "Chain", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_LnPosterior), __pyx_ptype_5numpy_ndarray, 0, "LnPosterior", 0))) __PYX_ERR(0, 355, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9bSMBHTask_9bSMBHTask_104fit_BinarySMBHModel(((struct __pyx_obj_9bSMBHTask_bSMBHTask *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_dt, __pyx_v_lowestFlux, __pyx_v_highestFlux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_nwalkers, __pyx_v_nsteps, __pyx_v_maxEvals, __pyx_v_xTol, __pyx_v_mcmcA, __pyx_v_zSSeed, __pyx_v_walkerSeed, __pyx_v_moveSeed, __pyx_v_xSeed, __pyx_v_xStart, __pyx_v_Chain, __pyx_v_LnPosterior);
 
   /* function exit code */
   goto __pyx_L0;
@@ -9447,7 +9723,7 @@ static PyObject *__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_100fit_BinarySMBHModel(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior) {
+static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_104fit_BinarySMBHModel(struct __pyx_obj_9bSMBHTask_bSMBHTask *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_dt, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_Chain;
   __Pyx_Buffer __pyx_pybuffer_Chain;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_LnPosterior;
@@ -9523,79 +9799,79 @@ static PyObject *__pyx_pf_9bSMBHTask_9bSMBHTask_100fit_BinarySMBHModel(struct __
   __pyx_pybuffernd_LnPosterior.rcbuffer = &__pyx_pybuffer_LnPosterior;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xStart.rcbuffer->pybuffer, (PyObject*)__pyx_v_xStart, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xStart.rcbuffer->pybuffer, (PyObject*)__pyx_v_xStart, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_xStart.diminfo[0].strides = __pyx_pybuffernd_xStart.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_xStart.diminfo[0].shape = __pyx_pybuffernd_xStart.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Chain.rcbuffer->pybuffer, (PyObject*)__pyx_v_Chain, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_Chain.rcbuffer->pybuffer, (PyObject*)__pyx_v_Chain, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_Chain.diminfo[0].strides = __pyx_pybuffernd_Chain.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Chain.diminfo[0].shape = __pyx_pybuffernd_Chain.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer, (PyObject*)__pyx_v_LnPosterior, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 343, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer, (PyObject*)__pyx_v_LnPosterior, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 355, __pyx_L1_error)
   }
   __pyx_pybuffernd_LnPosterior.diminfo[0].strides = __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_LnPosterior.diminfo[0].shape = __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.shape[0];
 
-  /* "bSMBHTask.pyx":344
+  /* "bSMBHTask.pyx":356
  * 	@cython.wraparound(False)
  * 	def fit_BinarySMBHModel(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):
  * 		return self.thisptr.fit_BinarySMBHModel(numCadences, dt, lowestFlux, highestFlux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPosterior[0])             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_highestFlux); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_highestFlux); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
   __pyx_t_5 = 0;
   __pyx_t_6 = 0;
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
-  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_nwalkers); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_nsteps); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_maxEvals); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_13 = __pyx_PyFloat_AsDouble(__pyx_v_xTol); if (unlikely((__pyx_t_13 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_mcmcA); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_zSSeed); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_v_walkerSeed); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_17 = __Pyx_PyInt_As_unsigned_int(__pyx_v_moveSeed); if (unlikely((__pyx_t_17 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
-  __pyx_t_18 = __Pyx_PyInt_As_unsigned_int(__pyx_v_xSeed); if (unlikely((__pyx_t_18 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_nwalkers); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_nsteps); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_maxEvals); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_13 = __pyx_PyFloat_AsDouble(__pyx_v_xTol); if (unlikely((__pyx_t_13 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_mcmcA); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_zSSeed); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_v_walkerSeed); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_As_unsigned_int(__pyx_v_moveSeed); if (unlikely((__pyx_t_17 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_18 = __Pyx_PyInt_As_unsigned_int(__pyx_v_xSeed); if (unlikely((__pyx_t_18 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L1_error)
   __pyx_t_19 = 0;
   __pyx_t_20 = 0;
   __pyx_t_21 = 0;
-  __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->fit_BinarySMBHModel(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_t_17, __pyx_t_18, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xStart.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_xStart.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Chain.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_Chain.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_LnPosterior.diminfo[0].strides))))); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->fit_BinarySMBHModel(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_t_17, __pyx_t_18, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xStart.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_xStart.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_Chain.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_Chain.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_LnPosterior.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_LnPosterior.diminfo[0].strides))))); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_22);
   __pyx_r = __pyx_t_22;
   __pyx_t_22 = 0;
   goto __pyx_L0;
 
-  /* "bSMBHTask.pyx":343
+  /* "bSMBHTask.pyx":355
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
  * 	def fit_BinarySMBHModel(self, numCadences, dt, lowestFlux, highestFlux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPosterior not None):             # <<<<<<<<<<<<<<
@@ -11802,43 +12078,45 @@ static PyMethodDef __pyx_methods_9bSMBHTask_bSMBHTask[] = {
   {"get_A2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_23get_A2, METH_VARARGS|METH_KEYWORDS, 0},
   {"get_M1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_25get_M1, METH_VARARGS|METH_KEYWORDS, 0},
   {"get_M2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_27get_M2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RPeri1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_29get_RPeri1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RPeri2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_31get_RPeri2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RApo1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RApo1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RApo2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RApo2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RPeriTot", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RPeriTot, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RApoTot", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApoTot, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RS1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RS1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RS2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RS2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Eccentricity", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_45get_Eccentricity, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Omega1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_47get_Omega1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Omega2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Omega2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Inclination", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Inclination, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Tau", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Tau, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_MeanAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_55get_MeanAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_EccentricAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_57get_EccentricAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_TrueAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_59get_TrueAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_R1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_61get_R1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_R2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_63get_R2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Theta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_65get_Theta1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Theta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_67get_Theta2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Beta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Beta1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_Beta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Beta2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RadialBeta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_73get_RadialBeta1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_RadialBeta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_75get_RadialBeta2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_DopplerFactor1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_77get_DopplerFactor1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_DopplerFactor2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_79get_DopplerFactor2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_BeamingFactor1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_81get_BeamingFactor1, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_BeamingFactor2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_83get_BeamingFactor2, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_aH", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_85get_aH, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_aGW", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_87get_aGW, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_durationInHardState", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_89get_durationInHardState, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_ejectedMass", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_91get_ejectedMass, METH_VARARGS|METH_KEYWORDS, 0},
-  {"make_IntrinsicLC", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_93make_IntrinsicLC, METH_VARARGS|METH_KEYWORDS, 0},
-  {"add_ObservationNoise", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_95add_ObservationNoise, METH_VARARGS|METH_KEYWORDS, 0},
-  {"compute_LnPrior", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_97compute_LnPrior, METH_VARARGS|METH_KEYWORDS, 0},
-  {"compute_LnLikelihood", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_99compute_LnLikelihood, METH_VARARGS|METH_KEYWORDS, 0},
-  {"fit_BinarySMBHModel", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_101fit_BinarySMBHModel, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_M12", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_29get_M12, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_M2OverM1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_31get_M2OverM1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RPeribothron1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_33get_RPeribothron1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RPeribothron2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_35get_RPeribothron2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RApobothron1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_37get_RApobothron1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RApobothron2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_39get_RApobothron2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RPeribothronTot", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_41get_RPeribothronTot, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RApobothronTot", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_43get_RApobothronTot, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RS1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_45get_RS1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RS2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_47get_RS2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Eccentricity", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_49get_Eccentricity, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Omega1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_51get_Omega1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Omega2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_53get_Omega2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Inclination", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_55get_Inclination, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Tau", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_57get_Tau, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_MeanAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_59get_MeanAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_EccentricAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_61get_EccentricAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_TrueAnamoly", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_63get_TrueAnamoly, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_R1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_65get_R1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_R2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_67get_R2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Theta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_69get_Theta1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Theta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_71get_Theta2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Beta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_73get_Beta1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_Beta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_75get_Beta2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RadialBeta1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_77get_RadialBeta1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_RadialBeta2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_79get_RadialBeta2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_DopplerFactor1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_81get_DopplerFactor1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_DopplerFactor2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_83get_DopplerFactor2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_BeamingFactor1", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_85get_BeamingFactor1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_BeamingFactor2", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_87get_BeamingFactor2, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_aH", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_89get_aH, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_aGW", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_91get_aGW, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_durationInHardState", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_93get_durationInHardState, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_ejectedMass", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_95get_ejectedMass, METH_VARARGS|METH_KEYWORDS, 0},
+  {"make_IntrinsicLC", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_97make_IntrinsicLC, METH_VARARGS|METH_KEYWORDS, 0},
+  {"add_ObservationNoise", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_99add_ObservationNoise, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compute_LnPrior", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_101compute_LnPrior, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compute_LnLikelihood", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_103compute_LnLikelihood, METH_VARARGS|METH_KEYWORDS, 0},
+  {"fit_BinarySMBHModel", (PyCFunction)__pyx_pw_9bSMBHTask_9bSMBHTask_105fit_BinarySMBHModel, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -12151,9 +12429,9 @@ PyMODINIT_FUNC PyInit_bSMBHTask(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_9bSMBHTask_bSMBHTask) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9bSMBHTask_bSMBHTask) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __pyx_type_9bSMBHTask_bSMBHTask.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "bSMBHTask", (PyObject *)&__pyx_type_9bSMBHTask_bSMBHTask) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "bSMBHTask", (PyObject *)&__pyx_type_9bSMBHTask_bSMBHTask) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __pyx_ptype_9bSMBHTask_bSMBHTask = &__pyx_type_9bSMBHTask_bSMBHTask;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 

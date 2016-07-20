@@ -34,12 +34,14 @@ cdef extern from 'binarySMBHTask.hpp':
 		double get_A2(int threadNum);
 		double get_M1(int threadNum);
 		double get_M2(int threadNum);
-		double get_RPeri1(int threadNum);
-		double get_RPeri2(int threadNum);
-		double get_RApo1(int threadNum);
-		double get_RApo2(int threadNum);
-		double get_RPeriTot(int threadNum);
-		double get_RApoTot(int threadNum);
+		double get_M12(int threadNum);
+		double get_M2OverM1(int threadNum);
+		double get_RPeribothron1(int threadNum);
+		double get_RPeribothron2(int threadNum);
+		double get_RApobothron1(int threadNum);
+		double get_RApobothron2(int threadNum);
+		double get_RPeribothronTot(int threadNum);
+		double get_RApobothronTot(int threadNum);
 		double get_RS1(int threadNum);
 		double get_RS2(int threadNum);
 		double get_Eccentricity(int threadNum);
@@ -150,35 +152,45 @@ cdef class bSMBHTask:
 			threadNum = 0
 		return self.thisptr.get_M2(threadNum)
 
-	def get_RPeri1(self, threadNum = None):
+	def get_M12(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RPeri1(threadNum)
+		return self.thisptr.get_M12(threadNum)
 
-	def get_RPeri2(self, threadNum = None):
+	def get_M2OverM1(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RPeri2(threadNum)
+		return self.thisptr.get_M2OverM1(threadNum)
 
-	def get_RApo1(self, threadNum = None):
+	def get_RPeribothron1(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RApo1(threadNum)
+		return self.thisptr.get_RPeribothron1(threadNum)
 
-	def get_RApo2(self, threadNum = None):
+	def get_RPeribothron2(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RApo2(threadNum)
+		return self.thisptr.get_RPeribothron2(threadNum)
 
-	def get_RPeriTot(self, threadNum = None):
+	def get_RApobothron1(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RPeriTot(threadNum)
+		return self.thisptr.get_RApobothron1(threadNum)
 
-	def get_RApoTot(self, threadNum = None):
+	def get_RApobothron2(self, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.get_RApoTot(threadNum)
+		return self.thisptr.get_RApobothron2(threadNum)
+
+	def get_RPeribothronTot(self, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.get_RPeribothronTot(threadNum)
+
+	def get_RApobothronTot(self, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.get_RApobothronTot(threadNum)
 
 	def get_RS1(self, threadNum = None):
 		if threadNum == None:

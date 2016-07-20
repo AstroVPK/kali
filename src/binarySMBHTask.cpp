@@ -125,28 +125,36 @@ double binarySMBHTask::get_M2(int threadNum) {
 	return Systems[threadNum].getM2();
 	}
 
-double binarySMBHTask::get_RPeri1(int threadNum) {
-	return Systems[threadNum].getRPeri1();
+double binarySMBHTask::get_M12(int threadNum) {
+	return Systems[threadNum].getM12();
 	}
 
-double binarySMBHTask::get_RPeri2(int threadNum) {
-	return Systems[threadNum].getRPeri2();
+double binarySMBHTask::get_M2OverM1(int threadNum) {
+	return Systems[threadNum].getM2OverM1();
 	}
 
-double binarySMBHTask::get_RApo1(int threadNum) {
-	return Systems[threadNum].getRApo1();
+double binarySMBHTask::get_RPeribothron1(int threadNum) {
+	return Systems[threadNum].getRPeribothron1();
 	}
 
-double binarySMBHTask::get_RApo2(int threadNum) {
-	return Systems[threadNum].getRApo2();
+double binarySMBHTask::get_RPeribothron2(int threadNum) {
+	return Systems[threadNum].getRPeribothron2();
 	}
 
-double binarySMBHTask::get_RPeriTot(int threadNum) {
-	return Systems[threadNum].getRPeriTot();
+double binarySMBHTask::get_RApobothron1(int threadNum) {
+	return Systems[threadNum].getRApobothron1();
 	}
 
-double binarySMBHTask::get_RApoTot(int threadNum) {
-	return Systems[threadNum].getRApoTot();
+double binarySMBHTask::get_RApobothron2(int threadNum) {
+	return Systems[threadNum].getRApobothron2();
+	}
+
+double binarySMBHTask::get_RPeribothronTot(int threadNum) {
+	return Systems[threadNum].getRPeribothronTot();
+	}
+
+double binarySMBHTask::get_RApobothronTot(int threadNum) {
+	return Systems[threadNum].getRApobothronTot();
 	}
 
 double binarySMBHTask::get_RS1(int threadNum) {

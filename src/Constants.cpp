@@ -11,6 +11,7 @@ extern double pi = 3.14159265358979323846264338327950288419716939937510582097494
 extern double twoPi = 2.0*pi;
 extern double fourPiSq = 4.0*pow(pi, 2.0);
 extern double piSq = pow(pi, 2.0);
+extern double halfPi = pi/2.0;
 extern double e = 2.71828182845904523536028747135266249775724709369995;
 extern double infiniteVal = HUGE_VAL;
 
