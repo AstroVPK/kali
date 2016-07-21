@@ -26,6 +26,7 @@ import pdb as pdb
 
 from gatspy.periodic import LombScargleFast, SuperSmoother
 from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
 
 try:
 	import rand as rand
@@ -448,7 +449,7 @@ class binarySMBHTask(object):
 		if tnum is None:
 			tnum = 0
 		if dt is None:
-			dt = self.period()/100.0
+			dt = self.period()/10.0
 		try:
 			numCadences = int(round(float(duration)/dt))
 		except ZeroDivisionError:
@@ -597,6 +598,17 @@ class binarySMBHTask(object):
 		# Now get the roots and find the falling root
 		tZeros = foldedSpline.roots()
 
+		#############Find tRising, tFalling, tFull, startIndex, & stopIndex via DBSCAN #######################
+		# Find the number of clusters
+		'''dbsObj = DBSCAN(eps = periodEst/10.0, min_samples = 1)
+		db = dbsObj.fit(tZeros.reshape(-1,1))
+		core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+		core_samples_mask[db.core_sample_indices_] = True
+		labels = db.labels_
+		unique_labels = set(labels)
+		n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)'''
+
+		#############Find tRising, tFalling, tFull, startIndex, & stopIndex via k-Means ######################
 		if tZeros.shape[0] == 1: # We have found just tFalling
 			tFalling = tZeros[0]
 			tRising = fitLC.t[0]
@@ -627,7 +639,6 @@ class binarySMBHTask(object):
 			stopIndex = np.where(fitLC.t < tFull)[0][-1]
 		else:
 			# More than 3 roots!!! Use K-Means to cluster the roots assuming we have 3 groups
-
 			root_groups = KMeans(n_clusters = 3).fit_predict(tZeros.reshape(-1,1))
 			RisingGroupNumber = root_groups[0]
 			FullGroupNumber = root_groups[-1]
@@ -635,9 +646,9 @@ class binarySMBHTask(object):
 			FullSet = set(root_groups[np.where(root_groups != FullGroupNumber)[0]])
 			FallingSet = RisingSet.intersection(FullSet)
 			FallingGroupNumber = FallingSet.pop()
-			numRisingRoots =  np.where(root_groups == RisingGroup)[0].shape[0]
-			numFallingGroups = np.where(root_groups == FallingGroup)[0].shape[0]
-			numFullGroups = np.where(root_groups == FullGroup)[0].shape[0]
+			numRisingRoots =  np.where(root_groups == RisingGroupNumber)[0].shape[0]
+			numFallingRoots = np.where(root_groups == FallingGroupNumber)[0].shape[0]
+			numFullRoots = np.where(root_groups == FullGroupNumber)[0].shape[0]
 
 			if numRisingRoots == 1:
 				tRising = tZeros[np.where(root_groups == RisingGroupNumber)[0]][0]
@@ -665,8 +676,9 @@ class binarySMBHTask(object):
 					if foldedSpline.derivatives(FullRootCands[i])[1] > 0.0:
 						tFull = FullRootCands[i]
 						break
-
-			pdb.set_trace()
+			startIndex = np.where(fitLC.t > tRising)[0][0]
+			stopIndex = np.where(fitLC.t < tFull)[0][-1]
+		######################################################################################################
 
 		# One full period now goes from tRising to periodEst. The maxima occurs between tRising and tFalling while the minima occurs between tFalling and tRising + periodEst  
 		# Find the minima and maxima
@@ -715,6 +727,7 @@ class binarySMBHTask(object):
 			tauEst = zDotZeros[np.where(zDotZeros > tC)[0][0]]
 		else:
 			tauEst = zDotZeros[np.where(zDotZeros > tE)[0][0]]
+		tauEst = tauEst%periodEst
 
 		## a2sinInclinationEst
 		a2sinInclinationEst = ((KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(eccentricityEst, 2.0)))/self.twoPi)/self.Parsec

@@ -22,7 +22,7 @@ DaysInYear = Year/Day
 SolarMass = 1.98855e30
 
 skipLnLikelihood = False
-skipWorking = True
+skipWorking = False
 
 class TestPeriod(unittest.TestCase):
 	def test_period(self):
@@ -276,7 +276,7 @@ class TestFitNoNoise(unittest.TestCase):
 		self.assertAlmostEqual(math.fabs((periodEst - self.nt1.period())/self.nt1.period()), 0.0, places = 1)
 		self.assertAlmostEqual(math.fabs((eccentricityEst - self.eccentricity)/self.eccentricity), 0.0, delta = 0.25)
 		self.assertAlmostEqual(math.fabs((math.cos(omega1Est*(math.pi/180.0)) - math.cos(self.omega1*(math.pi/180.0)))/math.cos(self.omega1*(math.pi/180.0))), 0.0, delta = 0.1)
-		self.assertAlmostEqual(math.fabs(((tauEst%self.period) - (self.tau%self.period))/(self.tau%self.period)), 0.0, delta = 1.0)
+		self.assertAlmostEqual(math.fabs((tauEst - self.tau)/self.tau), 0.0, delta = periodEst/10.0)
 		self.assertAlmostEqual(math.fabs((a2sinInclinationEst - self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))), 0.0, delta = 1.0)
 
 	@unittest.skipIf(skipWorking, 'Works!')
@@ -321,7 +321,7 @@ class TestFitNoNoise(unittest.TestCase):
 		fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
 		self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
-	#@unittest.skipIf(skipWorking, 'Works!')
+	@unittest.skipIf(skipWorking, 'Works!')
 	def test_estimates4(self):
 		self.eccentricity = 0.6
 		self.omega1 = 15.0
@@ -333,19 +333,15 @@ class TestFitNoNoise(unittest.TestCase):
 		for i in xrange(10):
 			nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal = self.n2s)
 			self.nt1.observe(nl1)
-			try:
-				fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2SinInclinationEst = self.nt1.estimate(nl1)
-			except Exception as e:
-				pdb.set_trace()
+			fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2SinInclinationEst = self.nt1.estimate(nl1)
 			a1Guess, a2Guess, inclinationGuess = self.nt1.guess(a2SinInclinationEst)
 			ntEst = libbsmbh.binarySMBHTask()
 			ThetaEst = np.array([a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst, fluxEst])
 			res = ntEst.set(ThetaEst)
-			if res != 0:
-				pdb.set_trace()
-		#nlEst = ntEst.simulate(periodEst*10.0, fracNoiseToSignal = self.n2s)
-		#ntEst.observe(nlEst)
-		#pdb.set_trace()
+			self.assertGreaterEqual(self.nt1.logPosterior(nl1), ntEst.logPosterior(nl1))
+			nlEst = ntEst.simulate(periodEst*10.0, fracNoiseToSignal = self.n2s)
+			ntEst.observe(nlEst)
+			self.assertGreaterEqual(ntEst.logPosterior(nlEst), self.nt1.logPosterior(nlEst))
 
 if __name__ == "__main__":
 	unittest.main()
