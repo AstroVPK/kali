@@ -9,7 +9,9 @@ extern complex<double> complexZero (0.0,0.0);
 extern complex<double> complexOne (1.0,0.0);
 extern double pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
 extern double twoPi = 2.0*pi;
+extern double fourPiSq = 4.0*pow(pi, 2.0);
 extern double piSq = pow(pi, 2.0);
+extern double halfPi = pi/2.0;
 extern double e = 2.71828182845904523536028747135266249775724709369995;
 extern double infiniteVal = HUGE_VAL;
 

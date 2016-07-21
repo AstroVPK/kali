@@ -12,7 +12,7 @@
 
 //#define DEBUG_KEPLEREQN
 //#define DEBUG_SIMULATESYSTEM
-//#define DEBUG_CHECKBINARYSMBHPARAMS
+#define DEBUG_CHECKBINARYSMBHPARAMS
 //#define DEBUG_CALCLNPOSTERIOR
 
 //#if defined(DEBUG_KEPLEREQN) || defined(DEBUG_SIMULATESYSTEM) || defined(DEBUG_CHECKBINARYSMBHPARAMS) || defined(DEBUG_CALCLNPOSTERIOR)
@@ -165,7 +165,6 @@ double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
 	}
 
 binarySMBH::binarySMBH() {
-	rPeriTot = 0.0;
 	m1 = 0.0;
 	m2 = 0.0;
 	rS1 = 0.0;
@@ -177,10 +176,12 @@ binarySMBH::binarySMBH() {
 	eccentricityFactor = 1.0;
 	a1 = 0.0;
 	a2 = 0.0;
-	rPeri1 = 0.0;
-	rPeri2 = 0.0;
-	rApo1 = 0.0;
-	rApo2 = 0.0;
+	rPeribothron1 = 0.0;
+	rPeribothron2 = 0.0;
+	rApobothron1 = 0.0;
+	rApobothron2 = 0.0;
+	rPeribothronTot = 0.0;
+	rApobothronTot = 0.0;
 	omega1 = 0.0;
 	omega2 = pi;
 	inclination = pi/2.0;
@@ -213,30 +214,31 @@ binarySMBH::binarySMBH() {
 	//fracBeamedFlux = 0.0;
 	}
 
-binarySMBH::binarySMBH(double rPeriTotVal, double m1Val, double m2Val, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
-	rPeriTot = rPeriTotVal*Parsec;
-	m1 = m1Val*1.0e6*SolarMass;
-	m2 = m2Val*1.0e6*SolarMass;
+binarySMBH::binarySMBH(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
+	a1 = a1Val*Parsec;
+	a2 = a2Val*Parsec;
+	period = periodVal*Day;
+	totalMass = (fourPiSq*pow(a1 + a2, 3.0))/(G*pow(period, 2.0));
+	massRatio = a1/a2;
+	m1 = totalMass*(1.0/(1.0 + massRatio));
+	m2 = totalMass*(massRatio/(1.0 + massRatio));
 	rS1 = 2.0*G*m1/pow(c, 2.0);
 	rS2 = 2.0*G*m2/pow(c, 2.0);
-	totalMass = m1 + m2;
-	massRatio = m2/m1;
 	reducedMass = m1*m2/(m1 + m2);
 	eccentricity = eccentricityVal;
 	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
-	a1 = (m2*rPeriTot)/(totalMass*(1.0 - eccentricity));
-	a2 = (m1*rPeriTot)/(totalMass*(1.0 - eccentricity));
-	rPeri1 = a1*(1.0 - eccentricity);
-	rPeri2 = a2*(1.0 - eccentricity);
-	rApo1 = a1*(1.0 + eccentricity);
-	rApo2 = a2*(1.0 + eccentricity);
+	rPeribothron1 = a1*(1.0 - eccentricity);
+	rPeribothron2 = a2*(1.0 - eccentricity);
+	rPeribothronTot = rPeribothron1 + rPeribothron2;
+	rApobothron1 = a1*(1.0 + eccentricity);
+	rApobothron2 = a2*(1.0 + eccentricity);
+	rApobothronTot = rApobothron1 + rApobothron2;
 	omega1 = d2r(omegaVal);
 	omega2 = omega1 + pi;
 	inclination = d2r(inclinationVal);
 	tau = tauVal*Day;
 	alpha1 = alpha1Val;
 	alpha2 = alpha2Val;
-	period = twoPi*sqrt(pow(a1 + a2, 3.0)/(G*totalMass));
 	epoch = 0.0;
 	M = twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
@@ -274,22 +276,24 @@ binarySMBH::binarySMBH(double rPeriTotVal, double m1Val, double m2Val, double ec
 	}
 
 void binarySMBH::setBinarySMBH(double *Theta) {
-	rPeriTot = Parsec*Theta[0];
-	m1 = SolarMass*1.0e6*Theta[1];
-	m2 = SolarMass*1.0e6*Theta[2];
+	a1 = Theta[0]*Parsec;
+	a2 = Theta[1]*Parsec;
+	period = Theta[2]*Day;
+	totalMass = (fourPiSq*pow(a1 + a2, 3.0))/(G*pow(period, 2.0));
+	massRatio = a1/a2;
+	m1 = totalMass*(1.0/(1.0 + massRatio));
+	m2 = totalMass*(massRatio/(1.0 + massRatio));
 	rS1 = (2.0*G*m1)/(pow(c, 2.0));
 	rS2 = (2.0*G*m2)/(pow(c, 2.0));
-	totalMass = m1 + m2;
-	massRatio = m2/m1;
 	reducedMass = m1*m2/(m1 + m2);
 	eccentricity = Theta[3];
 	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
-	a1 = (m2*rPeriTot)/(totalMass*(1.0 - eccentricity));
-	a2 = (m1*rPeriTot)/(totalMass*(1.0 - eccentricity));
-	rPeri1 = a1*(1.0 - eccentricity);
-	rPeri2 = a2*(1.0 - eccentricity);
-	rApo1 = a1*(1.0 + eccentricity);
-	rApo2 = a2*(1.0 + eccentricity);
+	rPeribothron1 = a1*(1.0 - eccentricity);
+	rPeribothron2 = a2*(1.0 - eccentricity);
+	rPeribothronTot = rPeribothron1 + rPeribothron2;
+	rApobothron1 = a1*(1.0 + eccentricity);
+	rApobothron2 = a2*(1.0 + eccentricity);
+	rApobothronTot = rApobothron1 + rApobothron2;
 	omega1 = d2r(Theta[4]);
 	omega2 = omega1 + pi;
 	inclination = d2r(Theta[5]);
@@ -367,55 +371,24 @@ void binarySMBH::operator()() {
 
 int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	int retVal = 1;
+	double a1Val = Parsec*ThetaIn[0];
+	double a2Val = Parsec*ThetaIn[1];
 
-	double m1Val = 1.0e-6*SolarMass*ThetaIn[1];
-	double m2Val = 1.0e-6*SolarMass*ThetaIn[2];
-	if (m1Val < 1.0e-2*1.0e-6*SolarMass) {
+	if (a2Val < a1Val) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("m1: %4.3e\n",m1Val);
-			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
-		#endif
-		}
-	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("m2: %4.3e\n",m2Val);
-			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
-		#endif
-		}
-	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("m1: %4.3e\n",m1Val);
-			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*SolarMass);
-		#endif
-		}
-	if (m2Val > m1Val) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("m2: %4.3e\n",m2Val);
-			printf("m2ULim: %4.3e\n",m1Val);
+			printf("a2: %4.3e\n",a2Val);
+			printf("a2LLim: %4.3e\n",a1Val);
 		#endif
 		}
 
+	double periodVal = Day*ThetaIn[2];
+	double totalMassVal = (fourPiSq*pow(a1Val + a2Val, 3.0))/(G*pow(periodVal, 2.0));
+	double massRatioVal = a1Val/a2Val;
+	double m1Val = totalMassVal*(1.0/(1.0 + massRatioVal));
+	double m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal));
 	double rS1Val = (2.0*G*m1Val)/(pow(c, 2.0));
 	double rS2Val = (2.0*G*m2Val)/(pow(c, 2.0));
-	double rPerVal = Parsec*ThetaIn[0];
-	if (rPerVal < (10.0*(rS1Val + rS2Val))) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("rPer: %+4.3e\n",rPerVal);
-			printf("rPerLLim: %+4.3e\n", 10.0*(rS1Val + rS2Val));
-		#endif
-		}
-	if (rPerVal > 10.0*Parsec) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("rPer: %4.3e\n",rPerVal);
-			printf("rPerULim: %4.3e\n",1.0*Parsec);
-		#endif
-		}
 
 	double eccentricityVal = ThetaIn[3];
 	if (eccentricityVal < 0.0) {
@@ -430,6 +403,15 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("eccentricity: %4.3e\n",eccentricityVal);
 			printf("eccentricityULim: %4.3e\n",1.0);
+		#endif
+		}
+
+	double rPeribothronTotVal = a1Val*(1.0 - eccentricityVal) + a2Val*(1.0 - eccentricityVal);
+	if (rPeribothronTotVal < (10.0*(rS1Val + rS2Val))) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("rPeribothronTot: %+4.3e\n",rPeribothronTotVal);
+			printf("rPeribothronTotLLim: %+4.3e\n", 10.0*(rS1Val + rS2Val));
 		#endif
 		}
 
@@ -457,7 +439,7 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 			printf("inclinationLLim: %4.3e\n",0.0);
 		#endif
 		}
-	if (inclinationVal >= pi) {
+	if (inclinationVal > halfPi) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
 			printf("inclination: %4.3e\n",inclinationVal);
@@ -465,22 +447,7 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 		#endif
 		}
 
-	double periodVal = twoPi*sqrt(pow(rPerVal/(1.0 + eccentricityVal), 3.0)/(G*(m1Val + m2Val)));
 	double tauVal = ThetaIn[6]*Day;
-	if (tauVal < 0.0) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("tau: %4.3e\n",tauVal);
-			printf("tauLLim: %4.3e\n",0.0);
-		#endif
-		}
-	if (tauVal > periodVal) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
-			printf("tau: %4.3e\n",tauVal);
-			printf("tauULim: %4.3e\n",periodVal);
-		#endif
-		}
 
 	double totalFluxVal = ThetaIn[7];
 	if (totalFluxVal < 0.0) {
@@ -527,17 +494,21 @@ double binarySMBH::getM1() {return m1/(SolarMass*1.0e6);}
 
 double binarySMBH::getM2() {return m2/(SolarMass*1.0e6);}
 
-double binarySMBH::getRPeri1() {return rPeri1/Parsec;}
+double binarySMBH::getM12() {return totalMass/(SolarMass*1.0e6);}
 
-double binarySMBH::getRPeri2() {return rPeri2/Parsec;}
+double binarySMBH::getM2OverM1() {return massRatio;}
 
-double binarySMBH::getRPeriTot() {return rPeriTot/Parsec;}
+double binarySMBH::getRPeribothron1() {return rPeribothron1/Parsec;}
 
-double binarySMBH::getRApoTot() {return rApoTot/Parsec;}
+double binarySMBH::getRPeribothron2() {return rPeribothron2/Parsec;}
 
-double binarySMBH::getRApo1() {return rApo1/Parsec;}
+double binarySMBH::getRPeribothronTot() {return rPeribothronTot/Parsec;}
 
-double binarySMBH::getRApo2() {return rApo2/Parsec;}
+double binarySMBH::getRApobothron1() {return rApobothron1/Parsec;}
+
+double binarySMBH::getRApobothron2() {return rApobothron2/Parsec;}
+
+double binarySMBH::getRApobothronTot() {return rApobothronTot/Parsec;}
 
 double binarySMBH::getRS1() {return rS1/Parsec;}
 
@@ -605,18 +576,19 @@ double binarySMBH::ejectedMass(double sigmaStars, double rhoStars, double H) {
 
 void binarySMBH::print() {
 	cout.precision(5);
-	cout << scientific << "               rPeri1 + rPeri2: " << rPeriTot/Parsec << " (pc)" << endl;
 	cout << scientific << "                            a1: " << a1/Parsec << " (pc)" << endl;
 	cout << scientific << "                            a2: " << a2/Parsec << " (pc)" << endl;
+	cout << scientific << "                        Period: " << period/Day << " (day) == " << period/Year  << " (year)" << endl;
 	cout << scientific << "                            m1: " << m1/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
 	cout << scientific << "                            m2: " << m2/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
-	cout << scientific << "                           rS1: " << rS1/Parsec << " (pc)" << endl;
-	cout << scientific << "                           rS2: " << rS2/Parsec << " (pc)" << endl;
 	cout << scientific << "                    Total Mass: " << totalMass/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
 	cout << scientific << "                    Mass Ratio: " << massRatio << endl;
 	cout << scientific << "                  Reduced Mass: " << reducedMass/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
-	cout << scientific << "                        Period: " << period/Day << " (day) == " << period/Year  << " (year)" << endl;
+	cout << scientific << "                           rS1: " << rS1/Parsec << " (pc)" << endl;
+	cout << scientific << "                           rS2: " << rS2/Parsec << " (pc)" << endl;
 	cout << scientific << "                  Eccentricity: " << eccentricity << endl;
+	cout << scientific << "                  rPeribothron: " << rPeribothronTot/Parsec << " (pc)" << endl;
+	cout << scientific << "                   rApobothron: " << rApobothronTot/Parsec << " (pc)" << endl;
 	cout << scientific << "Argument of periapsis (mass 1): " << r2d(omega1) << " (degree)" << endl;
 	cout << scientific << "                   Inclination: " << r2d(inclination) << " (degree)" << endl;
 	cout << scientific << "            Time of Periastron: " << tau/Day << " (day)" << endl;
@@ -725,6 +697,58 @@ double binarySMBH::computeLnPrior(LnLikeData *ptr2Data) {
 	if (period > 10.0*T) {
 		LnPrior = -infiniteVal; // Cut all all configurations where the inferred period is too short!
 		}
+
+	/*
+	if (m1Val < 1.0e-2*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*SolarMass);
+		#endif
+		}
+	if (m2Val > m1Val) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2ULim: %4.3e\n",m1Val);
+		#endif
+		}
+	if (rPeribothronTotVal > 10.0*Parsec) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("rPeribothronTot: %4.3e\n",rPeribothronTotVal);
+			printf("rPeribothronTotULim: %4.3e\n",1.0*Parsec);
+		#endif
+		}
+	if (tauVal < 0.0) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("tau: %4.3e\n",tauVal);
+			printf("tauLLim: %4.3e\n",0.0);
+		#endif
+		}
+	if (tauVal > periodVal) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+			printf("tau: %4.3e\n",tauVal);
+			printf("tauULim: %4.3e\n",periodVal);
+		#endif
+		}
+	*/
 
 	Data.currentLnPrior = LnPrior;
 
