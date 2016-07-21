@@ -12,7 +12,7 @@
 #include "binarySMBHTask.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
-#define DEBUG_FIT_BINARYSMBHMODEL
+//#define DEBUG_FIT_BINARYSMBHMODEL
 //#define DEBUG_SETSYSTEM
 
 using namespace std;

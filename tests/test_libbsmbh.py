@@ -18,11 +18,11 @@ twoPi = 2.0*pi
 Parsec = 3.0857e16
 Day = 86164.090530833
 Year = 31557600.0
-DaysInYear = Year/Day
+DayInYear = Year/Day
 SolarMass = 1.98855e30
 
 skipLnLikelihood = False
-skipWorking = False
+skipWorking = True
 
 class TestPeriod(unittest.TestCase):
 	def test_period(self):
@@ -44,7 +44,7 @@ class TestNoInclination(unittest.TestCase):
 	def setUp(self):
 		self.a1 = 0.01
 		self.a2 = 0.02
-		self.period = 10.0*DaysInYear
+		self.period = 10.0*DayInYear
 		self.eccentricity = 0.0
 		self.omega1_1 = 0.0
 		self.omega1_2 = 180.0
@@ -87,7 +87,7 @@ class TestInclinationNoNoise(unittest.TestCase):
 	def setUp(self):
 		self.a1 = 0.01
 		self.a2 = 0.02
-		self.period = 10.0*DaysInYear
+		self.period = 10.0*DayInYear
 		self.eccentricity = 0.0
 		self.omega1_1 = 0.0
 		self.omega1_2 = 180.0
@@ -147,7 +147,7 @@ class TestInclinationNoise(unittest.TestCase):
 	def setUp(self):
 		self.a1 = 0.01
 		self.a2 = 0.02
-		self.period = 10.0*DaysInYear
+		self.period = 10.0*DayInYear
 		self.eccentricity = 0.0
 		self.omega1_1 = 0.0
 		self.omega1_2 = 180.0
@@ -259,13 +259,13 @@ class TestInclinationNoise(unittest.TestCase):
 		self.assertGreater(LnLike22, LnLike12)
 		self.assertGreater(LnLike22, LnLike21)
 
-class TestFitNoNoise(unittest.TestCase):
+class TestEstimate(unittest.TestCase):
 
 	def setUp(self):
 		self.n2s = 1.0e-3
 		self.a1 = 0.01
 		self.a2 = 0.02
-		self.period = 10.0*DaysInYear
+		self.period = 10.0*DayInYear
 		self.nt1 = libbsmbh.binarySMBHTask()
 
 	def tearDown(self):
@@ -342,6 +342,85 @@ class TestFitNoNoise(unittest.TestCase):
 			nlEst = ntEst.simulate(periodEst*10.0, fracNoiseToSignal = self.n2s)
 			ntEst.observe(nlEst)
 			self.assertGreaterEqual(ntEst.logPosterior(nlEst), self.nt1.logPosterior(nlEst))
+
+class TestFit(unittest.TestCase):
+	def setUp(self):
+		self.n2s = 1.0e-3
+		self.nsteps = 2000
+		self.a1 = 0.01
+		self.a2 = 0.02
+		self.period = 10.0*DayInYear
+		self.eccentricity = 0.5
+		self.omega1 = 30.0
+		self.inclination = 90.0
+		self.tau = 0.0
+		self.flux = 100.0
+		self.Theta = np.array([self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau, self.flux])
+		self.nt1 = libbsmbh.binarySMBHTask()
+		self.nt1.set(self.Theta)
+		self.nl1 = self.nt1.simulate(self.period*5.0, fracNoiseToSignal = self.n2s)
+		self.nt1.observe(self.nl1)
+
+	def tearDown(self):
+		del self.Theta
+		del self.nt1
+		del self.nl1
+
+	#@unittest.skipIf(skipWorking, 'Works!')
+	def test_fit(self):
+		ntFit = libbsmbh.binarySMBHTask(nsteps = self.nsteps)
+		ntFit.fit(self.nl1)
+
+		plt.figure(0)
+		plt.scatter(ntFit.Chain[0,:,self.nsteps/2:], ntFit.Chain[1,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.a1)
+		plt.axhline(self.a2)
+		plt.xlabel(r'$a_{1}$ (pc)')
+		plt.ylabel(r'$a_{2}$ (pc)')
+
+		plt.figure(1)
+		plt.scatter(ntFit.Chain[1,:,self.nsteps/2:], ntFit.Chain[2,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.a2)
+		plt.axhline(self.period)
+		plt.xlabel(r'$a_{2}$ (pc)')
+		plt.ylabel(r'$T$ (d)')
+
+		plt.figure(2)
+		plt.scatter(ntFit.Chain[2,:,self.nsteps/2:], ntFit.Chain[3,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.period)
+		plt.axhline(self.eccentricity)
+		plt.xlabel(r'$T$ (d)')
+		plt.ylabel(r'$e$')
+
+		plt.figure(3)
+		plt.scatter(ntFit.Chain[3,:,self.nsteps/2:], ntFit.Chain[4,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.eccentricity)
+		plt.axhline(self.omega1)
+		plt.xlabel(r'$e$')
+		plt.ylabel(r'$\omega_{1}$')
+
+		plt.figure(4)
+		plt.scatter(ntFit.Chain[4,:,self.nsteps/2:], ntFit.Chain[5,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.omega1)
+		plt.axhline(self.inclination)
+		plt.xlabel(r'$\omega_{1}$')
+		plt.ylabel(r'$i$')
+
+		plt.figure(5)
+		plt.scatter(ntFit.Chain[5,:,self.nsteps/2:], ntFit.Chain[6,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.inclination)
+		plt.axhline(self.tau)
+		plt.xlabel(r'$i$')
+		plt.ylabel(r'$\tau$ (d)')
+
+		plt.figure(6)
+		plt.scatter(ntFit.Chain[6,:,self.nsteps/2:], ntFit.Chain[7,:,self.nsteps/2:], c = ntFit.LnPosterior[:,self.nsteps/2:], edgecolors = 'none')
+		plt.axvline(self.tau)
+		plt.axhline(self.flux)
+		plt.xlabel(r'$\tau$ (d)')
+		plt.ylabel(r'$F_{\mathrm{intrin}}$ (Jy)')
+
+		pdb.set_trace()
 
 if __name__ == "__main__":
 	unittest.main()

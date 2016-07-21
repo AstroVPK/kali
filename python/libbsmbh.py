@@ -58,7 +58,7 @@ class binarySMBHTask(object):
 	Year = 31557600.0
 	SolarMass = 1.98855e30
 
-	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.1, mcmcA = 2.0):
+	def __init__(self, nthreads = psutil.cpu_count(logical = True), nwalkers = 25*psutil.cpu_count(logical = True), nsteps = 250, maxEvals = 10000, xTol = 0.01, mcmcA = 2.0):
 		try:
 			assert nthreads > 0, r'nthreads must be greater than 0'
 			assert type(nthreads) is types.IntType, r'nthreads must be an integer'
@@ -767,18 +767,8 @@ class binarySMBHTask(object):
 		for walkerNum in xrange(self.nwalkers):
 			noSuccess = True
 			while noSuccess:
-				sinInclinationGuess = random.uniform(-1.0, 1.0)
-				inclinationGuess = (180.0/math.pi)*math.asin(sinInclinationGuess)
-				m1Guess = math.pow(10.0, random.uniform(-1.0, 3.0)) # m1 in 1e6*SolarMass
-				m2Guess = math.pow(10.0, random.uniform(-1.0, math.log10(m1Guess))) # m1 in 1e6SolarMass
-				rS1Guess = ((2.0*self.G*m1Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS1 in Parsec
-				rS2Guess = ((2.0*self.G*m2Guess*1.0e6*self.SolarMass)/math.pow(self.c, 2.0)/self.Parsec) # rS2 in Parsec
-				rPeriEst = math.pow(((self.G*math.pow(periodEst*self.Day, 2.0)*((m1Guess + m2Guess)*1.0e6*self.SolarMass)*math.pow(1.0 + eccentricityEst, 3.0))/math.pow(self.twoPi, 2.0)),1.0/3.0)/self.Parsec
-				a1Est = (m2Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
-				a2Est = (m1Guess*rPeriEst)/((m1Guess + m2Guess)*(1.0 - eccentricityEst));
-
-
-				ThetaGuess = np.array([rPeriEst, m1Guess, m2Guess, eccentricityGuess, omega1Est, inclinationGuess, tauGuess, totalFluxGuess])
+				a1Guess, a2Guess, inclinationGuess = self.guess(a2sinInclinationEst)
+				ThetaGuess = np.array([a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst, fluxEst])
 				res = self.set(ThetaGuess)
 				lnPrior = self.logPrior(observedLC)
 				if res == 0 and lnPrior == 0.0:
@@ -786,5 +776,7 @@ class binarySMBHTask(object):
 			for dimNum in xrange(self.ndims):
 				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
 
+		lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
+		highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
 		res = self._taskCython.fit_BinarySMBHModel(observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 		return res
