@@ -256,7 +256,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, pSim = 0, qSim = 0, pComp = 0, qComp = 0, sampler = None, pwd = None, **kwargs):
+	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, pSim = 0, qSim = 0, pComp = 0, qComp = 0, sampler = None, path = None, **kwargs):
 		"""!
 		\brief Initialize a new light curve
 
@@ -284,7 +284,7 @@ class lc(object):
 		\param[in] pwd:               Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
 		"""
 		if name is not None and band is not None:
-			self.read(name = name, band = band, path = pwd, **kwargs)
+			self.read(name = name, band = band, path = path, **kwargs)
 		else:
 			self._numCadences = numCadences ## The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
 			self._simulatedCadenceNum = -1 ## How many cadences have already been simulated.
