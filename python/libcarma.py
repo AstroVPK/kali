@@ -2249,10 +2249,11 @@ class task(object):
 				observedLC.yerrSmooth[i] = unObsErr
 				observedLC.maskSmooth[i] = 0.0
 
-		res = self._taskCython.smooth_RTS(observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth, observedLC.ySmooth - np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)]), observedLC.yerrSmooth, observedLC.maskSmooth, observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
+		preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
+		res = self._taskCython.smooth_RTS(observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth, observedLC.ySmooth - preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth, observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
 
 		for i in xrange(observedLC.numCadencesSmooth):
-			observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp]
+			observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
 			try:
 				observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
 			except ValueError:
