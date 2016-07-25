@@ -588,6 +588,34 @@ class lc(object):
 	def sampler(self, value):
 		self._sampler = eval(str(value).split('.')[-1])(self)
 
+	@property
+	def mean(self):
+		"""!
+		\brief Mean of the observations y.
+		"""
+		return self._mean
+
+	@property
+	def meanerr(self):
+		"""!
+		\brief Mean of the observation errors yerr.
+		"""
+		return self._meanerr
+
+	@property
+	def std(self):
+		"""!
+		\brief Standard deviation of the observations y.
+		"""
+		return self._std
+
+	@property
+	def stderr(self):
+		"""!
+		\brief Standard deviation of the observation errors yerr.
+		"""
+		return self._stderr
+
 	def __len__(self):
 		return self._numCadences
 
