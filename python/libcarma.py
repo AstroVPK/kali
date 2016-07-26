@@ -1088,9 +1088,9 @@ class lc(object):
 			plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label = r'%s (%s-band)'%(self.name, self.band), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 		plt.xlim(self.t[0], self.t[-1])
 		if self.isSmoothed:
-			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
-			plt.plot(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]), color = '#4daf4a', zorder = -5)
-			plt.fill_between(self.tSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]) - self.xerrSmooth, self.xSmooth - np.mean(self.xSmooth) + np.mean(self.y[np.where(self.mask == 1.0)[0]]) + self.xerrSmooth, facecolor = '#ccebc5', alpha = 0.5, zorder = -5)
+			plt.plot(self.tSmooth, self.xSmooth, color = '#4daf4a', marker = 'o', markeredgecolor = 'none', zorder = -5)
+			plt.plot(self.tSmooth, self.xSmooth, color = '#4daf4a', zorder = -5)
+			plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth + self.xerrSmooth, facecolor = '#ccebc5', alpha = 0.5, zorder = -5)
 		plt.xlabel(self.xunit)
 		plt.ylabel(self.yunit)
 		plt.title(r'Light curve')
