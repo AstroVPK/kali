@@ -112,7 +112,7 @@ using namespace std;
 		return 0;
 		}
 
-	int LCData::dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum) {
+	int LCData::dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *dacfVals, double *dacfErrVals, int threadNum) {
 		// Compute the mean
 		double meanVal = 0.0, count = 0.0;
 		for (int i = 0; i < numCadences; ++i) {
@@ -145,13 +145,25 @@ using namespace std;
 			int pairsCtr = 0;
 			for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
 				for (int lagCtr = ptCtr + minSpacing; lagCtr < min(ptCtr + maxSpacing, numCadences); ++lagCtr) {
-					acvfVals[binCtr] = acvfVals[binCtr] + (((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)))/sqrt((varVal - pow(yerrIn[ptCtr], 2.0))*(varVal - pow(yerrIn[ptCtr+lagCtr], 2.0))));
+					dacfVals[binCtr] = dacfVals[binCtr] + (((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)))/sqrt((varVal - pow(yerrIn[ptCtr], 2.0))*(varVal - pow(yerrIn[ptCtr+lagCtr], 2.0))));
 					pairsCtr = pairsCtr + (maskIn[ptCtr]*maskIn[ptCtr+lagCtr]);
 					}
 				}
 			if (pairsCtr > 0) {
-				acvfVals[binCtr] = acvfVals[binCtr]/pairsCtr;
+				dacfVals[binCtr] = dacfVals[binCtr]/pairsCtr;
 				}
 			}
+			// Now get the dacfErr
+			for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
+				for (int lagCtr = ptCtr + minSpacing; lagCtr < min(ptCtr + maxSpacing, numCadences); ++lagCtr) {
+					dacfErrVals[binCtr] = dacfErrVals[binCtr] + pow((((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)))/sqrt((varVal - pow(yerrIn[ptCtr], 2.0))*(varVal - pow(yerrIn[ptCtr+lagCtr], 2.0)))) - dacfVals[binCtr], 2.0);
+					pairsCtr = pairsCtr + (maskIn[ptCtr]*maskIn[ptCtr+lagCtr]);
+					}
+				}
+			if (pairsCtr > 0) {
+				dacfErrVals[binCtr] = dacfErrVals[binCtr]/pairsCtr;
+				}
+			}
+			dacfErrVals[binCtr] = sqrt(dacfErrVals[binCtr]);
 		return 0;
 		}
