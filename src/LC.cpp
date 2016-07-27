@@ -112,8 +112,7 @@ using namespace std;
 		return 0;
 		}
 
-	int LCData::dacvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum) {
-
+	int LCData::dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum) {
 		// Compute the mean
 		double meanVal = 0.0, count = 0.0;
 		for (int i = 0; i < numCadences; ++i) {
@@ -123,33 +122,30 @@ using namespace std;
 		if (count > 0.0) {
 			meanVal /= count;
 			}
-
-		// For the 1st Bin
-		double binStart = 0.0;
-		int minSpacing = static_cast<int>(binStart/dt);
-		double binEnd = lagVals[0] + (0.5*(lagVals[1] - lagVals[0]));
-		int maxSpacing = static_cast<int>(binEnd/dt);
-		int pairsCtr = 0;
-		for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
-			for (int lagCtr = ptCtr + minSpacing; lagCtr < max(ptCtr + maxSpacing, numCadences); ++lagCtr) {
-				acvfVals[0] = acvfVals[0] + ((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)));
-				pairsCtr = pairsCtr + (maskIn[ptCtr]*maskIn[ptCtr+lagCtr]);
+		// Compute the variance
+		double varVal = 0.0;
+		for (int i = 0; i < numCadences; ++i) {
+			varVal += pow(maskIn[i]*(yIn[i] - meanVal), 2.0);
+			}
+		if (count > 0.0) {
+			varVal /= count;
+			}
+		// Now compute the dacf
+		for (int binCtr = 0; binCtr < numBins; ++binCtr) {
+			double binStart = 0.0;
+			if (binCtr != 0) {
+				binStart = lagVals[binCtr] - (0.5*(lagVals[binCtr] - lagVals[binCtr-1]));
 				}
-			}
-		if (pairsCtr > 0) {
-			acvfVals[0] = acvfVals[0]/pairsCtr;
-			}
-
-		// For all but the 1st and last bins
-		for (int binCtr = 1; binctr < numBins - 1; ++binCtr) {
-			double binStart = lagVals[binCtr] - (0.5*(lagVals[binCtr] - lagVals[binCtr-1]));
 			int minSpacing = static_cast<int>(binStart/dt);
-			double binEnd = lagVals[binCtr] + (0.5*(lagVals[binCtr+1] - lagVals[binCtr]));
+			double binEnd = tIn[numCadences-1] - tIn[0];
+			if (binCtr != numBins - 1) {
+				double binEnd = lagVals[binCtr] + (0.5*(lagVals[binCtr+1] - lagVals[binCtr]));
+				}
 			int maxSpacing = static_cast<int>(binEnd/dt);
 			int pairsCtr = 0;
 			for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
-				for (int lagCtr = ptCtr + minSpacing; lagCtr < max(ptCtr + maxSpacing, numCadences); ++lagCtr) {
-					acvfVals[binCtr] = acvfVals[binCtr] + ((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)));
+				for (int lagCtr = ptCtr + minSpacing; lagCtr < min(ptCtr + maxSpacing, numCadences); ++lagCtr) {
+					acvfVals[binCtr] = acvfVals[binCtr] + (((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)))/sqrt((varVal - pow(yerrIn[ptCtr], 2.0))*(varVal - pow(yerrIn[ptCtr+lagCtr], 2.0))));
 					pairsCtr = pairsCtr + (maskIn[ptCtr]*maskIn[ptCtr+lagCtr]);
 					}
 				}
@@ -157,21 +153,5 @@ using namespace std;
 				acvfVals[binCtr] = acvfVals[binCtr]/pairsCtr;
 				}
 			}
-
-		// For the last bins
-		double binStart = lagVals[binCtr] - (0.5*(lagVals[binCtr] - lagVals[binCtr-1]));
-		int minSpacing = static_cast<int>(binStart/dt);
-		double binEnd = tIn[numCadences-1] - tIn[0];
-		int maxSpacing = static_cast<int>(binEnd/dt);
-		int pairsCtr = 0;
-		for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
-			for (int lagCtr = ptCtr + minSpacing; lagCtr < max(ptCtr + maxSpacing, numCadences); ++lagCtr) {
-				acvfVals[numBins-1] = acvfVals[numBins-1] + ((maskIn[ptCtr]*(yIn[ptCtr] - meanVal))*(maskIn[ptCtr+lagCtr]*(yIn[ptCtr+lagCtr] - meanVal)));
-				pairsCtr = pairsCtr + (maskIn[ptCtr]*maskIn[ptCtr+lagCtr]);
-				}
-			}
-		if (pairsCtr > 0) {
-			acvfVals[numBins-1] = acvfVals[numBins-1]/pairsCtr;
-			}
-
+		return 0;
 		}
