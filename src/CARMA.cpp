@@ -143,9 +143,10 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 	LnLikeArgs Args = *ptr2Args;
 	LnLikeData *ptr2Data = Args.Data;
 	CARMA *Systems = Args.Systems;
-	double LnPosterior = 0.0, old_dt = 0.0;
+	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].setCARMA(const_cast<double*>(&x[0]));
 		Systems[threadNum].solveCARMA();
@@ -202,7 +203,7 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 		}
 		#endif
 
-		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
 
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
@@ -243,9 +244,10 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 	LnLikeData *Data = Args.Data;
 	CARMA *Systems = Args.Systems;
 	LnLikeData *ptr2Data = Data;
-	double LnPosterior = 0.0, old_dt = 0.0;
+	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
@@ -302,7 +304,7 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 		}
 		#endif
 
-		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
+		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
 
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveCARMA();
