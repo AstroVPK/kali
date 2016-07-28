@@ -113,6 +113,9 @@ using namespace std;
 		}
 
 	int LCData::dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *dacfVals, double *dacfErrVals, int threadNum) {
+		/*!
+		DACF of Edelson Krolik 1988
+		*/
 		// Compute the mean
 		double meanVal = 0.0, count = 0.0;
 		for (int i = 0; i < numCadences; ++i) {
