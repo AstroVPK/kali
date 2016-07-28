@@ -152,7 +152,6 @@ using namespace std;
 			if (pairsCtr > 0) {
 				dacfVals[binCtr] = dacfVals[binCtr]/pairsCtr;
 				}
-			}
 			// Now get the dacfErr
 			for (int ptCtr = 0; ptCtr < numCadences; ++ptCtr) {
 				for (int lagCtr = ptCtr + minSpacing; lagCtr < min(ptCtr + maxSpacing, numCadences); ++lagCtr) {
@@ -163,7 +162,7 @@ using namespace std;
 			if (pairsCtr > 0) {
 				dacfErrVals[binCtr] = dacfErrVals[binCtr]/pairsCtr;
 				}
-			}
 			dacfErrVals[binCtr] = sqrt(dacfErrVals[binCtr]);
+			}
 		return 0;
 		}
