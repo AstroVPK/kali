@@ -18,6 +18,9 @@ using namespace std;
 	public:
 		int numCadences;
 		double dt;
+		double meandt;
+		double mindt;
+		double maxdt;
 		double dtSmooth;
 		double tolIR;
 		double fracIntrinsicVar;

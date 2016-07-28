@@ -47,7 +47,7 @@
 //#define DEBUG_CALCLNPOSTERIOR
 //#define DEBUG_CALCLNPOSTERIOR2
 //#define DEBUG_CALCCARMALNLIKE
-//#define DEBUG_COMPUTELNPRIOR
+#define DEBUG_COMPUTELNPRIOR
 //#define MAXPRINT 10
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
@@ -1253,8 +1253,8 @@ double CARMA::get_dt() {
 	return dt;
 	}
 
-void CARMA::set_dt(double t_incr) {
-	dt = t_incr;
+void CARMA::set_dt(double new_dt) {
+	dt = new_dt;
 	}
 
 int CARMA::get_allocated() {
@@ -2116,7 +2116,6 @@ void CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR;
-	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *x = Data.x;
 	double *mask = Data.mask;
@@ -2125,7 +2124,7 @@ void CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 
-	double fracChange = 0.0;
+	double t_incr = 0.0, fracChange = 0.0;
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -2169,7 +2168,6 @@ void CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *di
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
 	double tolIR = Data.tolIR;
-	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *x = Data.x;
 	double *mask = Data.mask;
@@ -2178,7 +2176,7 @@ void CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *di
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 
-	double fracChange = 0.0;
+	double t_incr = 0.0, fracChange = 0.0;
 	int startCadence = cadenceNum + 1;
 
 	#pragma omp simd
@@ -2235,7 +2233,6 @@ void CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* n
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
-	double t_incr = Data.t_incr;
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
 	double fracNoiseToSignal = Data.fracNoiseToSignal;
 	double *t = Data.t;
@@ -2266,7 +2263,6 @@ void CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, dou
 
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
-	double t_incr = Data.t_incr;
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
 	double fracNoiseToSignal = Data.fracNoiseToSignal;
 	double *t = Data.t;
@@ -2299,7 +2295,6 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR; 
-	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2307,7 +2302,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	double LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
+	double t_incr = 0.0, LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
 	H[0] = mask[0];
 	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
@@ -2430,7 +2425,6 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	int cadenceNum = Data.cadenceNum;
 	double currentLnLikelihood = Data.currentLnLikelihood;
 	double tolIR = Data.tolIR; 
-	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2440,7 +2434,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	double LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
+	double t_incr = 0.0, LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
 	int startCadence = cadenceNum + 1;
 	H[0] = mask[startCadence];
@@ -2564,8 +2558,7 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 	int numCadences = Data.numCadences;
 	double currentLnPrior = Data.currentLnPrior;
-	double tolIR = Data.tolIR; 
-	double t_incr = Data.t_incr;
+	double tolIR = Data.tolIR;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2865,7 +2858,6 @@ int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR; 
-	double t_incr = Data.t_incr;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2873,7 +2865,7 @@ int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
-	double LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
+	double t_incr = 0.0, LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 	lapack_int YesNo;
 
 	/* Allocate arrays to hold KScratch, XMinus, PMinus, X, and P for the backward recursion */

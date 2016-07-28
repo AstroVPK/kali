@@ -256,7 +256,7 @@ class lc(object):
 	"""
 	__metaclass__ = abc.ABCMeta
 
-	def __init__(self, numCadences = None, dt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, pSim = 0, qSim = 0, pComp = 0, qComp = 0, sampler = None, path = None, **kwargs):
+	def __init__(self, numCadences = None, dt = None, meandt = None, mindt = None, dtSmooth = None, name = None, band = None, xunit = None, yunit = None, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5, pSim = 0, qSim = 0, pComp = 0, qComp = 0, sampler = None, path = None, **kwargs):
 		"""!
 		\brief Initialize a new light curve
 
@@ -326,8 +326,11 @@ class lc(object):
 				self.mask[i] = 1.0
 			self._isRegular = True
 			self._dt = dt ## Increment between epochs.
+			self._meandt = dt
+			self._mindt = dt
+			self._maxdt = dt
 			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
-		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, dtSmooth = self._dtSmooth, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
+		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, meandt = self._meandt, mindt = self._mindt, maxdt = self._maxdt, dtSmooth = self._dtSmooth, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)
 		else:
@@ -483,6 +486,33 @@ class lc(object):
 	def dt(self, value):
 		self._lcCython.dt = value
 		self._dt = value
+
+	@property
+	def meandt(self):
+		return self._meandt
+
+	@meandt.setter
+	def meandt(self, value):
+		self._lcCython.meandt = value
+		self._meandt = value
+
+	@property
+	def mindt(self):
+		return self._mindt
+
+	@mindt.setter
+	def mindt(self, value):
+		self._lcCython.mindt = value
+		self._mindt = value
+
+	@property
+	def maxdt(self):
+		return self._maxdt
+
+	@maxdt.setter
+	def maxdt(self, value):
+		self._lcCython.maxdt = value
+		self._maxdt = value
 
 	@property
 	def dtSmooth(self):
@@ -1000,6 +1030,10 @@ class lc(object):
 				raise ValueError('newdt cannot be greater than dt')
 			newLC = self.copy()
 			newLC.dt = newdt
+			newLC.meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+			newLC.mindt = float(np.nanmin(self.t))
+			newLC.maxdt = float(np.nanmax(self.t))
+			newLC.meandt = float(self.t[-1] - self.t[0])
 			newLC.numCadences = int(math.ceil(self.T/newLC.dt))
 			del newLC.t
 			del newLC.x
@@ -1300,16 +1334,16 @@ class lcIterator(object):
 class basicLC(lc):
 
 	def copy(self):
-		lccopy = basicLC(self.numCadences, dt = self.dt, dtSmooth = self.dtSmooth, name = None, band = self.band, xunit = self.xunit, yunit = self.yunit, tolIR = self.tolIR, fracIntrinsicVar = self.fracIntrinsicVar, fracNoiseToSignal = self.fracNoiseToSignal, maxSigma = self.maxSigma, minTimescale = self.minTimescale, maxTimescale = self.maxTimescale)
+		lccopy = basicLC(self.numCadences, dt = self.dt, meandt = self.meandt, mindt = self.mindt, maxdt = self.maxdt, dtSmooth = self.dtSmooth, name = None, band = self.band, xunit = self.xunit, yunit = self.yunit, tolIR = self.tolIR, fracIntrinsicVar = self.fracIntrinsicVar, fracNoiseToSignal = self.fracNoiseToSignal, maxSigma = self.maxSigma, minTimescale = self.minTimescale, maxTimescale = self.maxTimescale)
 		lccopy.t = np.copy(self.t)
 		lccopy.x = np.copy(self.x)
 		lccopy.y = np.copy(self.y)
 		lccopy.yerr = np.copy(self.yerr)
 		lccopy.mask = np.copy(self.mask)
-		lccopy.pSim = self.pSim
-		lccopy.qSim = self.qSim
-		lccopy.pComp = self.pComp
-		lccopy.qComp = self.qComp
+		lccopy.pSim = np.copy(self.pSim)
+		lccopy.qSim = np.copy(self.qSim)
+		lccopy.pComp = np.copy(self.pComp)
+		lccopy.qComp = np.copy(self.qComp)
 
 		count = int(np.sum(lccopy.mask))
 		y_meanSum = 0.0
@@ -1404,6 +1438,9 @@ class externalLC(basicLC):
 		self._startT = float(self.t[0])
 		self.t -= self._startT
 		self._dt = float(self.t[1] - self.t[0])
+		self._mindt = float(np.nanmin(self.t))
+		self._maxdt = float(np.nanmax(self.t))
+		self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
 		self._T = float(self.t[-1] - self.t[0])
 		self._checkIsRegular()
 
@@ -1470,11 +1507,35 @@ class jumpSampler(sampler):
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
-		returnLC._mean = np.mean(returnLC.y)
-		returnLC._std = np.std(returnLC.y)
-		returnLC._mean = np.mean(returnLC.yerr)
-		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
+		returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
+		returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
+		returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
+		returnLC._mindt = float(np.nanmin(returnLC.t))
+		returnLC._maxdt = float(np.nanmax(returnLC.t))
+		count = int(np.sum(returnLC.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_meanSum += returnLC.mask[i]*returnLC.y[i]
+			yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
+		if count > 0.0:
+			returnLC._mean = y_meanSum/count
+			returnLC._meanerr = yerr_meanSum/count
+		else:
+			returnLC._mean = 0.0
+			returnLC._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
+			yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
+		if count > 0.0:
+			returnLC._std = math.sqrt(y_stdSum/count)
+			returnLC._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			returnLC._std = 0.0
+			returnLC._stderr = 0.0
 		return returnLC
 
 class bernoulliSampler(sampler):
@@ -1503,11 +1564,35 @@ class bernoulliSampler(sampler):
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
-		returnLC._mean = np.mean(returnLC.y)
-		returnLC._std = np.std(returnLC.y)
-		returnLC._mean = np.mean(returnLC.yerr)
-		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
+		returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
+		returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
+		returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
+		returnLC._mindt = float(np.nanmin(returnLC.t))
+		returnLC._maxdt = float(np.nanmax(returnLC.t))
+		count = int(np.sum(returnLC.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_meanSum += returnLC.mask[i]*returnLC.y[i]
+			yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
+		if count > 0.0:
+			returnLC._mean = y_meanSum/count
+			returnLC._meanerr = yerr_meanSum/count
+		else:
+			returnLC._mean = 0.0
+			returnLC._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
+			yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
+		if count > 0.0:
+			returnLC._std = math.sqrt(y_stdSum/count)
+			returnLC._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			returnLC._std = 0.0
+			returnLC._stderr = 0.0
 		return returnLC
 
 class matchSampler(sampler):
@@ -1540,12 +1625,35 @@ class matchSampler(sampler):
 		returnLC.y = yNew
 		returnLC.yerr = yerrNew
 		returnLC.mask = maskNew
-		returnLC._T = returnLC.t[-1] - returnLC.t[0]
-		returnLC._mean = np.mean(returnLC.y)
-		returnLC._std = np.std(returnLC.y)
-		returnLC._meanerr = np.mean(returnLC.yerr)
-		returnLC._stderr = np.std(returnLC.yerr)
 		returnLC._numCadences = newNumCadences
+		returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
+		returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
+		returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
+		returnLC._mindt = float(np.nanmin(returnLC.t))
+		returnLC._maxdt = float(np.nanmax(returnLC.t))
+		count = int(np.sum(returnLC.mask))
+		y_meanSum = 0.0
+		yerr_meanSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_meanSum += returnLC.mask[i]*returnLC.y[i]
+			yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
+		if count > 0.0:
+			returnLC._mean = y_meanSum/count
+			returnLC._meanerr = yerr_meanSum/count
+		else:
+			returnLC._mean = 0.0
+			returnLC._meanerr = 0.0
+		y_stdSum = 0.0
+		yerr_stdSum = 0.0
+		for i in xrange(returnLC.numCadences):
+			y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
+			yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
+		if count > 0.0:
+			returnLC._std = math.sqrt(y_stdSum/count)
+			returnLC._stderr = math.sqrt(yerr_stdSum/count)
+		else:
+			returnLC._std = 0.0
+			returnLC._stderr = 0.0
 		return returnLC
 
 class task(object):
@@ -2009,7 +2117,7 @@ class task(object):
 	def logPrior(self, observedLC, forced = True, tnum = None):
 		if tnum is None:
 			tnum = 0
-		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+		observedLC._logPrior =  self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std, observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
 		return observedLC._logPrior
 
 	def logLikelihood(self, observedLC, forced = True, tnum = None):
@@ -2246,7 +2354,7 @@ class task(object):
 
 			for dimNum in xrange(self.ndims):
 				xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
-		res = self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC._std, observedLC.minTimescale*observedLC._dt, observedLC.maxTimescale*observedLC._T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+		res = self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std, observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t, observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
 		return res
 
 	def smooth(self, observedLC, tnum = None):

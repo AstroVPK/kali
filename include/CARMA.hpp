@@ -24,7 +24,7 @@ struct LnLikeData {
 	int numCadences;
 	int cadenceNum;
 	double tolIR;
-	double t_incr;
+	double meanDT;
 	double fracIntrinsicVar;
 	double fracNoiseToSignal;
 	double maxSigma;
@@ -102,7 +102,7 @@ public:
 	int get_p();
 	int get_q();
 	double get_dt();
-	void set_dt(double t_incr);
+	void set_dt(double new_dt);
 	int get_allocated();
 
 	void printX();

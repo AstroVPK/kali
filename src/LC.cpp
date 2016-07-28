@@ -17,6 +17,9 @@ using namespace std;
 	LCData::LCData() {
 		numCadences = 0;
 		dt = 0.0;
+		meandt = 0.0;
+		mindt = 0.0;
+		maxdt = 0.0;
 		dtSmooth = 0.0;
 		tolIR = 0.0;
 		fracIntrinsicVar = 0.0;

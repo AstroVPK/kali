@@ -13,6 +13,9 @@ cdef extern from 'LC.hpp':
 	cdef cppclass LCData:
 		int numCadences
 		double dt
+		double meandt
+		double mindt
+		double maxdt
 		double dtSmooth
 		double tolIR
 		double fracIntrinsicVar
@@ -88,10 +91,13 @@ cdef class lc:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, dtSmooth = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
+	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, meandt = 1.0, mindt = 1.0, maxdt = 1.0, dtSmooth = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
 		self.thisptr = new LCData()
 		self.thisptr.numCadences = t.shape[0]
 		self.thisptr.dt = dt
+		self.thisptr.mindt = mindt
+		self.thisptr.maxdt = maxdt
+		self.thisptr.meandt = meandt
 		self.thisptr.dtSmooth = dtSmooth
 		self.thisptr.tolIR = tolIR
 		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
@@ -116,6 +122,18 @@ cdef class lc:
 	property dt:
 		def __get__(self): return self.thisptr.dt
 		def __set__(self, dt): self.thisptr.dt = dt
+
+	property meandt:
+		def __get__(self): return self.thisptr.meandt
+		def __set__(self, meandt): self.thisptr.meandt = meandt
+
+	property mindt:
+		def __get__(self): return self.thisptr.mindt
+		def __set__(self, mindt): self.thisptr.mindt = mindt
+
+	property maxdt:
+		def __get__(self): return self.thisptr.maxdt
+		def __set__(self, maxdt): self.thisptr.maxdt = maxdt
 
 	property dtSmooth:
 		def __get__(self): return self.thisptr.dtSmooth
