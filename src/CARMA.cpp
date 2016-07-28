@@ -153,8 +153,6 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 		Systems[threadNum].resetState();
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
-		#pragma omp critical
-		{
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
@@ -200,7 +198,6 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 			Systems[threadNum].printP();
 			printf("\n");
 			fflush(0);
-		}
 		#endif
 
 		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
@@ -210,8 +207,6 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 		//Systems[threadNum].resetState();
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
-		#pragma omp critical
-		{
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
@@ -225,7 +220,6 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 			printf("\n");
 			printf("calcLnPosterior - threadNum: %d; LnLike: %f\n",threadNum,LnPosterior);
 			printf("\n");
-		}
 		#endif
 
 		} else {
@@ -254,8 +248,6 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 		Systems[threadNum].resetState();
 
 		#ifdef DEBUG_CALCLNPOSTERIOR2
-		#pragma omp critical
-		{
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
@@ -301,7 +293,6 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 			Systems[threadNum].printP();
 			printf("\n");
 			fflush(0);
-		}
 		#endif
 
 		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
@@ -311,8 +302,6 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 		//Systems[threadNum].resetState();
 
 		#ifdef DEBUG_CALCLNPOSTERIOR2
-		#pragma omp critical
-		{
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ", threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
@@ -326,7 +315,6 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 			printf("\n");
 			printf("calcLnLike - threadNum: %d; LnPosterior: %f\n", threadNum, LnPosterior);
 			printf("\n");
-		}
 		#endif
 
 		} else {
