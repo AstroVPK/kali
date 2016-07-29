@@ -1094,40 +1094,16 @@ class lc(object):
 			useLC._lcCython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf, self._acferr)
 			return self._acflags, self._acf, self._acferr
 
-	def acf_py(self, newdt = None):
-		if hasattr(self, '_acflags_py') and hasattr(self, '_acf_py') and hasattr(self, '_acferr_py'):
-			return self._acflags_py, self._acf_py, self._acferr_py
-		else:
-			if not self.isRegular:
-				useLC = self.regularize(newdt)
-			else:
-				useLC = self
-			acvflags, acvf, acvferr = self.acvf(newdt)
-			self._acflags_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			self._acf_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			self._acferr_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-			constErr = math.pow(acvferr[0]/acvf[0], 2.0)
-			for i in xrange(useLC.numCadences):
-				self._acflags_py[i] = acvflags[i]
-				if acvf[i] != 0.0:
-					self._acf_py[i] = acvf[i]/acvf[0]
-					self._acferr_py[i] = (acvf[i]/acvf[0])*np.sqrt(np.power(acvferr[i]/acvf[i], 2.0) + constErr)
-			return self._acflags_py, self._acf_py, self._acferr_py
-
 	def dacf(self, newdt = None, nbins = None):
 		if hasattr(self, '_dacflags') and hasattr(self, '_dacf') and hasattr(self, '_dacferr'):
 			return self._dacflags, self._dacf, self._dacferr
 		else:
-			if not self.isRegular:
-				useLC = self.regularize(newdt)
-			else:
-				useLC = self
 			if nbins is None:
-				nbins = int(useLC.numCadences/10)
-			self._dacflags = np.require(np.linspace(start = 0, stop = useLC.T, num = nbins), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+				nbins = int(self.numCadences/10)
+			self._dacflags = np.require(np.linspace(start = 0.0, stop = self.T, num = nbins), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
 			self._dacf = np.require(np.zeros(self._dacflags.shape[0]), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			self._dacferr = np.require(np.zeros(self._dacflags.shape[0]), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-			useLC._lcCython.compute_DACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, nbins, self._dacflags, self._dacf, self._dacferr)
+			self._lcCython.compute_DACF(self.numCadences, self.dt, self.t, self.x, self.y, self.yerr, self.mask, nbins, self._dacflags, self._dacf, self._dacferr)
 			return self._dacflags, self._dacf, self._dacferr
 
 	def sf(self, newdt = None):
