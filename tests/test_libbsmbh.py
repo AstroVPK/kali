@@ -22,7 +22,7 @@ DayInYear = Year/Day
 SolarMass = 1.98855e30
 
 skipLnLikelihood = False
-skipWorking = True
+skipWorking = False
 
 class TestPeriod(unittest.TestCase):
 	def test_period(self):
