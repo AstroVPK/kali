@@ -35,6 +35,7 @@ cdef extern from 'LC.hpp':
 		LCData() except+
 
 		int acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
+		int acf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
 		int sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double*maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
 		int dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum)
 
@@ -182,6 +183,13 @@ cdef class lc:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.acvf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acvfVals[0], &acvfErrVals[0], threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def compute_ACF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acfVals not None, np.ndarray[double, ndim=1, mode='c'] acfErrVals not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.acf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acfVals[0], &acfErrVals[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

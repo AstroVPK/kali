@@ -1088,17 +1088,31 @@ class lc(object):
 				useLC = self.regularize(newdt)
 			else:
 				useLC = self
-			acvflags, acvf, acvferr = self.acvf(newdt)
-			self._acflags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-			self._acf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			self._acflags = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
+			self._acf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			self._acferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+			useLC._lcCython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf, self._acferr)
+			return self._acflags, self._acf, self._acferr
+
+	def acf_py(self, newdt = None):
+		if hasattr(self, '_acflags_py') and hasattr(self, '_acf_py') and hasattr(self, '_acferr_py'):
+			return self._acflags_py, self._acf_py, self._acferr_py
+		else:
+			if not self.isRegular:
+				useLC = self.regularize(newdt)
+			else:
+				useLC = self
+			acvflags, acvf, acvferr = self.acvf(newdt)
+			self._acflags_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			self._acf_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+			self._acferr_py = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			constErr = math.pow(acvferr[0]/acvf[0], 2.0)
 			for i in xrange(useLC.numCadences):
-				self._acflags[i] = acvflags[i]
+				self._acflags_py[i] = acvflags[i]
 				if acvf[i] != 0.0:
-					self._acf[i] = acvf[i]/acvf[0]
-					self._acferr[i] = (acvf[i]/acvf[0])*np.sqrt(np.power(acvferr[i]/acvf[i], 2.0) + constErr)
-			return self._acflags, self._acf, self._acferr
+					self._acf_py[i] = acvf[i]/acvf[0]
+					self._acferr_py[i] = (acvf[i]/acvf[0])*np.sqrt(np.power(acvferr[i]/acvf[i], 2.0) + constErr)
+			return self._acflags_py, self._acf_py, self._acferr_py
 
 	def dacf(self, newdt = None, nbins = None):
 		if hasattr(self, '_dacflags') and hasattr(self, '_dacf') and hasattr(self, '_dacferr'):
@@ -1111,10 +1125,10 @@ class lc(object):
 			if nbins is None:
 				nbins = int(useLC.numCadences/10)
 			self._dacflags = np.require(np.linspace(start = 0, stop = useLC.T, num = nbins), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of timestamps.
-			self._dacf = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
-			self._dacferr = np.require(np.zeros(useLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+			self._dacf = np.require(np.zeros(self._dacflags.shape[0]), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
+			self._dacferr = np.require(np.zeros(self._dacflags.shape[0]), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of intrinsic fluxes.
 			useLC._lcCython.compute_DACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, nbins, self._dacflags, self._dacf, self._dacferr)
-			return self._dacflags, self.dacf, self.dacferr
+			return self._dacflags, self._dacf, self._dacferr
 
 	def sf(self, newdt = None):
 		if hasattr(self, '_sflags') and hasattr(self, '_sf') and hasattr(self, '_sferr'):
@@ -1198,12 +1212,11 @@ class lc(object):
 
 	def plotdacf(self, fig = -4, newdt = None, doShow = False):
 		newFig = plt.figure(fig, figsize = (fwid, fhgt))
-		plt.plot(0.0, 0.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, dacfE, dacferrE = self.dacf(newdt)
 			if np.sum(dacfE) != 0.0:
 				plt.errorbar(lagsE[0], dacfE[0], dacferrE[0], label = r'obs. Discrete Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
-				for i in xrange(1, lagsE.shape[0]):
+				for i in xrange(0, lagsE.shape[0]):
 					if dacfE[i] != 0.0:
 						plt.errorbar(lagsE[i], dacfE[i], dacferrE[i], fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 				plt.xlim(lagsE[1], lagsE[-1])
@@ -1217,15 +1230,20 @@ class lc(object):
 
 	def plotsf(self, fig = -5, newdt = None, doShow = False):
 		newFig = plt.figure(fig, figsize = (fwid, fhgt))
-		plt.loglog(1.0, 1.0)
+		ln10 = math.log(10.0)
 		if np.sum(self.y) != 0.0:
 			lagsE, sfE, sferrE = self.sf(newdt)
 			if np.sum(sfE) != 0.0:
-				plt.errorbar(lagsE[0], sfE[0], sferrE[0], label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				i = 1
 				for i in xrange(1, lagsE.shape[0]):
-					if dacfE[i] != 0.0:
-						plt.errorbar(lagsE[i], sfE[i], sferrE[i], fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
-				plt.xlim(lagsE[1], lagsE[-1])
+					if sfE[i] != 0.0:
+						break
+				plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(sferrE[i]/(ln10*sfE[i])), label = r'obs. Structure Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				startI = i
+				for i in xrange(i+1, lagsE.shape[0]):
+					if sfE[i] != 0.0:
+						plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(sferrE[i]/(ln10*sfE[i])), fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
+				#plt.xlim(math.log10(lagsE[startI]), math.log10(lagsE[-1]))
 		plt.xlabel(r'$\delta t$')
 		plt.ylabel(r'$\log SF$')
 		plt.title(r'Structure Function')
