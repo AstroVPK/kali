@@ -325,11 +325,11 @@ class lc(object):
 				self.t[i] = i*dt
 				self.mask[i] = 1.0
 			self._isRegular = True
-			self._dt = dt ## Increment between epochs.
-			self._meandt = dt
-			self._mindt = dt
-			self._maxdt = dt
-			self._T = self.t[-1] - self.t[0] ## Total duration of the light curve.
+			self._dt = float(self.t[1] - self.t[0])
+			self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+			self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
+			self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+			self._T = float(self.t[-1] - self.t[0])
 		self._lcCython = CARMATask.lc(self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt = self._dt, meandt = self._meandt, mindt = self._mindt, maxdt = self._maxdt, dtSmooth = self._dtSmooth, tolIR = self._tolIR, fracIntrinsicVar = self._fracIntrinsicVar, fracNoiseToSignal = self._fracNoiseToSignal, maxSigma = self._maxSigma, minTimescale = self._minTimescale, maxTimescale = self._maxTimescale)
 		if sampler is not None:
 			self._sampler = sampler(self)
@@ -1025,14 +1025,14 @@ class lc(object):
 		"""
 		if not self.isRegular:
 			if not newdt:
-				newdt = self.dt/10.0
-			if newdt > self.dt:
-				raise ValueError('newdt cannot be greater than dt')
+				newdt = self.mindt/10.0
+			if newdt > self.mindt:
+				raise ValueError('newdt cannot be greater than mindt')
 			newLC = self.copy()
 			newLC.dt = newdt
 			newLC.meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-			newLC.mindt = float(np.nanmin(self.t))
-			newLC.maxdt = float(np.nanmax(self.t))
+			newLC.mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+			newLC.maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
 			newLC.meandt = float(self.t[-1] - self.t[0])
 			newLC.numCadences = int(math.ceil(self.T/newLC.dt))
 			del newLC.t
@@ -1438,8 +1438,8 @@ class externalLC(basicLC):
 		self._startT = float(self.t[0])
 		self.t -= self._startT
 		self._dt = float(self.t[1] - self.t[0])
-		self._mindt = float(np.nanmin(self.t))
-		self._maxdt = float(np.nanmax(self.t))
+		self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+		self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
 		self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
 		self._T = float(self.t[-1] - self.t[0])
 		self._checkIsRegular()
@@ -2332,24 +2332,24 @@ class task(object):
 			rand.rdrand(randSeed)
 			xSeed = randSeed[0]
 		xStart = np.require(np.zeros(self.ndims*self.nwalkers), requirements=['F', 'A', 'W', 'O', 'E'])
-		minT = observedLC.dt*observedLC.minTimescale
+		minT = observedLC.mindt*observedLC.minTimescale
 		maxT = observedLC.T*observedLC.maxTimescale
 		minTLog10 = math.log10(minT)
 		maxTLog10 = math.log10(maxT)
-		Std = np.std(observedLC.y)
 
 		for walkerNum in xrange(self.nwalkers):
 			noSuccess = True
 			sigmaFactor = 1.0e0
 			RhoGuess = -1.0/np.power(10.0, ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10))
 			while noSuccess:
-				RhoGuess[self.p + self.q] = sigmaFactor*Std
+				RhoGuess[self.p + self.q] = sigmaFactor*observedLC.std
 				ThetaGuess = coeffs(self.p, self.q, RhoGuess)
 				res = self.set(observedLC.dt, ThetaGuess)
 				lnPrior = self.logPrior(observedLC)
 				if res == 0 and lnPrior == 0.0:
 					noSuccess = False
 				else:
+					print 'SigmaTrial: %e'%(RhoGuess[self.p + self.q])
 					sigmaFactor *= 0.31622776601 # sqrt(0.1)
 
 			for dimNum in xrange(self.ndims):
@@ -2361,7 +2361,7 @@ class task(object):
 		if tnum is None:
 			tnum = 0
 		if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
-			observedLC.dtSmooth = observedLC.dt/10.0
+			observedLC.dtSmooth = observedLC.mindt/10.0
 
 		observedLC.pComp = self.p
 		observedLC.qComp = self.q

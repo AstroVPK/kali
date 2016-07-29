@@ -47,7 +47,7 @@
 //#define DEBUG_CALCLNPOSTERIOR
 //#define DEBUG_CALCLNPOSTERIOR2
 //#define DEBUG_CALCCARMALNLIKE
-#define DEBUG_COMPUTELNPRIOR
+//#define DEBUG_COMPUTELNPRIOR
 //#define MAXPRINT 10
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
@@ -146,11 +146,11 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
-		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].setCARMA(const_cast<double*>(&x[0]));
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
@@ -241,11 +241,11 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
-		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].setCARMA(walkerPos);
 		Systems[threadNum].solveCARMA();
 		Systems[threadNum].resetState();
+		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 
 		#ifdef DEBUG_CALCLNPOSTERIOR2
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
