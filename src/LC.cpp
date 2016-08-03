@@ -8,9 +8,9 @@
 
 //#define DEBUG_SF
 //#define DEBUG_DACF
+//#define DEBUG_DACF_DEEP
 
-
-#if defined DEBUG_SF || defined DEBUG_DACF
+#if defined DEBUG_SF || defined DEBUG_DACF || defined DEBUG_DACF_DEEP
 	#include<cstdio>
 #endif
 
@@ -160,22 +160,31 @@ using namespace std;
 		/*!
 		DACF of Edelson Krolik 1988
 		*/
-		// Compute the mean
-		double meanVal = 0.0, count = 0.0;
+		// Compute the mean & the mean of the errors. Square the mean of the errors
+		double meanVal = 0.0, meanerrVal = 0.0, count = 0.0;
 		for (int i = 0; i < numCadences; ++i) {
-			meanVal += maskIn[i]*yIn[i];
-			count += maskIn[i];
+			meanVal = meanVal + maskIn[i]*yIn[i];
+			meanerrVal = meanerrVal + maskIn[i]*yerrIn[i];
+			count = count + maskIn[i];
 			}
 		if (count > 0.0) {
-			meanVal /= count;
+			meanVal = meanVal/count;
+			meanerrVal = meanerrVal/count;
 			}
+		double meanerrValSq = pow(meanerrVal, 2.0);
 		// Compute the variance
 		double varVal = 0.0;
 		for (int i = 0; i < numCadences; ++i) {
-			varVal += pow(maskIn[i]*(yIn[i] - meanVal), 2.0);
+			varVal = varVal + pow(maskIn[i]*(yIn[i] - meanVal), 2.0);
 			}
 		if (count > 0.0) {
-			varVal /= count;
+			varVal = varVal/count;
+			}
+		double denomVal = 0.0; 
+		if ((varVal - meanerrValSq) > 0.0) {
+			denomVal = varVal - meanerrValSq;
+			} else {
+			denomVal = varVal;
 			}
 		#ifdef DEBUG_DACF
 			printf("meanVal: %e\n", meanVal);
@@ -186,21 +195,43 @@ using namespace std;
 		double *yPair = static_cast<double*>(_mm_malloc((numCadences*(numCadences + 1)/2)*sizeof(double),64));
 		double *maskPair = static_cast<double*>(_mm_malloc((numCadences*(numCadences + 1)/2)*sizeof(double),64));
 		// Compute UDCF for all pairs
-		#pragma omp parallel for default(none) shared(numCadences, tIn, yIn, yerrIn, maskIn, meanVal, varVal, tPair, yPair, maskPair)
+		//#pragma omp parallel for default(none) shared(numCadences, tIn, yIn, yerrIn, maskIn, meanVal, varVal, tPair, yPair, maskPair)
 		for (int i = 0; i < numCadences; ++i) {
 			#ifdef DEBUG_DACF
 				int threadNum = omp_get_thread_num();
 			#endif
-			#pragma omp simd
+			//#pragma omp simd
 			for (int j = 0; j < numCadences - i; ++j) {
-				tPair[j + i*(numCadences - i)] = tIn[i] - tIn[j];
-				yPair[j + i*(numCadences - i)] = (maskIn[i]*maskIn[j]*(yIn[i] - meanVal)*(yIn[j] - meanVal))/sqrt((varVal - pow(yerr[i],2.0))*(varVal - pow(yerr[j],2.0)));
+				tPair[j + i*(numCadences - i)] = tIn[j] - tIn[i];
+				yPair[j + i*(numCadences - i)] = (maskIn[i]*maskIn[j]*(yIn[i] - meanVal)*(yIn[j] - meanVal))/denomVal;
 				maskPair[j + i*(numCadences - i)] = maskIn[i]*maskIn[j];
+				#ifdef DEBUG_DACF_DEEP
+					printf("dacf - threadNum: %d; tIn[%d]: %e\n", threadNum, j, tIn[j]);
+					printf("dacf - threadNum: %d; tIn[%d]: %e\n", threadNum, i, tIn[i]);
+					printf("dacf - threadNum: %d; tPair[%d]: %e\n", threadNum, j + i*(numCadences - i), tPair[j + i*(numCadences - i)]);
+					printf("dacf - threadNum: %d; yIn[%d]: %e\n", threadNum, j, yIn[j]);
+					printf("dacf - threadNum: %d; yIn[%d]: %e\n", threadNum, i, yIn[i]);
+					printf("dacf - threadNum: %d; yerrIn[%d]: %e\n", threadNum, j, yerrIn[j]);
+					printf("dacf - threadNum: %d; yerrIn[%d]: %e\n", threadNum, i, yerrIn[i]);
+					printf("dacf - threadNum: %d; varVal - pow(yerrIn[%d], 2.0): %e\n", threadNum, i, varVal - pow(yerrIn[i], 2.0));
+					printf("dacf - threadNum: %d; varVal - pow(yerrIn[%d], 2.0): %e\n", threadNum, j, varVal - pow(yerrIn[j], 2.0));
+					printf("dacf - threadNum: %d; yPair[%d]: %e\n", threadNum, j + i*(numCadences - i), yPair[j + i*(numCadences - i)]);
+					printf("dacf - threadNum: %d; maskIn[%d]: %e\n", threadNum, j, maskIn[j]);
+					printf("dacf - threadNum: %d; maskIn[%d]: %e\n", threadNum, i, maskIn[i]);
+					printf("dacf - threadNum: %d; maskPair[%d]: %e\n", threadNum, j + i*(numCadences - i), maskPair[j + i*(numCadences - i)]);
+				#endif
 				}
 			}
 		//Now loop through all the dacf bins
-		#pragma omp parallel for default(none) shared(numCadences, dt, numBins, tIn, tPair, yPair, maskPair, lagVals, dacfVals, dacfErrVals)
+		#if defined DEBUG_DACF
+			//#pragma omp parallel for default(none) shared(numCadences,  threadNum, dt, numBins, tIn, tPair, yPair, maskPair, lagVals, dacfVals, dacfErrVals)
+		#else
+			//#pragma omp parallel for default(none) shared(numCadences, dt, numBins, tIn, tPair, yPair, maskPair, lagVals, dacfVals, dacfErrVals)
+		#endif
 		for (int binCtr = 0; binCtr < numBins; ++binCtr) {
+			#ifdef DEBUG_DACF
+				int threadNum = omp_get_thread_num();
+			#endif
 			double binStart = 0.0;
 			if (binCtr != 0) {
 				binStart = lagVals[binCtr] - (0.5*(lagVals[binCtr] - lagVals[binCtr-1]));
@@ -220,21 +251,28 @@ using namespace std;
 			// Loop through the pair arrays and add their contents if the tPair indicates to do so
 			for (int pairCtr = 0; pairCtr < (numCadences*(numCadences + 1)/2); ++pairCtr) {
 				if ((tPair[pairCtr] >= binStart) and (tPair[pairCtr] < binEnd)) {
-					dacfVals[binCtr] += maskPair[pairCtr]*yPair[pairCtr];
-					numPairs += maskPair[pairCtr];
+					dacfVals[binCtr] = dacfVals[binCtr] + maskPair[pairCtr]*yPair[pairCtr];
+					numPairs = numPairs + maskPair[pairCtr];
 					}
 				}
+			#ifdef DEBUG_DACF
+				printf("dacf - threadNum: %d; dacfVals: %e\n",threadNum, dacfVals[binCtr]);
+				printf("dacf - threadNum: %d; numPairs: %e\n",threadNum, numPairs);
+			#endif
 			if (numPairs > 0.0) {
-				dacfVals[binCtr] /= numPairs;
+				dacfVals[binCtr] = dacfVals[binCtr]/numPairs;
 				}
+			#ifdef DEBUG_DACF
+				printf("dacf - threadNum: %d; dacfVals: %e\n",threadNum, dacfVals[binCtr]);
+			#endif
 			// Now loop through again for the errors
 			for (int pairCtr = 0; pairCtr < (numCadences*(numCadences + 1)/2); ++pairCtr) {
 				if ((tPair[pairCtr] >= binStart) and (tPair[pairCtr] < binEnd)) {
-					dacfErrVals[binCtr] += pow(dacfVals[binCtr] - yPair[pairCtr], 2.0);
+					dacfErrVals[binCtr] = dacfErrVals[binCtr] + pow(dacfVals[binCtr] - yPair[pairCtr], 2.0);
 					}
 				}
 			if (numPairs > 0.0) {
-				dacfErrVals[binCtr] /= sqrt((numPairs - 1.0)*static_cast<double>((numCadences - 1)));
+				dacfErrVals[binCtr] = dacfErrVals[binCtr]/sqrt((numPairs - 1.0)*static_cast<double>((numCadences - 1)));
 				}
 			dacfErrVals[binCtr] = sqrt(dacfErrVals[binCtr]);
 			}
