@@ -24,6 +24,8 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 5. Mac OS X 10.11.2 El Capitan
 
+6. Ubuntu 16.04 LTS Xenial Xerus
+
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda 
 Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` package, `py.test`, `cffi` 
 (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, the Intel C++
