@@ -181,16 +181,16 @@ def timescales(p, q, Rho):
 class epoch(object):
 	"""!
 	\anchor epoch_
-	
+
 	\brief Class to hold individual epochs of a light curve.
-	
+
 	We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same timestamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
 	"""
 
 	def __init__(self, t, x, y, yerr, mask):
 		"""!
 		\brief Initialize the epoch.
-		
+
 		Non-keyword arguments
 		\param[in] t:    Timestamp.
 		\param[in] x:    Intrinsic Flux i.e. the theoretical value of the underlying flux in the absence of measurement error.
@@ -222,9 +222,9 @@ class epoch(object):
 	def __eq__(self, other):
 		"""!
 		\brief Check for equality.
-		
+
 		Check for equality. Two epochs are equal iff the timestamps are equal.
-		
+
 		Non-keyword arguments
 		\param[in] other: Another epoch or subclass of epoch.
 		"""
@@ -235,9 +235,9 @@ class epoch(object):
 	def __neq__(self, other):
 		"""!
 		\brief Check for inequality.
-		
+
 		Check for inequality. Two epochs are not equal iff the timestamps are not equal.
-		
+
 		Non-keyword arguments
 		\param[in] other: Another epoch or subclass of epoch.
 		"""
@@ -249,9 +249,9 @@ class epoch(object):
 class lc(object):
 	"""!
 	\anchor lc_
-	
+
 	\brief Class to hold light curve.
-	
+
 	ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
 	"""
 	__metaclass__ = abc.ABCMeta
@@ -541,7 +541,7 @@ class lc(object):
 	@xunit.setter
 	def xunit(self, value):
 		if str(value)[0] != r'$':
-			self._xunit = r'$' + str(value) + r'$' 
+			self._xunit = r'$' + str(value) + r'$'
 		else:
 			self._xunit = str(value)
 
@@ -552,7 +552,7 @@ class lc(object):
 	@yunit.setter
 	def yunit(self, value):
 		if str(value)[0] != r'$':
-			self._yunit = r'$' + str(value) + r'$' 
+			self._yunit = r'$' + str(value) + r'$'
 		else:
 			self._yunit = str(value)
 
@@ -689,9 +689,9 @@ class lc(object):
 	def __eq__(self, other):
 		"""!
 		\brief Check for equality.
-		
+
 		Check for equality. Two light curves are equal only iff all thier attributes are the same.
-		
+
 		Non-keyword arguments
 		\param[in] other: Another lc or subclass of lc.
 		"""
@@ -702,9 +702,9 @@ class lc(object):
 	def __neq__(self, other):
 		"""!
 		\brief Check for inequality.
-		
+
 		Check for inequality. Two light curves are in-equal only iff all thier attributes are not the same.
-		
+
 		Non-keyword arguments
 		\param[in] other: Another lc or subclass of lc.
 		"""
@@ -716,7 +716,7 @@ class lc(object):
 	def __getitem__(self, key):
 		"""!
 		\brief Return an epoch.
-		
+
 		Return an epoch corresponding to the index.
 		"""
 		return epoch(self.t[key], self.x[key], self.y[key], self.yerr[key], self.mask[key])
@@ -724,7 +724,7 @@ class lc(object):
 	def __setitem__(self, key, val):
 		"""!
 		\brief Set an epoch.
-		
+
 		Set the epoch corresponding to the provided index using the values from the epoch val.
 		"""
 		if isinstance(val, epoch):
@@ -741,7 +741,7 @@ class lc(object):
 	def __iter__(self):
 		"""!
 		\brief Return a light curve iterator.
-		
+
 		Return a light curve iterator object making light curves iterable.
 		"""
 		return lcIterator(self.t, self.x, self.y, self.yerr, self.mask)
@@ -750,7 +750,7 @@ class lc(object):
 	def copy(self):
 		"""!
 		\brief Return a copy
-		
+
 		Return a (deep) copy of the object.
 		"""
 		raise NotImplementedError(r'Override copy by subclassing lc!')
@@ -758,7 +758,7 @@ class lc(object):
 	def __invert__(self):
 		"""!
 		\brief Return the lc without the mean.
-		
+
 		Return a new lc with the mean removed.
 		"""
 		lccopy = self.copy()
@@ -768,7 +768,7 @@ class lc(object):
 	def __pos__(self):
 		"""!
 		\brief Return + light curve.
-		
+
 		Return + light curve i.e. do nothing but just return a deepcopy of the object.
 		"""
 		return self.copy()
@@ -776,7 +776,7 @@ class lc(object):
 	def __neg__(self):
 		"""!
 		\brief Invert the light curve.
-		
+
 		Return a light curve with the delta fluxes flipped in sign.
 		"""
 		lccopy = self.copy()
@@ -789,7 +789,7 @@ class lc(object):
 	def __abs__(self):
 		"""!
 		\brief Abs the light curve.
-		
+
 		Return a light curve with the abs of the delta fluxes.
 		"""
 		lccopy = self.copy()
@@ -802,7 +802,7 @@ class lc(object):
 	def __add__(self, other):
 		"""!
 		\brief Add.
-		
+
 		Add another light curve or scalar to the light curve.
 		"""
 		lccopy = self.copy()
@@ -829,7 +829,7 @@ class lc(object):
 	def __radd__(self, other):
 		"""!
 		\brief Add.
-		
+
 		Add a light curve to a scalar.
 		"""
 		return self + other
@@ -837,7 +837,7 @@ class lc(object):
 	def __sub__(self, other):
 		"""!
 		\brief Subtract.
-		
+
 		Subtract another light curve or scalar from the light curve.
 		"""
 		return self + (- other)
@@ -845,7 +845,7 @@ class lc(object):
 	def __rsub__(self, other):
 		"""!
 		\brief Subtract.
-		
+
 		Subtract a light curve from a scalar .
 		"""
 		return self + (- other)
@@ -853,7 +853,7 @@ class lc(object):
 	def __iadd__(self, other):
 		"""!
 		\brief Inplace add.
-		
+
 		Inplace add another light curve or scalar to the light curve.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -876,7 +876,7 @@ class lc(object):
 	def __isub__(self, other):
 		"""!
 		\brief Inplace subtract.
-		
+
 		Inplace subtract another light curve or scalar from the light curve.
 		"""
 		return self.iadd( - other)
@@ -884,7 +884,7 @@ class lc(object):
 	def __mul__(self, other):
 		"""!
 		\brief Multiply.
-		
+
 		Multiply the light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -907,7 +907,7 @@ class lc(object):
 	def __rmul__(self, other):
 		"""!
 		\brief Multiply.
-		
+
 		Multiply a scalar by the light curve.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -922,7 +922,7 @@ class lc(object):
 	def __div__(self, other):
 		"""!
 		\brief Divide.
-		
+
 		Divide the light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -937,7 +937,7 @@ class lc(object):
 	def __rdiv__(self, other):
 		"""!
 		\brief Divide  - not defined & not implemented.
-		
+
 		Divide a scalar by the light curve - not defined & not implemented.
 		"""
 		raise NotImplemented
@@ -945,7 +945,7 @@ class lc(object):
 	def __imul__(self, other):
 		"""!
 		\brief Inplace multiply.
-		
+
 		Inplace multiply a light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -967,7 +967,7 @@ class lc(object):
 	def __idiv__(self, other):
 		"""!
 		\brief Inplace divide.
-		
+
 		Inplace divide a light curve by a scalar.
 		"""
 		if type(other) is types.IntType or type(other) is types.LongType or type(other) is types.FloatType or type(other) is types.ComplexType:
@@ -990,7 +990,7 @@ class lc(object):
 	def read(self, name, band, path = os.environ['PWD'], **kwargs):
 		"""!
 		\brief Read the light curve from disk.
-		
+
 		Not implemented!
 		"""
 		raise NotImplementedError(r'Override read by subclassing lc!')
@@ -999,7 +999,7 @@ class lc(object):
 	def write(self, name, band, path = os.environ['PWD'], **kwargs):
 		"""!
 		\brief Write the light curve to disk.
-		
+
 		Not implemented
 		"""
 		raise NotImplementedError(r'Override write by subclassing lc!')
@@ -1007,7 +1007,7 @@ class lc(object):
 	def regularize(self, newdt = None):
 		"""!
 		\brief Re-sample the light curve on a grid of spacing newdt
-		
+
 		Creates a new LC on gridding newdt and copies in the required points.
 		"""
 		if not self.isRegular:
@@ -1322,7 +1322,7 @@ class lcIterator(object):
 	def next(self):
 		"""!
 		\brief Return the next epoch.
-		
+
 		To make light curves iterable, return the next epoch.
 		"""
 		try:
@@ -1478,7 +1478,7 @@ class sampler(object):
 	def __init__(self, lcObj):
 		"""!
 		\brief Initialize the sampler.
-		
+
 		"""
 		if isinstance(lcObj, lc):
 			self.min_dt = np.min(lcObj.t[1:] - lcObj.t[:-1])
@@ -2324,6 +2324,35 @@ class task(object):
 				psddenominator[freq] += psddenominatorcomponent[freq, orderVal/2]
 			psd[freq] = psdnumerator[freq]/psddenominator[freq]
 		return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
+
+	def plotpsd(self, fig = -5, LC = None, doShow = False, clearFig = True):
+		newFig = plt.figure(fig, figsize = (fwid, fhgt))
+		if clearFig:
+			plt.clf()
+		if LC is not None:
+			start = LC.mindt
+			stop = LC.T
+		else:
+			start = 1.0e-4
+			stop = 1.0e3
+		freqsM, psdM, psdNumer, psdDenom, psdNumerComp, psdDenomComp = self.psd(start = start, stop = stop, num = 1000, spacing = 'log')
+		plt.plot(np.log10(freqsM[1:]), np.log10(psdM[1:]), label = r'$\ln PSD$', color = '#000000', zorder = 5, linewidth = 6)
+		plt.plot(np.log10(freqsM[1:]), np.log10(psdNumer[1:]), label = r'$\ln PSD_{\mathrm{numerator}}$', color = '#1f78b4', zorder = 0, linewidth = 4)
+		plt.plot(np.log10(freqsM[1:]), -np.log10(psdDenom[1:]), label = r'$-\ln PSD_{\mathrm{denominator}}$', color = '#e31a1c', zorder = 0, linewidth = 4)
+		for i in xrange(psdNumerComp.shape[1]):
+			plt.plot(np.log10(freqsM[1:]), np.log10(psdNumerComp[1:,i]), color = '#a6cee3', zorder = 0, linewidth = 2, linestyle  = r'dashed')
+			plt.annotate(r'$\nu^{%d}$'%(2*i), xy = (np.log10(freqsM[25]), np.log10(psdNumerComp[25, i])), xycoords = 'data', xytext = (np.log10(freqsM[25]) + 0.25, np.log10(psdNumerComp[25, i]) + 0.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', zorder = 100)
+		for i in xrange(psdDenomComp.shape[1]):
+			plt.plot(np.log10(freqsM[1:]), -np.log10(psdDenomComp[1:,i]), color = '#fb9a99', zorder = 0, linewidth = 2, linestyle = r'dashed')
+			plt.annotate(r'$\nu^{%d}$'%(-2*i), xy = (np.log10(freqsM[-25]), -np.log10(psdDenomComp[-25, i])), xycoords = 'data', xytext = (np.log10(freqsM[-25]) - 0.25, -np.log10(psdDenomComp[-25, i]) - 0.5), textcoords = 'data', arrowprops = dict(arrowstyle = '->', connectionstyle = 'angle3, angleA = 0, angleB = 90'), ha = 'center', va = 'center' ,multialignment = 'center', zorder = 100)
+		plt.xlim(math.log10(freqsM[1]), math.log10(freqsM[-1]))
+		plt.xlabel(r'$\log \nu$')
+		plt.ylabel(r'$\log PSD$')
+		plt.title(r'Power Spectral Density')
+		plt.legend(loc = 3)
+		if doShow:
+			plt.show(False)
+		return newFig
 
 	def fit(self, observedLC, zSSeed = None, walkerSeed = None, moveSeed = None, xSeed = None):
 		observedLC.pComp = self.p
