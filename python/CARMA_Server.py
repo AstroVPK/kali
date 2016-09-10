@@ -1,5 +1,4 @@
 import zmq, sys, os, time, cPickle, StringIO, numpy as np, re, random
-import carmcmc as cm
 import multiprocessing as mp
 from JacksTools import jio
 

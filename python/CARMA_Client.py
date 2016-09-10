@@ -4,6 +4,7 @@ import warnings
 
 TIMEOUT = 1000 #milliseconds
 VERBOSE = False
+RETRY = True #Should we try to get another server if we can't connect?
 
 if __name__ == '__main__':
 	VERBOSE = True
@@ -76,18 +77,15 @@ try:
 except CARMA_Client.SDSSError as err:
 	warnings.warn(str(err))
 try:
-	servers.addServer("echidna","tcp://76.124.106.126:5001",1)
+	servers.addServer("echidna","tcp://173.75.227.192:5001",1)
 except CARMA_Client.SDSSError as err:
 	warnings.warn(str(err))
 try:
 	servers.addServer("vish15","tcp://vish15.physics.upenn.edu:5001",0)
 except CARMA_Client.SDSSError as err:
 	warnings.warn(str(err))
-servers.getBestServer()
 
-#Temporary while vish15 is out of date:
-#servers.setBestServer("echidna")
-###
+servers.getBestServer()
 
 def getSocket():
 
@@ -110,12 +108,21 @@ def zmqSocketDecorator(func): #a decorator that handles the zmq sockets and rais
 
 @zmqSocketDecorator
 def getCommandResult(socket, cmd): #send a command to the server and return the result
+	global RETRY	
 
 	socket.send(cmd)
 	if socket.poll(timeout=TIMEOUT, flags = zmq.POLLIN):
 		result = socket.recv_pyobj(flags = zmq.NOBLOCK)
 	else:
-		raise SDSSError("Socket timed out",TIMEOUT)
+		if RETRY:
+			printV("Server Disconnected.  Attempting to Connect to Another Server")
+			servers.getBestServer()
+			RETRY = False
+			result = getCommandResult(cmd)
+			RETRY = True
+			return result
+		else:
+			raise SDSSError("Socket timed out",TIMEOUT)
 	if isinstance(result, Exception):
 		raise SDSSError(*result.args)
 
@@ -142,7 +149,7 @@ def commandArgCount(server_func): #gets information about the server func
 	result = getCommandResult(cmd)
 	return result
 
-def createFunction(server_func, docstr = None):
+def _createFunction(server_func, docstr = None):
 	#Create a function object that acts on a server side func with name 'server_func'
 	if isValid(server_func):
 		nargs = commandArgCount(server_func) - 1
@@ -159,6 +166,13 @@ def createFunction(server_func, docstr = None):
 		return result
 	return Func
 
+def createFunction(server_func, docstr = None):
+
+	def initialFunc(*args):
+		initalFunc = _createFunction(server_func, docstr)
+		return initalFunc(*args)
+	return initialFunc	
+	
 
 #define our client-side functions below
 getRandLC = createFunction("randLC",
