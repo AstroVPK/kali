@@ -3,6 +3,8 @@ import numpy as np
 import urllib, urllib2
 import os as os
 import sys as sys
+import fitsio
+from fitsio import FITS,FITSHDR
 import subprocess
 import argparse
 import matplotlib.pyplot as plt
@@ -60,10 +62,6 @@ class k2LC(libcarma.basicLC):
 			name2Dir = ''.join([name[4:6], '000'])
 			fullURL = '/'.join([baseURL, camp, name1Dir, name2Dir, fileNameFits])
 			result = urllib.urlretrieve(fullURL, filePathFits)
-		if not os.path.isfile(filePath):
-			#must source bash_profile to open a login terminal, necessary for Mac since there is no bashrc 
-			topcatString = ['source ~/.bash_profile;' , 'topcat', '-stilts', 'tcopy',  'in=%s'%(filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)]
-			subprocess.call(topcatString, shell=True)
 
 	def _getHLSP(self, name, campaign, path):
 		baseURL = 'http://archive.stsci.edu/missions/hlsp'
@@ -137,18 +135,18 @@ class k2LC(libcarma.basicLC):
 
 	def _readMAST(self, name, campaign, path, processing):
 		fileName = self._getCanonicalFileName(name, campaign, processing)
-		filePath = os.path.join(path, fileName)
-		with open(filePath,'r') as k2File:
-			allLines = k2File.readlines()
-		self._numCadences = len(allLines) - 1
+		fileNameFits = ''.join([fileName[0:-3], 'fits'])
+		filePathFits = os.path.join(path, fileNameFits)
+		dataInFile = fitsio.read(filePathFits)
+		self._numCadences = dataInFile.shape[0]
 		startT = -1.0
-		lineNum = 1
+		lineNum = 0
 		while startT == -1.0:
-			words = allLines[lineNum].split()
-			nextWords = allLines[lineNum + 1].split()
-			if words[0] != '""' and nextWords[0] != '""':
-				startT = float(words[0])
-				dt = float(nextWords[0]) - float(words[0])
+			startTCand = dataInFile[lineNum][0]
+			startTCandNext = dataInFile[lineNum + 1][0]
+			if not np.isnan(startTCand) and not np.isnan(startTCandNext):
+				startT = float(startTCand)
+				dt = float(startTCandNext) - float(startTCand)
 			else:
 				lineNum += 1
 		self.startT = startT
@@ -160,33 +158,33 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			words = allLines[i +1].split()
-			self.cadence[i] = int(words[2])
-			if words[9] == '0':
-				self.t[i] = float(words[0]) - self.startT
+			dataLine = dataInFile[i]
+			self.cadence[i] = int(dataLine[2])
+			if dataLine[9] == 0:
+				self.t[i] = float(dataLine[0]) - self.startT
 				if processing in self.sap:
-					try:
-						self.y[i] = float(words[3])
-						self.yerr[i] = float(words[4])
+					if not np.isnan(dataLine[3]) and not np.isnan(dataLine[4]):
+						self.y[i] = float(dataLine[3])
+						self.yerr[i] = float(dataLine[4])
 						self.mask[i] = 1.0
-					except ValueError:
+					else:
 						self.y[i] = 0.0
 						self.yerr[i] = math.sqrt(sys.float_info[0])
 						self.mask[i] = 0.0
 				elif processing  in self.pdcsap:
-					try:
-						self.y[i] = float(words[7])
-						self.yerr[i] = float(words[8])
+					if not np.isnan(dataLine[7]) and not np.isnan(dataLine[8]):
+						self.y[i] = float(dataLine[7])
+						self.yerr[i] = float(dataLine[8])
 						self.mask[i] = 1.0
-					except ValueError:
+					else:
 						self.y[i] = 0.0
 						self.yerr[i] = math.sqrt(sys.float_info[0])
 						self.mask[i] = 0.0
 				else:
 					raise ValueError('Unrecognized k2LC type')
 			else:
-				if words[0] != '""':
-					self.t[i] = float(words[0]) - self.startT
+				if not np.isnan(dataLine[0]):
+					self.t[i] = float(dataLine[0]) - self.startT
 				else:
 					self.t[i] = self.t[i - 1] + self.dt
 				self.yerr[i] = math.sqrt(sys.float_info[0])
@@ -199,18 +197,18 @@ class k2LC(libcarma.basicLC):
 
 	def _readK2SFF(self, name, campaign, path, processing):
 		fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
-		filePathMAST = os.path.join(path, fileNameMAST)
-		with open(filePathMAST, 'r') as k2FileMAST:
-			allLinesMAST = k2FileMAST.readlines()
-		self._numCadences = len(allLinesMAST) - 1
+		fileNameMASTFits = ''.join([fileNameMAST[0:-3], 'fits'])
+		filePathMASTFits = os.path.join(path, fileNameMASTFits)
+		MASTInFile = fitsio.read(filePathMASTFits)
+		self._numCadences = MASTInFile.shape[0]
 		startT = -1.0
-		lineNum = 1
+		lineNum = 0
 		while startT == -1.0:
-			words = allLinesMAST[lineNum].split()
-			nextWords = allLinesMAST[lineNum + 1].split()
-			if words[0] != '""' and nextWords[0] != '""':
-				startT = float(words[0])
-				dt = float(nextWords[0]) - float(words[0])
+			startTCand = MASTInFile[lineNum][0]
+			startTCandNext = MASTInFile[lineNum + 1][0]
+			if not np.isnan(startTCand) and not np.isnan(startTCandNext):
+				startT = float(startTCand)
+				dt = float(startTCandNext) - float(startTCand)
 			else:
 				lineNum += 1
 		self.startT = startT
@@ -222,14 +220,14 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			words = allLinesMAST[i + 1].split()
-			self.cadence[i] = int(words[2])
+			dataLine = MASTInFile[i]
+			self.cadence[i] = int(dataLine[2])
 			self.yerr[i] = math.sqrt(sys.float_info[0])
-			if words[9] == '0':
-				self.t[i] = float(words[0]) - self.startT
+			if dataLine[9] == 0:
+				self.t[i] = float(dataLine[0]) - self.startT
 			else:
-				if words[0] != '""':
-					self.t[i] = float(words[0]) - self.startT
+				if not np.isnan(dataLine[0]):
+					self.t[i] = float(dataLine[0]) - self.startT
 				else:
 					self.t[i] = self.t[i - 1] + self.dt
 		self._dt = float(self.t[1] - self.t[0])
@@ -239,15 +237,14 @@ class k2LC(libcarma.basicLC):
 		self._T = float(self.t[-1] - self.t[0])
 
 		fileName = self._getCanonicalFileName(name, campaign, 'k2sff')
-		filePath = os.path.join(path, fileName)
-		with open(filePath,'r') as k2File:
-			allLines = k2File.readlines()
-		for line in allLines[1:]:
-			words = line.rstrip('\n').split()
-			cadNum = int(words[5])
+		fileNameFits = ''.join([fileName[0:-3], 'fits'])
+		filePathFits = os.path.join(path, fileNameFits)
+		dataInFile = fitsio.read(filePathFits)
+		for i in xrange(dataInFile.shape[0]):
+			dataLine = dataInFile[i]
+			cadNum = int(dataLine[5])
 			index = np.where(self.cadence == cadNum)[0][0]
-			self.t[index] = float(words[0]) - self.startT
-			self.y[index] = float(words[2])
+			self.y[index] = float(dataLine[2])
 			self.mask[index] = 1.0
 
 		valSum = 0.0
@@ -262,18 +259,18 @@ class k2LC(libcarma.basicLC):
 
 	def _readK2SC(self, name, campaign, path, processing):
 		fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
-		filePathMAST = os.path.join(path, fileNameMAST)
-		with open(filePathMAST, 'r') as k2FileMAST:
-			allLinesMAST = k2FileMAST.readlines()
-		self._numCadences = len(allLinesMAST) - 1
+		fileNameMASTFits = ''.join([fileNameMAST[0:-3], 'fits'])
+		filePathMASTFits = os.path.join(path, fileNameMASTFits)
+		MASTInFile = fitsio.read(filePathMASTFits)
+		self._numCadences = MASTInFile.shape[0]
 		startT = -1.0
-		lineNum = 1
+		lineNum = 0
 		while startT == -1.0:
-			words = allLinesMAST[lineNum].split()
-			nextWords = allLinesMAST[lineNum + 1].split()
-			if words[0] != '""' and nextWords[0] != '""':
-				startT = float(words[0])
-				dt = float(nextWords[0]) - float(words[0])
+			startTCand = MASTInFile[lineNum][0]
+			startTCandNext = MASTInFile[lineNum + 1][0]
+			if not np.isnan(startTCand) and not np.isnan(startTCandNext):
+				startT = float(startTCand)
+				dt = float(startTCandNext) - float(startTCand)
 			else:
 				lineNum += 1
 		self.startT = startT
@@ -285,14 +282,14 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			words = allLinesMAST[i + 1].split()
-			self.cadence[i] = int(words[2])
+			dataLine = MASTInFile[i]
+			self.cadence[i] = int(dataLine[2])
 			self.yerr[i] = math.sqrt(sys.float_info[0])
-			if words[9] == '0':
-				self.t[i] = float(words[0]) - self.startT
+			if dataLine[9] == 0:
+				self.t[i] = float(dataLine[0]) - self.startT
 			else:
-				if words[0] != '""':
-					self.t[i] = float(words[0]) - self.startT
+				if not np.isnan(dataLine[0]):
+					self.t[i] = float(dataLine[0]) - self.startT
 				else:
 					self.t[i] = self.t[i - 1] + self.dt
 		self._dt = float(self.t[1] - self.t[0])
@@ -302,32 +299,35 @@ class k2LC(libcarma.basicLC):
 		self._T = float(self.t[-1] - self.t[0])
 
 		fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
-		filePath = os.path.join(path, fileName)
-		with open(filePath,'r') as k2File:
-			allLines = k2File.readlines()
-		for line in allLines[1:]:
-			words = line.rstrip('\n').split()
-			if int(words[7]) == 0: 
-				time = float(words[0]) - self.startT
-				index = np.where(self.t == time)[0][0]
-				self.y[index] = float(words[8])
-				self.yerr[index] = float(words[6])
-				self.mask[index] = 1.0
+		fileNameFits = ''.join([fileName[0:-3], 'fits'])
+		filePathFits = os.path.join(path, fileNameFits)
+		dataInFile = fitsio.read(filePathFits)
+		for i in xrange(dataInFile.shape[0]):
+			dataLine = dataInFile[i]
+			if dataLine[7] == 0:
+				time = float(dataLine[0]) - self.startT
+				if not np.isnan(time):
+					index = np.where(self.t == time)[0][0]
+					self.y[index] = float(dataLine[8])
+					self.yerr[index] = float(dataLine[6])
+					self.mask[index] = 1.0
+				else:
+					pass
 
 	def _readK2VARCAT(self, name, campaign, path, processing):
 		fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
-		filePathMAST = os.path.join(path, fileNameMAST)
-		with open(filePathMAST, 'r') as k2FileMAST:
-			allLinesMAST = k2FileMAST.readlines()
-		self._numCadences = len(allLinesMAST) - 1
+		fileNameMASTFits = ''.join([fileNameMAST[0:-3], 'fits'])
+		filePathMASTFits = os.path.join(path, fileNameMASTFits)
+		MASTInFile = fitsio.read(filePathMASTFits)
+		self._numCadences = MASTInFile.shape[0]
 		startT = -1.0
-		lineNum = 1
+		lineNum = 0
 		while startT == -1.0:
-			words = allLinesMAST[lineNum].split()
-			nextWords = allLinesMAST[lineNum + 1].split()
-			if words[0] != '""' and nextWords[0] != '""':
-				startT = float(words[0])
-				dt = float(nextWords[0]) - float(words[0])
+			startTCand = MASTInFile[lineNum][0]
+			startTCandNext = MASTInFile[lineNum + 1][0]
+			if not np.isnan(startTCand) and not np.isnan(startTCandNext):
+				startT = float(startTCand)
+				dt = float(startTCandNext) - float(startTCand)
 			else:
 				lineNum += 1
 		self.startT = startT
@@ -339,14 +339,14 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			words = allLinesMAST[i + 1].split()
-			self.cadence[i] = int(words[2])
+			dataLine = MASTInFile[i]
+			self.cadence[i] = int(dataLine[2])
 			self.yerr[i] = math.sqrt(sys.float_info[0])
-			if words[9] == '0':
-				self.t[i] = float(words[0]) - self.startT
+			if dataLine[9] == 0:
+				self.t[i] = float(dataLine[0]) - self.startT
 			else:
-				if words[0] != '""':
-					self.t[i] = float(words[0]) - self.startT
+				if not np.isnan(dataLine[0]):
+					self.t[i] = float(dataLine[0]) - self.startT
 				else:
 					self.t[i] = self.t[i - 1] + self.dt
 		self._dt = float(self.t[1] - self.t[0])
@@ -356,36 +356,38 @@ class k2LC(libcarma.basicLC):
 		self._T = float(self.t[-1] - self.t[0])
 
 		fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
-		filePath = os.path.join(path, fileName)
+		fileNameFits = ''.join([fileName[0:-3], 'fits'])
+		filePathFits = os.path.join(path, fileNameFits)
 		try:
-			k2File = open(filePath,'r')
-		except IOError:
+			dataInFile = fitsio.read(filePathFits)
+		except IOError as Err:
 			pass
 		else:
-			allLines = k2File.readlines()
-			for line in allLines[1:]:
-				words = line.rstrip('\n').split()
-				time = float(words[0]) - self.startT
-				index = np.where(self.t == time)[0][0]
-				self.y[index] = float(words[3])
-				self.yerr[index] = float(words[4])
-				self.mask[index] = 1.0
-			k2File.close()
+			for i in xrange(dataInFile.shape[0]):
+				dataLine = dataInFile[i]
+				time = float(dataLine[0]) - self.startT
+				if not np.isnan(time):
+					index = np.where(self.t == time)[0][0]
+					self.y[index] = float(dataLine[3])
+					self.yerr[index] = float(dataLine[4])
+					self.mask[index] = 1.0
+				else:
+					pass
 
 	def _readEVEREST(self, name, campaign, path, processing):
 		fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
-		filePathMAST = os.path.join(path, fileNameMAST)
-		with open(filePathMAST, 'r') as k2FileMAST:
-			allLinesMAST = k2FileMAST.readlines()
-		self._numCadences = len(allLinesMAST) - 1
+		fileNameMASTFits = ''.join([fileNameMAST[0:-3], 'fits'])
+		filePathMASTFits = os.path.join(path, fileNameMASTFits)
+		MASTInFile = fitsio.read(filePathMASTFits)
+		self._numCadences = MASTInFile.shape[0]
 		startT = -1.0
-		lineNum = 1
+		lineNum = 0
 		while startT == -1.0:
-			words = allLinesMAST[lineNum].split()
-			nextWords = allLinesMAST[lineNum + 1].split()
-			if words[0] != '""' and nextWords[0] != '""':
-				startT = float(words[0])
-				dt = float(nextWords[0]) - float(words[0])
+			startTCand = MASTInFile[lineNum][0]
+			startTCandNext = MASTInFile[lineNum + 1][0]
+			if not np.isnan(startTCand) and not np.isnan(startTCandNext):
+				startT = float(startTCand)
+				dt = float(startTCandNext) - float(startTCand)
 			else:
 				lineNum += 1
 		self.startT = startT
@@ -397,14 +399,14 @@ class k2LC(libcarma.basicLC):
 		self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E']) ## Numpy array of mask values.
 		for i in xrange(self.numCadences):
-			words = allLinesMAST[i + 1].split()
-			self.cadence[i] = int(words[2])
+			dataLine = MASTInFile[i]
+			self.cadence[i] = int(dataLine[2])
 			self.yerr[i] = math.sqrt(sys.float_info[0])
-			if words[9] == '0':
-				self.t[i] = float(words[0]) - self.startT
+			if dataLine[9] == 0:
+				self.t[i] = float(dataLine[0]) - self.startT
 			else:
-				if words[0] != '""':
-					self.t[i] = float(words[0]) - self.startT
+				if not np.isnan(dataLine[0]):
+					self.t[i] = float(dataLine[0]) - self.startT
 				else:
 					self.t[i] = self.t[i - 1] + self.dt
 		self._dt = float(self.t[1] - self.t[0])
@@ -414,29 +416,23 @@ class k2LC(libcarma.basicLC):
 		self._T = float(self.t[-1] - self.t[0])
 
 		fileName = self._getCanonicalFileName(name, campaign, 'everest')
-		filePath = os.path.join(path, fileName)
+		fileNameFits = ''.join([fileName[0:-3], 'fits'])
+		filePathFits = os.path.join(path, fileNameFits)
 		try:
-			k2File = open(filePath,'r')
-		except IOError:
+			dataInFile = fitsio.read(filePathFits)
+		except IOError as Err:
 			pass
 		else:
-			allLines = k2File.readlines()
-			for line in allLines[1:]:
-				words = line.rstrip('\n').split()
-				try:
-					time = float(words[0]) - self.startT
-				except ValueError:
-					pass
-				else:
+			for i in xrange(dataInFile.shape[0]):
+				dataLine = dataInFile[i]
+				time = float(dataLine[0]) - self.startT
+				if not np.isnan(time):
 					index = np.where(self.t == time)[0][0]
-					try:
-						self.y[index] = float(words[1])
-					except ValueError:
-						pass
-					else:
-						#self.yerr[index] = (float(words[5])/float(words[4]))*float(words[1]) ### Just proportionate errors for now!
+					if not np.isnan(float(dataLine[1])):
+						self.y[index] = float(dataLine[1])
 						self.mask[index] = 1.0
-		k2File.close()
+				else:
+					pass
 		valSum = 0.0
 		countSum = 0.0
 		for i in xrange(self.numCadences - 1):
