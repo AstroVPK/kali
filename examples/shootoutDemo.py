@@ -14,14 +14,14 @@ import pdb
 
 try:
 	import libcarma as libcarma
-	import sdss as sdss
+	import s82 as s82
 	from util.mpl_settings import set_plot_params
 	import util.triangle as triangle
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)
 
-try: 
+try:
 	os.environ['DISPLAY']
 except KeyError as Err:
 	warnings.warn('No display environment! Using matplotlib backend "Agg"')
@@ -40,8 +40,8 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
-parser.add_argument('-n', '--name', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['KALI'],'examples/data'), help = r'Path to working directory')
+parser.add_argument('-n', '--name', type = str, default = 'rand', help = r'SDSS ID')
 parser.add_argument('-b', '--band', type = str, default = 'g', help = r'SDSS bandpass')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
@@ -71,7 +71,7 @@ Q = args.q
 NSTEPS = args.nsteps
 NWALKERS = args.nwalkers
 
-sdss0g = sdss.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
+sdss0g = s82.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
 sdss0g.minTimescale = args.minTimescale
 sdss0g.maxTimescale = args.maxTimescale
 sdss0g.maxSigma = args.maxSigma
@@ -89,7 +89,7 @@ except IOError:
 	ThetaMock = libcarma.coeffs(P, Q, RhoMock)
 
 	newTask = libcarma.basicTask(P,Q)
-	newTask.set(sdss0g.dt, ThetaMock)
+	newTask.set(sdss0g.mindt, ThetaMock)
 	sdss_NtS = np.median(sdss0g.yerr/sdss0g.y)
 	sdss_iV = np.std(sdss0g.y)/np.mean(sdss0g.y)
 	premock_sdss0g = newTask.simulate(1.1*sdss0g.T, fracIntrinsicVar = sdss_iV, fracNoiseToSignal = sdss_NtS)
@@ -286,7 +286,7 @@ if args.log10:
 	lcarmaMedianThetaDist = math.sqrt(lcarmaMedianThetaDist)
 	lcarmaMedianThetaDist /= (P + Q + 1)
 	print 'lcarma Median Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMedianThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMedianThetaDist = 0.0
 		lcmcmcMedianThetaLoc = np.zeros(P + Q + 1)
@@ -297,7 +297,7 @@ if args.log10:
 		lcmcmcMedianThetaDist = math.sqrt(lcmcmcMedianThetaDist)
 		lcmcmcMedianThetaDist /= (P + Q + 1)
 		print 'lcmcmc Median Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMedianThetaDist)
-	
+
 	lcarmaMLEThetaDist = 0.0
 	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
 	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
@@ -309,7 +309,7 @@ if args.log10:
 	lcarmaMLEThetaDist = math.sqrt(lcarmaMLEThetaDist)
 	lcarmaMLEThetaDist /= (P + Q + 1)
 	print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMLEThetaDist = 0.0
 		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
@@ -331,7 +331,7 @@ else:
 	lcarmaMedianThetaDist = math.sqrt(lcarmaMedianThetaDist)
 	lcarmaMedianThetaDist /= (P + Q + 1)
 	print 'lcarma Median Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMedianThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMedianThetaDist = 0.0
 		lcmcmcMedianThetaLoc = np.zeros(P + Q + 1)
@@ -342,7 +342,7 @@ else:
 		lcmcmcMedianThetaDist = math.sqrt(lcmcmcMedianThetaDist)
 		lcmcmcMedianThetaDist /= (P + Q + 1)
 		print 'lcmcmc Median Fractional Theta Dist Per Param: %+4.3e'%(lcmcmcMedianThetaDist)
-	
+
 	lcarmaMLEThetaDist = 0.0
 	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
 	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
@@ -354,7 +354,7 @@ else:
 	lcarmaMLEThetaDist = math.sqrt(lcarmaMLEThetaDist)
 	lcarmaMLEThetaDist /= (P + Q + 1)
 	print 'lcarma MLE Fractional Theta Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMLEThetaDist = 0.0
 		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
@@ -456,7 +456,7 @@ if args.log10:
 	lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
 	lcarmaMedianTauDist /= (P + Q + 1)
 	print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMedianTauDist = 0.0
 		lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
@@ -467,7 +467,7 @@ if args.log10:
 		lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
 		lcmcmcMedianTauDist /= (P + Q + 1)
 		print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
-	
+
 	lcarmaMLETauDist = 0.0
 	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
 	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
@@ -479,7 +479,7 @@ if args.log10:
 	lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
 	lcarmaMLETauDist /= (P + Q + 1)
 	print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMLETauDist = 0.0
 		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]
@@ -501,7 +501,7 @@ else:
 	lcarmaMedianTauDist = math.sqrt(lcarmaMedianTauDist)
 	lcarmaMedianTauDist /= (P + Q + 1)
 	print 'lcarma Median Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMedianTauDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMedianTauDist = 0.0
 		lcmcmcMedianTauLoc = np.zeros(P + Q + 1)
@@ -512,7 +512,7 @@ else:
 		lcmcmcMedianTauDist = math.sqrt(lcmcmcMedianTauDist)
 		lcmcmcMedianTauDist /= (P + Q + 1)
 		print 'lcmcmc Median Fractional Tau Dist Per Param: %+4.3e'%(lcmcmcMedianTauDist)
-	
+
 	lcarmaMLETauDist = 0.0
 	bestWalker = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[0][0]
 	bestStep = np.where(ntg.LnPosterior[:,NSTEPS/2:] == np.max(ntg.LnPosterior[:,NSTEPS/2:]))[1][0] + NSTEPS/2
@@ -524,7 +524,7 @@ else:
 	lcarmaMLETauDist = math.sqrt(lcarmaMLETauDist)
 	lcarmaMLETauDist /= (P + Q + 1)
 	print 'lcarma MLE Fractional Tau Dist Per Param: %+4.3e'%(lcarmaMLEThetaDist)
-	
+
 	if carma_pack_results_g:
 		lcmcmcMLETauDist = 0.0
 		bestSample = np.where(cmcmcLnPosterior_g[:] == np.max(cmcmcLnPosterior_g[:]))[0][0]

@@ -17,14 +17,14 @@ import pdb
 try:
 	import libcarma as libcarma
 	import util.mcmcviz as mcmcviz
-	import sdss as sdss
+	import s82 as s82
 	from util.mpl_settings import set_plot_params
 	import util.triangle as triangle
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)
 
-try: 
+try:
 	os.environ['DISPLAY']
 except KeyError as Err:
 	warnings.warn('No display environment! Using matplotlib backend "Agg"')
@@ -43,8 +43,8 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
-parser.add_argument('-n', '--name', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['KALI'],'examples/data'), help = r'Path to working directory')
+parser.add_argument('-n', '--name', type = str, default = 'rand', help = r'SDSS ID')
 parser.add_argument('-b', '--band', type = str, default = 'g', help = r'SDSS bandpass')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
@@ -85,7 +85,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-sdssLC = sdss.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
+sdssLC = s82.sdssLC(name = args.name, band = args.band, pwd = args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma

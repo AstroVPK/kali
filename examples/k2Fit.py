@@ -16,11 +16,10 @@ import os as os
 import k2
 import libcarma as libcarma
 import util.mcmcviz as mcmcviz
-import sdss as sdss
 from util.mpl_settings import set_plot_params
 import util.triangle as triangle
 
-try: 
+try:
 	os.environ['DISPLAY']
 except KeyError as Err:
 	warnings.warn('No display environment! Using matplotlib backend "Agg"')
@@ -39,9 +38,10 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
-parser.add_argument('-n', '--name', type = str, default = 'ktwo212141173-c05_llc.csv', help = r'K2 Filename')
-parser.add_argument('-lct', '--lctype', type = str, default = 'raw', help = r'What processing to use? eg. raw, pdcsap, uncal, mast etc...')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['KALI'],'examples/data'), help = r'Path to working directory')
+parser.add_argument('-n', '--name', type = str, default = '211991001', help = r'K2 ID from https://archive.stsci.edu/k2/data_search/search.php')
+parser.add_argument('-c', '--campaign', type = str, default = 'c05', help = r'K2 Campaign https://archive.stsci.edu/k2/data_search/search.php')
+parser.add_argument('-processing', '--processing', type = str, default = 'vj', help = r'What processing to use? eg. raw, pdcsap, uncal, mast, vandenburgjohnson etc...')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
@@ -81,7 +81,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
 	raise ValueError('qMin must be greater than or equal to 0')
 
-LC = k2.k2LC(name = args.name, band = r'Kepler', pwd = args.pwd, lctype = args.lctype)
+LC = k2.k2LC(name = args.name, band = r'Kepler', campaign = args.campaign, pwd = args.pwd, processing = args.processing)
 
 LC.minTimescale = args.minTimescale
 LC.maxTimescale = args.maxTimescale

@@ -13,14 +13,15 @@ import pdb
 
 try:
 	import libcarma as libcarma
-	import sdss as sdss
+	import s82 as s82
 	from util.mpl_settings import set_plot_params
 	import util.triangle as triangle
+	import CARMA_Client
 except ImportError:
 	print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
 	sys.exit(1)
 
-try: 
+try:
 	os.environ['DISPLAY']
 except KeyError as Err:
 	print "No display environment! Using matplotlib backend 'Agg'"
@@ -39,8 +40,8 @@ fwid = 16
 set_plot_params(useTex = True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['LIBCARMA'],'examples/data'), help = r'Path to working directory')
-parser.add_argument('-n', '--name', type = str, default = 'LightCurveSDSS_1.csv', help = r'SDSS Filename')
+parser.add_argument('-pwd', '--pwd', type = str, default = os.path.join(os.environ['KALI'],'examples/data'), help = r'Path to working directory')
+parser.add_argument('-n', '--name', type = str, default = 'rand', help = r'SDSS ID')
 parser.add_argument('-libcarmaChain', '--lC', type = str, default = 'libcarmaChain', help = r'libcarma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type = str, default = 'cmcmcChain', help = r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type = int, default = 250, help = r'Number of steps per walker')
@@ -55,7 +56,7 @@ parser.add_argument('-no-r', '--no-r', dest = 'r', action = 'store_false', help 
 parser.set_defaults(r = True)
 parser.add_argument('--plot', dest = 'plot', action = 'store_true', help = r'Show plot?')
 parser.add_argument('--no-plot', dest = 'plot', action = 'store_false', help = r'Do not show plot?')
-parser.set_defaults(plot = False)
+parser.set_defaults(plot = True)
 parser.add_argument('-minT', '--minTimescale', type = float, default = 2.0, help = r'Minimum allowed timescale = minTimescale*lc.dt')
 parser.add_argument('-maxT', '--maxTimescale', type = float, default = 0.5, help = r'Maximum allowed timescale = maxTimescale*lc.T')
 parser.add_argument('-maxS', '--maxSigma', type = float, default = 2.0, help = r'Maximum allowed sigma = maxSigma*var(lc)')
@@ -77,7 +78,11 @@ if args.g or args.r:
 	plt.legend()
 
 	if args.g:
-		sdss0g = sdss.sdssLC(name = args.name, band = 'g', pwd = args.pwd)
+		try:
+			sdss0g = s82.sdssLC(name = args.name, band = 'g', pwd = args.pwd)
+		except CARMA_Client.SDSSError as Err:
+			print str(Err)
+			sys.exit(-1)
 		sdss0g.minTimescale = args.minTimescale
 		sdss0g.maxTimescale = args.maxTimescale
 		sdss0g.maxSigma = args.maxSigma
@@ -90,7 +95,7 @@ if args.g or args.r:
 
 		plt.figure(1, figsize = (fhgt, fhgt))
 		plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label = r'sdss-g', fmt = '.', capsize = 0, color = '#2ca25f', markeredgecolor = 'none', zorder = 10)
-		fileName = args.n.split('.')[0] + '_' + args.lC + '_g.dat'
+		fileName = args.name.split('.')[0] + '_' + args.lC + '_g.dat'
 		libcarmaChain_g = os.path.join(args.pwd, fileName)
 		try:
 			chainFile = open(libcarmaChain_g, 'r')
@@ -125,7 +130,7 @@ if args.g or args.r:
 					ntg.LnPosterior[walkerNum, stepNum] = float(words[P + Q + 1])
 		chainFile.close()
 
-		fileName = args.n.split('.')[0] + '_' + args.cC + '_g.dat'
+		fileName = args.name.split('.')[0] + '_' + args.cC + '_g.dat'
 		cmcmcChain_g = os.path.join(args.pwd, fileName)
 		try:
 			chainFile = open(cmcmcChain_g, 'r')
@@ -241,7 +246,11 @@ if args.g or args.r:
 
 	if args.r:
 		plt.figure(1)
-		sdss0r = sdss.sdssLC(supplied = args.name, band = 'r', pwd = args.pwd)
+		try:
+			sdss0r = s82.sdssLC(name = args.name, band = 'r', pwd = args.pwd)
+		except CARMA_Client.SDSSError as Err:
+			print str(Err)
+			sys.exit(-1)
 		sdss0r.minTimescale = args.minTimescale
 		sdss0r.maxTimescale = args.maxTimescale
 		sdss0r.maxSigma = args.maxSigma
@@ -254,7 +263,7 @@ if args.g or args.r:
 
 
 		plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label = r'sdss-r', fmt = '.', capsize = 0, color = '#feb24c', markeredgecolor = 'none', zorder = 10)
-		fileName = args.n.split('.')[0] + '_' + args.lC + '_r.dat'
+		fileName = args.name.split('.')[0] + '_' + args.lC + '_r.dat'
 		libcarmaChain_r = os.path.join(args.pwd, fileName)
 		try:
 			chainFile = open(libcarmaChain_r, 'r')
@@ -263,9 +272,8 @@ if args.g or args.r:
 			NBURNIN = NWALKERS*NSTEPS/2
 			chainFile = open(libcarmaChain_r, 'w')
 			ntr = libcarma.basicTask(P, Q, nwalkers = NWALKERS, nsteps = NSTEPS)
-			ntr.scatterFactor = args.scatterFactor
 			ntr.set(sdss0r.dt, Guess)
-			ntr.fit(sdss0r, Guess)
+			ntr.fit(sdss0r)
 			line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
 			chainFile.write(line)
 			for stepNum in xrange(NSTEPS):
@@ -293,7 +301,7 @@ if args.g or args.r:
 						ntr.Chain[dimNum, walkerNum, stepNum] = float(words[dimNum])
 					ntr.LnPosterior[walkerNum, stepNum] = float(words[P + Q + 1])
 
-		fileName = args.n.split('.')[0] + '_' + args.cC + '_r.dat'
+		fileName = args.name.split('.')[0] + '_' + args.cC + '_r.dat'
 		cmcmcChain_r = os.path.join(args.pwd, fileName)
 		try:
 			chainFile = open(cmcmcChain_r, 'r')
