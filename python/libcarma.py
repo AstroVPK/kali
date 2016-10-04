@@ -1094,7 +1094,7 @@ class lc(object):
 			useLC._lcCython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x, useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf, self._acferr)
 			return self._acflags, self._acf, self._acferr
 
-	def dacf(self, newdt = None, nbins = None):
+	def dacf(self, nbins = None):
 		if hasattr(self, '_dacflags') and hasattr(self, '_dacf') and hasattr(self, '_dacferr'):
 			return self._dacflags, self._dacf, self._dacferr
 		else:
@@ -1186,10 +1186,10 @@ class lc(object):
 			plt.show(False)
 		return newFig
 
-	def plotdacf(self, fig = -4, newdt = None, doShow = False):
+	def plotdacf(self, fig = -4, numBins = None, doShow = False):
 		newFig = plt.figure(fig, figsize = (fwid, fhgt))
 		if np.sum(self.y) != 0.0:
-			lagsE, dacfE, dacferrE = self.dacf(newdt)
+			lagsE, dacfE, dacferrE = self.dacf(nbins=numBins)
 			if np.sum(dacfE) != 0.0:
 				plt.errorbar(lagsE[0], dacfE[0], dacferrE[0], label = r'obs. Discrete Autocorrelation Function', fmt = 'o', capsize = 0, color = '#ff7f00', markeredgecolor = 'none', zorder = 10)
 				for i in xrange(0, lagsE.shape[0]):
