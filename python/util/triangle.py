@@ -101,55 +101,62 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         Overplot onto the provided figure object.
 
     """
-    mpl.rcParams['xtick.major.size']=4
-    mpl.rcParams['xtick.minor.size']=3
-    mpl.rcParams['xtick.major.width']=1
-    mpl.rcParams['xtick.minor.width']=1
-    mpl.rcParams['ytick.major.size']=4
-    mpl.rcParams['ytick.minor.size']=3
-    mpl.rcParams['ytick.major.width']=1
-    mpl.rcParams['ytick.minor.width']=1
-    #make border thicker
-    mpl.rcParams['axes.linewidth']=1
-    #make plotted lines thicker
-    mpl.rcParams['lines.linewidth']=1
-    #make fonts bigger
-    mpl.rcParams['xtick.labelsize']=14
-    mpl.rcParams['ytick.labelsize']=14
-    mpl.rcParams['legend.fontsize']=14
-    mpl.rcParams['axes.titlesize']=14
-    mpl.rcParams['axes.labelsize']=14
-    
-    mpl.rcParams['font.family']='serif'
-    mpl.rcParams['font.style']='normal' # 'normal', 'italic','oblique'
-    mpl.rcParams['font.variant']='normal' # 'normal', 'small-caps'
-    mpl.rcParams['font.weight']='normal' # 'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'
-    mpl.rcParams['font.stretch']='normal' # ‘ultra-condensed’, ‘extra-condensed’, ‘condensed’, ‘semi-condensed’, ‘normal’, ‘semi-expanded’, ‘expanded’, ‘extra-expanded’, ‘ultra-expanded’
-    mpl.rcParams['font.size']=16 # ['xx-small', 'x-small', 'small', 'medium', 'large','x-large', 'xx-large']
-    mpl.rcParams['font.serif']=['Times', 'Times New Roman', 'Palatino', 'Bitstream Vera Serif', 'New Century Schoolbook', 'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L', 'Charter', 'serif']
-    mpl.rcParams['font.sans-serif']=['Bitstream Vera Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', 'sans-serif']
-    mpl.rcParams['font.cursive']=['Apple Chancery', 'Textile', 'Zapf Chancery', 'Sand', 'cursive']
-    mpl.rcParams['font.fantasy']=['Comic Sans MS', 'Chicago', 'Charcoal', 'Impact', 'Western', 'fantasy']
-    mpl.rcParams['font.monospace']=['Bitstream Vera Sans Mono', 'Andale Mono', 'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal', 'monospace']
-    mpl.rcParams['text.usetex']=False
-    #set math mode font properties
-    mpl.rcParams['mathtext.cal']='cursive'
-    mpl.rcParams['mathtext.rm']='serif'
-    mpl.rcParams['mathtext.tt']='monospace'
-    mpl.rcParams['mathtext.it']='serif:italic'
-    mpl.rcParams['mathtext.bf']='serif:bold'
-    mpl.rcParams['mathtext.sf']='sans'
-    mpl.rcParams['mathtext.fontset']='cm' # Should be 'cm' (Computer Modern), 'stix','stixsans' or 'custom'
-    mpl.rcParams['mathtext.fallback_to_cm']=True  # When True, use symbols from the Computer Modern
+    mpl.rcParams['xtick.major.size'] = 4
+    mpl.rcParams['xtick.minor.size'] = 3
+    mpl.rcParams['xtick.major.width'] = 1
+    mpl.rcParams['xtick.minor.width'] = 1
+    mpl.rcParams['ytick.major.size'] = 4
+    mpl.rcParams['ytick.minor.size'] = 3
+    mpl.rcParams['ytick.major.width'] = 1
+    mpl.rcParams['ytick.minor.width'] = 1
+    # make border thicker
+    mpl.rcParams['axes.linewidth'] = 1
+    # make plotted lines thicker
+    mpl.rcParams['lines.linewidth'] = 1
+    # make fonts bigger
+    mpl.rcParams['xtick.labelsize'] = 14
+    mpl.rcParams['ytick.labelsize'] = 14
+    mpl.rcParams['legend.fontsize'] = 14
+    mpl.rcParams['axes.titlesize'] = 14
+    mpl.rcParams['axes.labelsize'] = 14
+
+    mpl.rcParams['font.family'] = 'serif'
+    mpl.rcParams['font.style'] = 'normal'  # 'normal', 'italic','oblique'
+    mpl.rcParams['font.variant'] = 'normal'  # 'normal', 'small-caps'
+    mpl.rcParams[
+        'font.weight'] = 'normal'  # 'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'
+    mpl.rcParams[
+        'font.stretch'] = 'normal'  # ‘ultra-condensed’, ‘extra-condensed’, ‘condensed’, ‘semi-condensed’, ‘normal’, ‘semi-expanded’, ‘expanded’, ‘extra-expanded’, ‘ultra-expanded’
+    mpl.rcParams[
+        'font.size'] = 16  # ['xx-small', 'x-small', 'small', 'medium', 'large','x-large', 'xx-large']
+    mpl.rcParams[
+        'font.serif'] = ['Times', 'Times New Roman', 'Palatino', 'Bitstream Vera Serif', 'New Century Schoolbook',
+                         'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L', 'Charter', 'serif']
+    mpl.rcParams['font.sans-serif'] = ['Bitstream Vera Sans', 'Lucida Grande',
+                                       'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', 'sans-serif']
+    mpl.rcParams['font.cursive'] = ['Apple Chancery', 'Textile', 'Zapf Chancery', 'Sand', 'cursive']
+    mpl.rcParams['font.fantasy'] = ['Comic Sans MS', 'Chicago', 'Charcoal', 'Impact', 'Western', 'fantasy']
+    mpl.rcParams['font.monospace'] = ['Bitstream Vera Sans Mono', 'Andale Mono',
+                                      'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal', 'monospace']
+    mpl.rcParams['text.usetex'] = False
+    # set math mode font properties
+    mpl.rcParams['mathtext.cal'] = 'cursive'
+    mpl.rcParams['mathtext.rm'] = 'serif'
+    mpl.rcParams['mathtext.tt'] = 'monospace'
+    mpl.rcParams['mathtext.it'] = 'serif:italic'
+    mpl.rcParams['mathtext.bf'] = 'serif:bold'
+    mpl.rcParams['mathtext.sf'] = 'sans'
+    mpl.rcParams['mathtext.fontset'] = 'cm'  # Should be 'cm' (Computer Modern), 'stix','stixsans' or 'custom'
+    mpl.rcParams['mathtext.fallback_to_cm'] = True  # When True, use symbols from the Computer Modern
                                  # fonts when a symbol can not be found in one of
                                  # the custom math fonts.
 
-    mpl.rcParams['mathtext.default']='rm' # The default font to use for math.
+    mpl.rcParams['mathtext.default'] = 'rm'  # The default font to use for math.
                        # Can be any of the LaTeX font names, including
                        # the special name "regular" for the same font
                        # used in regular text.
-    mpl.rcParams['pdf.fonttype']=42 # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .pdf
-    mpl.rcParams['ps.fonttype']=42 # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .eps
+    mpl.rcParams['pdf.fonttype'] = 42  # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .pdf
+    mpl.rcParams['ps.fonttype'] = 42  # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .eps
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
@@ -181,7 +188,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
 
     fig_size = kwargs.get('fig_size', 16.0)
     if fig is None:
-        #fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        # fig, axes = pl.subplots(K, K, figsize=(dim, dim))
         fig, axes = pl.subplots(K, K, figsize=(fig_size, fig_size))
     else:
         try:
@@ -189,7 +196,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
-    fig_title = kwargs.get('fig_title','MCMC Chains')
+    fig_title = kwargs.get('fig_title', 'MCMC Chains')
     pl.suptitle(fig_title, **title_args)
     lb = lbdim / dim
     tr = (lbdim + plotdim) / dim
@@ -248,27 +255,28 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 q_m, q_p = q_50-q_16, q_84-q_50
 
                 # Format the quantile display.
-                #fmt = "{{0:{0}}}".format(title_fmt).format
-                #title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-                #title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+                # fmt = "{{0:{0}}}".format(title_fmt).format
+                # title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+                # title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
                 if labels is not None:
                     try:
                         numberLog10 = int(math.log10(q_50))
                         numberLog10 -= 1
-                        if (numberLog10!=0):
-                            remainingPart = q_50/math.pow(10.0,numberLog10)
-                            minusPart = q_m/math.pow(10.0,numberLog10)
-                            plusPart = q_p/math.pow(10.0,numberLog10)
-                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f} \times 10^{%d}$"%(labels[i],remainingPart,plusPart,minusPart,numberLog10)
+                        if (numberLog10 != 0):
+                            remainingPart = q_50/math.pow(10.0, numberLog10)
+                            minusPart = q_m/math.pow(10.0, numberLog10)
+                            plusPart = q_p/math.pow(10.0, numberLog10)
+                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f} \times 10^{%d}$"%(
+                                labels[i], remainingPart, plusPart, minusPart, numberLog10)
                         else:
-                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i],q_50,q_p,q_m)
+                            title = r"%s$ = %3.2f^{+%.2f}_{-%.2f}$"%(labels[i], q_50, q_p, q_m)
                     except:
-                        #print str(Err) + '. Using np.nan!'
+                        # print str(Err) + '. Using np.nan!'
                         title = str(np.nan)
 
                 # Add in the column name if it's given.
-                #if labels is not None:
-                    #title = "{0} = {1}".format(labels[i], title)
+                # if labels is not None:
+                    # title = "{0} = {1}".format(labels[i], title)
 
                 # Add the title to the axis.
                 ax.set_title(title, **title_args)
@@ -333,7 +341,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                     ax.set_ylabel(labels[i])
                     ax.yaxis.set_label_coords(-0.3, 0.5)
 
-    return fig,quantiles,allqvalues
+    return fig, quantiles, allqvalues
 
 
 def quantile(x, q, weights=None):
@@ -429,7 +437,8 @@ def hist2d(x, y, plot_contour_lines, pcolor_cmap, *args, **kwargs):
         ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
                 rasterized=True)
         if plot_contours:
-            ax.contourf(X1,Y1,H.T,[V[-1],H.max()],cmap=LinearSegmentedColormap.from_list("cmap",([1]*3,[1]*3),N=2),antialiased=True)
+            ax.contourf(X1, Y1, H.T, [V[-1], H.max()], cmap=LinearSegmentedColormap.from_list(
+                "cmap", ([1]*3, [1]*3), N=2), antialiased=True)
 
     if plot_contours:
         if pcolor_cmap is None:
@@ -437,8 +446,8 @@ def hist2d(x, y, plot_contour_lines, pcolor_cmap, *args, **kwargs):
         else:
             cmap = pcolor_cmap
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-        if (plot_contour_lines==True):
-            ax.contour(X1,Y1,H.T,V,colors=color,linewidths=linewidths)
+        if (plot_contour_lines == True):
+            ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)

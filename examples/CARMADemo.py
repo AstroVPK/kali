@@ -11,7 +11,7 @@ import sys as sys
 import libcarma as libcarma
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-pdb", "--pdb", default = False, help = "Enable pdb breakpoint at end?")
+parser.add_argument("-pdb", "--pdb", default=False, help="Enable pdb breakpoint at end?")
 args = parser.parse_args()
 
 tolIR = 1.0e-3
@@ -35,13 +35,13 @@ print "Theta: " + str(Theta)
 dt = 0.5
 T = 1200.0
 
-newTask = libcarma.basicTask(p, q, nwalkers = 160, nsteps = 250)
+newTask = libcarma.basicTask(p, q, nwalkers=160, nsteps=250)
 
 newTask.set(dt, Theta)
 
-print "Sigma[0]: %e"%(math.sqrt(newTask.Sigma()[0,0]))
+print "Sigma[0]: %e"%(math.sqrt(newTask.Sigma()[0, 0]))
 
-Lags, ACVF = newTask.acvf(1.0e-4, 1.0e4, 10000, spacing = 'log')
+Lags, ACVF = newTask.acvf(1.0e-4, 1.0e4, 10000, spacing='log')
 
 plt.figure(1)
 
@@ -70,14 +70,16 @@ stopT = time.time()
 print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0, (stopT - startT)/3600.0)
 
 plt.figure(2)
-plt.plot(newLC.t, newLC.x, color = '#7570b3', zorder = 5, label = r'Intrinsic LC: $\ln \mathcal{L} = %+e$'%(lnLikelihood))
-plt.errorbar(newLC.t, newLC.y, newLC.yerr, fmt = '.', capsize = 0, color = '#d95f02', markeredgecolor = 'none', zorder = 10, label = r'Observed LC: $\ln \mathcal{P} = %+e$'%(lnPosterior))
+plt.plot(newLC.t, newLC.x, color='#7570b3', zorder=5,
+         label=r'Intrinsic LC: $\ln \mathcal{L} = %+e$'%(lnLikelihood))
+plt.errorbar(newLC.t, newLC.y, newLC.yerr, fmt='.', capsize=0, color='#d95f02',
+             markeredgecolor='none', zorder=10, label=r'Observed LC: $\ln \mathcal{P} = %+e$'%(lnPosterior))
 plt.legend()
 
 plt.figure(3)
-plt.scatter(newTask.Chain[0,:,newTask.nsteps/2:newTask.nsteps], newTask.Chain[1,:,newTask.nsteps/2:newTask.nsteps], c = np.max(newTask.LnPosterior[:,newTask.nsteps/2:newTask.nsteps]) - newTask.LnPosterior[:,newTask.nsteps/2:newTask.nsteps], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
+plt.scatter(newTask.Chain[0, :, newTask.nsteps/2:newTask.nsteps], newTask.Chain[1,:, newTask.nsteps/2:newTask.nsteps], c = np.max(newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps]) - newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
 
 plt.show()
 
 if args.pdb:
-	pdb.set_trace()
+    pdb.set_trace()
