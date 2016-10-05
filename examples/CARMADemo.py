@@ -67,7 +67,8 @@ startT = time.time()
 newTask.fit(newLC)
 stopT = time.time()
 
-print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0, (stopT - startT)/3600.0)
+print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0,
+                                                        (stopT - startT)/3600.0)
 
 plt.figure(2)
 plt.plot(newLC.t, newLC.x, color='#7570b3', zorder=5,
@@ -77,7 +78,11 @@ plt.errorbar(newLC.t, newLC.y, newLC.yerr, fmt='.', capsize=0, color='#d95f02',
 plt.legend()
 
 plt.figure(3)
-plt.scatter(newTask.Chain[0, :, newTask.nsteps/2:newTask.nsteps], newTask.Chain[1,:, newTask.nsteps/2:newTask.nsteps], c = np.max(newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps]) - newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps], marker='.', cmap = colormap.gist_rainbow_r, linewidth = 0)
+maxLnPosterior = np.max(newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps])
+plt.scatter(newTask.Chain[0, :, newTask.nsteps/2:newTask.nsteps],
+            newTask.Chain[1, :, newTask.nsteps/2:newTask.nsteps],
+            c=maxLnPosterior - newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps],
+            marker='.', cmap=colormap.gist_rainbow_r, linewidth=0)
 
 plt.show()
 

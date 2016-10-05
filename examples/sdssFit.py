@@ -131,7 +131,8 @@ for p in xrange(args.pMin, args.pMax + 1):
         print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
         DICDict['%d %d'%(p, q)] = DIC
         taskDict['%d %d'%(p, q)] = nt
-print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(totalTime, totalTime/60.0, totalTime/3600.0)
+print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(totalTime, totalTime/60.0,
+                                                                         totalTime/3600.0)
 
 sortedDICVals = sorted(DICDict.items(), key=operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])
@@ -146,7 +147,8 @@ if args.viewer:
         whatToView = -1
         while whatToView < 0 or whatToView > 3:
             whatToView = int(
-                raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA timescales (2):'))
+                raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or \
+                C-ARMA timescales (2):'))
         pView = -1
         while pView < 1 or pView > args.pMax:
             pView = int(raw_input('C-AR model order:'))

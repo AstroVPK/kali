@@ -14,6 +14,7 @@ except ImportError:
 
 skipWorking = False
 
+
 @unittest.skipIf(skipWorking, 'Works!')
 class TestCoeffs(unittest.TestCase):
     def test_coeffs(self):
@@ -34,14 +35,15 @@ class TestCoeffs(unittest.TestCase):
                 for i in xrange(p + q + 1):
                     self.assertAlmostEqual(oldTheta[i], newTheta[i])
 
+
 @unittest.skipIf(skipWorking, 'Works!')
 class TestFitCARMA10(unittest.TestCase):
     def setUp(self):
         self.p = 1
         self.q = 0
-        self.nWalkers = 25*psutil.cpu_count(logical = True)
+        self.nWalkers = 25*psutil.cpu_count(logical=True)
         self.nSteps = 250
-        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers = self.nWalkers, nsteps = self.nSteps)
+        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -54,13 +56,13 @@ class TestFitCARMA10(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, builtInAmp])
         Theta = libcarma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
-        newLC = self.newTask.simulate(T, fracNoiseToSignal = N2S)
+        newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
+        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
         print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
         print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMean), 5.0*recoveredAmpStd)
         self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Mean) < 5.0*recoveredTAR1Std)
@@ -71,17 +73,18 @@ class TestFitCARMA10(unittest.TestCase):
         self.run_test(N2S)
 
     def test_noiselyrecovery(self):
-        N2S = 1.0e-3 # LSST-ish
+        N2S = 1.0e-3  # LSST-ish
         self.run_test(N2S)
+
 
 @unittest.skipIf(skipWorking, 'Works!')
 class TestFitCARMA20(unittest.TestCase):
     def setUp(self):
         self.p = 2
         self.q = 0
-        self.nWalkers = 25*psutil.cpu_count(logical = True)
+        self.nWalkers = 25*psutil.cpu_count(logical=True)
         self.nSteps = 250
-        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers = self.nWalkers, nsteps = self.nSteps)
+        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -95,15 +98,15 @@ class TestFitCARMA20(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, builtInAmp])
         Theta = libcarma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
-        newLC = self.newTask.simulate(T, fracNoiseToSignal = N2S)
+        newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1,:, self.nSteps/2:])
-        recoveredTAR2Std = np.std(self.newTask.timescaleChain[1,:, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
+        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredTAR2Std = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
         print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
         print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Mean), 5.0*recoveredTAR2Std)
         print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMean), 5.0*recoveredAmpStd)
@@ -116,17 +119,18 @@ class TestFitCARMA20(unittest.TestCase):
         self.run_test(N2S)
 
     def test_noiselyrecovery(self):
-        N2S = 1.0e-3 # LSST-ish
+        N2S = 1.0e-3  # LSST-ish
         self.run_test(N2S)
+
 
 @unittest.skipIf(skipWorking, 'Works!')
 class TestFitCARMA21(unittest.TestCase):
     def setUp(self):
         self.p = 2
         self.q = 1
-        self.nWalkers = 25*psutil.cpu_count(logical = True)
+        self.nWalkers = 25*psutil.cpu_count(logical=True)
         self.nSteps = 250
-        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers = self.nWalkers, nsteps = self.nSteps)
+        self.newTask = libcarma.basicTask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -141,17 +145,17 @@ class TestFitCARMA21(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, -1.0/builtInTMA1, builtInAmp])
         Theta = libcarma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
-        newLC = self.newTask.simulate(T, fracNoiseToSignal = N2S)
+        newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0,:, self.nSteps/2:])
-        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1,:, self.nSteps/2:])
-        recoveredTAR2Std = np.std(self.newTask.timescaleChain[1,:, self.nSteps/2:])
-        recoveredTMA1Mean = np.mean(self.newTask.timescaleChain[2,:, self.nSteps/2:])
-        recoveredTMA1Std = np.std(self.newTask.timescaleChain[2,:, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1,:, self.nSteps/2:])
+        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredTAR2Std = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredTMA1Mean = np.mean(self.newTask.timescaleChain[2, :, self.nSteps/2:])
+        recoveredTMA1Std = np.std(self.newTask.timescaleChain[2, :, self.nSteps/2:])
+        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
         print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
         print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Mean), 5.0*recoveredTAR2Std)
         print '%e %e'%(math.fabs(builtInTMA1 - recoveredTMA1Mean), 5.0*recoveredTMA1Std)
@@ -166,7 +170,7 @@ class TestFitCARMA21(unittest.TestCase):
         self.run_test(N2S)
 
     def test_noiselyrecovery(self):
-        N2S = 1.0e-3 # LSST-ish
+        N2S = 1.0e-3  # LSST-ish
         self.run_test(N2S)
 
 if __name__ == "__main__":

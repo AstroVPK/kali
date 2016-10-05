@@ -134,7 +134,8 @@ if args.viewer:
         whatToView = -1
         while whatToView < 0 or whatToView > 3:
             whatToView = int(
-                raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA timescales (2):'))
+                raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA \
+                timescales (2):'))
         pView = -1
         while pView < 1 or pView > args.pMax:
             pView = int(raw_input('C-AR model order:'))

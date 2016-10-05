@@ -335,7 +335,8 @@ class FileManager:
     @classmethod
     def getCoordList(self):
 
-        return map(lambda x: (float(ScienceManager.hmsToDeg(x[:9])), float(ScienceManager.dmsToDeg(x[9:]))), self.IDList(self.getLCList()))
+        return map(lambda x: (float(ScienceManager.hmsToDeg(x[:9])), float(ScienceManager.dmsToDeg(x[9:]))),
+                   self.IDList(self.getLCList()))
 
     @classmethod
     def updateLC(self, IDList, dataList):

@@ -31,7 +31,8 @@ class k2LC(libcarma.basicLC):
         fileName = ''
         if processing in self.sap or processing in self.pdcsap:
             fileName = ''.join(['ktwo', name, '-', campaign, '_llc.dat'])
-        elif processing in self.k2sff or processing in self.k2sc or processing in self.k2varcat or processing in self.everest:
+        elif (processing in self.k2sff or processing in self.k2sc or processing in self.k2varcat or
+              processing in self.everest):
             if processing in self.k2sff:
                 fileName = ''.join(['hlsp_k2sff_k2_lightcurve_', name, '-', campaign, '_kepler_v1_llc.dat'])
             elif processing in self.k2sc:
@@ -466,8 +467,8 @@ class k2LC(libcarma.basicLC):
             try:
                 path = os.environ['K2DATADIR']
             except KeyError:
-                raise KeyError(
-                    'Environment variable "K2DATADIR" not set! Please set "K2DATADIR" to point where all K2 data should live first...')
+                raise KeyError('Environment variable "K2DATADIR" not set! Please set "K2DATADIR" to point \
+                where all K2 data should live first...')
         filePath = os.path.join(path, fileName)
 
         self._computedCadenceNum = -1
@@ -484,14 +485,10 @@ class k2LC(libcarma.basicLC):
         self._isSmoothed = False  # Has the LC been smoothed?
         self._dtSmooth = 0.0
         self._isRegular = True
-        self.XSim = np.require(np.zeros(self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
-        self.XComp = np.require(np.zeros(self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).

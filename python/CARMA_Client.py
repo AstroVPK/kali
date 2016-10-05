@@ -191,38 +191,38 @@ getRandLC = createFunction("randLC",
                            """
 args: None
 returns:
-	filename, redshift, data (tuple):
-		filename (str): name of the file on disk
-		redshift (float): redshift of the object
-		data (numpy structure array): structured array of the data from the LC file
+    filename, redshift, data (tuple):
+        filename (str): name of the file on disk
+        redshift (float): redshift of the object
+        data (numpy structure array): structured array of the data from the LC file
 """)
 
 getLC = createFunction("getLC",
                        """
 args:
-	ID (str): SDSS J2000 name
+    ID (str): SDSS J2000 name
 returns:
-	filename, redshift, data (tuple):
-		filename (str): name of the file on disk
-		redshift (float): redshift of the object
-		data (numpy structure array): structured array of the data from the LC file
+    filename, redshift, data (tuple):
+        filename (str): name of the file on disk
+        redshift (float): redshift of the object
+        data (numpy structure array): structured array of the data from the LC file
 """)
 
 getIDList = createFunction("IDList",
                            """
 args: None
 returns:
-	IDList (list): List of strings of SDSS Objects names on disk
+    IDList (list): List of strings of SDSS Objects names on disk
 """)
 
 getNearestLC = createFunction('getNearestLC',
                               """
 args:
-	ID (str): SDSS J200 name
-	tol (float): matching tolerance in degrees
+    ID (str): SDSS J200 name
+    tol (float): matching tolerance in degrees
 returns:
-	filename, reshift, data (tuple):
-		see above
+    filename, reshift, data (tuple):
+        see above
 """)
 
 if __name__ == '__main__':

@@ -2,10 +2,11 @@ import numpy as np
 import os
 import pdb
 import matplotlib.pyplot as plt
-plt.ion()
 
 import libcarma
 import k2
+
+plt.ion()
 
 lc212141173 = k2.k2LC(name='212141173', campaign='c05', band='Kepler',
                       pwd=os.path.join(os.environ['KALI'], 'examples/data'), processing='vj')

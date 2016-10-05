@@ -15,15 +15,15 @@ if (dataFolder[-1] != '/'):
 targetListFile = dataFolder+'kplr_targetList.dat'
 
 # Test to see if path is correct
-if (os.access(dataFolder, os.F_OK) != True):
+if (os.access(dataFolder, os.F_OK) is not True):
     print "Base directory of data tree %s incorrect or does not exist."%(dataFolder)
     exit(1)
-if (os.access(targetListFile, os.F_OK) != True):
+if (os.access(targetListFile, os.F_OK) is not True):
     print "Target list %s not found in base directory of data tree."%(targetListFile)
     exit(1)
 
 cbvFolder = dataFolder + 'cbv/'
-if (os.access(cbvFolder, os.F_OK) == False):
+if (os.access(cbvFolder, os.F_OK) is False):
     os.mkdir(cbvFolder)
 cbvpath = urllib2.urlopen(cbvPath)
 string = cbvpath.read().decode('utf-8')
@@ -41,16 +41,16 @@ for target in tLFile:
     if (target[0] != '#'):
         target = target.rstrip('\n')
         objFolder = dataFolder + target
-        if (os.access(objFolder, os.F_OK) == False):
+        if (os.access(objFolder, os.F_OK) is False):
             os.mkdir(objFolder)
         FITSFolder = objFolder+'/llc/'
         simFolder = objFolder+'/sim/'
         lpdtargFolder = objFolder+'/lpd-targ/'
-        if (os.access(FITSFolder, os.F_OK) == False):
+        if (os.access(FITSFolder, os.F_OK) is False):
             os.mkdir(FITSFolder)
-        if (os.access(simFolder, os.F_OK) == False):
+        if (os.access(simFolder, os.F_OK) is False):
             os.mkdir(simFolder)
-        if (os.access(lpdtargFolder, os.F_OK) == False):
+        if (os.access(lpdtargFolder, os.F_OK) is False):
             os.mkdir(lpdtargFolder)
         XXXX = target[4:8]
         KKKKKKKKK = target[4:13]

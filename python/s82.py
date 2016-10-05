@@ -89,7 +89,8 @@ class sdssLC(libcarma.basicLC):
                 nt.fit(self)
                 stopLCARMA = time.time()
                 timeLCARMA = stopLCARMA - startLCARMA
-                print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
+                print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
+                                                                       timeLCARMA/60.0, timeLCARMA/3600.0)
                 self.totalTime += timeLCARMA
 
                 Deviances = copy.copy(nt.LnPosterior[:, nsteps/2:]).reshape((-1))
@@ -97,7 +98,9 @@ class sdssLC(libcarma.basicLC):
                 print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
                 self.DICDict['%d %d'%(p, q)] = DIC
                 self.taskDict['%d %d'%(p, q)] = nt
-        print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime, self.totalTime/60.0, self.totalTime/3600.0)
+        print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
+                                                                                 self.totalTime/60.0,
+                                                                                 self.totalTime/3600.0)
 
         sortedDICVals = sorted(self.DICDict.items(), key=operator.itemgetter(1))
         self.pBest = int(sortedDICVals[0][0].split()[0])
@@ -122,7 +125,8 @@ class sdssLC(libcarma.basicLC):
             while whatToView < 0 or whatToView > 3:
                 try:
                     whatToView = int(
-                        raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA timescales (2):'))
+                        raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA \
+                        timescales (2):'))
                 except ValueError:
                     print 'Bad input: integer required!'
             pView = -1
@@ -223,8 +227,8 @@ class sdssLC(libcarma.basicLC):
                     dimCtr += 1
                 labelList.append(r'$\mathrm{Amp.}$: $\mathrm{dim}%d$'%(dimCtr))
                 dimCtr += 1
-                mcmcviz.vizTriangle(pView, qView, self.taskDict[
-                                    '%d %d'%(pView, qView)].timescaleChain, labelList=labelList, figTitle=figTitle)
+                mcmcviz.vizTriangle(pView, qView, self.taskDict['%d %d'%(pView, qView)].timescaleChain,
+                                    labelList=labelList, figTitle=figTitle)
                 dim1 = -1
                 while dim1 < 0 or dim1 > pView + qView + 1:
                     try:
@@ -245,8 +249,9 @@ class sdssLC(libcarma.basicLC):
                     dim2Name = r'$\tau_{%d}$'%(dim2)
                 if dim2 == pView + qView:
                     dim2Name = r'$\mathrm{Amp.}$'
-                res = mcmcviz.vizWalkers(self.taskDict['%d %d'%(pView, qView)].timescaleChain, self.taskDict[
-                                         '%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name, dim2, dim2Name)
+                res = mcmcviz.vizWalkers(self.taskDict['%d %d'%(pView, qView)].timescaleChain,
+                                         self.taskDict['%d %d'%(pView, qView)].LnPosterior, dim1, dim1Name,
+                                         dim2, dim2Name)
 
             var = str(raw_input('Do you wish to view any more MCMC walkers? (y/n):')).lower()
             if var == 'n':
@@ -264,25 +269,30 @@ class sdssLC(libcarma.basicLC):
             plt.plot(self.t, self.x, color='#000000', zorder=0)
             plt.plot(self.t, self.x, color='#000000', marker='o', markeredgecolor='none', zorder=0)
         if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
-            plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)' %
-                         (self.name, self.band), fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
+            plt.errorbar(
+                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
+                fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
             plt.xlim(self.t[0], self.t[-1])
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
-            plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', zorder=0)
-            plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
+            plt.plot(
+                self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                color='#984ea3', zorder=0)
+            plt.plot(
+                self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
             plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[
-                    np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]],
-                         label=r'%s (%s-band)'%(self.name, self.band), fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
+                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
         plt.xlim(self.t[0], self.t[-1])
         if self.isSmoothed:
-            plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[
-                     self.band], marker='o', markeredgecolor='none', zorder=-5)
+            plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[self.band], marker='o',
+                     markeredgecolor='none', zorder=-5)
             plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[self.band], zorder=-5)
-            plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
-                             self.xerrSmooth, facecolor=self.smoothErrColorDict[self.band], alpha=0.5, zorder=-5)
+            plt.fill_between(
+                self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth + self.xerrSmooth,
+                facecolor=self.smoothErrColorDict[self.band], alpha=0.5, zorder=-5)
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')
@@ -297,8 +307,10 @@ class sdssLC(libcarma.basicLC):
         if np.sum(self.y) != 0.0:
             lagsE, acvfE, acvferrE = self.acvf(newdt)
             if np.sum(acvfE) != 0.0:
-                plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:], label=r'%s (SDSS %s-band) obs. Autocovariance Function' %
-                             (self.name, self.band), fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
+                plt.errorbar(
+                    lagsE[1:], acvfE[1:], acvferrE[1:],
+                    label=r'%s (SDSS %s-band) obs. Autocovariance Function'%(self.name, self.band),
+                    fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$ACVF$')
@@ -314,8 +326,10 @@ class sdssLC(libcarma.basicLC):
         if np.sum(self.y) != 0.0:
             lagsE, acfE, acferrE = self.acf(newdt)
             if np.sum(acfE) != 0.0:
-                plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:], label=r'%s (SDSS %s-band) obs. Autocorrelation Function' %
-                             (self.name, self.band), fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
+                plt.errorbar(
+                    lagsE[1:], acfE[1:], acferrE[1:],
+                    label=r'%s (SDSS %s-band) obs. Autocorrelation Function'%(self.name, self.band),
+                    fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$ACF$')
@@ -332,8 +346,10 @@ class sdssLC(libcarma.basicLC):
         if np.sum(self.y) != 0.0:
             lagsE, sfE, sferrE = self.sf(newdt)
             if np.sum(sfE) != 0.0:
-                plt.errorbar(lagsE[1:], sfE[1:], sferrE[1:], label=r'%s (SDSS %s-band) obs. Structure Function' %
-                             (self.name, self.band), fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
+                plt.errorbar(
+                    lagsE[1:], sfE[1:], sferrE[1:],
+                    label=r'%s (SDSS %s-band) obs. Structure Function'%(self.name, self.band), fmt='o',
+                    capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$\log SF$')
@@ -370,14 +386,10 @@ class sdssLC(libcarma.basicLC):
         self._qSim = 0
         self._pComp = 0
         self._qComp = 0
-        self.XSim = np.require(np.zeros(self._pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PSim = np.require(np.zeros(self._pSim*self._pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
-        self.XComp = np.require(np.zeros(self._pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PComp = np.require(np.zeros(self._pComp*self._pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+        self.XSim = np.require(np.zeros(self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PSim = np.require(np.zeros(self._pSim*self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.XComp = np.require(np.zeros(self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PComp = np.require(np.zeros(self._pComp*self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         if name.lower() in ['random', 'rand', 'r', 'rnd', 'any', 'none', '']:
             self._name, self.z, data = self._getRandLC()
         else:
@@ -394,7 +406,8 @@ class sdssLC(libcarma.basicLC):
         yListTemp = list()
         yerrListTemp = list()
         for i in xrange(t.shape[0]):
-            if math.fabs(yerr[i] - meanYerr) < self.OutlierDetectionYERRVal*stdYerr:  # Outlier rejection! 5-sigma
+            # Outlier rejection! 5-sigma
+            if math.fabs(yerr[i] - meanYerr) < self.OutlierDetectionYERRVal*stdYerr:
                 tListTemp.append(t[i])
                 yListTemp.append(y[i])
                 yerrListTemp.append(yerr[i])
@@ -405,7 +418,8 @@ class sdssLC(libcarma.basicLC):
         yList = list()
         yerrList = list()
         for i in xrange(len(tListTemp)):
-            if math.fabs(yListTemp[i] - meanY) < self.OutlierDetectionYVal*stdY:  # Disabled outlier rejection! Could try 3-sigma
+            # Disabled outlier rejection! Could try 3-sigma
+            if math.fabs(yListTemp[i] - meanY) < self.OutlierDetectionYVal*stdY:
                 tList.append(tListTemp[i])
                 yList.append(yListTemp[i])
                 yerrList.append(yerrListTemp[i])
@@ -477,11 +491,13 @@ class sdssLC(libcarma.basicLC):
         cPickle.dump(outData, open('SDSSFit_'+self.name+'_'+self.band+'.p', 'w'))
 
 
-def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, minT=2.0, maxT=0.5, maxS=2.0, xTol=0.001, maxE=10000, plot=True, stop=False, fit=True, viewer=True):
+def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, minT=2.0, maxT=0.5, maxS=2.0,
+         xTol=0.001, maxE=10000, plot=True, stop=False, fit=True, viewer=True):
 
     argDict = {
-        'band': band, 'nsteps': nsteps, 'nwalkers': nwalkers, 'pMax': pMax, 'pMin': pMin, 'qMax': qMax, 'qMin': qMin,
-        'minT': minT, 'maxT': maxT, 'maxS': maxS, 'xTol': xTol, 'maxE': maxE, 'plot': plot, 'stop': stop, 'fit': fit, 'viewer': viewer}
+        'band': band, 'nsteps': nsteps, 'nwalkers': nwalkers, 'pMax': pMax, 'pMin': pMin, 'qMax': qMax,
+        'qMin': qMin, 'minT': minT, 'maxT': maxT, 'maxS': maxS, 'xTol': xTol, 'maxE': maxE, 'plot': plot,
+        'stop': stop, 'fit': fit, 'viewer': viewer}
 
     Another = 'y'
     Same = 'y'
@@ -494,8 +510,10 @@ def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, 
         if argDict['plot']:
             newLC.plot()
         if argDict['fit']:
-            newLC.fit(pMin=argDict['pMin'], pMax=argDict['pMax'], qMin=argDict['qMin'], qMax=argDict[
-                      'qMax'], nwalkers=argDict['nwalkers'], nsteps=argDict['nsteps'], xTol=argDict['xTol'], maxEvals=argDict['maxE'])
+            newLC.fit(
+                pMin=argDict['pMin'], pMax=argDict['pMax'], qMin=argDict['qMin'], qMax=argDict['qMax'],
+                nwalkers=argDict['nwalkers'], nsteps=argDict['nsteps'], xTol=argDict['xTol'],
+                maxEvals=argDict['maxE'])
             if argDict['viewer']:
                 newLC.view()
         if argDict['stop']:
@@ -509,7 +527,8 @@ def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, 
                 changeAnother = 'y'
                 while changeAnother == 'y':
                     whichParam = str(
-                        raw_input('Which parameter do you wish to change? (band/nsteps/nwalkers/pMin,pMax/qMin/qMax/minT/maxT/maxS/xTol/maxE/plot/stop/fit/viewer):'))
+                        raw_input('Parameter to change? (band/nsteps/nwalkers/pMin,pMax/qMin/qMax/minT/maxT/\
+                        maxS/xTol/maxE/plot/stop/fit/viewer):'))
                     whatValue = str(raw_input('What would you like to set the value to?:'))
                     if whichParam in ['band']:
                         argDict[whichParam] = whatValue
@@ -563,5 +582,6 @@ if __name__ == '__main__':
     parser.set_defaults(viewer=True)
     args = parser.parse_args()
     test(
-        band=args.band, nsteps=args.nsteps, nwalkers=args.nwalkers, pMax=args.pMax, pMin=args.pMin, qMax=args.qMax, qMin=args.qMin, minT=args.minTimescale,
-         maxT=args.maxTimescale, maxS=args.maxSigma, xTol=args.xTol, maxE=args.maxEvals, plot=args.plot, stop=args.stop, fit=args.fit, viewer=args.viewer)
+        band=args.band, nsteps=args.nsteps, nwalkers=args.nwalkers, pMax=args.pMax, pMin=args.pMin,
+        qMax=args.qMax, qMin=args.qMin, minT=args.minTimescale, maxT=args.maxTimescale, maxS=args.maxSigma,
+        xTol=args.xTol, maxE=args.maxEvals, plot=args.plot, stop=args.stop, fit=args.fit, viewer=args.viewer)

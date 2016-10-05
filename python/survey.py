@@ -38,14 +38,10 @@ class crtsLC(libcarma.basicLC):
         self._isSmoothed = False  # Has the LC been smoothed?
         self._dtSmooth = 0.0
         self._isRegular = True
-        self.XSim = np.require(np.zeros(self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
-        self.XComp = np.require(np.zeros(self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'V')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).

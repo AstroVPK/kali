@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 """	Module to perform basic C-ARMA modelling.
-
-	For a demonstration of the module, please run the module as a command line program eg.
-	bash-prompt$ python libcarma.py --help
-	and
-	bash-prompt$ python libcarma.py
 """
 
 import numpy as np
@@ -46,7 +41,7 @@ def pogsonFlux(mag, magErr):
 
 
 def _f7(seq):
-    """http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order"""
+    """http://tinyurl.com/angxm5"""
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
@@ -152,7 +147,10 @@ class epoch(object):
 
     \brief Class to hold individual epochs of a light curve.
 
-    We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same timestamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp in sec, min, day, MJD etc...?)
+    We wish to hold individual epochs in a light curve in an organized manner. This class lets us examine
+    individual epochs and check for equality with other epochs. Two epochs are equal iff they have the same
+    timestamp. Later on, we will implement some sort of unit system for the quantities (i.e. is the tiumestamp
+    in sec, min, day, MJD etc...?)
     """
 
     def __init__(self, t, x, y, yerr, mask):
@@ -160,11 +158,13 @@ class epoch(object):
         \brief Initialize the epoch.
 
         Non-keyword arguments
-        \param[in] t:    Timestamp.
-        \param[in] x:    Intrinsic Flux i.e. the theoretical value of the underlying flux in the absence of measurement error.
-        \param[in] y:    Observed Flux i.e. the observed value of the flux given a noise-to-signal level.
-        \param[in] yerr: Error in Observed Flux i.e. the measurement error in the flux.
-        \param[in] mask: Mask value at this epoch. 0.0 means that this epoch has a missing observation. 1.0 means that the observation exists.
+        \param[in] t:       Timestamp.
+        \param[in] x:       Intrinsic Flux i.e. the theoretical value of the underlying flux in the absence of
+                            measurement error.
+        \param[in] y:       Observed Flux i.e. the observed value of the flux given a noise-to-signal level.
+        \param[in] yerr:    Error in Observed Flux i.e. the measurement error in the flux.
+        \param[in] mask:    Mask value at this epoch. 0.0 means that this epoch has a missing observation. 1.0
+                            means that the observation exists.
         """
         self.t = t  # Timestamp
         self.x = x  # Intrinsic flux
@@ -183,7 +183,8 @@ class epoch(object):
         \brief Return a human readable representation of the epoch.
         """
         if self.mask == 1.0:
-            return r't = %f MJD; intrinsic flux = %+f; observed flux = %+f; observed flux error = %+f'%(self.t, self.x, self.y, self.yerr)
+            return r't = %f MJD; intrinsic flux = %+f; observed flux = %+f; \
+                     observed flux error = %+f'%(self.t, self.x, self.y, self.yerr)
         else:
             return r't = %f MJD; no data!'%(self.t)
 
@@ -222,44 +223,78 @@ class lc(object):
 
     \brief Class to hold light curve.
 
-    ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold the list of t, x, y, yerr, and mask.
+    ABC to model a light curve. Light curve objects consist of a number of properties and numpy arrays to hold
+    the list of t, x, y, yerr, and mask.
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None, band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, pSim=0, qSim=0, pComp=0, qComp=0, sampler=None, path=None, **kwargs):
+    def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None,
+                 band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15,
+                 fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, pSim=0, qSim=0,
+                 pComp=0, qComp=0, sampler=None, path=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
-        The constructor assumes that the light curve to be constructed is regular. There is no option to construct irregular light curves. Irregular light can be obtained by reading in a supplied irregular light curve. The constructor takes an optional keyword argument (supplied = <light curve file>) that is read in using the read method. This supplied light curve can be irregular. Typically, the supplied light curve is irregular either because the user created it that way, or because the survey that produced it sampled the sky at irregular intervals.
+        The constructor assumes that the light curve to be constructed is regular. There is no option to
+        construct irregular light curves. Irregular light can be obtained by reading in a supplied irregular
+        light curve. The constructor takes an optional keyword argument (supplied = <light curve file>) that
+        is read in using the read method. This supplied light curve can be irregular. Typically, the supplied
+        light curve is irregular either because the user created it that way, or because the survey that
+        produced it sampled the sky at irregular intervals.
 
         Non-keyword arguments
-        \param[in] numCadences: The number of cadences in the light curve.
-        \param[in] p          : The order of the C-ARMA model used.
-        \param[in] q          : The order of the C-ARMA model used.
+        \param[in] numCadences:         The number of cadences in the light curve.
+        \param[in] p          :         The order of the C-ARMA model used.
+        \param[in] q          :         The order of the C-ARMA model used.
 
         Keyword arguments
-        \param[in] dt:                The spacing between cadences.
-        \param[in] dt:                The spacing between cadences after smoothing.
-        \param[in] name:              The name of the light curve (usually the object's name).
-        \param[in] band:              The name of the photometric band (eg. HSC-I or SDSS-g etc..).
-        \param[in] xunit              Unit in which time is measured (eg. s, sec, seconds etc...).
-        \param[in] yunit              Unit in which the flux is measured (eg Wm^{-2} etc...).
-        \param[in] tolIR:             The tolerance level at which a given step in the lightcurve should be considered irregular for the purpose of solving the C-ARMA model. The C-ARMA model needs to be re-solved if abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time. If IR  == False, this parameter is not used.
-        \param[in] fracIntrinsicVar:  The fractional variability of the source i.e. fracIntrinsicVar = sqrt(Sigma[0,0])/mean_flux.
-        \param[in] fracNoiseToSignal: The fractional noise level i.e. fracNoiseToSignal = sigma_noise/flux. We assume that this level is fixed. In the future, we may wish to make this value flux dependent to make the noise model more realistic.
-        \param[in] maxSigma:          The maximum allowed value of sqrt(Sigma[0,0]) = maxSigma*stddev(y) when fitting a C-ARMA model. Note that if the observed light curve is shorter than the de-correlation timescale, stddev(y) may be much smaller than sqrt(Sigma[0,0]) and hence maxSigma should be made larger in such cases.
-        \param[in] minTimescale:      The shortest allowed timescale = minTimescale*dt. Note that if the observed light curve is very sparsely sampled, dt may be much larger than the actaul minimum timescale present and hence minTimescale should be made smaller in such cases.
-        \param[in] maxTimescale:      The longest allowed timescale = maxTimescale*T. Note that if the observed light curve is shorter than the longest timescale present, T may be much smaller than the longest timescale and hence maxTimescale should be made larger in such cases.
-        \param[in] supplied:          Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
-        \param[in] path:              Reference for supplied light curve. Since this class is an ABC, individual subclasses must implement a read method and the format expected for supplied (i.e. full path or name etc...) will be determined by the subclass.
+        \param[in] dt:                  The spacing between cadences.
+        \param[in] dt:                  The spacing between cadences after smoothing.
+        \param[in] name:                The name of the light curve (usually the object's name).
+        \param[in] band:                The name of the photometric band (eg. HSC-I or SDSS-g etc..).
+        \param[in] xunit                Unit in which time is measured (eg. s, sec, seconds etc...).
+        \param[in] yunit                Unit in which the flux is measured (eg Wm^{-2} etc...).
+        \param[in] tolIR:               The tolerance level at which a given step in the lightcurve should be
+                                        considered irregular for the purpose of solving the C-ARMA model. The
+                                        C-ARMA model needs to be re-solved if
+                                        abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR
+                                        where t_incr is the new increment in time and dt is the previous
+                                        increment in time. If IR  == False, this parameter is not used.
+        \param[in] fracIntrinsicVar:    The fractional variability of the source i.e.
+                                        fracIntrinsicVar = sqrt(Sigma[0,0])/mean_flux.
+        \param[in] fracNoiseToSignal:   The fractional noise level i.e. fracNoiseToSignal = sigma_noise/flux.
+                                        We assume that this level is fixed. In the future, we may wish to make
+                                        this value flux dependent to make the noise model more realistic.
+        \param[in] maxSigma:            The maximum allowed value of sqrt(Sigma[0,0]) = maxSigma*stddev(y)
+                                        when fitting a C-ARMA model. Note that if the observed light curve is
+                                        shorter than the de-correlation timescale, stddev(y) may be much
+                                        smaller than sqrt(Sigma[0,0]) and hence maxSigma should be made larger
+                                        in such cases.
+        \param[in] minTimescale:        The shortest allowed timescale = minTimescale*dt. Note that if the
+                                        observed light curve is very sparsely sampled, dt may be much larger
+                                        than the actaul minimum timescale present and hence minTimescale
+                                        should be made smaller in such cases.
+        \param[in] maxTimescale:        The longest allowed timescale = maxTimescale*T. Note that if the
+                                        observed light curve is shorter than the longest timescale present, T
+                                        may be much smaller than the longest timescale and hence maxTimescale
+                                        should be made larger in such cases.
+        \param[in] supplied:            Reference for supplied light curve. Since this class is an ABC,
+                                        individual subclasses must implement a read method and the format
+                                        expected for supplied (i.e. full path or name etc...) will be
+                                        determined by the subclass.
+        \param[in] path:                Reference for supplied light curve. Since this class is an ABC,
+                                        individual subclasses must implement a read method and the format
+                                        expected for supplied (i.e. full path or name etc...) will be
+                                        determined by the subclass.
         """
         if name is not None and band is not None:
             self.read(name=name, band=band, path=path, **kwargs)
         else:
-            self._numCadences = numCadences  # The number of cadences in the light curve. This is not the same thing as the number of actual observations as we can have missing observations.
-            self._simulatedCadenceNum = -1  # How many cadences have already been simulated.
-            self._observedCadenceNum = -1  # How many cadences have already been observed.
-            self._computedCadenceNum = -1  # How many cadences have been LnLikelihood'd already.
+            self._numCadences = numCadences     # The number of cadences in the light curve. This is not the
+            # same thing as the number of actual observations as we can have missing observations.
+            self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
+            self._observedCadenceNum = -1   # How many cadences have already been observed.
+            self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
             self._pSim = pSim  # C-ARMA model used to simulate the LC.
             self._qSim = qSim  # C-ARMA model used to simulate the LC.
             self._pComp = pComp  # C-ARMA model used to simulate the LC.
@@ -279,11 +314,13 @@ class lc(object):
             self.XSim = np.require(np.zeros(self.pSim), requirements=[
                                    'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
             self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=[
-                                   'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+                                   'F', 'A', 'W', 'O', 'E'])    # Uncertainty in state of light curve at last
+            # timestamp.
             self.XComp = np.require(np.zeros(self.pComp), requirements=[
                                     'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
             self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=[
-                                    'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+                                    'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last
+            # timestamp.
             self._name = str(name)  # The name of the light curve (usually the object's name).
             self._band = str(band)  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
             if str(xunit)[0] != '$':
@@ -296,7 +333,9 @@ class lc(object):
                     str(yunit) + '$'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
             else:
                 self._yunit = str(yunit)
-            self._tolIR = tolIR  # Tolerance on the irregularity. If IR == False, this parameter is not used. Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is the previous increment in time.
+            self._tolIR = tolIR  # Tolerance on the irregularity. If IR == False, this parameter is not used.
+            # Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where
+            # t_incr is the new increment in time and dt is the previous increment in time.
             self._fracIntrinsicVar = fracIntrinsicVar
             self._fracNoiseToSignal = fracNoiseToSignal
             self._maxSigma = maxSigma
@@ -312,8 +351,11 @@ class lc(object):
             self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
             self._T = float(self.t[-1] - self.t[0])
         self._lcCython = CARMATask.lc(
-            self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp, dt=self._dt, meandt=self._meandt, mindt=self._mindt, maxdt=self._maxdt, dtSmooth=self._dtSmooth,
-                                      tolIR=self._tolIR, fracIntrinsicVar=self._fracIntrinsicVar, fracNoiseToSignal=self._fracNoiseToSignal, maxSigma=self._maxSigma, minTimescale=self._minTimescale, maxTimescale=self._maxTimescale)
+            self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp,
+            dt=self._dt, meandt=self._meandt, mindt=self._mindt, maxdt=self._maxdt, dtSmooth=self._dtSmooth,
+            tolIR=self._tolIR, fracIntrinsicVar=self._fracIntrinsicVar,
+            fracNoiseToSignal=self._fracNoiseToSignal, maxSigma=self._maxSigma,
+            minTimescale=self._minTimescale, maxTimescale=self._maxTimescale)
         if sampler is not None:
             self._sampler = sampler(self)
         else:
@@ -636,7 +678,15 @@ class lc(object):
         """!
         \brief Return a representation of the lc such that eval(repr(someLC)) == someLC is True.
         """
-        return u"libcarma.lc(%d, %f, %s, %s, %s, %s, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._dt, self._name, self._band, self._xunit, self._yunit, self._tolIR, self._fracIntrinsicVar, self._fracNoiseToSignal, self._maxSigma, self._minTimescale, self._maxTimescale)
+        return u"libcarma.lc(%d, %f, %s, %s, %s, %s, %f, %f, %f, %f, %f, %f)"%(self._numCadences, self._dt,
+                                                                               self._name, self._band,
+                                                                               self._xunit, self._yunit,
+                                                                               self._tolIR,
+                                                                               self._fracIntrinsicVar,
+                                                                               self._fracNoiseToSignal,
+                                                                               self._maxSigma,
+                                                                               self._minTimescale,
+                                                                               self._maxTimescale)
 
     def __str__(self):
         """!
@@ -789,7 +839,8 @@ class lc(object):
         Add another light curve or scalar to the light curve.
         """
         lccopy = self.copy()
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             lccopy.x += other
             lccopy.y += other
             lccopy._mean = np.mean(lccopy.y)
@@ -839,7 +890,8 @@ class lc(object):
 
         Inplace add another light curve or scalar to the light curve.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             self.x += other
             self.y += other
             self._mean += other
@@ -870,7 +922,8 @@ class lc(object):
 
         Multiply the light curve by a scalar.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -893,7 +946,8 @@ class lc(object):
 
         Multiply a scalar by the light curve.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -908,7 +962,8 @@ class lc(object):
 
         Divide the light curve by a scalar.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -931,7 +986,8 @@ class lc(object):
 
         Inplace multiply a light curve by a scalar.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -953,7 +1009,8 @@ class lc(object):
 
         Inplace divide a light curve by a scalar.
         """
-        if isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or isinstance(other, complex):
+        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
+                isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -1069,7 +1126,8 @@ class lc(object):
             self._acvferr = np.require(np.zeros(useLC.numCadences), requirements=[
                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             useLC._lcCython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
-                                         useLC.y, useLC.yerr, useLC.mask, self._acvflags, self._acvf, self._acvferr)
+                                         useLC.y, useLC.yerr, useLC.mask, self._acvflags, self._acvf,
+                                         self._acvferr)
             return self._acvflags, self._acvf, self._acvferr
 
     def acf(self, newdt=None):
@@ -1087,7 +1145,8 @@ class lc(object):
             self._acferr = np.require(np.zeros(useLC.numCadences), requirements=[
                                       'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             useLC._lcCython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
-                                        useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf, self._acferr)
+                                        useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf,
+                                        self._acferr)
             return self._acflags, self._acf, self._acferr
 
     def dacf(self, nbins=None):
@@ -1103,7 +1162,8 @@ class lc(object):
             self._dacferr = np.require(np.zeros(self._dacflags.shape[0]), requirements=[
                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self._lcCython.compute_DACF(self.numCadences, self.dt, self.t, self.x, self.y,
-                                        self.yerr, self.mask, nbins, self._dacflags, self._dacf, self._dacferr)
+                                        self.yerr, self.mask, nbins, self._dacflags, self._dacf,
+                                        self._dacferr)
             return self._dacflags, self._dacf, self._dacferr
 
     def sf(self, newdt=None):
@@ -1133,26 +1193,27 @@ class lc(object):
             plt.plot(self.t, self.x, color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
         if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
             plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[
-                    np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]],
-                         label=r'%s (%s-band)'%(self.name, self.band), fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
+                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
             plt.xlim(self.t[0], self.t[-1])
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
                 self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', zorder=0)
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
+                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', marker='o', markeredgecolor='none',
+                zorder=0)
             plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[
-                    np.where(self.mask == 1.0)[0]], self.yerr[np.where(self.mask == 1.0)[0]],
-                         label=r'%s (%s-band)'%(self.name, self.band), fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
-        plt.xlim(self.t[0], self.t[-1])
+                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
+                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
         if self.isSmoothed:
             plt.plot(self.tSmooth, self.xSmooth, color='#4daf4a',
                      marker='o', markeredgecolor='none', zorder=-5)
             plt.plot(self.tSmooth, self.xSmooth, color='#4daf4a', zorder=-5)
             plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
                              self.xerrSmooth, facecolor='#ccebc5', alpha=0.5, zorder=-5)
+        plt.xlim(self.t[0], self.t[-1])
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')
@@ -1171,8 +1232,8 @@ class lc(object):
                              fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
                 for i in xrange(1, lagsE.shape[0]):
                     if acvfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acvfE[i], acvferrE[
-                                     i], fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                        plt.errorbar(lagsE[i], acvfE[i], acvferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                                     markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$ACVF$')
@@ -1192,8 +1253,8 @@ class lc(object):
                              fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
                 for i in xrange(1, lagsE.shape[0]):
                     if acfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acfE[i], acferrE[
-                                     i], fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                        plt.errorbar(lagsE[i], acfE[i], acferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                                     markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$ACF$')
@@ -1210,12 +1271,12 @@ class lc(object):
             lagsE, dacfE, dacferrE = self.dacf(nbins=numBins)
             if np.sum(dacfE) != 0.0:
                 plt.errorbar(
-                    lagsE[0], dacfE[0], dacferrE[0], label=r'obs. Discrete Autocorrelation Function',
-                             fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                    lagsE[0], dacfE[0], dacferrE[0], label=r'obs. Discrete Autocorrelation Function', fmt='o',
+                    capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
                 for i in xrange(0, lagsE.shape[0]):
                     if dacfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], dacfE[i], dacferrE[
-                                     i], fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                        plt.errorbar(lagsE[i], dacfE[i], dacferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                                     markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$DACF$')
@@ -1236,13 +1297,14 @@ class lc(object):
                     if sfE[i] != 0.0:
                         break
                 plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(
-                    sferrE[i]/(ln10*sfE[i])), label=r'obs. Structure Function', fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                    sferrE[i]/(ln10*sfE[i])), label=r'obs. Structure Function', fmt='o', capsize=0,
+                    color='#ff7f00', markeredgecolor='none', zorder=10)
                 startI = i
                 for i in xrange(i+1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
-                        plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(
-                            sferrE[i]/(ln10*sfE[i])), fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
-                # plt.xlim(math.log10(lagsE[startI]), math.log10(lagsE[-1]))
+                        plt.errorbar(
+                            math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(sferrE[i]/(ln10*sfE[i])),
+                            fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$\log SF$')
         plt.title(r'Structure Function')
@@ -1268,8 +1330,9 @@ class lc(object):
         newLC.yerr = np.require(
             np.array(newLC.numCadences*[unObsUncertVal]), requirements=['F', 'A', 'W', 'O', 'E'])
         newLC.mask = np.require(np.array(newLC.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        spl = UnivariateSpline(self.t[np.where(self.mask == 1.0)], self.y[
-                               np.where(self.mask == 1.0)], 1.0/self.yerr[np.where(self.mask == 1.0)], k=degree, check_finite=True)
+        spl = UnivariateSpline(
+            self.t[np.where(self.mask == 1.0)], self.y[np.where(self.mask == 1.0)],
+            1.0/self.yerr[np.where(self.mask == 1.0)], k=degree, check_finite=True)
         for i in xrange(newLC.numCadences):
             newLC.t[i] = self.t[0] + i*newLC.dt
             newLC.x[i] = spl(newLC.t[i])
@@ -1368,8 +1431,11 @@ class basicLC(lc):
 
     def copy(self):
         lccopy = basicLC(
-            self.numCadences, dt=self.dt, meandt=self.meandt, mindt=self.mindt, maxdt=self.maxdt, dtSmooth=self.dtSmooth, name=None, band=self.band, xunit=self.xunit, yunit=self.yunit,
-                         tolIR=self.tolIR, fracIntrinsicVar=self.fracIntrinsicVar, fracNoiseToSignal=self.fracNoiseToSignal, maxSigma=self.maxSigma, minTimescale=self.minTimescale, maxTimescale=self.maxTimescale)
+            self.numCadences, dt=self.dt, meandt=self.meandt, mindt=self.mindt, maxdt=self.maxdt,
+            dtSmooth=self.dtSmooth, name=None, band=self.band, xunit=self.xunit, yunit=self.yunit,
+            tolIR=self.tolIR, fracIntrinsicVar=self.fracIntrinsicVar,
+            fracNoiseToSignal=self.fracNoiseToSignal, maxSigma=self.maxSigma, minTimescale=self.minTimescale,
+            maxTimescale=self.maxTimescale)
         lccopy.t = np.copy(self.t)
         lccopy.x = np.copy(self.x)
         lccopy.y = np.copy(self.y)
@@ -1465,14 +1531,14 @@ class externalLC(basicLC):
         self._qComp = 0
         self._isSmoothed = False  # Has the LC been smoothed?
         self._dtSmooth = 0.0
-        self.XSim = np.require(np.zeros(self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=[
-                               'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
-        self.XComp = np.require(np.zeros(self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last timestamp.
+        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])  # State of light
+        # curve at last timestamp
+        # Uncertainty in state of light curve at last timestamp
+        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])  # State of
+        # light curve at last timestamp
+        # Uncertainty in state of light curve at last timestamp.
+        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._xunit = r'$t$ (d)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         self._yunit = r'who the f*** knows?'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
 
@@ -1705,7 +1771,9 @@ class matchSampler(sampler):
 class task(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000, nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001, mcmcA=2.0):
+    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
+                 nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
+                 mcmcA=2.0):
         try:
             assert p > q, r'p must be greater than q'
             assert p >= 1, r'p must be greater than or equal to 1'
@@ -1878,7 +1946,8 @@ class task(object):
         else:
             Chain = self.Chain
             self._rootChain = np.require(
-                np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='complex128'), requirements=['F', 'A', 'W', 'O', 'E'])
+                np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='complex128'),
+                requirements=['F', 'A', 'W', 'O', 'E'])
             for stepNum in xrange(self._nsteps):
                 for walkerNum in xrange(self._nwalkers):
                     self._rootChain[:, walkerNum, stepNum] = roots(
@@ -1892,7 +1961,8 @@ class task(object):
         else:
             rootChain = self.rootChain
             self._timescaleChain = np.require(
-                np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='float64'), requirements=['F', 'A', 'W', 'O', 'E'])
+                np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='float64'),
+                requirements=['F', 'A', 'W', 'O', 'E'])
             for stepNum in xrange(self._nsteps):
                 for walkerNum in xrange(self._nwalkers):
                     self._timescaleChain[:, walkerNum, stepNum] = timescales(
@@ -1904,7 +1974,9 @@ class task(object):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     def __repr__(self):
-        return "libcarma.task(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads, self._nburn, self._nwalkers, self._nsteps, self._maxEvals, self._xTol)
+        return "libcarma.task(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
+                                                                self._nburn, self._nwalkers, self._nsteps,
+                                                                self._maxEvals, self._xTol)
 
     def __str__(self):
         line = 'p: %d; q: %d; ndims: %d\n'%(self._p, self._q, self._ndims)
@@ -1912,14 +1984,17 @@ class task(object):
         line += 'nburn (Number of light curve steps to burn): %d\n'%(self._nburn)
         line += 'nwalkers (Number of MCMC walkers): %d\n'%(self._nwalkers)
         line += 'nsteps (Number of MCMC steps): %d\n'%(self.nsteps)
-        line += 'maxEvals (Maximum number of evaluations when attempting to find starting location for MCMC): %d\n'%(
-            self._maxEvals)
+        line += 'maxEvals (Maximum number of evaluations when attempting to find starting location for MCMC):\
+        %d\n'%(self._maxEvals)
         line += 'xTol (Fractional tolerance in optimized parameter value): %f'%(self._xTol)
         return line
 
     def __eq__(self, other):
         if isinstance(other, task):
-            if (self._p == other.p) and (self._q == other.q) and (self._nthreads == other.nthreads) and (self._nburn == other.nburn) and (self._nwalkers == other.nwalkers) and (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and (self.xTol == other.xTol):
+            if ((self._p == other.p) and (self._q == other.q) and (self._nthreads == other.nthreads) and
+                (self._nburn == other.nburn) and (self._nwalkers == other.nwalkers) and
+                (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and
+                    (self.xTol == other.xTol)):
                 return True
             else:
                 return False
@@ -2033,13 +2108,15 @@ class task(object):
             self._taskCython.set_P(np.reshape(P, newshape=(self._p*self._p), order='F'), tnum)
             return newP
 
-    def simulate(self, duration, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None, noiseSeed=None, tnum=None):
+    def simulate(self, duration, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001, maxSigma=2.0,
+                 minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None, noiseSeed=None, tnum=None):
         if tnum is None:
             tnum = 0
         numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
         intrinsicLC = basicLC(
-            numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR, fracIntrinsicVar=fracIntrinsicVar,
-                              fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma, minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+            numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+            fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+            minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)
@@ -2048,8 +2125,9 @@ class task(object):
             rand.rdrand(randSeed)
             distSeed = randSeed[0]
         self._taskCython.make_IntrinsicLC(
-            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t,
-                                          intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, burnSeed, distSeed, threadNum=tnum)
+            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
+            intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
+            intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, burnSeed, distSeed, threadNum=tnum)
         intrinsicLC._simulatedCadenceNum = numCadences - 1
         intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
         return intrinsicLC
@@ -2098,8 +2176,9 @@ class task(object):
             newmask[i] = 1.0
         intrinsicLC._numCadences = newNumCadences
         self._taskCython.extend_IntrinsicLC(
-            intrinsicLC.numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR, intrinsicLC._fracIntrinsicVar,
-                                            intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask, intrinsicLC.XSim, intrinsicLC.PSim, distSeed, noiseSeed, threadNum=tnum)
+            intrinsicLC.numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR,
+            intrinsicLC._fracIntrinsicVar, intrinsicLC._fracNoiseToSignal, newt, newx, newy, newyerr, newmask,
+            intrinsicLC.XSim, intrinsicLC.PSim, distSeed, noiseSeed, threadNum=tnum)
         if gap is not None:
             old, gap, new = np.split(newt, [oldNumCadences, oldNumCadences + gapNumCadences])
             newt = np.require(np.concatenate((old, new)), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -2153,11 +2232,13 @@ class task(object):
         if intrinsicLC._observedCadenceNum == -1:
             self._taskCython.add_ObservationNoise(
                 intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
-                                                  intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
+                intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
+                intrinsicLC.mask, noiseSeed, threadNum=tnum)
         else:
             self._taskCython.extend_ObservationNoise(
-                intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
-                                                     intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
+                intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR,
+                intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x,
+                intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
             intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1
 
         count = int(np.sum(intrinsicLC.mask))
@@ -2187,8 +2268,12 @@ class task(object):
     def logPrior(self, observedLC, forced=True, tnum=None):
         if tnum is None:
             tnum = 0
-        observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std, observedLC.minTimescale *
-                                                                observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+        observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR,
+                                                                observedLC.maxSigma*observedLC.std,
+                                                                observedLC.minTimescale*observedLC.mindt,
+                                                                observedLC.maxTimescale*observedLC.T,
+                                                                observedLC.t, observedLC.x, observedLC.y,
+                                                                observedLC.yerr, observedLC.mask, tnum)
         return observedLC._logPrior
 
     def logLikelihood(self, observedLC, forced=True, tnum=None):
@@ -2197,22 +2282,27 @@ class task(object):
         observedLC.pComp = self.p
         observedLC.qComp = self.q
         observedLC._logPrior = self.logPrior(observedLC, forced=forced, tnum=tnum)
-        if forced == True:
+        if forced is True:
             observedLC._computedCadenceNum = -1
         if observedLC._computedCadenceNum == -1:
             for rowCtr in xrange(observedLC.pComp):
                 observedLC.XComp[rowCtr] = 0.0
                 for colCtr in xrange(observedLC.pComp):
                     observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
-            observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(
-                observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+            observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
+                observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t,
+                observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]),
+                observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
             pass
         else:
-            observedLC._logLikelihood = self._taskCython.update_LnLikelihood(observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood, observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - np.mean(
-                observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+            observedLC._logLikelihood = self._taskCython.update_LnLikelihood(
+                observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood,
+                observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y -
+                np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask,
+                observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         return observedLC._logLikelihood
@@ -2326,7 +2416,8 @@ class task(object):
                 if np.sum(sfE) != 0.0:
                     plt.scatter(
                         np.log10(lagsE[np.where(sfE != 0.0)[0]]), np.log10(sfE[np.where(sfE != 0.0)[0]]),
-                                marker='o', label=r'obs. Structure Function', color='#ff7f00', edgecolors='none', zorder=0)
+                        marker='o', label=r'obs. Structure Function', color='#ff7f00', edgecolors='none',
+                        zorder=0)
         plt.xlim(math.log10(lagsM[1]), math.log10(lagsM[-1]))
         plt.xlabel(r'$\delta t$')
         plt.ylabel(r'$\log SF$')
@@ -2426,13 +2517,21 @@ class task(object):
         for i in xrange(psdNumerComp.shape[1]):
             plt.plot(np.log10(freqsM[1:]), np.log10(psdNumerComp[1:, i]),
                      color='#a6cee3', zorder=0, linewidth=2, linestyle=r'dashed')
-            plt.annotate(r'$\nu^{%d}$'%(2*i), xy=(np.log10(freqsM[25]), np.log10(psdNumerComp[25, i])), xycoords='data', xytext=(np.log10(freqsM[25]) + 0.25, np.log10(psdNumerComp[25, i]) + 0.5), textcoords='data', arrowprops=dict(
-                arrowstyle='->', connectionstyle='angle3, angleA = 0, angleB = 90'), ha='center', va='center', multialignment='center', zorder=100)
+            plt.annotate(
+                r'$\nu^{%d}$'%(2*i), xy=(np.log10(freqsM[25]), np.log10(psdNumerComp[25, i])),
+                xycoords='data', xytext=(np.log10(freqsM[25]) + 0.25, np.log10(psdNumerComp[25, i]) + 0.5),
+                textcoords='data', arrowprops=dict(
+                    arrowstyle='->', connectionstyle='angle3, angleA = 0, angleB = 90'),
+                ha='center', va='center', multialignment='center', zorder=100)
         for i in xrange(psdDenomComp.shape[1]):
             plt.plot(np.log10(freqsM[1:]), -np.log10(psdDenomComp[1:, i]),
                      color='#fb9a99', zorder=0, linewidth=2, linestyle=r'dashed')
-            plt.annotate(r'$\nu^{%d}$'%(-2*i), xy=(np.log10(freqsM[-25]), -np.log10(psdDenomComp[-25, i])), xycoords='data', xytext=(np.log10(freqsM[-25]) - 0.25, -np.log10(
-                psdDenomComp[-25, i]) - 0.5), textcoords='data', arrowprops=dict(arrowstyle='->', connectionstyle='angle3, angleA = 0, angleB = 90'), ha='center', va='center', multialignment='center', zorder=100)
+            plt.annotate(
+                r'$\nu^{%d}$'%(-2*i), xy=(np.log10(freqsM[-25]), -np.log10(psdDenomComp[-25, i])),
+                xycoords='data', xytext=(np.log10(freqsM[-25]) - 0.25, -np.log10(psdDenomComp[-25, i]) - 0.5),
+                textcoords='data', arrowprops=dict(
+                    arrowstyle='->', connectionstyle='angle3, angleA = 0, angleB = 90'),
+                ha='center', va='center', multialignment='center', zorder=100)
         plt.xlim(math.log10(freqsM[1]), math.log10(freqsM[-1]))
         plt.xlabel(r'$\log \nu$')
         plt.ylabel(r'$\log PSD$')
@@ -2482,8 +2581,12 @@ class task(object):
 
             for dimNum in xrange(self.ndims):
                 xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
-        res = self._taskCython.fit_CARMAModel(observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std, observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t, observedLC.x, observedLC.y - np.mean(
-            observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+        res = self._taskCython.fit_CARMAModel(
+            observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std,
+            observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t,
+            observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr,
+            observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed,
+            walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
         return res
 
     def smooth(self, observedLC, tnum=None):
@@ -2502,21 +2605,22 @@ class task(object):
         observedLC.numCadencesSmooth = len(t)
 
         observedLC.tSmooth = np.require(np.array(t), requirements=[
-                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+                                        'F', 'A', 'W', 'O', 'E'])
         observedLC.xSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
-                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+                                        'F', 'A', 'W', 'O', 'E'])
         observedLC.xerrSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
-                                           'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+                                           'F', 'A', 'W', 'O', 'E'])
         observedLC.ySmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
-                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+                                        'F', 'A', 'W', 'O', 'E'])
         observedLC.yerrSmooth = np.require(
-            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])
         observedLC.maskSmooth = np.require(
-            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
-        observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp), requirements=[
-                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
-        observedLC.PSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp*observedLC.pComp), requirements=[
-                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])
+        observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp),
+                                        requirements=['F', 'A', 'W', 'O', 'E'])
+        observedLC.PSmooth = np.require(np.zeros(
+            observedLC.numCadencesSmooth*observedLC.pComp*observedLC.pComp),
+            requirements=['F', 'A', 'W', 'O', 'E'])
 
         unObsErr = math.sqrt(sys.float_info.max)
 
@@ -2537,9 +2641,10 @@ class task(object):
                 observedLC.maskSmooth[i] = 0.0
 
         preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
-        res = self._taskCython.smooth_RTS(observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth, observedLC.ySmooth -
-                                          preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth, observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
-
+        res = self._taskCython.smooth_RTS(
+            observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth,
+            observedLC.ySmooth - preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth,
+            observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
         for i in xrange(observedLC.numCadencesSmooth):
             observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
             try:
@@ -2553,5 +2658,6 @@ class task(object):
 
 class basicTask(task):
 
-    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000, nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=1000, xTol=0.005):
+    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
+                 nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=1000, xTol=0.005):
         super(basicTask, self).__init__(p, q, nthreads, nburn, nwalkers, nsteps, maxEvals, xTol)

@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 """	Module to perform basic C-ARMA modelling.
-
-	For a demonstration of the module, please run the module as a command line program eg.
-	bash-prompt$ python libcarma.py --help
-	and
-	bash-prompt$ python libcarma.py
 """
 
 import numpy as np
@@ -54,14 +49,15 @@ class binarySMBHTask(object):
     lenTheta = 8
     G = 6.67408e-11
     c = 299792458.0
-    pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+    pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
     twoPi = 2.0*pi
     Parsec = 3.0857e16
     Day = 86164.090530833
     Year = 31557600.0
     SolarMass = 1.98855e30
 
-    def __init__(self, nthreads=psutil.cpu_count(logical=True), nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
+    def __init__(self, nthreads=psutil.cpu_count(logical=True), nwalkers=25*psutil.cpu_count(logical=True),
+                 nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
             assert nthreads > 0, r'nthreads must be greater than 0'
             assert isinstance(nthreads, int), r'nthreads must be an integer'
@@ -174,20 +170,23 @@ class binarySMBHTask(object):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     def __repr__(self):
-        return "libsmbh.task(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps, self._maxEvals, self._xTol)
+        return "libsmbh.task(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
+                                                   self._maxEvals, self._xTol)
 
     def __str__(self):
         line = 'ndims: %d\n'%(self._ndims)
         line += 'nthreads (Number of hardware threads to use): %d\n'%(self._nthreads)
         line += 'nwalkers (Number of MCMC walkers): %d\n'%(self._nwalkers)
         line += 'nsteps (Number of MCMC steps): %d\n'%(self.nsteps)
-        line += 'maxEvals (Maximum number of evaluations when attempting to find starting location for MCMC): %d\n'%(
-            self._maxEvals)
+        line += 'maxEvals (Maximum number of evaluations when attempting to find starting location for \
+        MCMC): %d\n'%(self._maxEvals)
         line += 'xTol (Fractional tolerance in optimized parameter value): %f'%(self._xTol)
 
     def __eq__(self, other):
         if isinstance(other, task):
-            if (self._nthreads == other.nthreads) and (self._nwalkers == other.nwalkers) and (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and (self.xTol == other.xTol):
+            if ((self._nthreads == other.nthreads) and (self._nwalkers == other.nwalkers) and
+                    (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and
+                    (self.xTol == other.xTol)):
                 return True
             else:
                 return False
@@ -463,7 +462,7 @@ class binarySMBHTask(object):
         intrinsicLC = libcarma.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
         self._taskCython.make_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
-                                          intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, threadNum=tnum)
+            intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, threadNum=tnum)
         intrinsicLC._simulatedCadenceNum = numCadences - 1
         intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
         return intrinsicLC
@@ -477,8 +476,8 @@ class binarySMBHTask(object):
             noiseSeed = randSeed[0]
         self._taskCython.add_ObservationNoise(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
-                                              intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
-
+            intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed,
+            threadNum=tnum)
         count = int(np.sum(intrinsicLC.mask))
         y_meanSum = 0.0
         yerr_meanSum = 0.0
@@ -509,18 +508,20 @@ class binarySMBHTask(object):
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
         observedLC._logPrior = self._taskCython.compute_LnPrior(
-            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
+            observedLC.y, observedLC.yerr, observedLC.mask, tnum)
         return observedLC._logPrior
 
     def logLikelihood(self, observedLC, forced=True, tnum=None):
         if tnum is None:
             tnum = 0
         observedLC._logPrior = self.logPrior(observedLC, forced=forced, tnum=tnum)
-        if forced == True:
+        if forced is True:
             observedLC._computedCadenceNum = -1
         if observedLC._computedCadenceNum == -1:
             observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
-                observedLC.numCadences, observedLC.dt, observedLC._computedCadenceNum, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+                observedLC.numCadences, observedLC.dt, observedLC._computedCadenceNum, observedLC.t,
+                observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         else:
@@ -574,8 +575,9 @@ class binarySMBHTask(object):
                 dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
             foldedLC = dzdtLC.fold(periodEst)
             foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-            integralSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[
-                                              np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k=3, s=None, check_finite=True)
+            integralSpline = UnivariateSpline(
+                foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)],
+                1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k=3, s=None, check_finite=True)
             totalIntegral = math.fabs(integralSpline.integral(foldedLC.t[0], foldedLC.t[-1]))
             intrinsicFluxList.append(intrinsicFlux[f])
             totalIntegralList.append(totalIntegral)
@@ -597,8 +599,9 @@ class binarySMBHTask(object):
 
         # eccentricityEst & omega2Est
         # First find a full period going from rising to falling.
-        risingSpline = UnivariateSpline(dzdtLC.t[np.where(dzdtLC.mask == 1.0)], dzdtLC.y[
-                                        np.where(dzdtLC.mask == 1.0)], 1.0/dzdtLC.yerr[np.where(dzdtLC.mask == 1.0)], k=3, s=None, check_finite=True)
+        risingSpline = UnivariateSpline(
+            dzdtLC.t[np.where(dzdtLC.mask == 1.0)], dzdtLC.y[np.where(dzdtLC.mask == 1.0)],
+            1.0/dzdtLC.yerr[np.where(dzdtLC.mask == 1.0)], k=3, s=None, check_finite=True)
         risingSplineRoots = risingSpline.roots()
         firstRoot = risingSplineRoots[0]
         if risingSpline.derivatives(risingSplineRoots[0])[1] > 0.0:
@@ -610,8 +613,10 @@ class binarySMBHTask(object):
         foldedLC.x = np.require(np.zeros(foldedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         # Fit the folded LC with a spline to figure out alpha and beta
         fitLC = foldedLC.copy()
-        foldedSpline = UnivariateSpline(foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)], 1.0/foldedLC.yerr[
-                                        np.where(foldedLC.mask == 1.0)], k=3, s=2*foldedLC.numCadences, check_finite=True)
+        foldedSpline = UnivariateSpline(
+            foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)],
+            1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k=3, s=2*foldedLC.numCadences,
+            check_finite=True)
         for i in xrange(fitLC.numCadences):
             fitLC.x[i] = foldedSpline(fitLC.t[i])
         # Now get the roots and find the falling root
@@ -620,14 +625,14 @@ class binarySMBHTask(object):
         # Find tRising, tFalling, tFull, startIndex, & stopIndex via DBSCAN #######################
         # Find the number of clusters
         '''dbsObj = DBSCAN(eps = periodEst/10.0, min_samples = 1)
-		db = dbsObj.fit(tZeros.reshape(-1,1))
-		core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-		core_samples_mask[db.core_sample_indices_] = True
-		labels = db.labels_
-		unique_labels = set(labels)
-		n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)'''
+        db = dbsObj.fit(tZeros.reshape(-1,1))
+        core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+        core_samples_mask[db.core_sample_indices_] = True
+        labels = db.labels_
+        unique_labels = set(labels)
+        n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)'''
 
-        # Find tRising, tFalling, tFull, startIndex, & stopIndex via k-Means ######################
+        # Find tRising, tFalling, tFull, startIndex, & stopIndex
         if tZeros.shape[0] == 1:  # We have found just tFalling
             tFalling = tZeros[0]
             tRising = fitLC.t[0]
@@ -650,7 +655,8 @@ class binarySMBHTask(object):
                     stopIndex = fitLC.numCadences
                 else:
                     raise RuntimeError(
-                        'Could not determine alpha & omega correctly because the first root is rising but the second root is not falling!')
+                        'Could not determine alpha & omega correctly because the first root is rising but \
+                        the second root is not falling!')
         elif tZeros.shape[0] == 3:
             tRising = tZeros[0]
             startIndex = np.where(fitLC.t > tRising)[0][0]
@@ -700,17 +706,17 @@ class binarySMBHTask(object):
             stopIndex = np.where(fitLC.t < tFull)[0][-1]
         #
 
-        # One full period now goes from tRising to periodEst. The maxima occurs between tRising and tFalling while the minima occurs between tFalling and tRising + periodEst
-        # Find the minima and maxima
+        # One full period now goes from tRising to periodEst. The maxima occurs between tRising and tFalling
+        # while the minima occurs between tFalling and tRising + periodEst. Find the minima and maxima
         alpha = math.fabs(fitLC.x[np.where(np.max(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]])
         beta = math.fabs(fitLC.x[np.where(np.min(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]])
         peakLoc = fitLC.t[np.where(np.max(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]]
         troughLoc = fitLC.t[np.where(np.min(fitLC.x[startIndex:stopIndex]) == fitLC.x)[0][0]]
         KEst = 0.5*(alpha + beta)
-        delta2 = (math.fabs(foldedSpline.integral(tRising, peakLoc))
-                  + math.fabs(foldedSpline.integral(troughLoc, tFull)))/2.0
-        delta1 = (math.fabs(foldedSpline.integral(peakLoc, tFalling))
-                  + math.fabs(foldedSpline.integral(tFalling, troughLoc)))/2.0
+        delta2 = (math.fabs(foldedSpline.integral(tRising, peakLoc)) + math.fabs(
+            foldedSpline.integral(troughLoc, tFull)))/2.0
+        delta1 = (math.fabs(foldedSpline.integral(peakLoc, tFalling)) + math.fabs(
+            foldedSpline.integral(tFalling, troughLoc)))/2.0
         eCosOmega2 = (alpha - beta)/(alpha + beta)
         eSinOmega2 = ((2.0*math.sqrt(alpha*beta))/(alpha + beta))*((delta2 - delta1)/(delta2 + delta1))
         eccentricityEst = math.sqrt(math.pow(eCosOmega2, 2.0) + math.pow(eSinOmega2, 2.0))
@@ -733,14 +739,18 @@ class binarySMBHTask(object):
         zDotLC = dzdtLC.copy()
         for i in xrange(zDotLC.numCadences):
             zDotLC.y[i] = zDotLC.y[i] - zDot
-        zDotSpline = UnivariateSpline(zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)], 1.0/zDotLC.yerr[
-                                      np.where(zDotLC.mask == 1.0)], k=3, s=2*zDotLC.numCadences, check_finite=True)
+        zDotSpline = UnivariateSpline(
+            zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)],
+            1.0/zDotLC.yerr[np.where(zDotLC.mask == 1.0)], k=3, s=2*zDotLC.numCadences, check_finite=True)
         for i in xrange(zDotLC.numCadences):
             zDotLC.x[i] = zDotSpline(zDotLC.t[i])
         zDotZeros = zDotSpline.roots()
         zDotFoldedLC = dzdtLC.fold(periodEst)
-        zDotFoldedSpline = UnivariateSpline(zDotFoldedLC.t[np.where(zDotFoldedLC.mask == 1.0)], zDotFoldedLC.y[
-                                            np.where(zDotFoldedLC.mask == 1.0)], 1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k=3, s=2*zDotFoldedLC.numCadences, check_finite=True)
+        zDotFoldedSpline = UnivariateSpline(
+            zDotFoldedLC.t[np.where(zDotFoldedLC.mask == 1.0)],
+            zDotFoldedLC.y[np.where(zDotFoldedLC.mask == 1.0)],
+            1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k=3, s=2*zDotFoldedLC.numCadences,
+            check_finite=True)
         for i in xrange(zDotFoldedLC.numCadences):
             zDotFoldedLC.x[i] = zDotFoldedSpline(zDotFoldedLC.t[i])
         tC = zDotFoldedLC.t[np.where(np.max(zDotFoldedLC.x) == zDotFoldedLC.x)[0][0]]
@@ -754,8 +764,8 @@ class binarySMBHTask(object):
         tauEst = tauEst%periodEst
 
         # a2sinInclinationEst
-        a2sinInclinationEst = (
-            (KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(eccentricityEst, 2.0)))/self.twoPi)/self.Parsec
+        a2sinInclinationEst = ((KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(
+            eccentricityEst, 2.0)))/self.twoPi)/self.Parsec
 
         return fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst
 
@@ -786,16 +796,13 @@ class binarySMBHTask(object):
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.estimate(
             observedLC)
 
-        ''''ThetaGuess = np.array([0.001, 75.0, 10.0, 0.0, 0.0, 90.0, 0.0, 100.0, 0.5])
-		for dimNum in xrange(self.ndims):
-			xStart[dimNum] = ThetaGuess[dimNum]
-		for walkerNum in xrange(1, self.nwalkers):'''
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             while noSuccess:
                 a1Guess, a2Guess, inclinationGuess = self.guess(a2sinInclinationEst)
                 ThetaGuess = np.array(
-                    [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst, fluxEst])
+                    [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
+                        fluxEst])
                 res = self.set(ThetaGuess)
                 lnPrior = self.logPrior(observedLC)
                 if res == 0 and lnPrior == 0.0:
@@ -806,6 +813,8 @@ class binarySMBHTask(object):
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
         res = self._taskCython.fit_BinarySMBHModel(
-            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr,
-                                                   observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
+            observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals,
+            self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain,
+            self._LnPosterior)
         return res

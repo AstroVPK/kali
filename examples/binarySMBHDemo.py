@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """	Module to simulate binary SMBHs.
 
-	For a demonstration of the module, please run the module as a command line program eg.
-	bash-prompt$ python binarySMBHDemo.py --help
-	and
-	bash-prompt$ python binarySMBHDemo.py -rPer 0.001 -m12 6.0e8 -q 0.2 -e 0.75 -omega 90.0 -i 90.0
+    For a demonstration of the module, please run the module as a command line program eg.
+    bash-prompt$ python binarySMBHDemo.py --help
+    and
+    bash-prompt$ python binarySMBHDemo.py -rPer 0.001 -m12 6.0e8 -q 0.2 -e 0.75 -omega 90.0 -i 90.0
 """
 import math as math
 import cmath as cmath
@@ -67,9 +67,11 @@ if __name__ == "__main__":
     parser.add_argument('-tau', '--tau', type=float, default=0.0,
                         help=r'MJD at periapsis (day), default = 0.0 day')
     parser.add_argument('-alpha1', '--alpha1', type=float, default=-0.44,
-                        help=r'SED power-law spectral index of 1st black hole (dimensionless), default = -0.44')
+                        help=r'SED power-law spectral index of 1st black hole (dimensionless), \
+                        default = -0.44')
     parser.add_argument('-alpha2', '--alpha2', type=float, default=-0.44,
-                        help=r'SED power-law spectral index of 2nd black hole (dimensionless), default = -0.44')
+                        help=r'SED power-law spectral index of 2nd black hole (dimensionless), \
+                        default = -0.44')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help=r'Make plots of mean anomoly, eccentric anomoloy, orbital velocity etc...?')
     args = parser.parse_args()

@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import math as math
+import cmath as cmath
+import numpy as np
+import matplotlib.pyplot as pl
+from matplotlib.ticker import MaxNLocator
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Ellipse
+import matplotlib as mpl
+import matplotlib.cm as cm
+import pdb
 from __future__ import print_function, absolute_import, unicode_literals
 
 __all__ = ["corner", "hist2d", "error_ellipse"]
@@ -18,17 +27,6 @@ __contributors__ = [
     "Phil Marshall @drphilmarshall",
     "Pierre Gratier @pirg",
 ]
-
-import math as math
-import cmath as cmath
-import numpy as np
-import matplotlib.pyplot as pl
-from matplotlib.ticker import MaxNLocator
-from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.patches import Ellipse
-import matplotlib as mpl
-import matplotlib.cm as cm
-import pdb
 
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
@@ -123,21 +121,23 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     mpl.rcParams['font.family'] = 'serif'
     mpl.rcParams['font.style'] = 'normal'  # 'normal', 'italic','oblique'
     mpl.rcParams['font.variant'] = 'normal'  # 'normal', 'small-caps'
-    mpl.rcParams[
-        'font.weight'] = 'normal'  # 'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'
-    mpl.rcParams[
-        'font.stretch'] = 'normal'  # ‘ultra-condensed’, ‘extra-condensed’, ‘condensed’, ‘semi-condensed’, ‘normal’, ‘semi-expanded’, ‘expanded’, ‘extra-expanded’, ‘ultra-expanded’
+    # 'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'
+    mpl.rcParams['font.weight'] = 'normal'
+    # ‘ultra-condensed’, ‘extra-condensed’, ‘condensed’, ‘semi-condensed’, ‘normal’, ‘semi-expanded’,
+    # ‘expanded’, ‘extra-expanded’, ‘ultra-expanded’
+    mpl.rcParams['font.stretch'] = 'normal'
     mpl.rcParams[
         'font.size'] = 16  # ['xx-small', 'x-small', 'small', 'medium', 'large','x-large', 'xx-large']
-    mpl.rcParams[
-        'font.serif'] = ['Times', 'Times New Roman', 'Palatino', 'Bitstream Vera Serif', 'New Century Schoolbook',
-                         'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L', 'Charter', 'serif']
-    mpl.rcParams['font.sans-serif'] = ['Bitstream Vera Sans', 'Lucida Grande',
-                                       'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', 'sans-serif']
+    mpl.rcParams['font.serif'] = ['Times', 'Times New Roman', 'Palatino', 'Bitstream Vera Serif',
+                                  'New Century Schoolbook', 'Century Schoolbook L', 'Utopia', 'ITC Bookman',
+                                  'Bookman', 'Nimbus Roman No9 L', 'Charter', 'serif']
+    mpl.rcParams['font.sans-serif'] = ['Bitstream Vera Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid',
+                                       'Arial', 'Helvetica', 'Avant Garde', 'sans-serif']
     mpl.rcParams['font.cursive'] = ['Apple Chancery', 'Textile', 'Zapf Chancery', 'Sand', 'cursive']
     mpl.rcParams['font.fantasy'] = ['Comic Sans MS', 'Chicago', 'Charcoal', 'Impact', 'Western', 'fantasy']
     mpl.rcParams['font.monospace'] = ['Bitstream Vera Sans Mono', 'Andale Mono',
-                                      'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal', 'monospace']
+                                      'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal',
+                                      'monospace']
     mpl.rcParams['text.usetex'] = False
     # set math mode font properties
     mpl.rcParams['mathtext.cal'] = 'cursive'
@@ -147,14 +147,11 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     mpl.rcParams['mathtext.bf'] = 'serif:bold'
     mpl.rcParams['mathtext.sf'] = 'sans'
     mpl.rcParams['mathtext.fontset'] = 'cm'  # Should be 'cm' (Computer Modern), 'stix','stixsans' or 'custom'
-    mpl.rcParams['mathtext.fallback_to_cm'] = True  # When True, use symbols from the Computer Modern
-                                 # fonts when a symbol can not be found in one of
-                                 # the custom math fonts.
+    mpl.rcParams['mathtext.fallback_to_cm'] = True  # When True, use symbols from the Computer Modern fonts
+    # when a symbol can not be found in one of the custom math fonts.
 
-    mpl.rcParams['mathtext.default'] = 'rm'  # The default font to use for math.
-                       # Can be any of the LaTeX font names, including
-                       # the special name "regular" for the same font
-                       # used in regular text.
+    mpl.rcParams['mathtext.default'] = 'rm'  # The default font to use for math. Can be any of the LaTeX font
+    # names, including the special name "regular" for the same font used in regular text.
     mpl.rcParams['pdf.fonttype'] = 42  # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .pdf
     mpl.rcParams['ps.fonttype'] = 42  # Force matplotlib to use Type42 (a.k.a. TrueType) fonts for .eps
 
@@ -446,7 +443,7 @@ def hist2d(x, y, plot_contour_lines, pcolor_cmap, *args, **kwargs):
         else:
             cmap = pcolor_cmap
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-        if (plot_contour_lines == True):
+        if (plot_contour_lines is True):
             ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
 
     data = np.vstack([x, y])
