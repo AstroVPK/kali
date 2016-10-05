@@ -1,12 +1,12 @@
 # distutils: language = c++
 import math
 
-cdef extern from 'binarySMBH.hpp':
+cdef extern from 'MBHB.hpp':
 	cpdef double d2r(double)
 	cpdef double r2d(double)
-	cdef cppclass binarySMBH:
-		binarySMBH() except +
-		binarySMBH(double rPericenterTotal, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2) except +
+	cdef cppclass MBHB:
+		MBHB() except +
+		MBHB(double rPericenterTotal, double m1, double m2, double ellipticity, double omega, double inclination, double tau, double alpha1, double alpha2) except +
 		#void call 'operator()'(double epoch)
 		void setEpoch(double epoch)
 		double getEpoch()
@@ -46,7 +46,7 @@ cdef double HOoM = 16.0
 cdef double RhoOoM = 1000.0*SolarMassPerCubicParsec # SolarMasses/pc^3
 
 cdef class bSMBH:
-	cdef binarySMBH *thisptr      # hold a C++ instance which we're wrapping
+	cdef MBHB *thisptr      # hold a C++ instance which we're wrapping
 	def __cinit__(self, rPer = 0.01, m12 = 1.0e1, q = 1.0, e = 0.0, omega = 90.0, i = 90.0, tau = 0.0, alpha1 = -0.44, alpha2 = -0.44):
 		if m12 > 0.0:
 			m12 = m12
@@ -68,7 +68,7 @@ cdef class bSMBH:
 			a2 = (rPer*m1)/(m12*(1.0 - e))
 		else:
 			raise ValueError('Separation at periapsis must be > 0.0 parsec')
-		self.thisptr = new binarySMBH(rPer, m1, m2, e, d2r(omega), d2r(i), tau*Day, alpha1, alpha2)
+		self.thisptr = new MBHB(rPer, m1, m2, e, d2r(omega), d2r(i), tau*Day, alpha1, alpha2)
 	def __dealloc__(self):
 		del self.thisptr
 	'''def __call__(self, epoch):

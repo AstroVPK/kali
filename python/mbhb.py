@@ -26,10 +26,10 @@ from sklearn.cluster import DBSCAN
 try:
     import rand as rand
     import libcarma
-    import bSMBHTask as bSMBHTask
+    import MBHBTask_cython as MBHBTask_cython
     from util.mpl_settings import set_plot_params
 except ImportError:
-    print 'libbsmbh is not setup. Setup libbsmbh by sourcing bin/setup.sh'
+    print 'mbhb is not setup. Setup mbhb by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
@@ -45,7 +45,7 @@ def r2d(radian):
     return radian*(180.0/math.pi)
 
 
-class binarySMBHTask(object):
+class MBHBTask(object):
     lenTheta = 8
     G = 6.67408e-11
     c = 299792458.0
@@ -80,7 +80,7 @@ class binarySMBHTask(object):
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._LnPosterior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._taskCython = bSMBHTask.bSMBHTask(self._nthreads)
+            self._taskCython = MBHBTask_cython.MBHBTask_cython(self._nthreads)
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -812,7 +812,7 @@ class binarySMBHTask(object):
 
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
-        res = self._taskCython.fit_BinarySMBHModel(
+        res = self._taskCython.fit_MBHBModel(
             observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
             observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals,
             self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain,

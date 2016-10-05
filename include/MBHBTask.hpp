@@ -1,5 +1,5 @@
-#ifndef BINARYSMBHTASK_HPP
-#define BINARYSMBHTASK_HPP
+#ifndef MBHBTASK_HPP
+#define MBHBTASK_HPP
 
 #include <complex>
 #include <mkl_types.h>
@@ -7,21 +7,21 @@
 #define MKL_Complex16 std::complex<double>
 #include <mkl.h>
 
-#include "binarySMBH.hpp"
+#include "MBHB.hpp"
 #include "Constants.hpp"
 
 using namespace std;
 
-class binarySMBHTask {
+class MBHBTask {
 private:
 	int numThreads;
-	binarySMBH *Systems;
+	MBHB *Systems;
 	bool *setSystemsVec;
 	double *ThetaVec;
 public:
-	binarySMBHTask() = delete;
-	binarySMBHTask(int numThreadsGiven);
-	~binarySMBHTask();
+	MBHBTask() = delete;
+	MBHBTask(int numThreadsGiven);
+	~MBHBTask();
 	int check_Theta(double *Theta, int threadNum);
 	void get_Theta(double *Theta, int threadNum);
 	int set_System(double *Theta, int threadNum);
@@ -88,7 +88,7 @@ public:
 
 	//void compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum);
 
-	int fit_BinarySMBHModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior);
+	int fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior);
 
 	//int smooth_Interpolate(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum);
 	};

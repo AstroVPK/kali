@@ -37,7 +37,7 @@ else:
 
 MKLDIR = MKLLIBS[0][2:-1]
 
-'''bSMBH_sourceList = ['bSMBH.pyx', 'binarySMBH.cpp', 'Constants.cpp']
+'''bSMBH_sourceList = ['bSMBH.pyx', 'MBHB.cpp', 'Constants.cpp']
 bSMBH_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBH_sourceList]
 
 bSMBH_ext = Extension(name='bSMBH', sources=bSMBH_List, language='c++', extra_compile_args = CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args = MKLLIBS + OMPLIBS + NLOPTLIBS, library_dirs = [MKLDIR], runtime_library_dirs = [MKLDIR])'''
@@ -56,11 +56,11 @@ CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in
 CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS +
                           OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
-bSMBHTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp',
-                        'MCMC.cpp', 'binarySMBH.cpp', 'binarySMBHTask.cpp', 'bSMBHTask.pyx']
-bSMBHTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in bSMBHTask_sourceList]
+MBHBTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp',
+                        'MCMC.cpp', 'MBHB.cpp', 'MBHBTask.cpp', 'MBHBTask_cython.pyx']
+MBHBTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in MBHBTask_sourceList]
 
-bSMBHTask_ext = Extension(name='bSMBHTask', sources=bSMBHTask_List, language='c++', extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS +
+MBHBTask_ext = Extension(name='MBHBTask_cython', sources=MBHBTask_List, language='c++', extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS +
                           OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
 setup(
@@ -72,11 +72,11 @@ setup(
         maintainer_email='vishal.kasliwal@gmail.com',
         url='https://github.com/AstroVPK/kali',
         description='Tools to study stochastic light curves',
-        long_description='Tools to model stochastic light curves using various stochastic process. Tools also include components to model binary SMBHs with relativistic beaming.',
+        long_description='Tools to model stochastic light curves using various stochastic process. Tools also include components to model MBHBs with relativistic beaming.',
         download_url='https://github.com/AstroVPK/kali',
-        classifiers=['AGN', 'C-ARMA', 'stochastic', 'binary SMBH'],
+        classifiers=['AGN', 'C-ARMA', 'stochastic', 'MBHBs'],
         platforms=['Linux', 'Mac OSX'],
         license='GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
         # ext_modules = cythonize([bSMBH_ext, rand_ext, CARMATask_ext, bSMBHTask_ext])
-        ext_modules=cythonize([rand_ext, CARMATask_ext, bSMBHTask_ext])
+        ext_modules=cythonize([rand_ext, CARMATask_ext, MBHBTask_ext])
 )

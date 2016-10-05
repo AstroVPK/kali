@@ -8,14 +8,14 @@
 #include <iostream>
 #include <stdio.h>
 #include "Constants.hpp"
-#include "binarySMBH.hpp"
+#include "MBHB.hpp"
 
 //#define DEBUG_KEPLEREQN
 //#define DEBUG_SIMULATESYSTEM
-//#define DEBUG_CHECKBINARYSMBHPARAMS
+//#define DEBUG_CHECKMBHBPARAMS
 //#define DEBUG_CALCLNPOSTERIOR
 
-//#if defined(DEBUG_KEPLEREQN) || defined(DEBUG_SIMULATESYSTEM) || defined(DEBUG_CHECKBINARYSMBHPARAMS) || defined(DEBUG_CALCLNPOSTERIOR)
+//#if defined(DEBUG_KEPLEREQN) || defined(DEBUG_SIMULATESYSTEM) || defined(DEBUG_CHECKMBHBPARAMS) || defined(DEBUG_CALCLNPOSTERIOR)
 //	#include <stdio.h>
 //#endif
 
@@ -34,10 +34,10 @@ double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) 
 	int threadNum = omp_get_thread_num();
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
-	binarySMBH *Systems = Args.Systems;
+	MBHB *Systems = Args.Systems;
 	double LnPrior = 0.0;
 
-	if (Systems[threadNum].checkBinarySMBHParams(const_cast<double*>(&x[0])) == 1) {
+	if (Systems[threadNum].checkMBHBParams(const_cast<double*>(&x[0])) == 1) {
 		LnPrior = 0.0;
 		} else {
 		LnPrior = -infiniteVal;
@@ -50,9 +50,9 @@ double calcLnPrior(double *walkerPos, void *func_args) {
 	int threadNum = omp_get_thread_num();
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
-	binarySMBH* Systems = Args.Systems;
+	MBHB* Systems = Args.Systems;
 	double LnPrior = 0.0;
-	if (Systems[threadNum].checkBinarySMBHParams(walkerPos) == 1) {
+	if (Systems[threadNum].checkMBHBParams(walkerPos) == 1) {
 		LnPrior = 0.0;
 		} else {
 		LnPrior = -infiniteVal;
@@ -71,10 +71,10 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
 	LnLikeArgs Args = *ptr2Args;
 	LnLikeData *ptr2Data = Args.Data;
-	binarySMBH *Systems = Args.Systems;
+	MBHB *Systems = Args.Systems;
 	double LnPosterior = 0.0, old_dt = 0.0;
-	if (Systems[threadNum].checkBinarySMBHParams(const_cast<double*>(&x[0])) == 1) {
-		Systems[threadNum].setBinarySMBH(const_cast<double*>(&x[0]));
+	if (Systems[threadNum].checkMBHBParams(const_cast<double*>(&x[0])) == 1) {
+		Systems[threadNum].setMBHB(const_cast<double*>(&x[0]));
 		#ifdef DEBUG_CALCLNPOSTERIOR
 		#pragma omp critical
 		{
@@ -109,11 +109,11 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
 	LnLikeData *Data = Args.Data;
-	binarySMBH *Systems = Args.Systems;
+	MBHB *Systems = Args.Systems;
 	LnLikeData *ptr2Data = Data;
 	double LnPosterior = 0.0, old_dt = 0.0;
-	if (Systems[threadNum].checkBinarySMBHParams(walkerPos) == 1) {
-		Systems[threadNum].setBinarySMBH(walkerPos);
+	if (Systems[threadNum].checkMBHBParams(walkerPos) == 1) {
+		Systems[threadNum].setMBHB(walkerPos);
 		#ifdef DEBUG_CALCLNPOSTERIOR
 		#pragma omp critical
 		{
@@ -164,7 +164,7 @@ double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
 	return funcVal;
 	}
 
-binarySMBH::binarySMBH() {
+MBHB::MBHB() {
 	m1 = 0.0;
 	m2 = 0.0;
 	rS1 = 0.0;
@@ -214,7 +214,7 @@ binarySMBH::binarySMBH() {
 	//fracBeamedFlux = 0.0;
 	}
 
-binarySMBH::binarySMBH(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
+MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
 	a1 = a1Val*Parsec;
 	a2 = a2Val*Parsec;
 	period = periodVal*Day;
@@ -275,7 +275,7 @@ binarySMBH::binarySMBH(double a1Val, double a2Val, double periodVal, double ecce
 	//fracBeamedFlux = 0.0;
 	}
 
-void binarySMBH::setBinarySMBH(double *Theta) {
+void MBHB::setMBHB(double *Theta) {
 	a1 = Theta[0]*Parsec;
 	a2 = Theta[1]*Parsec;
 	period = Theta[2]*Day;
@@ -337,7 +337,7 @@ void binarySMBH::setBinarySMBH(double *Theta) {
 	//fracBeamedFlux = Theta[8];
 	}
 
-void binarySMBH::operator()() {
+void MBHB::operator()() {
 	M = twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
 	KeplersEqnData Data;
@@ -369,14 +369,14 @@ void binarySMBH::operator()() {
 	bF2 = pow(dF2, 3.0 - alpha2);
 	}
 
-int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
+int MBHB::checkMBHBParams(double *ThetaIn) {
 	int retVal = 1;
 	double a1Val = Parsec*ThetaIn[0];
 	double a2Val = Parsec*ThetaIn[1];
 
 	if (a2Val < a1Val) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("a2: %4.3e\n",a2Val);
 			printf("a2LLim: %4.3e\n",a1Val);
 		#endif
@@ -393,14 +393,14 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	double eccentricityVal = ThetaIn[3];
 	if (eccentricityVal < 0.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("eccentricity: %4.3e\n",eccentricityVal);
 			printf("eccentricityLLim: %4.3e\n",0.0);
 		#endif
 		}
 	if (eccentricityVal >= 1.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("eccentricity: %4.3e\n",eccentricityVal);
 			printf("eccentricityULim: %4.3e\n",1.0);
 		#endif
@@ -409,7 +409,7 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	double rPeribothronTotVal = a1Val*(1.0 - eccentricityVal) + a2Val*(1.0 - eccentricityVal);
 	if (rPeribothronTotVal < (10.0*(rS1Val + rS2Val))) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("rPeribothronTot: %+4.3e\n",rPeribothronTotVal);
 			printf("rPeribothronTotLLim: %+4.3e\n", 10.0*(rS1Val + rS2Val));
 		#endif
@@ -418,14 +418,14 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	double omega1Val = d2r(ThetaIn[4]);
 	if (omega1Val < 0.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("omega1: %4.3e\n",omega1Val);
 			printf("omega1LLim: %4.3e\n",0.0);
 		#endif
 		}
 	if (omega1Val >= twoPi) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("omega1: %4.3e\n",omega1Val);
 			printf("omega1ULim: %4.3e\n",twoPi);
 		#endif
@@ -434,14 +434,14 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	double inclinationVal = d2r(ThetaIn[5]);
 	if (inclinationVal < 0.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("inclination: %4.3e\n",inclinationVal);
 			printf("inclinationLLim: %4.3e\n",0.0);
 		#endif
 		}
 	if (inclinationVal > halfPi) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("inclination: %4.3e\n",inclinationVal);
 			printf("inclinationULim: %4.3e\n",pi);
 		#endif
@@ -451,7 +451,7 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 
 	double totalFluxVal = ThetaIn[7];
 	if (totalFluxVal < 0.0) {
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("totalFlux: %4.3e\n",totalFluxVal);
 			printf("totalFluxLLim: %4.3e\n",0.0);
 		#endif
@@ -461,14 +461,14 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	/*double fracBeamedFluxVal = ThetaIn[8];
 	if (fracBeamedFluxVal <= 0.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("fracBeamedFlux: %4.3e\n",fracBeamedFluxVal);
 			printf("fracBeamedFluxLLim: %4.3e\n",0.0);
 		#endif
 		}
 	if (fracBeamedFluxVal > 1.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("fracBeamedFlux: %4.3e\n",fracBeamedFluxVal);
 			printf("fracBeamedFluxULim: %4.3e\n",1.0);
 		#endif
@@ -477,104 +477,104 @@ int binarySMBH::checkBinarySMBHParams(double *ThetaIn) {
 	return retVal;
 	}
 
-double binarySMBH::getEpoch() {return epoch/Day;}
+double MBHB::getEpoch() {return epoch/Day;}
 
-void binarySMBH::setEpoch(double epochIn) {
+void MBHB::setEpoch(double epochIn) {
 	epoch = epochIn*Day;
 	(*this)();
 	}
 
-double binarySMBH::getPeriod() {return period/Day;}
+double MBHB::getPeriod() {return period/Day;}
 
-double binarySMBH::getA1() {return a1/Parsec;}
+double MBHB::getA1() {return a1/Parsec;}
 
-double binarySMBH::getA2() {return a2/Parsec;}
+double MBHB::getA2() {return a2/Parsec;}
 
-double binarySMBH::getM1() {return m1/(SolarMass*1.0e6);}
+double MBHB::getM1() {return m1/(SolarMass*1.0e6);}
 
-double binarySMBH::getM2() {return m2/(SolarMass*1.0e6);}
+double MBHB::getM2() {return m2/(SolarMass*1.0e6);}
 
-double binarySMBH::getM12() {return totalMass/(SolarMass*1.0e6);}
+double MBHB::getM12() {return totalMass/(SolarMass*1.0e6);}
 
-double binarySMBH::getM2OverM1() {return massRatio;}
+double MBHB::getM2OverM1() {return massRatio;}
 
-double binarySMBH::getRPeribothron1() {return rPeribothron1/Parsec;}
+double MBHB::getRPeribothron1() {return rPeribothron1/Parsec;}
 
-double binarySMBH::getRPeribothron2() {return rPeribothron2/Parsec;}
+double MBHB::getRPeribothron2() {return rPeribothron2/Parsec;}
 
-double binarySMBH::getRPeribothronTot() {return rPeribothronTot/Parsec;}
+double MBHB::getRPeribothronTot() {return rPeribothronTot/Parsec;}
 
-double binarySMBH::getRApobothron1() {return rApobothron1/Parsec;}
+double MBHB::getRApobothron1() {return rApobothron1/Parsec;}
 
-double binarySMBH::getRApobothron2() {return rApobothron2/Parsec;}
+double MBHB::getRApobothron2() {return rApobothron2/Parsec;}
 
-double binarySMBH::getRApobothronTot() {return rApobothronTot/Parsec;}
+double MBHB::getRApobothronTot() {return rApobothronTot/Parsec;}
 
-double binarySMBH::getRS1() {return rS1/Parsec;}
+double MBHB::getRS1() {return rS1/Parsec;}
 
-double binarySMBH::getRS2() {return rS2/Parsec;}
+double MBHB::getRS2() {return rS2/Parsec;}
 
-double binarySMBH::getEccentricity() {return eccentricity;}
+double MBHB::getEccentricity() {return eccentricity;}
 
-double binarySMBH::getOmega1() {return r2d(omega1);}
+double MBHB::getOmega1() {return r2d(omega1);}
 
-double binarySMBH::getOmega2() {return r2d(omega2);}
+double MBHB::getOmega2() {return r2d(omega2);}
 
-double binarySMBH::getInclination() {return r2d(inclination);}
+double MBHB::getInclination() {return r2d(inclination);}
 
-double binarySMBH::getTau() {return tau/Day;}
+double MBHB::getTau() {return tau/Day;}
 
-double binarySMBH::getMeanAnomoly() {return r2d(M);}
+double MBHB::getMeanAnomoly() {return r2d(M);}
 
-double binarySMBH::getEccentricAnomoly() {return r2d(E);}
+double MBHB::getEccentricAnomoly() {return r2d(E);}
 
-double binarySMBH::getTrueAnomoly() {return r2d(nu);}
+double MBHB::getTrueAnomoly() {return r2d(nu);}
 
-double binarySMBH::getR1() {return r1/Parsec;}
+double MBHB::getR1() {return r1/Parsec;}
 
-double binarySMBH::getR2() {return r2/Parsec;}
+double MBHB::getR2() {return r2/Parsec;}
 
-double binarySMBH::getTheta1() {return r2d(theta1);}
+double MBHB::getTheta1() {return r2d(theta1);}
 
-double binarySMBH::getTheta2() {return r2d(theta2);}
+double MBHB::getTheta2() {return r2d(theta2);}
 
-double binarySMBH::getBeta1() {return beta1;}
+double MBHB::getBeta1() {return beta1;}
 
-double binarySMBH::getBeta2() {return beta2;}
+double MBHB::getBeta2() {return beta2;}
 
-double binarySMBH::getRadialBeta1() {return radialBeta1;}
+double MBHB::getRadialBeta1() {return radialBeta1;}
 
-double binarySMBH::getRadialBeta2() {return radialBeta2;}
+double MBHB::getRadialBeta2() {return radialBeta2;}
 
-double binarySMBH::getDopplerFactor1() {return dF1;}
+double MBHB::getDopplerFactor1() {return dF1;}
 
-double binarySMBH::getDopplerFactor2() {return dF2;}
+double MBHB::getDopplerFactor2() {return dF2;}
 
-double binarySMBH::getBeamingFactor1() {return bF1;}
+double MBHB::getBeamingFactor1() {return bF1;}
 
-double binarySMBH::getBeamingFactor2() {return bF2;}
+double MBHB::getBeamingFactor2() {return bF2;}
 
-double binarySMBH::aH(double sigmaStars) {
+double MBHB::aH(double sigmaStars) {
 	double aHVal = (G*reducedMass)/(4.0*pow((sigmaStars*kms2ms), 2.0));
 	return aHVal/Parsec;
 	}
 
-double binarySMBH::aGW(double sigmaStars, double rhoStars, double H) {
+double MBHB::aGW(double sigmaStars, double rhoStars, double H) {
 	double aGWVal = pow((64.0*pow(G*reducedMass, 2.0)*totalMass*(kms2ms*sigmaStars))/(5.0*H*pow(c, 5.0)*(SolarMassPerCubicParsec*rhoStars)), 0.2);
 	return aGWVal/Parsec;
 	}
 
-double binarySMBH::durationInHardState(double sigmaStars, double rhoStars, double H) {
+double MBHB::durationInHardState(double sigmaStars, double rhoStars, double H) {
 	double durationInHardStateVal = ((sigmaStars*kms2ms)/(H*G*(SolarMassPerCubicParsec*rhoStars)*aGW(sigmaStars, rhoStars, H)));
 	return durationInHardStateVal/Day;
 	}
 
-double binarySMBH::ejectedMass(double sigmaStars, double rhoStars, double H) {
+double MBHB::ejectedMass(double sigmaStars, double rhoStars, double H) {
 	double ejectedMassVal = totalMass*log(aH(sigmaStars)/aGW(sigmaStars, rhoStars, H));
 	return ejectedMassVal/(SolarMass*1.0e6);
 	}
 
-void binarySMBH::print() {
+void MBHB::print() {
 	cout.precision(5);
 	cout << scientific << "                            a1: " << a1/Parsec << " (pc)" << endl;
 	cout << scientific << "                            a2: " << a2/Parsec << " (pc)" << endl;
@@ -596,7 +596,7 @@ void binarySMBH::print() {
 	//cout << scientific << "          Beamed Flux Fraction: " << fracBeamedFlux << endl;
 	}
 
-void binarySMBH::simulateSystem(LnLikeData *ptr2Data) {
+void MBHB::simulateSystem(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -627,7 +627,7 @@ void binarySMBH::simulateSystem(LnLikeData *ptr2Data) {
 		}
 	}
 
-void binarySMBH::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+void MBHB::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -661,7 +661,7 @@ void binarySMBH::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, doub
 		}
 	}
 
-double binarySMBH::computeLnPrior(LnLikeData *ptr2Data) {
+double MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -701,49 +701,49 @@ double binarySMBH::computeLnPrior(LnLikeData *ptr2Data) {
 	/*
 	if (m1Val < 1.0e-2*1.0e-6*SolarMass) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m1: %4.3e\n",m1Val);
 			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m2: %4.3e\n",m2Val);
 			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m1: %4.3e\n",m1Val);
 			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*SolarMass);
 		#endif
 		}
 	if (m2Val > m1Val) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m2: %4.3e\n",m2Val);
 			printf("m2ULim: %4.3e\n",m1Val);
 		#endif
 		}
 	if (rPeribothronTotVal > 10.0*Parsec) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("rPeribothronTot: %4.3e\n",rPeribothronTotVal);
 			printf("rPeribothronTotULim: %4.3e\n",1.0*Parsec);
 		#endif
 		}
 	if (tauVal < 0.0) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("tau: %4.3e\n",tauVal);
 			printf("tauLLim: %4.3e\n",0.0);
 		#endif
 		}
 	if (tauVal > periodVal) {
 		retVal = 0;
-		#ifdef DEBUG_CHECKBINARYSMBHPARAMS
+		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("tau: %4.3e\n",tauVal);
 			printf("tauULim: %4.3e\n",periodVal);
 		#endif
@@ -755,7 +755,7 @@ double binarySMBH::computeLnPrior(LnLikeData *ptr2Data) {
 	return LnPrior;
 	}
 
-double binarySMBH::computeLnLikelihood(LnLikeData *ptr2Data) {
+double MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
