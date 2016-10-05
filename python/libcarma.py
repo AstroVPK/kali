@@ -60,25 +60,6 @@ def MAD(self, a):
     return np.median(b)
 
 
-def _old_roots(p, q, Theta):
-    ARPoly = np.zeros(p + 1)
-    ARPoly[0] = 1.0
-    for i in xrange(p):
-        ARPoly[i + 1] = Theta[i]
-    ARRoots = np.array(np.roots(ARPoly))
-    MAPoly = np.zeros(q + 1)
-    for i in xrange(q + 1):
-        MAPoly[i] = Theta[p + q - i]
-    MARoots = np.array(np.roots(MAPoly))
-    Rho = np.zeros(p + q + 1, dtype='complex128')
-    for i in xrange(p):
-        Rho[i] = ARRoots[i]
-    for i in xrange(q):
-        Rho[p + i] = MARoots[i]
-    Rho[p + q] = MAPoly[0]
-    return Rho
-
-
 def roots(p, q, Theta):
     ARPoly = np.zeros(p + 1)
     ARPoly[0] = 1.0
@@ -99,30 +80,6 @@ def roots(p, q, Theta):
     CARMATask.get_Sigma(p, q, ThetaC, Sigma)
     Rho[p + q] = math.sqrt(Sigma[0])
     return Rho
-
-
-def _old_coeffs(p, q, Rho):
-    ARRoots = np.zeros(p, dtype='complex128')
-    for i in xrange(p):
-        ARRoots[i] = Rho[i]
-    ARPoly = np.array(np.poly(ARRoots))
-    MARoots = np.zeros(q, dtype='complex128')
-    for i in xrange(q):
-        MARoots[i] = Rho[p + i]
-    if q == 0:
-        MAPoly = np.ones(1)
-    else:
-        MAPoly = np.array(np.poly(MARoots))
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        for i in xrange(q + 1):
-            MAPoly[i] = Rho[-1]*MAPoly[i]
-    Theta = np.zeros(p + q + 1, dtype='float64')
-    for i in xrange(p):
-        Theta[i] = ARPoly[i + 1].real
-    for i in xrange(q + 1):
-        Theta[p + i] = MAPoly[q - i].real
-    return Theta
 
 
 def coeffs(p, q, Rho):
