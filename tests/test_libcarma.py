@@ -16,27 +16,6 @@ skipWorking = False
 
 
 @unittest.skipIf(skipWorking, 'Works!')
-class TestCoeffs(unittest.TestCase):
-    def test_coeffs(self):
-        for p in xrange(1, 10):
-            for q in xrange(0, p):
-                oldRho = np.zeros(p + q + 1)
-                for i in xrange(p + q):
-                    oldRho[i] = -1.0/random.uniform(1.0, 100.0)
-                oldRho[p + q] = 1.0
-                oldTheta = libcarma._old_coeffs(p, q, oldRho)
-                dt = 1.0
-                nt = libcarma.basicTask(p, q)
-                nt.set(dt, oldTheta)
-                sigma00 = nt.Sigma()[0, 0]
-                newRho = copy.copy(oldRho)
-                newRho[p + q] = math.sqrt(sigma00)
-                newTheta = libcarma.coeffs(p, q, newRho)
-                for i in xrange(p + q + 1):
-                    self.assertAlmostEqual(oldTheta[i], newTheta[i])
-
-
-@unittest.skipIf(skipWorking, 'Works!')
 class TestFitCARMA10(unittest.TestCase):
     def setUp(self):
         self.p = 1
@@ -59,14 +38,15 @@ class TestFitCARMA10(unittest.TestCase):
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Median = np.median(self.newTask.timescaleChain[0, :, self.nSteps/2:])
         recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
-        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMean), 5.0*recoveredAmpStd)
-        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Mean) < 5.0*recoveredTAR1Std)
-        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMean) < 5.0*recoveredAmpStd)
+        recoveredAmpMedian = np.median(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Median), 5.0*recoveredTAR1Std)
+        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMedian), 5.0*recoveredAmpStd)
+        pdb.set_trace()
+        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Median) < 5.0*recoveredTAR1Std)
+        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMedian) < 5.0*recoveredAmpStd)
 
     def test_noiselessrecovery(self):
         N2S = 1.0e-18
@@ -101,18 +81,18 @@ class TestFitCARMA20(unittest.TestCase):
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Median = np.median(self.newTask.timescaleChain[0, :, self.nSteps/2:])
         recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
-        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredTAR2Median = np.median(self.newTask.timescaleChain[1, :, self.nSteps/2:])
         recoveredTAR2Std = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
-        print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Mean), 5.0*recoveredTAR2Std)
-        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMean), 5.0*recoveredAmpStd)
-        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Mean) < 5.0*recoveredTAR1Std)
-        self.assertTrue(math.fabs(builtInTAR2 - recoveredTAR2Mean) < 5.0*recoveredTAR2Std)
-        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMean) < 5.0*recoveredAmpStd)
+        recoveredAmpMedian = np.median(self.newTask.timescaleChain[2, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[2, :, self.nSteps/2:])
+        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Median), 5.0*recoveredTAR1Std)
+        print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Median), 5.0*recoveredTAR2Std)
+        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMedian), 5.0*recoveredAmpStd)
+        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Median) < 5.0*recoveredTAR1Std)
+        self.assertTrue(math.fabs(builtInTAR2 - recoveredTAR2Median) < 5.0*recoveredTAR2Std)
+        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMedian) < 5.0*recoveredAmpStd)
 
     def test_noiselessrecovery(self):
         N2S = 1.0e-18
@@ -148,22 +128,22 @@ class TestFitCARMA21(unittest.TestCase):
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
         self.newTask.fit(newLC)
-        recoveredTAR1Mean = np.mean(self.newTask.timescaleChain[0, :, self.nSteps/2:])
+        recoveredTAR1Median = np.median(self.newTask.timescaleChain[0, :, self.nSteps/2:])
         recoveredTAR1Std = np.std(self.newTask.timescaleChain[0, :, self.nSteps/2:])
-        recoveredTAR2Mean = np.mean(self.newTask.timescaleChain[1, :, self.nSteps/2:])
+        recoveredTAR2Median = np.median(self.newTask.timescaleChain[1, :, self.nSteps/2:])
         recoveredTAR2Std = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
-        recoveredTMA1Mean = np.mean(self.newTask.timescaleChain[2, :, self.nSteps/2:])
+        recoveredTMA1Median = np.median(self.newTask.timescaleChain[2, :, self.nSteps/2:])
         recoveredTMA1Std = np.std(self.newTask.timescaleChain[2, :, self.nSteps/2:])
-        recoveredAmpMean = np.mean(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        recoveredAmpStd = np.std(self.newTask.timescaleChain[-1, :, self.nSteps/2:])
-        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Mean), 5.0*recoveredTAR1Std)
-        print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Mean), 5.0*recoveredTAR2Std)
-        print '%e %e'%(math.fabs(builtInTMA1 - recoveredTMA1Mean), 5.0*recoveredTMA1Std)
-        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMean), 5.0*recoveredAmpStd)
-        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Mean) < 5.0*recoveredTAR1Std)
-        self.assertTrue(math.fabs(builtInTAR2 - recoveredTAR2Mean) < 5.0*recoveredTAR2Std)
-        self.assertTrue(math.fabs(builtInTMA1 - recoveredTMA1Mean) < 5.0*recoveredTMA1Std)
-        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMean) < 5.0*recoveredAmpStd)
+        recoveredAmpMedian = np.median(self.newTask.timescaleChain[3, :, self.nSteps/2:])
+        recoveredAmpStd = np.std(self.newTask.timescaleChain[3, :, self.nSteps/2:])
+        print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Median), 5.0*recoveredTAR1Std)
+        print '%e %e'%(math.fabs(builtInTAR2 - recoveredTAR2Median), 5.0*recoveredTAR2Std)
+        print '%e %e'%(math.fabs(builtInTMA1 - recoveredTMA1Median), 5.0*recoveredTMA1Std)
+        print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMedian), 5.0*recoveredAmpStd)
+        self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Median) < 5.0*recoveredTAR1Std)
+        self.assertTrue(math.fabs(builtInTAR2 - recoveredTAR2Median) < 5.0*recoveredTAR2Std)
+        self.assertTrue(math.fabs(builtInTMA1 - recoveredTMA1Median) < 5.0*recoveredTMA1Std)
+        self.assertTrue(math.fabs(builtInAmp - recoveredAmpMedian) < 5.0*recoveredAmpStd)
 
     def test_noiselessrecovery(self):
         N2S = 1.0e-18
