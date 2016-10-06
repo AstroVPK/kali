@@ -9,19 +9,19 @@
 #include "CARMA.hpp"
 #include "MCMC.hpp"
 #include "Constants.hpp"
-#include "Task.hpp"
+#include "CARMATask.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_FIT_CARMAMODEL
 
 using namespace std;
 
-	Task::Task(int pGiven, int qGiven, int numThreadsGiven, int numBurnGiven) {
+	kali::CARMATask::CARMATask(int pGiven, int qGiven, int numThreadsGiven, int numBurnGiven) {
 		p = pGiven;
 		q = qGiven;
 		numThreads = numThreadsGiven;
 		numBurn = numBurnGiven;
-		Systems = new CARMA[numThreads];
+		Systems = new kali::CARMA[numThreads];
 		setSystemsVec = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
 		ThetaVec = static_cast<double*>(_mm_malloc(numThreads*(p + q + 1)*sizeof(double),64));
 		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
@@ -34,7 +34,7 @@ using namespace std;
 			}
 		}
 
-	Task::~Task() {
+	kali::CARMATask::~CARMATask() {
 		if (ThetaVec) {
 			_mm_free(ThetaVec);
 			ThetaVec = nullptr;
@@ -49,7 +49,7 @@ using namespace std;
 		delete[] Systems;
 		}
 
-	int Task::reset_Task(int pGiven, int qGiven, int numBurn) {
+	int kali::CARMATask::reset_CARMATask(int pGiven, int qGiven, int numBurn) {
 		int retVal = -1;
 		p = pGiven;
 		q = qGiven;
@@ -72,22 +72,22 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_numBurn() {return numBurn;}
-	void Task::set_numBurn(int numBurn) {numBurn = numBurn;}
+	int kali::CARMATask::get_numBurn() {return numBurn;}
+	void kali::CARMATask::set_numBurn(int numBurn) {numBurn = numBurn;}
 
-	int Task::check_Theta(double *Theta, int threadNum) {
+	int kali::CARMATask::check_Theta(double *Theta, int threadNum) {
 		return Systems[threadNum].checkCARMAParams(Theta);
 		}
 
-	double Task::get_dt(int threadNum) {return Systems[threadNum].get_dt();}
+	double kali::CARMATask::get_dt(int threadNum) {return Systems[threadNum].get_dt();}
 
-	void Task::get_Theta(double *Theta, int threadNum) {
+	void kali::CARMATask::get_Theta(double *Theta, int threadNum) {
 		for (int i = 0; i < (p + q + 1); ++i) {
 			Theta[i] = ThetaVec[i + threadNum*(p + q + 1)];
 			}
 		}
 
-	int Task::set_System(double dt, double *Theta, int threadNum) {
+	int kali::CARMATask::set_System(double dt, double *Theta, int threadNum) {
 		bool alreadySet = true;
 		int retVal = -1;
 		if (setSystemsVec[threadNum] == true) {
@@ -122,20 +122,20 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::reset_System(int threadNum) {
+	int kali::CARMATask::reset_System(int threadNum) {
 		int retVal = -1;
 		Systems[threadNum].resetState();
 		retVal = 0;
 		return retVal;
 		}
 
-	void Task::get_setSystemsVec(int *setSystems) {
+	void kali::CARMATask::get_setSystemsVec(int *setSystems) {
 		for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
 			setSystems[threadNum] = static_cast<int>(setSystemsVec[threadNum]);
 			}
 		}
 
-	int Task::print_System(int threadNum) {
+	int kali::CARMATask::print_System(int threadNum) {
 		int retVal = 0;
 		printf("dt: %+8.7e\n",Systems[threadNum].get_dt());
 		printf("A\n");
@@ -178,7 +178,7 @@ using namespace std;
 		}
 
 
-	int Task::get_A(complex<double> *A, int threadNum) {
+	int kali::CARMATask::get_A(complex<double> *A, int threadNum) {
 		int retVal = 0;
 		const complex<double> *ptrToA = Systems[threadNum].getA();
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -189,7 +189,7 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_B(complex<double> *B, int threadNum) {
+	int kali::CARMATask::get_B(complex<double> *B, int threadNum) {
 		int retVal = 0;
 		const complex<double> *ptrToB = Systems[threadNum].getB();
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -198,7 +198,7 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_Sigma(double *Sigma, int threadNum) {
+	int kali::CARMATask::get_Sigma(double *Sigma, int threadNum) {
 		int retVal = 0;
 		const double *ptrToSigma = Systems[threadNum].getSigma();
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -209,31 +209,31 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::get_X(double *newX, int threadNum) {
+	int kali::CARMATask::get_X(double *newX, int threadNum) {
 		int retVal = 0;
 		Systems[threadNum].getX(newX);
 		return retVal;
 		}
 
-	int Task::set_X(double *newX, int threadNum) {
+	int kali::CARMATask::set_X(double *newX, int threadNum) {
 		int retVal = 0;
 		Systems[threadNum].setX(newX);
 		return retVal;
 		}
 
-	int Task::get_P(double *newP, int threadNum) {
+	int kali::CARMATask::get_P(double *newP, int threadNum) {
 		int retVal = 0;
 		Systems[threadNum].getP(newP);
 		return retVal;
 		}
 
-	int Task::set_P(double *newP, int threadNum) {
+	int kali::CARMATask::set_P(double *newP, int threadNum) {
 		int retVal = 0;
 		Systems[threadNum].setP(newP);
 		return retVal;
 		}
 
-	int Task::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+	int kali::CARMATask::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
 		int retVal = 0;
 		Systems[threadNum].resetState();
 		double old_dt = Systems[threadNum].get_dt();
@@ -247,7 +247,7 @@ using namespace std;
 		for (int i = 0; i < numCadences*p; i++) {
 			distRand[i] = 0.0;
 			}
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.tolIR = tolIR;
 		Data.t = t;
@@ -257,7 +257,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		Systems[threadNum].simulateSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
 		Systems[threadNum].getX(lcX);
@@ -265,14 +265,14 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum) {
+	int kali::CARMATask::extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum) {
 		int retVal = 0;
 		double old_dt = Systems[threadNum].get_dt();
 		double* distRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*p*sizeof(double),64));
 		for (int i = 0; i < (numCadences - cadenceNum - 1)*p; i++) {
 			distRand[i] = 0.0;
 			}
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -283,7 +283,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		Systems[threadNum].setX(lcX);
 		Systems[threadNum].setP(lcP);
 		Systems[threadNum].extendSystem(ptr2Data, distSeed, distRand);
@@ -293,16 +293,16 @@ using namespace std;
 		return retVal;
 		}
 
-	double Task::get_meanFlux(double fracIntrinsicVar, int threadNum) {
+	double kali::CARMATask::get_meanFlux(double fracIntrinsicVar, int threadNum) {
 		double meanFlux = -1.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.fracIntrinsicVar = fracIntrinsicVar;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		meanFlux = Systems[threadNum].getMeanFlux(ptr2Data);
 		return meanFlux;
 		}
 
-	int Task::make_ObservedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
+	int kali::CARMATask::make_ObservedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum) {
 		int retVal = 0;
 		double old_dt = Systems[threadNum].get_dt();
 		double* burnRand = static_cast<double*>(_mm_malloc(numBurn*p*sizeof(double),64));
@@ -315,7 +315,7 @@ using namespace std;
 		for (int i = 0; i < numCadences*p; ++i) {
 			distRand[i] = 0.0;
 			}
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.tolIR = tolIR;
 		Data.t = t;
@@ -325,7 +325,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.fracIntrinsicVar = fracIntrinsicVar;
 		Data.fracNoiseToSignal = fracNoiseToSignal;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		Systems[threadNum].simulateSystem(ptr2Data, distSeed, distRand);
 		_mm_free(distRand);
 		double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
@@ -337,9 +337,9 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::add_ObservationNoise(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+	int kali::CARMATask::add_ObservationNoise(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
 		int retVal = 0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.tolIR = tolIR;
 		Data.t = t;
@@ -349,7 +349,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.fracIntrinsicVar = fracIntrinsicVar;
 		Data.fracNoiseToSignal = fracNoiseToSignal;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
 		for (int i = 0; i < numCadences; i++) {
 			noiseRand[i] = 0.0;
@@ -359,9 +359,9 @@ using namespace std;
 		return retVal;
 		}
 
-	int Task::extend_ObservationNoise(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+	int kali::CARMATask::extend_ObservationNoise(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
 		int retVal = 0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -372,7 +372,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.fracIntrinsicVar = fracIntrinsicVar;
 		Data.fracNoiseToSignal = fracNoiseToSignal;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		double* noiseRand = static_cast<double*>(_mm_malloc((numCadences - cadenceNum - 1)*sizeof(double),64));
 		for (int i = 0; i < (numCadences - cadenceNum -1); i++) {
 			noiseRand[i] = 0.0;
@@ -382,9 +382,9 @@ using namespace std;
 		return retVal;
 		}
 
-	double Task::compute_LnPrior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double kali::CARMATask::compute_LnPrior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.tolIR = tolIR;
 		Data.t = t;
@@ -395,14 +395,14 @@ using namespace std;
 		Data.maxSigma = maxSigma;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		return LnPrior;
 		}
 
-	double Task::update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	double kali::CARMATask::update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 		double LnPrior = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -414,14 +414,14 @@ using namespace std;
 		Data.maxSigma = maxSigma;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		return LnPrior;
 		}
 
-	double Task::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+	double kali::CARMATask::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnLikelihood = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -432,7 +432,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
 		Systems[threadNum].solveCARMA();
@@ -447,9 +447,9 @@ using namespace std;
 		return LnLikelihood;
 		}
 
-	double Task::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+	double kali::CARMATask::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnLikelihood = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.currentLnLikelihood = currentLnLikelihood;
@@ -461,7 +461,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
 		Systems[threadNum].solveCARMA();
@@ -478,9 +478,9 @@ using namespace std;
 		return LnLikelihood;
 		}
 
-	double Task::compute_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+	double kali::CARMATask::compute_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -492,7 +492,7 @@ using namespace std;
 		Data.maxSigma = maxSigma;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[1] - t[0]);
@@ -509,9 +509,9 @@ using namespace std;
 		return LnPosterior;
 		}
 
-	double Task::update_LnPosterior(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+	double kali::CARMATask::update_LnPosterior(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 		double LnPrior = 0.0, LnLikelihood = 0.0, LnPosterior = 0.0;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.currentLnLikelihood = currentLnLikelihood;
@@ -524,7 +524,7 @@ using namespace std;
 		Data.maxSigma = maxSigma;
 		Data.minTimescale = minTimescale;
 		Data.maxTimescale = maxTimescale;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 		double old_dt = Systems[threadNum].get_dt();
 		Systems[threadNum].set_dt(t[cadenceNum + 1] - t[cadenceNum]);
@@ -544,15 +544,15 @@ using namespace std;
 		}
 
 
-	void Task::compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum) {
+	void kali::CARMATask::compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum) {
 		Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 		}
 
-	int Task::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+	int kali::CARMATask::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 		omp_set_num_threads(numThreads);
 		int ndims = p + q + 1;
 		int threadNum = omp_get_thread_num();
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.tolIR = tolIR;
 		Data.t = t;
@@ -571,8 +571,8 @@ using namespace std;
 			printf("fit_CARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
 			}
 		#endif
-		LnLikeData *ptr2Data = &Data;
-		LnLikeArgs Args;
+		kali::LnLikeData *ptr2Data = &Data;
+		kali::LnLikeArgs Args;
 		Args.numThreads = numThreads;
 		Args.Data = ptr2Data;
 		Args.Systems = nullptr;
@@ -589,13 +589,13 @@ using namespace std;
 			//optArray[i] = new nlopt::opt(nlopt::LN_BOBYQA, ndims); // Fastest
 			optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
 			//optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
-			optArray[i]->set_max_objective(calcLnPosterior, p2Args);
+			optArray[i]->set_max_objective(kali::calcLnPosterior, p2Args);
 			optArray[i]->set_maxeval(maxEvals);
 			optArray[i]->set_xtol_rel(xTol);
 			//optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
 			}
 		double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
-		CARMA *ptrToSystems = Systems;
+		kali::CARMA *ptrToSystems = Systems;
 		#pragma omp parallel for default(none) shared(dt, nwalkers, ndims, optArray, initPos, xStart, t, ptrToSystems, xVec, max_LnPosterior, p2Args)
 		for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 			int threadNum = omp_get_thread_num();
@@ -614,7 +614,7 @@ using namespace std;
 					printf("%e, ", xVec[threadNum][dimNum]);
 					}
 				printf("%e", xVec[threadNum][ndims - 1]);
-				max_LnPosterior[threadNum] = calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
+				max_LnPosterior[threadNum] = kali::calcLnPosterior(&xStart[walkerNum*ndims], p2Args);
 				printf("; init_LnPosterior: %17.16e\n", max_LnPosterior[threadNum]);
 				fflush(0);
 				max_LnPosterior[threadNum] = 0.0;
@@ -642,7 +642,7 @@ using namespace std;
 			delete optArray[i];
 			}
 		_mm_free(max_LnPosterior);
-		kali::EnsembleSampler newEnsemble = kali::EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
+		kali::EnsembleSampler newEnsemble = kali::EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, kali::calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 		newEnsemble.runMCMC(initPos);
 		_mm_free(initPos);
 		newEnsemble.getChain(Chain);
@@ -650,9 +650,9 @@ using namespace std;
 		return 0;
 		}
 
-	int Task::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum) {
+	int kali::CARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum) {
 		int successYN = -1;
-		LnLikeData Data;
+		kali::LnLikeData Data;
 		Data.numCadences = numCadences;
 		Data.cadenceNum = cadenceNum;
 		Data.tolIR = tolIR;
@@ -663,7 +663,7 @@ using namespace std;
 		Data.mask = mask;
 		Data.lcX = lcX;
 		Data.lcP = lcP;
-		LnLikeData *ptr2Data = &Data;
+		kali::LnLikeData *ptr2Data = &Data;
 		#ifdef DEBUG_COMPUTELNLIKELIHOOD
 			for (int i = 0; i < numCadences; ++i) {
 				printf("y[%d]: %+8.7e\n", i, y[i]);

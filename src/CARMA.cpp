@@ -56,7 +56,7 @@
 
 using namespace std;
 
-double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double kali::calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	/*! Used for computing good regions */
 
 	if (!grad.empty()) {
@@ -68,9 +68,9 @@ double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) 
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
-	LnLikeArgs Args = *ptr2Args;
-	CARMA *Systems = Args.Systems;
+	kali::LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	kali::LnLikeArgs Args = *ptr2Args;
+	kali::CARMA *Systems = Args.Systems;
 	double LnPrior = 0.0;
 
 	#ifdef DEBUG_CALCLNLIKE2
@@ -91,14 +91,14 @@ double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) 
 	return LnPrior;
 	}
 
-double calcLnPrior(double *walkerPos, void *func_args) {
+double kali::calcLnPrior(double *walkerPos, void *func_args) {
 	/*! Used for computing good regions */
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
-	LnLikeArgs Args = *ptr2Args;
-	CARMA* Systems = Args.Systems;
+	kali::LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
+	kali::LnLikeArgs Args = *ptr2Args;
+	kali::CARMA* Systems = Args.Systems;
 	double LnPrior = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
@@ -129,7 +129,7 @@ double calcLnPrior(double *walkerPos, void *func_args) {
 	return LnPrior;
 	}
 
-double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	if (!grad.empty()) {
 		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
@@ -139,10 +139,10 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
-	LnLikeArgs Args = *ptr2Args;
-	LnLikeData *ptr2Data = Args.Data;
-	CARMA *Systems = Args.Systems;
+	kali::LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(p2Args);
+	kali::LnLikeArgs Args = *ptr2Args;
+	kali::LnLikeData *ptr2Data = Args.Data;
+	kali::CARMA *Systems = Args.Systems;
 	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
@@ -228,16 +228,16 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 	return LnPosterior;
 	}
 
-double calcLnPosterior(double *walkerPos, void *func_args) {
+double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 
 	int threadNum = omp_get_thread_num();
 
-	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
-	LnLikeArgs Args = *ptr2Args;
+	kali::LnLikeArgs *ptr2Args = reinterpret_cast<kali::LnLikeArgs*>(func_args);
+	kali::LnLikeArgs Args = *ptr2Args;
 
-	LnLikeData *Data = Args.Data;
-	CARMA *Systems = Args.Systems;
-	LnLikeData *ptr2Data = Data;
+	kali::LnLikeData *Data = Args.Data;
+	kali::CARMA *Systems = Args.Systems;
+	kali::LnLikeData *ptr2Data = Data;
 	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
@@ -323,7 +323,7 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 	return LnPosterior;
 	}
 
-void zeroMatrix(int nRows, int nCols, int* mat) {
+void kali::zeroMatrix(int nRows, int nCols, int* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
@@ -332,7 +332,7 @@ void zeroMatrix(int nRows, int nCols, int* mat) {
 		}
 	}
 
-void zeroMatrix(int nRows, int nCols, double* mat) {
+void kali::zeroMatrix(int nRows, int nCols, double* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
@@ -341,7 +341,7 @@ void zeroMatrix(int nRows, int nCols, double* mat) {
 		}
 	}
 
-void zeroMatrix(int nRows, int nCols, complex<double>* mat) {
+void kali::zeroMatrix(int nRows, int nCols, complex<double>* mat) {
 	for (int colNum = 0; colNum < nCols; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < nRows; ++rowNum) {
@@ -350,7 +350,7 @@ void zeroMatrix(int nRows, int nCols, complex<double>* mat) {
 		}
 	}
 
-void viewMatrix(int nRows, int nCols, int* mat) {
+void kali::viewMatrix(int nRows, int nCols, int* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
 			printf("%+d ",mat[j*nCols + i]);
@@ -359,7 +359,7 @@ void viewMatrix(int nRows, int nCols, int* mat) {
 		}
 	}
 
-void viewMatrix(int nRows, int nCols, double* mat) {
+void kali::viewMatrix(int nRows, int nCols, double* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
 			printf("%+8.7e ",mat[j*nCols + i]);
@@ -368,7 +368,7 @@ void viewMatrix(int nRows, int nCols, double* mat) {
 		}
 	}
 
-void viewMatrix(int nRows, int nCols, vector<double> mat) {
+void kali::viewMatrix(int nRows, int nCols, vector<double> mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
 			printf("%+8.7e ",mat[j*nCols + i]);
@@ -377,7 +377,7 @@ void viewMatrix(int nRows, int nCols, vector<double> mat) {
 		}
 	}
 
-void viewMatrix(int nRows, int nCols, complex<double>* mat) {
+void kali::viewMatrix(int nRows, int nCols, complex<double>* mat) {
 	for (int i = 0; i < nRows; i++) {
 		for (int j = 0; j < nCols; j++) {
 			printf("%+8.7e%+8.7ei ",mat[j*nCols + i].real(),mat[j*nCols + i].imag());
@@ -386,7 +386,7 @@ void viewMatrix(int nRows, int nCols, complex<double>* mat) {
 		}
 	}
 
-double dtime() {
+double kali::dtime() {
 	double tseconds = 0.0;
 	struct timeval mytime;
 	gettimeofday(&mytime,(struct timezone*)0);
@@ -394,7 +394,7 @@ double dtime() {
 	return( tseconds );
 	}
 
-void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
+void kali::kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 	int alpha = 0;
 	int beta = 0;
 	int mp = m*p;
@@ -413,7 +413,7 @@ void kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 		}
 	}
 
-void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
+void kali::getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 
 	int p = numP, q = numQ, pSq = p*p, qSq = q*q;
 	lapack_int YesNo;
@@ -585,7 +585,7 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 
 	}
 
-CARMA::CARMA() {
+kali::CARMA::CARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/
 	#ifdef DEBUG_CTORDLM
 	int threadNum = omp_get_thread_num();
@@ -650,7 +650,7 @@ CARMA::CARMA() {
 
 	}
 
-CARMA::~CARMA() {
+kali::CARMA::~CARMA() {
 
 	#ifdef DEBUG_DTORDLM
 	int threadNum = omp_get_thread_num();
@@ -713,7 +713,7 @@ CARMA::~CARMA() {
 
 	}
 
-void CARMA::allocCARMA(int numP, int numQ) {
+void kali::CARMA::allocCARMA(int numP, int numQ) {
 
 	#ifdef DEBUG_ALLOCATECARMA
 	int threadNum = omp_get_thread_num();
@@ -896,7 +896,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 	}
 
-void CARMA::deallocCARMA() {
+void kali::CARMA::deallocCARMA() {
 
 	#ifdef DEBUG_DEALLOCATECARMA
 	int threadNum = omp_get_thread_num();
@@ -1241,57 +1241,57 @@ void CARMA::deallocCARMA() {
 	#endif
 	}
 
-int CARMA::get_p() {
+int kali::CARMA::get_p() {
 	return p;
 	}
 
-int CARMA::get_q() {
+int kali::CARMA::get_q() {
 	return q;
 	}
 
-double CARMA::get_dt() {
+double kali::CARMA::get_dt() {
 	return dt;
 	}
 
-void CARMA::set_dt(double new_dt) {
+void kali::CARMA::set_dt(double new_dt) {
 	dt = new_dt;
 	}
 
-int CARMA::get_allocated() {
+int kali::CARMA::get_allocated() {
 	return allocated;
 	}
 
-void CARMA::getCARRoots(complex<double>*& CARRoots) {
+void kali::CARMA::getCARRoots(complex<double>*& CARRoots) {
 	CARRoots = CARw;
 	}
 
-void CARMA::getCMARoots(complex<double>*& CMARoots) {
+void kali::CARMA::getCMARoots(complex<double>*& CMARoots) {
 	CMARoots = CMAw;
 	}
 
-void CARMA::printX() {
+void kali::CARMA::printX() {
 	viewMatrix(p,1,X);
 	}
 
-void CARMA::getX(double *newX) {
+void kali::CARMA::getX(double *newX) {
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 		newX[rowCtr] = X[rowCtr];
 		}
 	}
 
-void CARMA::setX(double *newX) {
+void kali::CARMA::setX(double *newX) {
 	#pragma omp simd
 	for (int i = 0; i < p; ++i) {
 		X[i] = newX[i];
 		}
 	}
 
-void CARMA::printP() {
+void kali::CARMA::printP() {
 	viewMatrix(p,p,P);
 	}
 
-void CARMA::getP(double *newP) {
+void kali::CARMA::getP(double *newP) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -1300,7 +1300,7 @@ void CARMA::getP(double *newP) {
 		}
 	}
 
-void CARMA::setP(double* newP) {
+void kali::CARMA::setP(double* newP) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -1310,95 +1310,95 @@ void CARMA::setP(double* newP) {
 	}
 
 
-void CARMA::printdt() {
+void kali::CARMA::printdt() {
 	printf("dt: %e\n", dt);
 	}
 
-void CARMA::printA() {
+void kali::CARMA::printA() {
 	viewMatrix(p,p,A);
 	}
 
-const complex<double>* CARMA::getA() const {
+const complex<double>* kali::CARMA::getA() const {
 	return A;
 	}
 
-void CARMA::printvr() {
+void kali::CARMA::printvr() {
 	viewMatrix(p,p,vr);
 	}
 
-const complex<double>* CARMA::getvr() const {
+const complex<double>* kali::CARMA::getvr() const {
 	return vr;
 	}
 
-void CARMA::printvrInv() {
+void kali::CARMA::printvrInv() {
 	viewMatrix(p,p,vrInv);
 	}
 
-const complex<double>* CARMA::getvrInv() const {
+const complex<double>* kali::CARMA::getvrInv() const {
 	return vrInv;
 	}
 
-void CARMA::printw() {
+void kali::CARMA::printw() {
 	viewMatrix(p,1,w);
 	}
 
-const complex<double>* CARMA::getw() const {
+const complex<double>* kali::CARMA::getw() const {
 	return w;
 	}
 
-void CARMA::printexpw() {
+void kali::CARMA::printexpw() {
 	viewMatrix(p,p,expw);
 	}
 
-const complex<double>* CARMA::getexpw() const {
+const complex<double>* kali::CARMA::getexpw() const {
 	return expw;
 	}
 
-void CARMA::printB() {
+void kali::CARMA::printB() {
 	viewMatrix(p,1,B);
 	}
 
-const complex<double>* CARMA::getB() const {
+const complex<double>* kali::CARMA::getB() const {
 	return B;
 	}
 
-void CARMA::printC() {
+void kali::CARMA::printC() {
 	viewMatrix(p,p,C);
 	}
 
-const complex<double>* CARMA::getC() const {
+const complex<double>* kali::CARMA::getC() const {
 	return C;
 	}
 
-void CARMA::printF() {
+void kali::CARMA::printF() {
 	viewMatrix(p,p,F);
 	}
 
-const double* CARMA::getF() const {
+const double* kali::CARMA::getF() const {
 	return F;
 	}
 
-void CARMA::printQ() {
+void kali::CARMA::printQ() {
 	viewMatrix(p,p,Q);
 	}
 
-const double* CARMA::getQ() const {
+const double* kali::CARMA::getQ() const {
 	return Q;
 	}
 
-void CARMA::printT() {
+void kali::CARMA::printT() {
 	viewMatrix(p,p,T);
 	}
 
-const double* CARMA::getT() const {
+const double* kali::CARMA::getT() const {
 	return T;
 	}
 
-void CARMA::printSigma() {
+void kali::CARMA::printSigma() {
 	viewMatrix(p,p,Sigma);
 	}
 
-const double* CARMA::getSigma() const {
+const double* kali::CARMA::getSigma() const {
 	return Sigma;
 	}
 
@@ -1406,7 +1406,7 @@ const double* CARMA::getSigma() const {
  * Checks the validity of the supplied C-ARMA parameters.
  * @param[in]  Theta  \f$\Theta\f$ contains \f$p\f$ CAR parameters followed by \f$q+1\f$ CMA parameters, i.e. \f$\Theta = [a_{1}, a_{2}, ..., a_{p-1}, a_{p}, b_{0}, b_{1}, ..., b_{q-1}, b_{q}]\f$, where we follow the notation in Brockwell 2001, Handbook of Statistics, Vol 19
  */
-int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
+int kali::CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	/*!< \brief Function to check the validity of the CARMA parameters.
 
 
@@ -1598,7 +1598,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma;
 	}
 
-void CARMA::setCARMA(double *ThetaIn) {
+void kali::CARMA::setCARMA(double *ThetaIn) {
 
 	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 
@@ -1859,7 +1859,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 	H[0] = 1.0;
 	}
 
-void CARMA::solveCARMA() {
+void kali::CARMA::solveCARMA() {
 	#if (defined DEBUG_SOLVECARMA_F) || (defined DEBUG_SOLVECARMA_Q)
 	int threadNum = omp_get_thread_num();
 	#endif
@@ -2048,7 +2048,7 @@ void CARMA::solveCARMA() {
 
 	}
 
-void CARMA::resetState(double InitUncertainty) {
+void kali::CARMA::resetState(double InitUncertainty) {
 
 	#ifdef DEBUG_RESETSTATE
 	int threadNum = omp_get_thread_num();
@@ -2070,7 +2070,7 @@ void CARMA::resetState(double InitUncertainty) {
 		}
 	}
 
-void CARMA::resetState() {
+void kali::CARMA::resetState() {
 
 	// Copy P and reset the other matrices
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
@@ -2093,7 +2093,7 @@ void CARMA::resetState() {
 
 	}
 
-void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
+void kali::CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr burnStream __attribute__((aligned(64)));
 	vslNewStream(&burnStream, VSL_BRNG_SFMT19937, burnSeed);
@@ -2111,7 +2111,7 @@ void CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRand) {
 		}
 	}
 
-void CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
+void kali::CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2162,7 +2162,7 @@ void CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *
 	vslDeleteStream(&distStream);
 	}
 
-void CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
+void kali::CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2216,11 +2216,11 @@ void CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *di
 	Data.cadenceNum = numCadences - 1;
 	}
 
-double CARMA::getIntrinsicVar() {
+double kali::CARMA::getIntrinsicVar() {
 	return sqrt(Sigma[0]);
 	}
 
-double CARMA::getMeanFlux(LnLikeData *ptr2Data) {
+double kali::CARMA::getMeanFlux(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
@@ -2229,7 +2229,7 @@ double CARMA::getMeanFlux(LnLikeData *ptr2Data) {
 	return intrinsicVar/fracIntrinsicVar;
 	}
 
-void CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+void kali::CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2258,7 +2258,7 @@ void CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* n
 	vslDeleteStream(&noiseStream);
 	}
 
-void CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+void kali::CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2290,7 +2290,7 @@ void CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, dou
 	Data.cadenceNum = numCadences - 1;
 	}
 
-double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
+double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2418,7 +2418,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	return LnLikelihood;
 	}
 
-double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
+double kali::CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2553,7 +2553,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	}
 
 
-double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
+double kali::CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -2648,7 +2648,7 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	return LnPrior;
 	}
 
-void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
+void kali::CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 	#ifdef DEBUG_COMPUTEACVF
 	int threadNum = omp_get_thread_num();
 	#endif
@@ -2853,7 +2853,7 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		}
 	}
 
-int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
+int kali::CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;

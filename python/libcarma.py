@@ -21,7 +21,7 @@ import pdb as pdb
 
 try:
     import rand as rand
-    import CARMATask as CARMATask
+    import CARMATask_cython as CARMATask_cython
     from util.mpl_settings import set_plot_params
 except ImportError:
     print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
@@ -72,7 +72,7 @@ def roots(p, q, Theta):
         Rho[p + i] = MARoots[i]
     Sigma = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
     ThetaC = np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E'])
-    CARMATask.get_Sigma(p, q, ThetaC, Sigma)
+    CARMATask_cython.get_Sigma(p, q, ThetaC, Sigma)
     Rho[p + q] = math.sqrt(Sigma[0])
     return Rho
 
@@ -92,7 +92,7 @@ def coeffs(p, q, Rho):
     ThetaPrime = np.require(
         np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1]), requirements=['F', 'A', 'W', 'O', 'E'])
     SigmaPrime = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
-    CARMATask.get_Sigma(p, q, ThetaPrime, SigmaPrime)
+    CARMATask_cython.get_Sigma(p, q, ThetaPrime, SigmaPrime)
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         Sigma00 = math.pow(Rho[p + q], 2.0)
@@ -350,7 +350,7 @@ class lc(object):
             self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
             self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
             self._T = float(self.t[-1] - self.t[0])
-        self._lcCython = CARMATask.lc(
+        self._lcCython = CARMATask_cython.lc(
             self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp,
             dt=self._dt, meandt=self._meandt, mindt=self._mindt, maxdt=self._maxdt, dtSmooth=self._dtSmooth,
             tolIR=self._tolIR, fracIntrinsicVar=self._fracIntrinsicVar,
@@ -1806,7 +1806,8 @@ class task(object):
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._LnPosterior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._taskCython = CARMATask.CARMATask(self._p, self._q, self._nthreads, self._nburn)
+            self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads,
+                                                                 self._nburn)
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -1820,7 +1821,7 @@ class task(object):
             assert value > self._q, r'p must be greater than q'
             assert value >= 1, r'p must be greater than or equal to 1'
             assert isinstance(value, int), r'p must be an integer'
-            self._taskCython.reset_Task(value, self._q, self._nburn)
+            self._taskCython.reset_CARMATask(value, self._q, self._nburn)
             self._p = value
             self._ndims = self._p + self._q + 1
             self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
@@ -1837,7 +1838,7 @@ class task(object):
             assert value > self._q, r'p must be greater than q'
             assert value >= 0, r'q must be greater than or equal to 0'
             assert isinstance(value, int), r'q must be an integer'
-            self._taskCython.reset_Task(self._p, value, self._nburn)
+            self._taskCython.reset_CARMATask(self._p, value, self._nburn)
             self._q = value
             self._ndims = self._p + self._q + 1
             self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
@@ -1857,7 +1858,7 @@ class task(object):
         try:
             assert value >= 0, r'nburn must be greater than or equal to 0'
             assert isinstance(value, int), r'nburn must be an integer'
-            self._taskCython.reset_Task(self._p, self._q, value)
+            self._taskCython.reset_CARMATask(self._p, self._q, value)
             self._nburn = value
         except AssertionError as err:
             raise AttributeError(str(err))
@@ -2030,7 +2031,7 @@ class task(object):
             assert isinstance(nwalkers, int), r'nwalkers must be an integer'
             assert nsteps > 0, r'nsteps must be greater than 0'
             assert isinstance(nsteps, int), r'nsteps must be an integer'
-            self._taskCython.reset_Task(p, q, nburn)
+            self._taskCython.reset_CARMATask(p, q, nburn)
             self._p = p
             self._q = q
             self._ndims = self._p + self._q + 1

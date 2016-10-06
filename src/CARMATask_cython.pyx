@@ -6,7 +6,7 @@ import psutil
 cimport numpy as np
 from libcpp cimport bool
 
-cdef extern from 'CARMA.hpp':
+cdef extern from 'CARMA.hpp' namespace "kali":
 	void getSigma(int numP, int numQ, double *Theta, double *SigmaOut)
 
 cdef extern from 'LC.hpp':
@@ -39,10 +39,10 @@ cdef extern from 'LC.hpp':
 		int sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double*maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
 		int dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum)
 
-cdef extern from 'Task.hpp':
-	cdef cppclass Task:
-		Task(int p, int q, int numThreads, int numBurn) except+
-		int reset_Task(int pGiven, int qGiven, int numBurn) except+
+cdef extern from 'CARMATask.hpp' namespace "kali":
+	cdef cppclass CARMATask:
+		CARMATask(int p, int q, int numThreads, int numBurn) except+
+		int reset_CARMATask(int pGiven, int qGiven, int numBurn) except+
 		int get_numBurn()
 		void set_numBurn(int numBurn)
 		int check_Theta(double *Theta, int threadNum)
@@ -205,23 +205,23 @@ cdef class lc:
 			threadNum = 0
 		return self.thisptr.dacf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], numBins, &lagVals[0], &dacfVals[0], &dacfErrVals[0], threadNum)
 
-cdef class CARMATask:
-	cdef Task *thisptr
+cdef class CARMATask_cython:
+	cdef CARMATask *thisptr
 
 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
 		if numThreads == None:
 			numThreads = int(psutil.cpu_count(logical = False))
 		if numBurn == None:
 			numBurn = 1000000
-		self.thisptr = new Task(p, q, numThreads, numBurn)
+		self.thisptr = new CARMATask(p, q, numThreads, numBurn)
 
 	def __dealloc__(self):
 		del self.thisptr
 
-	def reset_Task(self, p, q, numBurn = None):
+	def reset_CARMATask(self, p, q, numBurn = None):
 		if numBurn == None:
 			numBurn = 1000000
-		self.thisptr.reset_Task(p, q, numBurn)
+		self.thisptr.reset_CARMATask(p, q, numBurn)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

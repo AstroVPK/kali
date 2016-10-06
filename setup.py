@@ -50,10 +50,10 @@ rand_ext = Extension(
                      include_dirs=[INCLUDE, np.get_include()], extra_link_args=MKLLIBS + OMPLIBS + NLOPTLIBS, library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
 CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp',
-                        'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'Task.cpp', 'CARMATask.pyx']
+                        'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'CARMATask.cpp', 'CARMATask_cython.pyx']
 CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in CARMATask_sourceList]
 
-CARMATask_ext = Extension(name='CARMATask', sources=CARMATask_List, language='c++', extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS +
+CARMATask_ext = Extension(name='CARMATask_cython', sources=CARMATask_List, language='c++', extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS +
                           OMPFLAGS, include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS, library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
 MBHBTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp',
