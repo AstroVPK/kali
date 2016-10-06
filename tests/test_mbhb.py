@@ -25,6 +25,7 @@ SolarMass = 1.98855e30
 
 skipLnLikelihood = False
 skipWorking = False
+doPlot = False
 
 
 class TestPeriod(unittest.TestCase):
@@ -410,63 +411,64 @@ class TestFit(unittest.TestCase):
         ntFit = mbhb.MBHBTask(nsteps=self.nsteps)
         ntFit.fit(self.nl1)
 
-        plt.figure(0)
-        plt.scatter(ntFit.Chain[0, :, self.nsteps/2:], ntFit.Chain[1, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.a1)
-        plt.axhline(self.a2)
-        plt.xlabel(r'$a_{1}$ (pc)')
-        plt.ylabel(r'$a_{2}$ (pc)')
+        if doPlot:
+            plt.figure(0)
+            plt.scatter(ntFit.Chain[0, :, self.nsteps/2:], ntFit.Chain[1, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.a1)
+            plt.axhline(self.a2)
+            plt.xlabel(r'$a_{1}$ (pc)')
+            plt.ylabel(r'$a_{2}$ (pc)')
 
-        plt.figure(1)
-        plt.scatter(ntFit.Chain[1, :, self.nsteps/2:], ntFit.Chain[2, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.a2)
-        plt.axhline(self.period)
-        plt.xlabel(r'$a_{2}$ (pc)')
-        plt.ylabel(r'$T$ (d)')
+            plt.figure(1)
+            plt.scatter(ntFit.Chain[1, :, self.nsteps/2:], ntFit.Chain[2, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.a2)
+            plt.axhline(self.period)
+            plt.xlabel(r'$a_{2}$ (pc)')
+            plt.ylabel(r'$T$ (d)')
 
-        plt.figure(2)
-        plt.scatter(ntFit.Chain[2, :, self.nsteps/2:], ntFit.Chain[3, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.period)
-        plt.axhline(self.eccentricity)
-        plt.xlabel(r'$T$ (d)')
-        plt.ylabel(r'$e$')
+            plt.figure(2)
+            plt.scatter(ntFit.Chain[2, :, self.nsteps/2:], ntFit.Chain[3, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.period)
+            plt.axhline(self.eccentricity)
+            plt.xlabel(r'$T$ (d)')
+            plt.ylabel(r'$e$')
 
-        plt.figure(3)
-        plt.scatter(ntFit.Chain[3, :, self.nsteps/2:], ntFit.Chain[4, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.eccentricity)
-        plt.axhline(self.omega1)
-        plt.xlabel(r'$e$')
-        plt.ylabel(r'$\omega_{1}$')
+            plt.figure(3)
+            plt.scatter(ntFit.Chain[3, :, self.nsteps/2:], ntFit.Chain[4, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.eccentricity)
+            plt.axhline(self.omega1)
+            plt.xlabel(r'$e$')
+            plt.ylabel(r'$\omega_{1}$')
 
-        plt.figure(4)
-        plt.scatter(ntFit.Chain[4, :, self.nsteps/2:], ntFit.Chain[5, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.omega1)
-        plt.axhline(self.inclination)
-        plt.xlabel(r'$\omega_{1}$')
-        plt.ylabel(r'$i$')
+            plt.figure(4)
+            plt.scatter(ntFit.Chain[4, :, self.nsteps/2:], ntFit.Chain[5, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.omega1)
+            plt.axhline(self.inclination)
+            plt.xlabel(r'$\omega_{1}$')
+            plt.ylabel(r'$i$')
 
-        plt.figure(5)
-        plt.scatter(ntFit.Chain[5, :, self.nsteps/2:], ntFit.Chain[6, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.inclination)
-        plt.axhline(self.tau)
-        plt.xlabel(r'$i$')
-        plt.ylabel(r'$\tau$ (d)')
+            plt.figure(5)
+            plt.scatter(ntFit.Chain[5, :, self.nsteps/2:], ntFit.Chain[6, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.inclination)
+            plt.axhline(self.tau)
+            plt.xlabel(r'$i$')
+            plt.ylabel(r'$\tau$ (d)')
 
-        plt.figure(6)
-        plt.scatter(ntFit.Chain[6, :, self.nsteps/2:], ntFit.Chain[7, :, self.nsteps/2:],
-                    c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
-        plt.axvline(self.tau)
-        plt.axhline(self.flux)
-        plt.xlabel(r'$\tau$ (d)')
-        plt.ylabel(r'$F_{\mathrm{intrin}}$ (Jy)')
+            plt.figure(6)
+            plt.scatter(ntFit.Chain[6, :, self.nsteps/2:], ntFit.Chain[7, :, self.nsteps/2:],
+                        c=ntFit.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.axvline(self.tau)
+            plt.axhline(self.flux)
+            plt.xlabel(r'$\tau$ (d)')
+            plt.ylabel(r'$F_{\mathrm{intrin}}$ (Jy)')
 
-        pdb.set_trace()
+            pdb.set_trace()
 
 if __name__ == "__main__":
     unittest.main()

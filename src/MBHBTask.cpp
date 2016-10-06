@@ -19,9 +19,9 @@ using namespace std;
 
 int lenTheta = 8;
 
-MBHBTask::MBHBTask(int numThreadsGiven) {
+kali::MBHBTask::MBHBTask(int numThreadsGiven) {
 	numThreads = numThreadsGiven;
-	Systems = new MBHB[numThreads];
+	Systems = new kali::MBHB[numThreads];
 	setSystemsVec = static_cast<bool*>(_mm_malloc(numThreads*sizeof(double),64));
 	ThetaVec = static_cast<double*>(_mm_malloc(numThreads*lenTheta*sizeof(double),64)); // We fix alpha1 and alpha2
 	for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
@@ -33,7 +33,7 @@ MBHBTask::MBHBTask(int numThreadsGiven) {
 		}
 	}
 
-MBHBTask::~MBHBTask() {
+kali::MBHBTask::~MBHBTask() {
 	if (ThetaVec) {
 		_mm_free(ThetaVec);
 		ThetaVec = nullptr;
@@ -45,17 +45,17 @@ MBHBTask::~MBHBTask() {
 	delete[] Systems;
 	}
 
-int MBHBTask::check_Theta(double *Theta, int threadNum) {
+int kali::MBHBTask::check_Theta(double *Theta, int threadNum) {
 	return Systems[threadNum].checkMBHBParams(Theta);
 	}
 
-void MBHBTask::get_Theta(double *Theta, int threadNum) {
+void kali::MBHBTask::get_Theta(double *Theta, int threadNum) {
 	for (int i = 0; i < lenTheta; ++i) {
 		Theta[i] = ThetaVec[i + threadNum*lenTheta];
 		}
 	}
 
-int MBHBTask::set_System(double *Theta, int threadNum) {
+int kali::MBHBTask::set_System(double *Theta, int threadNum) {
 	bool alreadySet = true;
 	int retVal = -1;
 	if (setSystemsVec[threadNum] == true) {
@@ -87,182 +87,182 @@ int MBHBTask::set_System(double *Theta, int threadNum) {
 	return retVal;
 	}
 
-void MBHBTask::get_setSystemsVec(int *setSystems) {
+void kali::MBHBTask::get_setSystemsVec(int *setSystems) {
 	for (int threadNum = 0; threadNum < numThreads; ++threadNum) {
 		setSystems[threadNum] = static_cast<int>(setSystemsVec[threadNum]);
 		}
 	}
 
-void MBHBTask::print_System(int threadNum) {
+void kali::MBHBTask::print_System(int threadNum) {
 	Systems[threadNum].print();
 	}
 
-void MBHBTask::set_Epoch(double epochIn, int threadNum) {
+void kali::MBHBTask::set_Epoch(double epochIn, int threadNum) {
 	Systems[threadNum].setEpoch(epochIn);
 	}
 
-double MBHBTask::get_Epoch(int threadNum) {
+double kali::MBHBTask::get_Epoch(int threadNum) {
 	return Systems[threadNum].getEpoch();
 	}
 
-double MBHBTask::get_Period(int threadNum) {
+double kali::MBHBTask::get_Period(int threadNum) {
 	return Systems[threadNum].getPeriod();
 	}
 
-double MBHBTask::get_A1(int threadNum) {
+double kali::MBHBTask::get_A1(int threadNum) {
 	return Systems[threadNum].getA1();
 	}
 
-double MBHBTask::get_A2(int threadNum) {
+double kali::MBHBTask::get_A2(int threadNum) {
 	return Systems[threadNum].getA2();
 	}
 
-double MBHBTask::get_M1(int threadNum) {
+double kali::MBHBTask::get_M1(int threadNum) {
 	return Systems[threadNum].getM1();
 	}
 
-double MBHBTask::get_M2(int threadNum) {
+double kali::MBHBTask::get_M2(int threadNum) {
 	return Systems[threadNum].getM2();
 	}
 
-double MBHBTask::get_M12(int threadNum) {
+double kali::MBHBTask::get_M12(int threadNum) {
 	return Systems[threadNum].getM12();
 	}
 
-double MBHBTask::get_M2OverM1(int threadNum) {
+double kali::MBHBTask::get_M2OverM1(int threadNum) {
 	return Systems[threadNum].getM2OverM1();
 	}
 
-double MBHBTask::get_RPeribothron1(int threadNum) {
+double kali::MBHBTask::get_RPeribothron1(int threadNum) {
 	return Systems[threadNum].getRPeribothron1();
 	}
 
-double MBHBTask::get_RPeribothron2(int threadNum) {
+double kali::MBHBTask::get_RPeribothron2(int threadNum) {
 	return Systems[threadNum].getRPeribothron2();
 	}
 
-double MBHBTask::get_RApobothron1(int threadNum) {
+double kali::MBHBTask::get_RApobothron1(int threadNum) {
 	return Systems[threadNum].getRApobothron1();
 	}
 
-double MBHBTask::get_RApobothron2(int threadNum) {
+double kali::MBHBTask::get_RApobothron2(int threadNum) {
 	return Systems[threadNum].getRApobothron2();
 	}
 
-double MBHBTask::get_RPeribothronTot(int threadNum) {
+double kali::MBHBTask::get_RPeribothronTot(int threadNum) {
 	return Systems[threadNum].getRPeribothronTot();
 	}
 
-double MBHBTask::get_RApobothronTot(int threadNum) {
+double kali::MBHBTask::get_RApobothronTot(int threadNum) {
 	return Systems[threadNum].getRApobothronTot();
 	}
 
-double MBHBTask::get_RS1(int threadNum) {
+double kali::MBHBTask::get_RS1(int threadNum) {
 	return Systems[threadNum].getRS1();
 	}
 
-double MBHBTask::get_RS2(int threadNum) {
+double kali::MBHBTask::get_RS2(int threadNum) {
 	return Systems[threadNum].getRS2();
 	}
 
-double MBHBTask::get_Eccentricity(int threadNum) {
+double kali::MBHBTask::get_Eccentricity(int threadNum) {
 	return Systems[threadNum].getEccentricity();
 	}
 
-double MBHBTask::get_Omega1(int threadNum) {
+double kali::MBHBTask::get_Omega1(int threadNum) {
 	return Systems[threadNum].getOmega1();
 	}
 
-double MBHBTask::get_Omega2(int threadNum) {
+double kali::MBHBTask::get_Omega2(int threadNum) {
 	return Systems[threadNum].getOmega2();
 	}
 
-double MBHBTask::get_Inclination(int threadNum) {
+double kali::MBHBTask::get_Inclination(int threadNum) {
 	return Systems[threadNum].getInclination();
 	}
 
-double MBHBTask::get_Tau(int threadNum) {
+double kali::MBHBTask::get_Tau(int threadNum) {
 	return Systems[threadNum].getTau();
 	}
 
-double MBHBTask::get_MeanAnomoly(int threadNum) {
+double kali::MBHBTask::get_MeanAnomoly(int threadNum) {
 	return Systems[threadNum].getMeanAnomoly();
 	}
 
-double MBHBTask::get_EccentricAnomoly(int threadNum) {
+double kali::MBHBTask::get_EccentricAnomoly(int threadNum) {
 	return Systems[threadNum].getEccentricAnomoly();
 	}
 
-double MBHBTask::get_TrueAnomoly(int threadNum) {
+double kali::MBHBTask::get_TrueAnomoly(int threadNum) {
 	return Systems[threadNum].getTrueAnomoly();
 	}
 
-double MBHBTask::get_R1(int threadNum) {
+double kali::MBHBTask::get_R1(int threadNum) {
 	return Systems[threadNum].getR1();
 	}
 
-double MBHBTask::get_R2(int threadNum) {
+double kali::MBHBTask::get_R2(int threadNum) {
 	return Systems[threadNum].getR2();
 	}
 
-double MBHBTask::get_Theta1(int threadNum) {
+double kali::MBHBTask::get_Theta1(int threadNum) {
 	return Systems[threadNum].getTheta1();
 	}
 
-double MBHBTask::get_Theta2(int threadNum) {
+double kali::MBHBTask::get_Theta2(int threadNum) {
 	return Systems[threadNum].getTheta2();
 	}
 
-double MBHBTask::get_Beta1(int threadNum) {
+double kali::MBHBTask::get_Beta1(int threadNum) {
 	return Systems[threadNum].getBeta1();
 	}
 
-double MBHBTask::get_Beta2(int threadNum) {
+double kali::MBHBTask::get_Beta2(int threadNum) {
 	return Systems[threadNum].getBeta2();
 	}
 
-double MBHBTask::get_RadialBeta1(int threadNum) {
+double kali::MBHBTask::get_RadialBeta1(int threadNum) {
 	return Systems[threadNum].getRadialBeta1();
 	}
 
-double MBHBTask::get_RadialBeta2(int threadNum) {
+double kali::MBHBTask::get_RadialBeta2(int threadNum) {
 	return Systems[threadNum].getRadialBeta2();
 	}
 
-double MBHBTask::get_DopplerFactor1(int threadNum) {
+double kali::MBHBTask::get_DopplerFactor1(int threadNum) {
 	return Systems[threadNum].getDopplerFactor1();
 	}
 
-double MBHBTask::get_DopplerFactor2(int threadNum) {
+double kali::MBHBTask::get_DopplerFactor2(int threadNum) {
 	return Systems[threadNum].getDopplerFactor2();
 	}
 
-double MBHBTask::get_BeamingFactor1(int threadNum) {
+double kali::MBHBTask::get_BeamingFactor1(int threadNum) {
 	return Systems[threadNum].getBeamingFactor1();
 	}
 
-double MBHBTask::get_BeamingFactor2(int threadNum) {
+double kali::MBHBTask::get_BeamingFactor2(int threadNum) {
 	return Systems[threadNum].getBeamingFactor2();
 	}
 
-double MBHBTask::get_aH(double sigmaStars, int threadNum) {
+double kali::MBHBTask::get_aH(double sigmaStars, int threadNum) {
 	return Systems[threadNum].aH(sigmaStars);
 	}
 
-double MBHBTask::get_aGW(double sigmaStars, double rhoStars, double H, int threadNum) {
+double kali::MBHBTask::get_aGW(double sigmaStars, double rhoStars, double H, int threadNum) {
 	return Systems[threadNum].aGW(sigmaStars, rhoStars, H);
 	}
 
-double MBHBTask::get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum) {
+double kali::MBHBTask::get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum) {
 	return Systems[threadNum].durationInHardState(sigmaStars, rhoStars, H);
 	}
 
-double MBHBTask::get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum) {
+double kali::MBHBTask::get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum) {
 	return Systems[threadNum].ejectedMass(sigmaStars, rhoStars, H);
 	}
 
-int MBHBTask::make_IntrinsicLC(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
-	LnLikeData Data;
+int kali::MBHBTask::make_IntrinsicLC(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
 	Data.t = t;
@@ -270,13 +270,13 @@ int MBHBTask::make_IntrinsicLC(int numCadences, double dt, double fracNoiseToSig
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
-	LnLikeData *ptr2Data = &Data;
+	kali::LnLikeData *ptr2Data = &Data;
 	Systems[threadNum].simulateSystem(ptr2Data);
 	return 0;
 	}
 
-int MBHBTask::add_ObservationNoise(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
-	LnLikeData Data;
+int kali::MBHBTask::add_ObservationNoise(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum) {
+	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
 	Data.fracNoiseToSignal = fracNoiseToSignal;
@@ -285,7 +285,7 @@ int MBHBTask::add_ObservationNoise(int numCadences, double dt, double fracNoiseT
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
-	LnLikeData *ptr2Data = &Data;
+	kali::LnLikeData *ptr2Data = &Data;
 	double* noiseRand = static_cast<double*>(_mm_malloc(numCadences*sizeof(double),64));
 	#pragma omp simd
 	for (int i = 0; i < numCadences; i++) {
@@ -296,9 +296,9 @@ int MBHBTask::add_ObservationNoise(int numCadences, double dt, double fracNoiseT
 	return 0;
 	}
 
-double MBHBTask::compute_LnPrior(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double kali::MBHBTask::compute_LnPrior(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnPrior = 0.0;
-	LnLikeData Data;
+	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
 	Data.t = t;
@@ -308,16 +308,16 @@ double MBHBTask::compute_LnPrior(int numCadences, double dt, double lowestFlux, 
 	Data.mask = mask;
 	Data.lowestFlux = lowestFlux;
 	Data.highestFlux = highestFlux;
-	LnLikeData *ptr2Data = &Data;
+	kali::LnLikeData *ptr2Data = &Data;
 
 	LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 
 	return LnPrior;
 	}
 
-double MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double kali::MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnLikelihood = 0.0;
-	LnLikeData Data;
+	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
 	Data.cadenceNum = cadenceNum;
@@ -326,7 +326,7 @@ double MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cadenceNum
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
-	LnLikeData *ptr2Data = &Data;
+	kali::LnLikeData *ptr2Data = &Data;
 
 	Systems[threadNum].setEpoch(t[0]);
 	LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
@@ -335,14 +335,14 @@ double MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cadenceNum
 	return LnLikelihood;
 	}
 
-int MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
 	#ifdef DEBUG_FIT_MBHBMODEL
 		printf("numThreads: %d\n",numThreads);
 	#endif
 	omp_set_num_threads(numThreads);
 	int ndims = lenTheta;
 	int threadNum = omp_get_thread_num();
-	LnLikeData Data;
+	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
 	Data.t = t;
@@ -352,8 +352,8 @@ int MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, doubl
 	Data.mask = mask;
 	Data.lowestFlux = lowestFlux;
 	Data.highestFlux = highestFlux;
-	LnLikeData *ptr2Data = &Data;
-	LnLikeArgs Args;
+	kali::LnLikeData *ptr2Data = &Data;
+	kali::LnLikeArgs Args;
 	Args.numThreads = numThreads;
 	Args.Data = ptr2Data;
 	Args.Systems = nullptr;
@@ -370,13 +370,13 @@ int MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, doubl
 		//optArray[i] = new nlopt::opt(nlopt::LN_BOBYQA, ndims); // Fastest
 		optArray[i] = new nlopt::opt(nlopt::LN_NELDERMEAD, ndims); // Slower
 		//optArray[i] = new nlopt::opt(nlopt::LN_COBYLA, ndims); // Slowest
-		optArray[i]->set_max_objective(calcLnPosterior, p2Args);
+		optArray[i]->set_max_objective(kali::calcLnPosterior, p2Args);
 		optArray[i]->set_maxeval(maxEvals);
 		optArray[i]->set_xtol_rel(xTol);
 		//optArray[i]->set_maxtime(60.0); // Timeout after 60 sec.
 		}
 	double *max_LnPosterior = static_cast<double*>(_mm_malloc(numThreads*sizeof(double),64));
-	MBHB *ptrToSystems = Systems;
+	kali::MBHB *ptrToSystems = Systems;
 	#pragma omp parallel for default(none) shared(nwalkers, ndims, optArray, initPos, xStart, t, ptrToSystems, xVec, max_LnPosterior, p2Args)
 	for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
 		int threadNum = omp_get_thread_num();
@@ -423,7 +423,7 @@ int MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, doubl
 		delete optArray[i];
 		}
 	_mm_free(max_LnPosterior);
-	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
+	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, kali::calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
 	newEnsemble.getChain(Chain);

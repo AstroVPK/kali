@@ -18,7 +18,7 @@ cdef double d2r(double degreeVal):
 cdef double r2d(double radianVal):
 	return radianVal*(180.0/pi)
 
-cdef extern from 'MBHBTask.hpp':
+cdef extern from 'MBHBTask.hpp' namespace "kali":
 	cdef cppclass MBHBTask:
 		MBHBTask(int numThreads) except+
 		int check_Theta(double *Theta, int threadNum);

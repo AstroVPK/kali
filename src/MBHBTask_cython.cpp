@@ -52,7 +52,7 @@
             "$MKLROOT/lib/intel6"
         ]
     }, 
-    "module_name": "MBHBTask"
+    "module_name": "MBHBTask_cython"
 }
 END: Cython Metadata */
 
@@ -880,7 +880,7 @@ typedef npy_cdouble __pyx_t_5numpy_complex_t;
  */
 struct __pyx_obj_15MBHBTask_cython_MBHBTask_cython {
   PyObject_HEAD
-  MBHBTask *thisptr;
+  kali::MBHBTask *thisptr;
 };
 
 
@@ -1566,7 +1566,7 @@ static double __pyx_f_15MBHBTask_cython_r2d(double __pyx_v_radianVal) {
  * cdef double r2d(double radianVal):
  * 	return radianVal*(180.0/pi)             # <<<<<<<<<<<<<<
  * 
- * cdef extern from 'MBHBTask.hpp':
+ * cdef extern from 'MBHBTask.hpp' namespace "kali":
  */
   if (unlikely(__pyx_v_15MBHBTask_cython_pi == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
@@ -1662,7 +1662,7 @@ static int __pyx_pf_15MBHBTask_cython_15MBHBTask_cython___cinit__(struct __pyx_o
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
-  MBHBTask *__pyx_t_6;
+  kali::MBHBTask *__pyx_t_6;
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_numThreads);
 
@@ -1721,7 +1721,7 @@ static int __pyx_pf_15MBHBTask_cython_15MBHBTask_cython___cinit__(struct __pyx_o
  */
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_numThreads); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
   try {
-    __pyx_t_6 = new MBHBTask(__pyx_t_5);
+    __pyx_t_6 = new kali::MBHBTask(__pyx_t_5);
   } catch(...) {
     __Pyx_CppExn2PyErr();
     __PYX_ERR(0, 84, __pyx_L1_error)

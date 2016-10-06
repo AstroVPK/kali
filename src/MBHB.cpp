@@ -23,7 +23,7 @@ int lenThetaAlso = 8;
 
 using namespace std;
 
-double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double kali::calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	/*! Used for computing good regions */
 	if (!grad.empty()) {
 		#pragma omp simd
@@ -45,7 +45,7 @@ double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) 
 	return LnPrior;
 	}
 
-double calcLnPrior(double *walkerPos, void *func_args) {
+double kali::calcLnPrior(double *walkerPos, void *func_args) {
 	/*! Used for computing good regions */
 	int threadNum = omp_get_thread_num();
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
@@ -60,7 +60,7 @@ double calcLnPrior(double *walkerPos, void *func_args) {
 	return LnPrior;
 	}
 
-double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
+double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Args) {
 	if (!grad.empty()) {
 		#pragma omp simd
 		for (int i = 0; i < x.size(); ++i) {
@@ -104,7 +104,7 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 	return LnPosterior;
 	}
 
-double calcLnPosterior(double *walkerPos, void *func_args) {
+double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 	int threadNum = omp_get_thread_num();
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
@@ -143,15 +143,15 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 	return LnPosterior;
 	}
 
-double d2r(double degreeVal) {
+double kali::d2r(double degreeVal) {
 	return degreeVal*(pi/180.0);
 	}
 
-double r2d(double radianVal) {
+double kali::r2d(double radianVal) {
 	return radianVal*(180.0/pi);
 	}
 
-double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
+double kali::KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
 	KeplersEqnData *ptr2Data = reinterpret_cast<KeplersEqnData*>(p2Data);
 	KeplersEqnData Data = *ptr2Data;
 	if (!grad.empty()) {
@@ -164,7 +164,7 @@ double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
 	return funcVal;
 	}
 
-MBHB::MBHB() {
+kali::MBHB::MBHB() {
 	m1 = 0.0;
 	m2 = 0.0;
 	rS1 = 0.0;
@@ -214,7 +214,7 @@ MBHB::MBHB() {
 	//fracBeamedFlux = 0.0;
 	}
 
-MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
+kali::MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
 	a1 = a1Val*Parsec;
 	a2 = a2Val*Parsec;
 	period = periodVal*Day;
@@ -275,7 +275,7 @@ MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentricityVal,
 	//fracBeamedFlux = 0.0;
 	}
 
-void MBHB::setMBHB(double *Theta) {
+void kali::MBHB::setMBHB(double *Theta) {
 	a1 = Theta[0]*Parsec;
 	a2 = Theta[1]*Parsec;
 	period = Theta[2]*Day;
@@ -337,7 +337,7 @@ void MBHB::setMBHB(double *Theta) {
 	//fracBeamedFlux = Theta[8];
 	}
 
-void MBHB::operator()() {
+void kali::MBHB::operator()() {
 	M = twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
 	KeplersEqnData Data;
@@ -369,7 +369,7 @@ void MBHB::operator()() {
 	bF2 = pow(dF2, 3.0 - alpha2);
 	}
 
-int MBHB::checkMBHBParams(double *ThetaIn) {
+int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 	int retVal = 1;
 	double a1Val = Parsec*ThetaIn[0];
 	double a2Val = Parsec*ThetaIn[1];
@@ -477,104 +477,104 @@ int MBHB::checkMBHBParams(double *ThetaIn) {
 	return retVal;
 	}
 
-double MBHB::getEpoch() {return epoch/Day;}
+double kali::MBHB::getEpoch() {return epoch/Day;}
 
-void MBHB::setEpoch(double epochIn) {
+void kali::MBHB::setEpoch(double epochIn) {
 	epoch = epochIn*Day;
 	(*this)();
 	}
 
-double MBHB::getPeriod() {return period/Day;}
+double kali::MBHB::getPeriod() {return period/Day;}
 
-double MBHB::getA1() {return a1/Parsec;}
+double kali::MBHB::getA1() {return a1/Parsec;}
 
-double MBHB::getA2() {return a2/Parsec;}
+double kali::MBHB::getA2() {return a2/Parsec;}
 
-double MBHB::getM1() {return m1/(SolarMass*1.0e6);}
+double kali::MBHB::getM1() {return m1/(SolarMass*1.0e6);}
 
-double MBHB::getM2() {return m2/(SolarMass*1.0e6);}
+double kali::MBHB::getM2() {return m2/(SolarMass*1.0e6);}
 
-double MBHB::getM12() {return totalMass/(SolarMass*1.0e6);}
+double kali::MBHB::getM12() {return totalMass/(SolarMass*1.0e6);}
 
-double MBHB::getM2OverM1() {return massRatio;}
+double kali::MBHB::getM2OverM1() {return massRatio;}
 
-double MBHB::getRPeribothron1() {return rPeribothron1/Parsec;}
+double kali::MBHB::getRPeribothron1() {return rPeribothron1/Parsec;}
 
-double MBHB::getRPeribothron2() {return rPeribothron2/Parsec;}
+double kali::MBHB::getRPeribothron2() {return rPeribothron2/Parsec;}
 
-double MBHB::getRPeribothronTot() {return rPeribothronTot/Parsec;}
+double kali::MBHB::getRPeribothronTot() {return rPeribothronTot/Parsec;}
 
-double MBHB::getRApobothron1() {return rApobothron1/Parsec;}
+double kali::MBHB::getRApobothron1() {return rApobothron1/Parsec;}
 
-double MBHB::getRApobothron2() {return rApobothron2/Parsec;}
+double kali::MBHB::getRApobothron2() {return rApobothron2/Parsec;}
 
-double MBHB::getRApobothronTot() {return rApobothronTot/Parsec;}
+double kali::MBHB::getRApobothronTot() {return rApobothronTot/Parsec;}
 
-double MBHB::getRS1() {return rS1/Parsec;}
+double kali::MBHB::getRS1() {return rS1/Parsec;}
 
-double MBHB::getRS2() {return rS2/Parsec;}
+double kali::MBHB::getRS2() {return rS2/Parsec;}
 
-double MBHB::getEccentricity() {return eccentricity;}
+double kali::MBHB::getEccentricity() {return eccentricity;}
 
-double MBHB::getOmega1() {return r2d(omega1);}
+double kali::MBHB::getOmega1() {return r2d(omega1);}
 
-double MBHB::getOmega2() {return r2d(omega2);}
+double kali::MBHB::getOmega2() {return r2d(omega2);}
 
-double MBHB::getInclination() {return r2d(inclination);}
+double kali::MBHB::getInclination() {return r2d(inclination);}
 
-double MBHB::getTau() {return tau/Day;}
+double kali::MBHB::getTau() {return tau/Day;}
 
-double MBHB::getMeanAnomoly() {return r2d(M);}
+double kali::MBHB::getMeanAnomoly() {return r2d(M);}
 
-double MBHB::getEccentricAnomoly() {return r2d(E);}
+double kali::MBHB::getEccentricAnomoly() {return r2d(E);}
 
-double MBHB::getTrueAnomoly() {return r2d(nu);}
+double kali::MBHB::getTrueAnomoly() {return r2d(nu);}
 
-double MBHB::getR1() {return r1/Parsec;}
+double kali::MBHB::getR1() {return r1/Parsec;}
 
-double MBHB::getR2() {return r2/Parsec;}
+double kali::MBHB::getR2() {return r2/Parsec;}
 
-double MBHB::getTheta1() {return r2d(theta1);}
+double kali::MBHB::getTheta1() {return r2d(theta1);}
 
-double MBHB::getTheta2() {return r2d(theta2);}
+double kali::MBHB::getTheta2() {return r2d(theta2);}
 
-double MBHB::getBeta1() {return beta1;}
+double kali::MBHB::getBeta1() {return beta1;}
 
-double MBHB::getBeta2() {return beta2;}
+double kali::MBHB::getBeta2() {return beta2;}
 
-double MBHB::getRadialBeta1() {return radialBeta1;}
+double kali::MBHB::getRadialBeta1() {return radialBeta1;}
 
-double MBHB::getRadialBeta2() {return radialBeta2;}
+double kali::MBHB::getRadialBeta2() {return radialBeta2;}
 
-double MBHB::getDopplerFactor1() {return dF1;}
+double kali::MBHB::getDopplerFactor1() {return dF1;}
 
-double MBHB::getDopplerFactor2() {return dF2;}
+double kali::MBHB::getDopplerFactor2() {return dF2;}
 
-double MBHB::getBeamingFactor1() {return bF1;}
+double kali::MBHB::getBeamingFactor1() {return bF1;}
 
-double MBHB::getBeamingFactor2() {return bF2;}
+double kali::MBHB::getBeamingFactor2() {return bF2;}
 
-double MBHB::aH(double sigmaStars) {
+double kali::MBHB::aH(double sigmaStars) {
 	double aHVal = (G*reducedMass)/(4.0*pow((sigmaStars*kms2ms), 2.0));
 	return aHVal/Parsec;
 	}
 
-double MBHB::aGW(double sigmaStars, double rhoStars, double H) {
+double kali::MBHB::aGW(double sigmaStars, double rhoStars, double H) {
 	double aGWVal = pow((64.0*pow(G*reducedMass, 2.0)*totalMass*(kms2ms*sigmaStars))/(5.0*H*pow(c, 5.0)*(SolarMassPerCubicParsec*rhoStars)), 0.2);
 	return aGWVal/Parsec;
 	}
 
-double MBHB::durationInHardState(double sigmaStars, double rhoStars, double H) {
+double kali::MBHB::durationInHardState(double sigmaStars, double rhoStars, double H) {
 	double durationInHardStateVal = ((sigmaStars*kms2ms)/(H*G*(SolarMassPerCubicParsec*rhoStars)*aGW(sigmaStars, rhoStars, H)));
 	return durationInHardStateVal/Day;
 	}
 
-double MBHB::ejectedMass(double sigmaStars, double rhoStars, double H) {
+double kali::MBHB::ejectedMass(double sigmaStars, double rhoStars, double H) {
 	double ejectedMassVal = totalMass*log(aH(sigmaStars)/aGW(sigmaStars, rhoStars, H));
 	return ejectedMassVal/(SolarMass*1.0e6);
 	}
 
-void MBHB::print() {
+void kali::MBHB::print() {
 	cout.precision(5);
 	cout << scientific << "                            a1: " << a1/Parsec << " (pc)" << endl;
 	cout << scientific << "                            a2: " << a2/Parsec << " (pc)" << endl;
@@ -596,7 +596,7 @@ void MBHB::print() {
 	//cout << scientific << "          Beamed Flux Fraction: " << fracBeamedFlux << endl;
 	}
 
-void MBHB::simulateSystem(LnLikeData *ptr2Data) {
+void kali::MBHB::simulateSystem(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -627,7 +627,7 @@ void MBHB::simulateSystem(LnLikeData *ptr2Data) {
 		}
 	}
 
-void MBHB::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
+void kali::MBHB::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -661,7 +661,7 @@ void MBHB::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* no
 		}
 	}
 
-double MBHB::computeLnPrior(LnLikeData *ptr2Data) {
+double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -755,7 +755,7 @@ double MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	return LnPrior;
 	}
 
-double MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
+double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;

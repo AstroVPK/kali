@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace kali {
+
 double calcLnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
 double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
@@ -105,5 +107,7 @@ struct LnLikeArgs {
 	MBHB *Systems;
 	LnLikeData *Data;
 	};
+
+} // namespace kali
 
 #endif

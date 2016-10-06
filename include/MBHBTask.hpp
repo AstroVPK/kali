@@ -12,10 +12,12 @@
 
 using namespace std;
 
+namespace kali {
+
 class MBHBTask {
 private:
 	int numThreads;
-	MBHB *Systems;
+	kali::MBHB *Systems;
 	bool *setSystemsVec;
 	double *ThetaVec;
 public:
@@ -92,5 +94,7 @@ public:
 
 	//int smooth_Interpolate(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum);
 	};
+
+} // namespace kali
 
 #endif
