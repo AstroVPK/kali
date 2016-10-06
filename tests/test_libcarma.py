@@ -21,7 +21,7 @@ class TestFitCARMA10(unittest.TestCase):
         self.p = 1
         self.q = 0
         self.nWalkers = 25*psutil.cpu_count(logical=True)
-        self.nSteps = 250
+        self.nSteps = 1000
         self.newTask = libcarma.basicTask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
@@ -44,7 +44,6 @@ class TestFitCARMA10(unittest.TestCase):
         recoveredAmpStd = np.std(self.newTask.timescaleChain[1, :, self.nSteps/2:])
         print '%e %e'%(math.fabs(builtInTAR1 - recoveredTAR1Median), 5.0*recoveredTAR1Std)
         print '%e %e'%(math.fabs(builtInAmp - recoveredAmpMedian), 5.0*recoveredAmpStd)
-        pdb.set_trace()
         self.assertTrue(math.fabs(builtInTAR1 - recoveredTAR1Median) < 5.0*recoveredTAR1Std)
         self.assertTrue(math.fabs(builtInAmp - recoveredAmpMedian) < 5.0*recoveredAmpStd)
 

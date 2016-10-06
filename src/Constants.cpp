@@ -14,8 +14,8 @@ extern double kali::piSq = pow(kali::pi, 2.0);
 extern double kali::halfPi = kali::pi/2.0;
 extern double kali::e = 2.71828182845904523536028747135266249775724709369995;
 extern double kali::infiniteVal = HUGE_VAL;
-extern double kali::log2Pi = log2(2.0*kali::pi)/kali::log2OfE;
 extern double kali::log2OfE = log2(kali::e);
+extern double kali::log2Pi = log2(2.0*kali::pi)/kali::log2OfE;
 
 extern double kali::G = 6.67408e-11; // m^3/kg s^2
 extern double kali::c = 299792458.0; // m/s

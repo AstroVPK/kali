@@ -14,9 +14,9 @@ extern double twoPi;
 extern double piSq;
 extern double fourPiSq;
 extern double halfPi;
-extern double log2Pi;
 extern double e;
 extern double log2OfE;
+extern double log2Pi;
 extern double infiniteVal;
 
 extern double G;

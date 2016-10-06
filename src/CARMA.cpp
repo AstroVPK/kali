@@ -44,11 +44,10 @@
 //#define DEBUG_DEALLOCATECARMA
 //#define DEBUG_DEALLOCATECARMA_DEEP
 //#define DEBUG_RESETSTATE
+//#define DEBUG_CALCLNPRIOR
 //#define DEBUG_CALCLNPOSTERIOR
-//#define DEBUG_CALCLNPOSTERIOR2
-//#define DEBUG_CALCCARMALNLIKE
 //#define DEBUG_COMPUTELNPRIOR
-//#define MAXPRINT 10
+//#define MAXPRINT 20
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
 //#define DEBUG_RTSSMOOTHER
@@ -73,7 +72,7 @@ double kali::calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2
 	kali::CARMA *Systems = Args.Systems;
 	double LnPrior = 0.0;
 
-	#ifdef DEBUG_CALCLNLIKE2
+	#ifdef DEBUG_CALCLNPRIOR
 	printf("calcCARMALnPosterior - threadNum: %d; Location: ",threadNum);
 	#endif
 
@@ -83,7 +82,7 @@ double kali::calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2
 		LnPrior = -kali::infiniteVal;
 		}
 
-	#ifdef DEBUG_CALCCARMALNLIKE
+	#ifdef DEBUG_CALCPRIOR
 	printf("calcCARMALnPosterior - threadNum: %d; LnPosterior: %f\n", threadNum, LnPosterior);
 	fflush(0);
 	#endif
@@ -103,7 +102,7 @@ double kali::calcLnPrior(double *walkerPos, void *func_args) {
 
 	if (Systems[threadNum].checkCARMAParams(walkerPos) == 1) {
 
-		#ifdef DEBUG_FUNC2
+		#ifdef DEBUG_CALCLNPRIOR
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
@@ -115,7 +114,7 @@ double kali::calcLnPrior(double *walkerPos, void *func_args) {
 		LnPrior = 0.0;
 		} else {
 
-		#ifdef DEBUG_FUNC2
+		#ifdef DEBUG_CALCLNPRIOR
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
@@ -197,6 +196,9 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 			printf("calcLnPosterior - threadNum: %d; P\n",threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
+            printf("calcLnPosterior - threadNum: %d; LnPrior: %e\n",threadNum, LnPrior);
+			printf("\n");
+			fflush(0);
 			fflush(0);
 		#endif
 
@@ -247,7 +249,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 		Systems[threadNum].resetState();
 		LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 
-		#ifdef DEBUG_CALCLNPOSTERIOR2
+		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
@@ -292,6 +294,8 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 			printf("calcLnPosterior - threadNum: %d; P\n",threadNum);
 			Systems[threadNum].printP();
 			printf("\n");
+            printf("calcLnPosterior - threadNum: %d; LnPrior: %e\n",threadNum, LnPrior);
+			printf("\n");
 			fflush(0);
 		#endif
 
@@ -301,7 +305,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 		Systems[threadNum].solveCARMA();
 		//Systems[threadNum].resetState();
 
-		#ifdef DEBUG_CALCLNPOSTERIOR2
+		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ", threadNum);
 			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
@@ -2112,7 +2116,7 @@ void kali::CARMA::burnSystem(int numBurn, unsigned int burnSeed, double* burnRan
 	}
 
 void kali::CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR;
@@ -2163,7 +2167,7 @@ void kali::CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, do
 	}
 
 void kali::CARMA::extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
@@ -2221,7 +2225,7 @@ double kali::CARMA::getIntrinsicVar() {
 	}
 
 double kali::CARMA::getMeanFlux(LnLikeData *ptr2Data) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
 
@@ -2230,7 +2234,7 @@ double kali::CARMA::getMeanFlux(LnLikeData *ptr2Data) {
 	}
 
 void kali::CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	double fracIntrinsicVar = Data.fracIntrinsicVar;
@@ -2259,7 +2263,7 @@ void kali::CARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, dou
 	}
 
 void kali::CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
@@ -2291,7 +2295,7 @@ void kali::CARMA::extendObserveNoise(LnLikeData *ptr2Data, unsigned int noiseSee
 	}
 
 double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR;
@@ -2407,6 +2411,9 @@ double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 		}
+    #ifdef DEBUG_COMPUTELNLIKELIHOOD
+    	printf("LnLike: %e\n", LnLikelihood);
+    #endif
 	LnLikelihood += -0.5*ptCounter*kali::log2Pi;
 
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
@@ -2419,7 +2426,7 @@ double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	}
 
 double kali::CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
@@ -2554,7 +2561,7 @@ double kali::CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 
 
 double kali::CARMA::computeLnPrior(LnLikeData *ptr2Data) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	double currentLnPrior = Data.currentLnPrior;
@@ -2854,7 +2861,7 @@ void kali::CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 	}
 
 int kali::CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
-	LnLikeData Data = *ptr2Data;
+	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
 	double tolIR = Data.tolIR;
