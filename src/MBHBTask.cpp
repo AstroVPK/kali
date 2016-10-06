@@ -423,7 +423,7 @@ int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux,
 		delete optArray[i];
 		}
 	_mm_free(max_LnPosterior);
-	EnsembleSampler newEnsemble = EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, kali::calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
+	kali::EnsembleSampler newEnsemble = kali::EnsembleSampler(ndims, nwalkers, nsteps, numThreads, mcmcA, kali::calcLnPosterior, p2Args, zSSeed, walkerSeed, moveSeed);
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
 	newEnsemble.getChain(Chain);

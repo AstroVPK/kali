@@ -215,15 +215,15 @@ kali::MBHB::MBHB() {
 	}
 
 kali::MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentricityVal, double omegaVal, double inclinationVal, double tauVal, double alpha1Val, double alpha2Val) {
-	a1 = a1Val*Parsec;
-	a2 = a2Val*Parsec;
-	period = periodVal*Day;
-	totalMass = (fourPiSq*pow(a1 + a2, 3.0))/(G*pow(period, 2.0));
+	a1 = a1Val*kali::Parsec;
+	a2 = a2Val*kali::Parsec;
+	period = periodVal*kali::Day;
+	totalMass = (kali::fourPiSq*pow(a1 + a2, 3.0))/(kali::G*pow(period, 2.0));
 	massRatio = a1/a2;
 	m1 = totalMass*(1.0/(1.0 + massRatio));
 	m2 = totalMass*(massRatio/(1.0 + massRatio));
-	rS1 = 2.0*G*m1/pow(c, 2.0);
-	rS2 = 2.0*G*m2/pow(c, 2.0);
+	rS1 = 2.0*kali::G*m1/pow(kali::c, 2.0);
+	rS2 = 2.0*kali::G*m2/pow(kali::c, 2.0);
 	reducedMass = m1*m2/(m1 + m2);
 	eccentricity = eccentricityVal;
 	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
@@ -234,13 +234,13 @@ kali::MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentrici
 	rApobothron2 = a2*(1.0 + eccentricity);
 	rApobothronTot = rApobothron1 + rApobothron2;
 	omega1 = d2r(omegaVal);
-	omega2 = omega1 + pi;
+	omega2 = omega1 + kali::pi;
 	inclination = d2r(inclinationVal);
-	tau = tauVal*Day;
+	tau = tauVal*kali::Day;
 	alpha1 = alpha1Val;
 	alpha2 = alpha2Val;
 	epoch = 0.0;
-	M = twoPi*(epoch - tau)/period;
+	M = kali::twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
 	KeplersEqnData Data;
 	Data.eccentricity = eccentricity;
@@ -257,16 +257,16 @@ kali::MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentrici
 	r2 = (m1*r1)/m2; // current distance of m2 from COM
 	nu = 2.0*atan(eccentricityFactor*tan(E/2.0)); // current true anomoly of m1
 	if (nu < 0.0) {
-		nu += 2.0*pi;
+		nu += 2.0*kali::pi;
 		}
 	theta1 = nu + omega1;
 	theta2 = nu + omega2;
-	beta1 = sqrt(((G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/c;
-	beta2 = sqrt(((G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/c;
-	_radialBetaFactor1 = (((twoPi/period)*a1)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
-	_radialBetaFactor2 = (((twoPi/period)*a2)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
-	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/c;
-	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/c;
+	beta1 = sqrt(((kali::G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/kali::c;
+	beta2 = sqrt(((kali::G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/kali::c;
+	_radialBetaFactor1 = (((kali::twoPi/period)*a1)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	_radialBetaFactor2 = (((kali::twoPi/period)*a2)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/kali::c;
+	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/kali::c;
 	dF1 = (sqrt(1.0 - pow(beta1, 2.0)))/(1.0 - radialBeta1);
 	dF2 = (sqrt(1.0 - pow(beta2, 2.0)))/(1.0 - radialBeta2);
 	bF1 = pow(dF1, 3.0 - alpha1);
@@ -276,15 +276,15 @@ kali::MBHB::MBHB(double a1Val, double a2Val, double periodVal, double eccentrici
 	}
 
 void kali::MBHB::setMBHB(double *Theta) {
-	a1 = Theta[0]*Parsec;
-	a2 = Theta[1]*Parsec;
-	period = Theta[2]*Day;
-	totalMass = (fourPiSq*pow(a1 + a2, 3.0))/(G*pow(period, 2.0));
+	a1 = Theta[0]*kali::Parsec;
+	a2 = Theta[1]*kali::Parsec;
+	period = Theta[2]*kali::Day;
+	totalMass = (kali::fourPiSq*pow(a1 + a2, 3.0))/(kali::G*pow(period, 2.0));
 	massRatio = a1/a2;
 	m1 = totalMass*(1.0/(1.0 + massRatio));
 	m2 = totalMass*(massRatio/(1.0 + massRatio));
-	rS1 = (2.0*G*m1)/(pow(c, 2.0));
-	rS2 = (2.0*G*m2)/(pow(c, 2.0));
+	rS1 = (2.0*kali::G*m1)/(pow(kali::c, 2.0));
+	rS2 = (2.0*kali::G*m2)/(pow(kali::c, 2.0));
 	reducedMass = m1*m2/(m1 + m2);
 	eccentricity = Theta[3];
 	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
@@ -295,14 +295,14 @@ void kali::MBHB::setMBHB(double *Theta) {
 	rApobothron2 = a2*(1.0 + eccentricity);
 	rApobothronTot = rApobothron1 + rApobothron2;
 	omega1 = d2r(Theta[4]);
-	omega2 = omega1 + pi;
+	omega2 = omega1 + kali::pi;
 	inclination = d2r(Theta[5]);
-	tau = Theta[6]*Day;
+	tau = Theta[6]*kali::Day;
 	alpha1 = -0.44;
 	alpha2 = -0.44;
-	period = twoPi*sqrt(pow(a1 + a2, 3.0)/(G*totalMass));
+	period = kali::twoPi*sqrt(pow(a1 + a2, 3.0)/(kali::G*totalMass));
 	epoch = 0.0;
-	M = twoPi*(epoch - tau)/period;
+	M = kali::twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
 	KeplersEqnData Data;
 	Data.eccentricity = eccentricity;
@@ -319,16 +319,16 @@ void kali::MBHB::setMBHB(double *Theta) {
 	r2 = (m1*r1)/m2; // current distance of m2 from COM
 	nu = 2.0*atan(eccentricityFactor*tan(E/2.0)); // current true anomoly of m1
 	if (nu < 0.0) {
-		nu += 2.0*pi;
+		nu += 2.0*kali::pi;
 		}
 	theta1 = nu + omega1;
 	theta2 = nu + omega2;
-	beta1 = sqrt(((G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/c;
-	beta2 = sqrt(((G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/c;
-	_radialBetaFactor1 = (((twoPi/period)*a1)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
-	_radialBetaFactor2 = (((twoPi/period)*a2)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
-	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/c;
-	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/c;
+	beta1 = sqrt(((kali::G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/kali::c;
+	beta2 = sqrt(((kali::G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/kali::c;
+	_radialBetaFactor1 = (((kali::twoPi/period)*a1)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	_radialBetaFactor2 = (((kali::twoPi/period)*a2)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/kali::c;
+	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/kali::c;
 	dF1 = (sqrt(1.0 - pow(beta1, 2.0)))/(1.0 - radialBeta1);
 	dF2 = (sqrt(1.0 - pow(beta2, 2.0)))/(1.0 - radialBeta2);
 	bF1 = pow(dF1, 3.0 - alpha1);
@@ -338,7 +338,7 @@ void kali::MBHB::setMBHB(double *Theta) {
 	}
 
 void kali::MBHB::operator()() {
-	M = twoPi*(epoch - tau)/period;
+	M = kali::twoPi*(epoch - tau)/period;
 	nlopt::opt opt(nlopt::LN_COBYLA, 1);
 	KeplersEqnData Data;
 	Data.eccentricity = eccentricity;
@@ -355,14 +355,14 @@ void kali::MBHB::operator()() {
 	r2 = (m1*r1)/m2; // current distance of m2 from COM
 	nu = 2.0*atan(eccentricityFactor*tan(E/2.0)); // current true anomoly of m1
 	if (nu < 0.0) {
-		nu += 2.0*pi;
+		nu += 2.0*kali::pi;
 		}
 	theta1 = nu + omega1;
 	theta2 = nu + omega2;
-	beta1 = sqrt(((G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/c;
-	beta2 = sqrt(((G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/c;
-	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/c;
-	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/c;
+	beta1 = sqrt(((kali::G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/kali::c;
+	beta2 = sqrt(((kali::G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/kali::c;
+	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/kali::c;
+	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/kali::c;
 	dF1 = (sqrt(1.0 - pow(beta1, 2.0)))/(1.0 - radialBeta1);
 	dF2 = (sqrt(1.0 - pow(beta2, 2.0)))/(1.0 - radialBeta2);
 	bF1 = pow(dF1, 3.0 - alpha1);
@@ -371,8 +371,8 @@ void kali::MBHB::operator()() {
 
 int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 	int retVal = 1;
-	double a1Val = Parsec*ThetaIn[0];
-	double a2Val = Parsec*ThetaIn[1];
+	double a1Val = kali::Parsec*ThetaIn[0];
+	double a2Val = kali::Parsec*ThetaIn[1];
 
 	if (a2Val < a1Val) {
 		retVal = 0;
@@ -382,13 +382,13 @@ int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 		#endif
 		}
 
-	double periodVal = Day*ThetaIn[2];
-	double totalMassVal = (fourPiSq*pow(a1Val + a2Val, 3.0))/(G*pow(periodVal, 2.0));
+	double periodVal = kali::Day*ThetaIn[2];
+	double totalMassVal = (kali::fourPiSq*pow(a1Val + a2Val, 3.0))/(kali::G*pow(periodVal, 2.0));
 	double massRatioVal = a1Val/a2Val;
 	double m1Val = totalMassVal*(1.0/(1.0 + massRatioVal));
 	double m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal));
-	double rS1Val = (2.0*G*m1Val)/(pow(c, 2.0));
-	double rS2Val = (2.0*G*m2Val)/(pow(c, 2.0));
+	double rS1Val = (2.0*kali::G*m1Val)/(pow(kali::c, 2.0));
+	double rS2Val = (2.0*kali::G*m2Val)/(pow(kali::c, 2.0));
 
 	double eccentricityVal = ThetaIn[3];
 	if (eccentricityVal < 0.0) {
@@ -423,11 +423,11 @@ int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 			printf("omega1LLim: %4.3e\n",0.0);
 		#endif
 		}
-	if (omega1Val >= twoPi) {
+	if (omega1Val >= kali::twoPi) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("omega1: %4.3e\n",omega1Val);
-			printf("omega1ULim: %4.3e\n",twoPi);
+			printf("omega1ULim: %4.3e\n",kali::twoPi);
 		#endif
 		}
 
@@ -439,15 +439,15 @@ int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 			printf("inclinationLLim: %4.3e\n",0.0);
 		#endif
 		}
-	if (inclinationVal > halfPi) {
+	if (inclinationVal > kali::halfPi) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("inclination: %4.3e\n",inclinationVal);
-			printf("inclinationULim: %4.3e\n",pi);
+			printf("inclinationULim: %4.3e\n",kali::halfPi);
 		#endif
 		}
 
-	double tauVal = ThetaIn[6]*Day;
+	double tauVal = ThetaIn[6]*kali::Day;
 
 	double totalFluxVal = ThetaIn[7];
 	if (totalFluxVal < 0.0) {
@@ -477,42 +477,42 @@ int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 	return retVal;
 	}
 
-double kali::MBHB::getEpoch() {return epoch/Day;}
+double kali::MBHB::getEpoch() {return epoch/kali::Day;}
 
 void kali::MBHB::setEpoch(double epochIn) {
-	epoch = epochIn*Day;
+	epoch = epochIn*kali::Day;
 	(*this)();
 	}
 
-double kali::MBHB::getPeriod() {return period/Day;}
+double kali::MBHB::getPeriod() {return period/kali::Day;}
 
-double kali::MBHB::getA1() {return a1/Parsec;}
+double kali::MBHB::getA1() {return a1/kali::Parsec;}
 
-double kali::MBHB::getA2() {return a2/Parsec;}
+double kali::MBHB::getA2() {return a2/kali::Parsec;}
 
-double kali::MBHB::getM1() {return m1/(SolarMass*1.0e6);}
+double kali::MBHB::getM1() {return m1/(kali::SolarMass*1.0e6);}
 
-double kali::MBHB::getM2() {return m2/(SolarMass*1.0e6);}
+double kali::MBHB::getM2() {return m2/(kali::SolarMass*1.0e6);}
 
-double kali::MBHB::getM12() {return totalMass/(SolarMass*1.0e6);}
+double kali::MBHB::getM12() {return totalMass/(kali::SolarMass*1.0e6);}
 
 double kali::MBHB::getM2OverM1() {return massRatio;}
 
-double kali::MBHB::getRPeribothron1() {return rPeribothron1/Parsec;}
+double kali::MBHB::getRPeribothron1() {return rPeribothron1/kali::Parsec;}
 
-double kali::MBHB::getRPeribothron2() {return rPeribothron2/Parsec;}
+double kali::MBHB::getRPeribothron2() {return rPeribothron2/kali::Parsec;}
 
-double kali::MBHB::getRPeribothronTot() {return rPeribothronTot/Parsec;}
+double kali::MBHB::getRPeribothronTot() {return rPeribothronTot/kali::Parsec;}
 
-double kali::MBHB::getRApobothron1() {return rApobothron1/Parsec;}
+double kali::MBHB::getRApobothron1() {return rApobothron1/kali::Parsec;}
 
-double kali::MBHB::getRApobothron2() {return rApobothron2/Parsec;}
+double kali::MBHB::getRApobothron2() {return rApobothron2/kali::Parsec;}
 
-double kali::MBHB::getRApobothronTot() {return rApobothronTot/Parsec;}
+double kali::MBHB::getRApobothronTot() {return rApobothronTot/kali::Parsec;}
 
-double kali::MBHB::getRS1() {return rS1/Parsec;}
+double kali::MBHB::getRS1() {return rS1/kali::Parsec;}
 
-double kali::MBHB::getRS2() {return rS2/Parsec;}
+double kali::MBHB::getRS2() {return rS2/kali::Parsec;}
 
 double kali::MBHB::getEccentricity() {return eccentricity;}
 
@@ -522,7 +522,7 @@ double kali::MBHB::getOmega2() {return r2d(omega2);}
 
 double kali::MBHB::getInclination() {return r2d(inclination);}
 
-double kali::MBHB::getTau() {return tau/Day;}
+double kali::MBHB::getTau() {return tau/kali::Day;}
 
 double kali::MBHB::getMeanAnomoly() {return r2d(M);}
 
@@ -530,9 +530,9 @@ double kali::MBHB::getEccentricAnomoly() {return r2d(E);}
 
 double kali::MBHB::getTrueAnomoly() {return r2d(nu);}
 
-double kali::MBHB::getR1() {return r1/Parsec;}
+double kali::MBHB::getR1() {return r1/kali::Parsec;}
 
-double kali::MBHB::getR2() {return r2/Parsec;}
+double kali::MBHB::getR2() {return r2/kali::Parsec;}
 
 double kali::MBHB::getTheta1() {return r2d(theta1);}
 
@@ -555,43 +555,43 @@ double kali::MBHB::getBeamingFactor1() {return bF1;}
 double kali::MBHB::getBeamingFactor2() {return bF2;}
 
 double kali::MBHB::aH(double sigmaStars) {
-	double aHVal = (G*reducedMass)/(4.0*pow((sigmaStars*kms2ms), 2.0));
-	return aHVal/Parsec;
+	double aHVal = (kali::G*reducedMass)/(4.0*pow((sigmaStars*kali::kms2ms), 2.0));
+	return aHVal/kali::Parsec;
 	}
 
 double kali::MBHB::aGW(double sigmaStars, double rhoStars, double H) {
-	double aGWVal = pow((64.0*pow(G*reducedMass, 2.0)*totalMass*(kms2ms*sigmaStars))/(5.0*H*pow(c, 5.0)*(SolarMassPerCubicParsec*rhoStars)), 0.2);
-	return aGWVal/Parsec;
+	double aGWVal = pow((64.0*pow(kali::G*reducedMass, 2.0)*totalMass*(kali::kms2ms*sigmaStars))/(5.0*H*pow(kali::c, 5.0)*(kali::SolarMassPerCubicParsec*rhoStars)), 0.2);
+	return aGWVal/kali::Parsec;
 	}
 
 double kali::MBHB::durationInHardState(double sigmaStars, double rhoStars, double H) {
-	double durationInHardStateVal = ((sigmaStars*kms2ms)/(H*G*(SolarMassPerCubicParsec*rhoStars)*aGW(sigmaStars, rhoStars, H)));
-	return durationInHardStateVal/Day;
+	double durationInHardStateVal = ((sigmaStars*kali::kms2ms)/(H*kali::G*(kali::SolarMassPerCubicParsec*rhoStars)*aGW(sigmaStars, rhoStars, H)));
+	return durationInHardStateVal/kali::Day;
 	}
 
 double kali::MBHB::ejectedMass(double sigmaStars, double rhoStars, double H) {
 	double ejectedMassVal = totalMass*log(aH(sigmaStars)/aGW(sigmaStars, rhoStars, H));
-	return ejectedMassVal/(SolarMass*1.0e6);
+	return ejectedMassVal/(kali::SolarMass*1.0e6);
 	}
 
 void kali::MBHB::print() {
 	cout.precision(5);
-	cout << scientific << "                            a1: " << a1/Parsec << " (pc)" << endl;
-	cout << scientific << "                            a2: " << a2/Parsec << " (pc)" << endl;
-	cout << scientific << "                        Period: " << period/Day << " (day) == " << period/Year  << " (year)" << endl;
-	cout << scientific << "                            m1: " << m1/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
-	cout << scientific << "                            m2: " << m2/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
-	cout << scientific << "                    Total Mass: " << totalMass/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
+	cout << scientific << "                            a1: " << a1/kali::Parsec << " (pc)" << endl;
+	cout << scientific << "                            a2: " << a2/kali::Parsec << " (pc)" << endl;
+	cout << scientific << "                        Period: " << period/kali::Day << " (day) == " << period/kali::Year  << " (year)" << endl;
+	cout << scientific << "                            m1: " << m1/(1.0e6*kali::SolarMass) << " (10^6 Solar Mass)" << endl;
+	cout << scientific << "                            m2: " << m2/(1.0e6*kali::SolarMass) << " (10^6 Solar Mass)" << endl;
+	cout << scientific << "                    Total Mass: " << totalMass/(1.0e6*kali::SolarMass) << " (10^6 Solar Mass)" << endl;
 	cout << scientific << "                    Mass Ratio: " << massRatio << endl;
-	cout << scientific << "                  Reduced Mass: " << reducedMass/(1.0e6*SolarMass) << " (10^6 Solar Mass)" << endl;
-	cout << scientific << "                           rS1: " << rS1/Parsec << " (pc)" << endl;
-	cout << scientific << "                           rS2: " << rS2/Parsec << " (pc)" << endl;
+	cout << scientific << "                  Reduced Mass: " << reducedMass/(1.0e6*kali::SolarMass) << " (10^6 Solar Mass)" << endl;
+	cout << scientific << "                           rS1: " << rS1/kali::Parsec << " (pc)" << endl;
+	cout << scientific << "                           rS2: " << rS2/kali::Parsec << " (pc)" << endl;
 	cout << scientific << "                  Eccentricity: " << eccentricity << endl;
-	cout << scientific << "                  rPeribothron: " << rPeribothronTot/Parsec << " (pc)" << endl;
-	cout << scientific << "                   rApobothron: " << rApobothronTot/Parsec << " (pc)" << endl;
+	cout << scientific << "                  rPeribothron: " << rPeribothronTot/kali::Parsec << " (pc)" << endl;
+	cout << scientific << "                   rApobothron: " << rApobothronTot/kali::Parsec << " (pc)" << endl;
 	cout << scientific << "Argument of periapsis (mass 1): " << r2d(omega1) << " (degree)" << endl;
 	cout << scientific << "                   Inclination: " << r2d(inclination) << " (degree)" << endl;
-	cout << scientific << "            Time of Periastron: " << tau/Day << " (day)" << endl;
+	cout << scientific << "            Time of Periastron: " << tau/kali::Day << " (day)" << endl;
 	cout << scientific << "                    Total Flux: " << totalFlux << endl;
 	//cout << scientific << "          Beamed Flux Fraction: " << fracBeamedFlux << endl;
 	}
@@ -665,10 +665,10 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
-	double dt = Data.dt*Day;
+	double dt = Data.dt*kali::Day;
 	double currentLnPrior = Data.currentLnPrior;
 	double *t = Data.t;
-	double T = (t[numCadences-1] - t[0])*Day;
+	double T = (t[numCadences-1] - t[0])*kali::Day;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
@@ -699,25 +699,25 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 		}
 
 	/*
-	if (m1Val < 1.0e-2*1.0e-6*SolarMass) {
+	if (m1Val < 1.0e-2*1.0e-6*kali::SolarMass) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m1: %4.3e\n",m1Val);
-			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
+			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*kali::SolarMass);
 		#endif
 		}
-	if (m2Val < 1.0e-2*1.0e-6*SolarMass) {
+	if (m2Val < 1.0e-2*1.0e-6*kali::SolarMass) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m2: %4.3e\n",m2Val);
-			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*SolarMass);
+			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*kali::SolarMass);
 		#endif
 		}
-	if (m1Val > 1.0e4*1.0e-6*SolarMass) {
+	if (m1Val > 1.0e4*1.0e-6*kali::SolarMass) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("m1: %4.3e\n",m1Val);
-			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*SolarMass);
+			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*kali::SolarMass);
 		#endif
 		}
 	if (m2Val > m1Val) {
@@ -727,11 +727,11 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 			printf("m2ULim: %4.3e\n",m1Val);
 		#endif
 		}
-	if (rPeribothronTotVal > 10.0*Parsec) {
+	if (rPeribothronTotVal > 10.0*kali::kali::Parsec) {
 		retVal = 0;
 		#ifdef DEBUG_CHECKMBHBPARAMS
 			printf("rPeribothronTot: %4.3e\n",rPeribothronTotVal);
-			printf("rPeribothronTotULim: %4.3e\n",1.0*Parsec);
+			printf("rPeribothronTotULim: %4.3e\n",1.0*kali::kali::Parsec);
 		#endif
 		}
 	if (tauVal < 0.0) {
@@ -759,7 +759,7 @@ double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
-	double dt = Day*Data.dt;
+	double dt = kali::Day*Data.dt;
 	double *t = Data.t;
 	double *x = Data.x;
 	double *y = Data.y;
@@ -772,8 +772,8 @@ double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 
 	for (int i = 0; i < numCadences; ++i) {
 		setEpoch(t[i]);
-		//Contrib = mask[i]*(-1.0*log2(yerr[i])/log2OfE -0.5*pow(((y[i] - totalFlux*(1.0 - fracBeamedFlux + fracBeamedFlux*getBeamingFactor2()))/yerr[i]), 2.0));
-		Contrib = mask[i]*(-1.0*log2(yerr[i])/log2OfE -0.5*pow(((y[i] - totalFlux*getBeamingFactor2())/yerr[i]), 2.0));
+		//Contrib = mask[i]*(-1.0*log2(yerr[i])/kali::log2OfE -0.5*pow(((y[i] - totalFlux*(1.0 - fracBeamedFlux + fracBeamedFlux*getBeamingFactor2()))/yerr[i]), 2.0));
+		Contrib = mask[i]*(-1.0*log2(yerr[i])/kali::log2OfE -0.5*pow(((y[i] - totalFlux*getBeamingFactor2())/yerr[i]), 2.0));
 		#ifdef DEBUG_COMPUTELNLIKELIHOOD
 			printf("y[i]: %e\n", y[i]);
 			printf("yerr[i]: %e\n", yerr[i]);
@@ -785,7 +785,7 @@ double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 			printf("x[i] - totalFlux*getBeamingFactor2(): %e\n", x[i] - totalFlux*getBeamingFactor2());
 			printf("y[i] - totalFlux*getBeamingFactor2(): %e\n", y[i] - totalFlux*getBeamingFactor2());
 			printf("-0.5*pow(((y[i] - totalFlux*getBeamingFactor2())/yerr[i]), 2.0): %e\n", -0.5*pow(((y[i] - totalFlux*getBeamingFactor2())/yerr[i]), 2.0));
-			printf("-1.0*log2(yerr[i])/log2OfE): %e\n",-1.0*log2(yerr[i])/log2OfE);
+			printf("-1.0*log2(yerr[i])/kali::log2OfE): %e\n",-1.0*log2(yerr[i])/kali::log2OfE);
 			printf("Contrib: %e\n",Contrib);
 		#endif
 		LnLikelihood = LnLikelihood + Contrib;
@@ -795,9 +795,9 @@ double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 		ptCounter += mask[i];
 		}
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
-		printf("-0.5*ptCounter*log2Pi: %e\n",-0.5*ptCounter*log2Pi);
+		printf("-0.5*ptCounter*kali::log2Pi: %e\n",-0.5*ptCounter*kali::log2Pi);
 	#endif
-	LnLikelihood += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*kali::log2Pi;
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("LnLikelihood: %e\n",LnLikelihood);
 	#endif

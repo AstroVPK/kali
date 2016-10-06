@@ -80,7 +80,7 @@ double calcLnPrior(const vector<double> &x, vector<double>& grad, void *p2Args) 
 	if (Systems[threadNum].checkCARMAParams(const_cast<double*>(&x[0])) == 1) {
 		LnPrior = 0.0;
 		} else {
-		LnPrior = -infiniteVal;
+		LnPrior = -kali::infiniteVal;
 		}
 
 	#ifdef DEBUG_CALCCARMALNLIKE
@@ -124,7 +124,7 @@ double calcLnPrior(double *walkerPos, void *func_args) {
 		printf("calcLnLike - threadNum: %d; System bad!\n",threadNum);
 		#endif
 
-		LnPrior = -infiniteVal;
+		LnPrior = -kali::infiniteVal;
 		}
 	return LnPrior;
 	}
@@ -223,7 +223,7 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void *p2Ar
 		#endif
 
 		} else {
-		LnPosterior = -infiniteVal;
+		LnPosterior = -kali::infiniteVal;
 		}
 	return LnPosterior;
 	}
@@ -318,7 +318,7 @@ double calcLnPosterior(double *walkerPos, void *func_args) {
 		#endif
 
 		} else {
-		LnPosterior = -infiniteVal;
+		LnPosterior = -kali::infiniteVal;
 		}
 	return LnPosterior;
 	}
@@ -417,7 +417,7 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 
 	int p = numP, q = numQ, pSq = p*p, qSq = q*q;
 	lapack_int YesNo;
-	complex<double> alpha = complexOne, beta = complexZero;
+	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 
 	complex<double> *A = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
 	complex<double> *ACopy = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>),64));
@@ -441,29 +441,29 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 	abnrm[0] = 0.0;
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		B[colCtr] = complexZero;
-		BScratch[colCtr] = complexZero;
+		B[colCtr] = kali::complexZero;
+		BScratch[colCtr] = kali::complexZero;
 		ipiv[colCtr] = 0;
 		scale[colCtr] = 0.0;
 		rconde[colCtr] = 0.0;
 		rcondv[colCtr] = 0.0;
-		w[colCtr] = complexZero;
+		w[colCtr] = kali::complexZero;
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			A[rowCtr + colCtr*p] = complexZero;
-			ACopy[rowCtr + colCtr*p] = complexZero;
-			AScratch[rowCtr + colCtr*p] = complexZero;
-			vr[rowCtr + colCtr*p] = complexZero;
-			vrInv[rowCtr + colCtr*p] = complexZero;
-			C[rowCtr + colCtr*p] = complexZero;
+			A[rowCtr + colCtr*p] = kali::complexZero;
+			ACopy[rowCtr + colCtr*p] = kali::complexZero;
+			AScratch[rowCtr + colCtr*p] = kali::complexZero;
+			vr[rowCtr + colCtr*p] = kali::complexZero;
+			vrInv[rowCtr + colCtr*p] = kali::complexZero;
+			C[rowCtr + colCtr*p] = kali::complexZero;
 			}
 		}
 
-	A[0] = -1.0*complexOne*Theta[0];
+	A[0] = -1.0*kali::complexOne*Theta[0];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i] = -1.0*complexOne*Theta[i];
-		A[i*p + (i - 1)] = complexOne;
+		A[i] = -1.0*kali::complexOne*Theta[i];
+		A[i*p + (i - 1)] = kali::complexOne;
 		}
 
 	cblas_zcopy(pSq, A, 1, ACopy, 1); // Copy A into ACopy so that we can keep a clean working version of it.
@@ -478,7 +478,7 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
-		B[p - 1 - rowCtr] = complexOne*Theta[p + rowCtr];
+		B[p - 1 - rowCtr] = kali::complexOne*Theta[p + rowCtr];
 		}
 
 	// Start computation of C
@@ -504,7 +504,7 @@ void getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 	for (int colNum = 0; colNum < p; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < p; ++rowNum) {
-			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - complexOne)*(complexOne/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
+			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - kali::complexOne)*(kali::complexOne/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
 		}
 	}
 
@@ -784,10 +784,10 @@ void CARMA::allocCARMA(int numP, int numQ) {
 		allocated += qSq*sizeof(complex<double>);
 
 		for (int colCtr = 0; colCtr < q; ++colCtr) {
-			CMAw[colCtr] = complexZero;
+			CMAw[colCtr] = kali::complexZero;
 			#pragma omp simd
 			for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-				CMAMatrix[rowCtr + colCtr*q] = complexZero;
+				CMAMatrix[rowCtr + colCtr*q] = kali::complexZero;
 				}
 			}
 		}
@@ -808,21 +808,21 @@ void CARMA::allocCARMA(int numP, int numQ) {
 	allocated += 8*pSq*sizeof(complex<double>);
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
-		w[colCtr] = complexZero;
-		CARw[colCtr] = complexZero;
+		w[colCtr] = kali::complexZero;
+		CARw[colCtr] = kali::complexZero;
 		B[colCtr] = 0.0;
 		BScratch[colCtr] = 0.0;
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			CARMatrix[rowCtr + colCtr*p] = complexZero;
-			expw[rowCtr + colCtr*p] = complexZero;
-			vr[rowCtr + colCtr*p] = complexZero;
-			vrInv[rowCtr + colCtr*p] = complexZero;
-			A[rowCtr + colCtr*p] = complexZero;
-			C[rowCtr + colCtr*p] = complexZero;
-			ACopy[rowCtr + colCtr*p] = complexZero;
-			AScratch[rowCtr + colCtr*p] = complexZero;
-			AScratch2[rowCtr + colCtr*p] = complexZero;
+			CARMatrix[rowCtr + colCtr*p] = kali::complexZero;
+			expw[rowCtr + colCtr*p] = kali::complexZero;
+			vr[rowCtr + colCtr*p] = kali::complexZero;
+			vrInv[rowCtr + colCtr*p] = kali::complexZero;
+			A[rowCtr + colCtr*p] = kali::complexZero;
+			C[rowCtr + colCtr*p] = kali::complexZero;
+			ACopy[rowCtr + colCtr*p] = kali::complexZero;
+			AScratch[rowCtr + colCtr*p] = kali::complexZero;
+			AScratch2[rowCtr + colCtr*p] = kali::complexZero;
 			}
 		}
 
@@ -885,7 +885,7 @@ void CARMA::allocCARMA(int numP, int numQ) {
 
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i*p + (i - 1)] = complexOne;
+		A[i*p + (i - 1)] = kali::complexOne;
 		I[(i - 1)*p + (i - 1)] = 1.0;
 		}
 	I[(p - 1)*p + (p - 1)] = 1.0;
@@ -1430,22 +1430,22 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 	for (int rowCtr = 0; rowCtr < p; rowCtr++) {
 		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; colCtr++) {
-			CARMatrix[rowCtr + p*colCtr] = complexZero; // Reset matrix.
+			CARMatrix[rowCtr + p*colCtr] = kali::complexZero; // Reset matrix.
 			}
 		}
 
-	CARMatrix[p*(p-1)] = -1.0*complexOne*ThetaIn[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*kali::complexOne*ThetaIn[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		CARMatrix[rowCtr+(p-1)*p] = -1.0*complexOne*ThetaIn[p - 1 - rowCtr]; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
-		CARMatrix[rowCtr+(rowCtr-1)*p] = complexOne; // CARMatrix has Identity matrix in bottom left.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*kali::complexOne*ThetaIn[p - 1 - rowCtr]; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(rowCtr-1)*p] = kali::complexOne; // CARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
 	ihi[0] = 0;
 	abnrm[0] = 0.0;
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		CARw[rowCtr] = complexZero;
+		CARw[rowCtr] = kali::complexZero;
 		scale[rowCtr] = 0.0;
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
@@ -1502,21 +1502,21 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
 			#pragma omp simd
 			for (int colCtr = 0; colCtr < q; colCtr++) {
-				CMAMatrix[rowCtr + q*colCtr] = complexZero; // Initialize matrix.
+				CMAMatrix[rowCtr + q*colCtr] = kali::complexZero; // Initialize matrix.
 				}
 			}
-		CMAMatrix[(q-1)*q] = -1.0*complexOne*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
+		CMAMatrix[(q-1)*q] = -1.0*kali::complexOne*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
 		#pragma omp simd
 		for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*complexOne*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
-			CMAMatrix[rowCtr + (rowCtr - 1)*q] = complexOne; // MAMatrix has Identity matrix in bottom left.
+			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*kali::complexOne*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
+			CMAMatrix[rowCtr + (rowCtr - 1)*q] = kali::complexOne; // MAMatrix has Identity matrix in bottom left.
 			}
 		ilo[0] = 0;
 		ihi[0] = 0;
 		abnrm[0] = 0.0;
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < q; ++rowCtr) {
-			CMAw[rowCtr] = complexZero;
+			CMAw[rowCtr] = kali::complexZero;
 			}
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -1600,7 +1600,7 @@ int CARMA::checkCARMAParams(double *ThetaIn /**< [in]  */) {
 
 void CARMA::setCARMA(double *ThetaIn) {
 
-	complex<double> alpha = complexOne, beta = complexZero;
+	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 
 	#if (defined DEBUG_SETCARMA) || (defined DEBUG_SETCARMA_C)
 	int threadNum = omp_get_thread_num();
@@ -1619,16 +1619,16 @@ void CARMA::setCARMA(double *ThetaIn) {
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			A[rowCtr + colCtr*p] = complexZero;
+			A[rowCtr + colCtr*p] = kali::complexZero;
 			//A[rowCtr + colCtr*p].imag(0.0);
 			}
 		}
 
-	A[0] = -1.0*complexOne*Theta[0];
+	A[0] = -1.0*kali::complexOne*Theta[0];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i] = -1.0*complexOne*Theta[i];
-		A[i*p + (i - 1)] = complexOne;
+		A[i] = -1.0*kali::complexOne*Theta[i];
+		A[i*p + (i - 1)] = kali::complexOne;
 		}
 
 	cblas_zcopy(pSq, A, 1, ACopy, 1); // Copy A into ACopy so that we can keep a clean working version of it.
@@ -1651,14 +1651,14 @@ void CARMA::setCARMA(double *ThetaIn) {
 	ihi[0] = 0;
 	abnrm[0] = 0.0;
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-		w[rowCtr] = complexZero;
+		w[rowCtr] = kali::complexZero;
 		scale[rowCtr] = 0.0;
 		rconde[rowCtr] = 0.0;
 		rcondv[rowCtr] = 0.0;
 		#pragma omp simd
 		for (int colCtr = 0; colCtr < p; ++colCtr) {
-			vr[rowCtr + colCtr*p] = complexZero;
-			vrInv[rowCtr + colCtr*p] = complexZero;
+			vr[rowCtr + colCtr*p] = kali::complexZero;
+			vrInv[rowCtr + colCtr*p] = kali::complexZero;
 			}
 		}
 
@@ -1691,7 +1691,7 @@ void CARMA::setCARMA(double *ThetaIn) {
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
-		B[p - 1 - rowCtr] = complexOne*Theta[p + rowCtr];
+		B[p - 1 - rowCtr] = kali::complexOne*Theta[p + rowCtr];
 		}
 
 	#ifdef DEBUG_SETCARMA
@@ -1902,7 +1902,7 @@ void CARMA::solveCARMA() {
 	printf("\n");
 	#endif
 
-	complex<double> alpha = complexOne, beta = complexZero;
+	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 
 	#ifdef DEBUG_SOLVECARMA_F
 	printf("solveCARMA - threadNum: %d; walkerPos: ",threadNum);
@@ -2014,8 +2014,8 @@ void CARMA::solveCARMA() {
 	for (int colNum = 0; colNum < p; ++colNum) {
 		#pragma omp simd
 		for (int rowNum = 0; rowNum < p; ++rowNum) {
-			AScratch[rowNum + p*colNum] = C[rowNum + p*colNum]*(exp((complexOne*dt)*(w[rowNum] + w[colNum])) - complexOne)*(complexOne/(w[rowNum] + w[colNum])); // AScratch[i,j] = (C[i,j]*(exp((lambda[i] + lambda[j])*dt) - 1))/(lambda[i] + lambda[j])
-			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - complexOne)*(complexOne/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
+			AScratch[rowNum + p*colNum] = C[rowNum + p*colNum]*(exp((kali::complexOne*dt)*(w[rowNum] + w[colNum])) - kali::complexOne)*(kali::complexOne/(w[rowNum] + w[colNum])); // AScratch[i,j] = (C[i,j]*(exp((lambda[i] + lambda[j])*dt) - 1))/(lambda[i] + lambda[j])
+			ACopy[rowNum + p*colNum] = C[rowNum + p*colNum]*( - kali::complexOne)*(kali::complexOne/(w[rowNum] + w[colNum])); // ACopy[i,j] = = (C[i,j]*( - 1/(lambda[i] + lambda[j]))
 		}
 	}
 
@@ -2294,7 +2294,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
-	double tolIR = Data.tolIR; 
+	double tolIR = Data.tolIR;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2342,7 +2342,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 			P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 			}
 		}
-	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("Contrib[%d]: %e\n", 0, Contrib);
@@ -2396,7 +2396,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 
 		#ifdef DEBUG_COMPUTELNLIKELIHOOD
 			if (i < MAXPRINT) {
@@ -2407,7 +2407,7 @@ double CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 		}
-	LnLikelihood += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*kali::log2Pi;
 
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("LnLike: %e\n", LnLikelihood);
@@ -2424,7 +2424,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 	int numCadences = Data.numCadences;
 	int cadenceNum = Data.cadenceNum;
 	double currentLnLikelihood = Data.currentLnLikelihood;
-	double tolIR = Data.tolIR; 
+	double tolIR = Data.tolIR;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2474,7 +2474,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 			P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 			}
 		}
-	Contrib = mask[startCadence]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	Contrib = mask[startCadence]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("Contrib[%d]: %e\n", startCadence, Contrib);
@@ -2528,7 +2528,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 				P[colCounter*p+rowCounter] = PMinus[colCounter*p+rowCounter] + R[0]*K[colCounter]*K[rowCounter]; // Compute P = PMinus + K*R*K_Transpose
 				}
 			}
-		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 
 		#ifdef DEBUG_COMPUTELNLIKELIHOOD
 			if (i < MAXPRINT) {
@@ -2539,7 +2539,7 @@ double CARMA::updateLnLikelihood(LnLikeData *ptr2Data) {
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1*static_cast<int>(mask[i]);
 		}
-	LnLikelihood += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*kali::log2Pi;
 
 	#ifdef DEBUG_COMPUTELNLIKELIHOOD
 		printf("LnLike: %e\n", LnLikelihood);
@@ -2581,12 +2581,12 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	#endif
 
 	if (sqrt(Sigma[0]) > maxSigma) {
-		LnPrior = -infiniteVal;
+		LnPrior = -kali::infiniteVal;
 		}
 
 	for (int i = 0; i < p; ++i) {
 		timescale = fabs(1.0/(CARw[i].real()));
-		timescaleOsc = fabs((2.0*pi)/(CARw[i].imag()));
+		timescaleOsc = fabs((2.0*kali::pi)/(CARw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
 		printf("computeLnPrior - threadNum: %d; minTimescale:       %+4.3e\n", threadNum, minTimescale);
@@ -2597,16 +2597,16 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		#endif
 
 		if (timescale < minTimescale) {
-			LnPrior = -infiniteVal; 
+			LnPrior = -kali::infiniteVal;
 			}
 
 		if (timescale > maxTimescale) {
-			LnPrior = -infiniteVal;
+			LnPrior = -kali::infiniteVal;
 			}
 
 		if (timescaleOsc > 0.0) {
 			if (timescaleOsc < minTimescale) {
-				LnPrior = -infiniteVal;
+				LnPrior = -kali::infiniteVal;
 				}
 			}
 
@@ -2614,7 +2614,7 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 	for (int i = 0; i < q; ++i) {
 		timescale = fabs(1.0/(CMAw[i].real()));
-		timescaleOsc = fabs((2.0*pi)/(CMAw[i].imag()));
+		timescaleOsc = fabs((2.0*kali::pi)/(CMAw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
 		printf("computeLnPrior - threadNum: %d; CMAw:               %+4.3e %+4.3e\n", threadNum, CMAw[i].real(), CMAw[i].imag());
@@ -2623,16 +2623,16 @@ double CARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		#endif
 
 		if (timescale < minTimescale) {
-			LnPrior = -infiniteVal; 
+			LnPrior = -kali::infiniteVal;
 			}
 
 		if (timescale > maxTimescale) {
-			LnPrior = -infiniteVal;
+			LnPrior = -kali::infiniteVal;
 			}
 
 		if (timescaleOsc > 0.0) {
 			if (timescaleOsc < minTimescale) {
-				LnPrior = -infiniteVal;
+				LnPrior = -kali::infiniteVal;
 				}
 			}
 
@@ -2652,14 +2652,14 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 	#ifdef DEBUG_COMPUTEACVF
 	int threadNum = omp_get_thread_num();
 	#endif
-	complex<double> alpha = complexOne, beta = complexZero;
+	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 	complex<double> *expw_acvf = static_cast<complex<double>*>(_mm_malloc(pSq*sizeof(complex<double>), 64));
 	double T = 0.0, *F_acvf = static_cast<double*>(_mm_malloc(pSq*sizeof(double), 64));
 
 	for (int colCtr = 0; colCtr < p; ++colCtr) {
 		#pragma omp simd
 		for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
-			expw_acvf[rowCtr + p*colCtr] = complexZero;
+			expw_acvf[rowCtr + p*colCtr] = kali::complexZero;
 			F_acvf[rowCtr + p*colCtr] = 0.0;
 			}
 		}
@@ -2681,12 +2681,12 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		printf("\n");
 		printf("T: %+8.7e", T);
 		#endif
-	
+
 		#pragma omp simd
 		for (int i = 0; i < p; ++i) {
 			expw_acvf[i + i*p] = exp(T*w[i]);
 			}
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2697,7 +2697,7 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,expw_acvf);
 		printf("\n");
 		#endif
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2714,9 +2714,9 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,ACopy);
 		printf("\n");
 		#endif
-	
+
 		cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, vr, p, expw_acvf, p, &beta, ACopy, p);
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2733,7 +2733,7 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,ACopy);
 		printf("\n");
 		#endif
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2750,9 +2750,9 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,AScratch);
 		printf("\n");
 		#endif
-	
+
 		cblas_zgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, &alpha, ACopy, p, vrInv, p, &beta, AScratch, p);
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2769,7 +2769,7 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,AScratch);
 		printf("\n");
 		#endif
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2783,14 +2783,14 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,F_acvf);
 		printf("\n");
 		#endif
-	
+
 		for (int colCtr = 0; colCtr < p; ++colCtr) {
 			#pragma omp simd
 			for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
 				F_acvf[rowCtr + colCtr*p] = AScratch[rowCtr + colCtr*p].real();
 				}
 			}
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2804,7 +2804,7 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,F_acvf);
 		printf("\n");
 		#endif
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2821,9 +2821,9 @@ void CARMA::computeACVF(int numLags, double *Lags, double* ACVF) {
 		viewMatrix(p,p,MScratch);
 		printf("\n");
 		#endif
-	
+
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F_acvf, p, Sigma, p, 0.0, MScratch, p);
-	
+
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
 		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
@@ -2857,7 +2857,7 @@ int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 	LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
-	double tolIR = Data.tolIR; 
+	double tolIR = Data.tolIR;
 	double *t = Data.t;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
@@ -2911,7 +2911,7 @@ int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 			}
 		}
 	cblas_dcopy(pSq, P, 1, &PList[0], 1); // Copy P into PList[0:pSq]
-	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+	Contrib = mask[0]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	/* Iterate through remaining points */
@@ -2958,11 +2958,11 @@ int CARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
 				}
 			}
 		cblas_dcopy(pSq, P, 1, &PList[i*pSq], 1); // Copy P into PList[i*pSq:(i+1)*pSq]
-		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/log2OfE);
+		Contrib = mask[i]*(-0.5*SInv*pow(v,2.0) -0.5*log2(S)/kali::log2OfE);
 		LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 		ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 		}
-	LnLikelihood += -0.5*ptCounter*log2Pi;
+	LnLikelihood += -0.5*ptCounter*kali::log2Pi;
 
 	#ifdef DEBUG_RTSSMOOTHER
 		printf("\n");

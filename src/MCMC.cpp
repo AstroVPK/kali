@@ -28,7 +28,7 @@
 
 using namespace std;
 
-EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthreads, double a, double (*func)(double* x, void* funcArgs), void* funcArgs, unsigned int zSeed, unsigned int bernoulliSeed, unsigned int walkerSeed) {
+kali::EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthreads, double a, double (*func)(double* x, void* funcArgs), void* funcArgs, unsigned int zSeed, unsigned int bernoulliSeed, unsigned int walkerSeed) {
 	#ifdef DEBUG_CTORENSEMBLESAMPLER
 	printf("EnsembleSampler - Constructing obj at %p!\n",this);
 	#endif
@@ -126,14 +126,14 @@ EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthrea
 
 	/*!
 	We will store the log likelihoods in an array called LnLike. This way we do not have to re-compute the LnLike multiple times for the same point. LnLike[walkerNum + stepNum*numWalkers] holds the LnLike of walker walkerNum at step stepNum.
-	*/ 
+	*/
 
 	/*!
 	We will use numThreads number of pointers to access the old and new positions of the current walker(s) and the old position of the complimentary walker.
 	*/
 	}
 
-EnsembleSampler::~EnsembleSampler() {
+kali::EnsembleSampler::~EnsembleSampler() {
 	#ifdef DEBUG_DTORENSEMBLESAMPLER
 	printf("~EnsembleSampler - Freeing memory at %p!\n",this);
 	#endif
@@ -164,7 +164,7 @@ EnsembleSampler::~EnsembleSampler() {
 		}
 	}
 
-void EnsembleSampler::runMCMC(double* initPos) {
+void kali::EnsembleSampler::runMCMC(double* initPos) {
 
 	/*!
 	We begin by computing the LnLike values for our initial walker positions.
@@ -207,7 +207,7 @@ void EnsembleSampler::runMCMC(double* initPos) {
 	printf("runMCMC - numChoices: %d\n",numChoices);
 	#endif
 
-	double *p2Chain = &Chain[0], *p2LnLike = &LnLike[0], *p2Zs = &Zs[0]; 
+	double *p2Chain = &Chain[0], *p2LnLike = &LnLike[0], *p2Zs = &Zs[0];
 	int *p2WalkerChoice = &WalkerChoice[0], *p2MoveYesNo = &MoveYesNo[0];
 
 	double (*p2Func)(double* x, void* FuncArgs) = Func;
@@ -308,7 +308,7 @@ void EnsembleSampler::runMCMC(double* initPos) {
 			compSubSetOld = &Chain[(stepNum-1)*sizeStep + ((subSetNum+1)%2)*sizeHalfStep];
 			currSubSetNew = &Chain[stepNum*sizeStep + subSetNum*sizeHalfStep];
 
-			/*! 
+			/*!
 			Move over walkers in current sub-chain
 			*/
 			#pragma omp parallel for default(none) shared(stepNum,subSetNum,log2OfE,nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnLike,p2Func,p2FuncArgs,currSubSetOld,compSubSetOld,currSubSetNew,p2Zs,p2WalkerChoice,p2MoveYesNo,BernoulliStream)// num_threads(numThreads)
@@ -391,7 +391,7 @@ void EnsembleSampler::runMCMC(double* initPos) {
 				#endif
 
 				/*!
-				Calculate likelihood of accepting proposal. If both log likelihoods are non-neg infinity, calculate it. If the new likelihood is 
+				Calculate likelihood of accepting proposal. If both log likelihoods are non-neg infinity, calculate it. If the new likelihood is
 				*/
 				if ((oldLnLike != -HUGE_VAL) and (newLnLike != -HUGE_VAL)) {
 					pAccept = exp(min(0.0, (ndims-1)*(log2(p2Zs[(stepNum-1)*nwalkers + subSetNum*halfNumWalkers + walkerNum])/log2OfE) + newLnLike - oldLnLike));
@@ -466,7 +466,7 @@ void EnsembleSampler::runMCMC(double* initPos) {
 	_mm_free(BernoulliStream);
 	}
 
-void EnsembleSampler::getChain(double *ChainPtr) {
+void kali::EnsembleSampler::getChain(double *ChainPtr) {
 	int nsteps = numSteps;
 	int nwalkers = numWalkers;
 	int ndims = numDims;
@@ -478,7 +478,7 @@ void EnsembleSampler::getChain(double *ChainPtr) {
 		}
 	}
 
-void EnsembleSampler::getLnLike(double *LnLikePtr) {
+void kali::EnsembleSampler::getLnLike(double *LnLikePtr) {
 	int nsteps = numSteps;
 	int nwalkers = numWalkers;
 	int ndims = numDims;
