@@ -8,9 +8,9 @@ import pdb
 plt.ion()
 
 try:
-    import mbhb
+    import kali.mbhb
 except ImportError:
-    print 'mbhbs is not setup. Setup mbhb by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 G = 6.67408e-11
@@ -31,7 +31,7 @@ doPlot = False
 class TestPeriod(unittest.TestCase):
 
     def test_period(self):
-        nt = mbhb.MBHBTask()
+        nt = kali.mbhb.MBHBTask()
         EarthMass = 3.0025138e-12  # 10^6 MSun
         SunMass = 1.0e-6  # 10^6 MSun
         EarthOrbitRadius = 4.84814e-6  # AU
@@ -64,8 +64,8 @@ class TestNoInclination(unittest.TestCase):
         self.Theta2 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1_2, self.inclination, self.tau,
                 self.flux])
-        self.nt1 = mbhb.MBHBTask()
-        self.nt2 = mbhb.MBHBTask()
+        self.nt1 = kali.mbhb.MBHBTask()
+        self.nt2 = kali.mbhb.MBHBTask()
         self.nt1.set(self.Theta1)
         self.nt2.set(self.Theta2)
 
@@ -116,8 +116,8 @@ class TestInclinationNoNoise(unittest.TestCase):
         self.Theta2 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1_2, self.inclination, self.tau,
                 self.flux])
-        self.nt1 = mbhb.MBHBTask()
-        self.nt2 = mbhb.MBHBTask()
+        self.nt1 = kali.mbhb.MBHBTask()
+        self.nt2 = kali.mbhb.MBHBTask()
         self.nt1.set(self.Theta1)
         self.nt2.set(self.Theta2)
 
@@ -181,8 +181,8 @@ class TestInclinationNoise(unittest.TestCase):
         self.Theta2 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1_2, self.inclination, self.tau,
                 self.flux])
-        self.nt1 = mbhb.MBHBTask()
-        self.nt2 = mbhb.MBHBTask()
+        self.nt1 = kali.mbhb.MBHBTask()
+        self.nt2 = kali.mbhb.MBHBTask()
         self.nt1.set(self.Theta1)
         self.nt2.set(self.Theta2)
 
@@ -288,7 +288,7 @@ class TestEstimate(unittest.TestCase):
         self.a1 = 0.01
         self.a2 = 0.02
         self.period = 10.0*DayInYear
-        self.nt1 = mbhb.MBHBTask()
+        self.nt1 = kali.mbhb.MBHBTask()
 
     def tearDown(self):
         del self.nt1
@@ -370,7 +370,7 @@ class TestEstimate(unittest.TestCase):
             self.nt1.observe(nl1)
             fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2SinInclinationEst = self.nt1.estimate(nl1)
             a1Guess, a2Guess, inclinationGuess = self.nt1.guess(a2SinInclinationEst)
-            ntEst = mbhb.MBHBTask()
+            ntEst = kali.mbhb.MBHBTask()
             ThetaEst = np.array(
                 [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
                     fluxEst])
@@ -396,7 +396,7 @@ class TestFit(unittest.TestCase):
         self.Theta = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau,
                 self.flux])
-        self.nt1 = mbhb.MBHBTask()
+        self.nt1 = kali.mbhb.MBHBTask()
         self.nt1.set(self.Theta)
         self.nl1 = self.nt1.simulate(self.period*5.0, fracNoiseToSignal=self.n2s)
         self.nt1.observe(self.nl1)
@@ -408,7 +408,7 @@ class TestFit(unittest.TestCase):
 
     # @unittest.skipIf(skipWorking, 'Works!')
     def test_fit(self):
-        ntFit = mbhb.MBHBTask(nsteps=self.nsteps)
+        ntFit = kali.mbhb.MBHBTask(nsteps=self.nsteps)
         ntFit.fit(self.nl1)
 
         if doPlot:

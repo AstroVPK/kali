@@ -11,7 +11,7 @@ from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
 import pdb
 
-import util.triangle as triangle
+import kali.util.triangle as triangle
 
 fwid = 16.0
 fhgt = 10.0

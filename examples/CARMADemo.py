@@ -8,7 +8,7 @@ import matplotlib.cm as colormap
 import argparse as argparse
 import sys as sys
 
-import libcarma as libcarma
+import kali.carma
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-pdb", "--pdb", default=False, help="Enable pdb breakpoint at end?")
@@ -26,16 +26,16 @@ q = 1
 Rho = np.array([-(1.0/12.0)+0j, -(1.0/7.50)+0j, -(1.0/30.0)+0j, -(1.0/5.0), 1.0e-9])
 print "Rho: " + str(Rho)
 
-Tau = libcarma.timescales(p, q, Rho)
+Tau = kali.carma.timescales(p, q, Rho)
 print "Tau: " + str(Tau)
 
-Theta = libcarma.coeffs(p, q, Rho)
+Theta = kali.carma.coeffs(p, q, Rho)
 print "Theta: " + str(Theta)
 
 dt = 0.5
 T = 1200.0
 
-newTask = libcarma.basicTask(p, q, nwalkers=160, nsteps=250)
+newTask = kali.carma.CARMATask(p, q, nwalkers=160, nsteps=250)
 
 newTask.set(dt, Theta)
 

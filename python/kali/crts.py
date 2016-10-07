@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 import pdb
 
 try:
-    import libcarma as libcarma
+    import kali.lc
+    import kali.carma
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 
-class crtsLC(libcarma.basicLC):
+class crtsLC(kali.lc.basicLC):
 
     def read(self, name, band=r'V', path=None, **kwargs):
         if path is None:
@@ -48,7 +49,7 @@ class crtsLC(libcarma.basicLC):
                 masterID.append(int(float(splitLine[0])))
                 Mag.append(float(splitLine[1]))
                 Magerr.append(float(splitLine[2]))
-                flux, fluxerr = libcarma.pogsonFlux(float(splitLine[1]), float(splitLine[2]))
+                flux, fluxerr = kali.carma.pogsonFlux(float(splitLine[1]), float(splitLine[2]))
                 Flux.append(flux)
                 Fluxerr.append(fluxerr)
                 RA.append(float(splitLine[3]))
@@ -130,7 +131,7 @@ class crtsLC(libcarma.basicLC):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument(r'-n', r'--name', type=str, default=r'PG1302102', help=r'Object name')
+    parser.add_argument(r'-n', r'--name', type=str, default=r'PG1302-102', help=r'Object name')
     parser.add_argument(r'-z', r'--z', type=float, default=0.2784, help=r'Object redshift')
     # parser.add_argument(r'-n', r'--name', type = str, default = r'OH287', help = r'Object name')
     # parser.add_argument(r'-z', r'--redShift', type = float, default = 0.305, help = r'Object redshift')
@@ -139,6 +140,4 @@ if __name__ == '__main__':
     LC = crtsLC(name=args.name, band='V', z=args.z)
 
     LC.plot()
-    LC.plotacf()
-    LC.plotsf()
-    plt.show(False)
+    plt.show()

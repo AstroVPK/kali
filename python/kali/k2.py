@@ -11,16 +11,14 @@ import argparse
 import matplotlib.pyplot as plt
 import pdb
 
-plt.ion()
-
 try:
-    import lc
+    import kali.lc
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 
-class k2LC(lc.basicLC):
+class k2LC(kali.lc.basicLC):
 
     sap = ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']
     pdcsap = ['pdcsap', 'mast', 'cal', 'calib', 'calibrated']
@@ -562,4 +560,4 @@ if __name__ == '__main__':
     LC.plot()
     LC.plotacf()
     LC.plotsf()
-    plt.show(False)
+    plt.show()

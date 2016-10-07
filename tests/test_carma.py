@@ -7,7 +7,7 @@ import psutil
 import pdb
 
 try:
-    import carma
+    import kali.carma
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -21,8 +21,8 @@ class TestFitCARMA10(unittest.TestCase):
         self.p = 1
         self.q = 0
         self.nWalkers = 25*psutil.cpu_count(logical=True)
-        self.nSteps = 500
-        self.newTask = carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
+        self.nSteps = 100
+        self.newTask = kali.carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -33,7 +33,7 @@ class TestFitCARMA10(unittest.TestCase):
         dt = 0.05
         T = 1000.0
         Rho = np.array([-1.0/builtInTAR1, builtInAmp])
-        Theta = carma.coeffs(self.p, self.q, Rho)
+        Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
@@ -62,8 +62,8 @@ class TestFitCARMA20(unittest.TestCase):
         self.p = 2
         self.q = 0
         self.nWalkers = 25*psutil.cpu_count(logical=True)
-        self.nSteps = 500
-        self.newTask = carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
+        self.nSteps = 100
+        self.newTask = kali.carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -75,7 +75,7 @@ class TestFitCARMA20(unittest.TestCase):
         dt = 0.05
         T = 1000.0
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, builtInAmp])
-        Theta = carma.coeffs(self.p, self.q, Rho)
+        Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)
@@ -108,8 +108,8 @@ class TestFitCARMA21(unittest.TestCase):
         self.p = 2
         self.q = 1
         self.nWalkers = 25*psutil.cpu_count(logical=True)
-        self.nSteps = 500
-        self.newTask = carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
+        self.nSteps = 100
+        self.newTask = kali.carma.CARMATask(self.p, self.q, nwalkers=self.nWalkers, nsteps=self.nSteps)
 
     def tearDown(self):
         del self.newTask
@@ -122,7 +122,7 @@ class TestFitCARMA21(unittest.TestCase):
         dt = 0.05
         T = 1000.0
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, -1.0/builtInTMA1, builtInAmp])
-        Theta = carma.coeffs(self.p, self.q, Rho)
+        Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(dt, Theta)
         newLC = self.newTask.simulate(T, fracNoiseToSignal=N2S)
         self.newTask.observe(newLC)

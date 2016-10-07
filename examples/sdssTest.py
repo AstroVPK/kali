@@ -5,8 +5,8 @@ import sys
 import pdb
 
 try:
-    import libcarma
-    import s82
+    import kali.carma
+    import kali.s82
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -17,12 +17,12 @@ parser.add_argument('-pwd', '--pwd', type=str, default=os.path.join(
 parser.add_argument('-n', '--name', type=str, default='rand', help=r'SDSS ID')
 args = parser.parse_args()
 
-sdssLC = s82.sdssLC(name=args.name, band='g', pwd=args.pwd)
+sdssLC = kali.s82.sdssLC(name=args.name, band='g', pwd=args.pwd)
 
-nt = libcarma.basicTask(3, 1)
+nt = kali.carma.CARMATask(3, 1)
 
 Rho = np.array([-1.0/100.0, -1.0/55.0, -1.0/10.0, -1.0/25.0, 2.0e-08])
-Theta = libcarma.coeffs(3, 1, Rho)
+Theta = kali.carma.coeffs(3, 1, Rho)
 
 nt.set(sdssLC.dt, Theta)
 

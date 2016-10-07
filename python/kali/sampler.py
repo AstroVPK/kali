@@ -20,10 +20,10 @@ import matplotlib.pyplot as plt
 import pdb as pdb
 
 try:
-    import lc
-    from util.mpl_settings import set_plot_params
+    import kali.lc
+    from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
@@ -41,7 +41,7 @@ class sampler(object):
         \brief Initialize the sampler.
 
         """
-        if isinstance(lcObj, lc):
+        if isinstance(lcObj, kali.lc.basicLC):
             self.min_dt = np.min(lcObj.t[1:] - lcObj.t[:-1])
             self.max_T = lcObj.t[-1] - lcObj.t[0]
             self.lcObj = lcObj

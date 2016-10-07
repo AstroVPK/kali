@@ -15,19 +15,20 @@ import argparse
 import psutil
 import warnings
 import sys
+import os
 import matplotlib.pyplot as plt
 
 plt.ion()
 
 try:
-    import lc
-    import carma
-    from util.mpl_settings import set_plot_params
-    import util.mcmcviz as mcmcviz
-    import util.triangle as triangle
-    import CARMA_Client as cc
+    import kali.lc
+    import kali.carma
+    from kali.util.mpl_settings import set_plot_params
+    import kali.util.mcmcviz as mcmcviz
+    import kali.util.triangle as triangle
+    import kali.CARMA_Client as cc
 except ImportError:
-    print 'carma not found! Try setting up kali if you have it installed. Unable to proceed!!'
+    print 'kali not found! Try setting up kali if you have it installed. Unable to proceed!!'
     sys.exit(0)
 
 try:
@@ -56,7 +57,7 @@ fwid = 16
 set_plot_params(useTex=True)
 
 
-class sdssLC(lc.basicLC):
+class sdssLC(kali.lc.basicLC):
 
     def _getRandLC(self):
         return cc.getRandLC()
@@ -85,7 +86,7 @@ class sdssLC(lc.basicLC):
 
         for p in xrange(pMin, pMax + 1):
             for q in xrange(qMin, min(p, qMax + 1)):
-                nt = carma.CARMATask(
+                nt = kali.carma.CARMATask(
                     p, q, nwalkers=nwalkers, nsteps=nsteps, xTol=xTol, maxEvals=maxEvals)
 
                 print 'Starting carma fitting for p = %d and q = %d...'%(p, q)
@@ -480,19 +481,26 @@ class sdssLC(lc.basicLC):
             self._std = 0.0
             self._stderr = 0.0
 
-    def write(self):
+    def write(self, name=None, band=None, path=None):
         print "Saving..."
         outData = {}
         try:
-            outData['version'] = carma.__version__
+            outData['version'] = kali.carma.__version__
         except AttributeError:
-            print "Vishal, please add a __version__ to carma or allow direct import of kali"
+            print "Vishal, please add a __version__ to kali.carma or allow direct import of kali - How do I \
+            do this?"
             pass
         outData.update(self.__dict__)
         del outData['_lcCython']
         for key, value in outData['taskDict'].iteritems():
             del outData['taskDict'][key].__dict__['_taskCython']
-        cPickle.dump(outData, open('SDSSFit_'+self.name+'_'+self.band+'.p', 'w'))
+        if path is None:
+            try:
+                path = os.environ['S82DATADIR']
+            except KeyError:
+                raise KeyError('Environment variable "S82DATADIR" not set! Please set "S82DATADIR" to point \
+                where all SDSS S82 data should live first...')
+        cPickle.dump(outData, open(os.path.join(path, 'SDSSFit_'+self.name+'_'+self.band+'.p'), 'w'))
 
 
 def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, minT=2.0, maxT=0.5, maxS=2.0,

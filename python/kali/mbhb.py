@@ -24,12 +24,12 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 
 try:
+    import kali.lc
     import rand as rand
-    import libcarma
     import MBHBTask_cython as MBHBTask_cython
     from util.mpl_settings import set_plot_params
 except ImportError:
-    print 'mbhb is not setup. Setup mbhb by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
@@ -455,11 +455,8 @@ class MBHBTask(object):
             tnum = 0
         if dt is None:
             dt = self.period()/10.0
-        try:
-            numCadences = int(round(float(duration)/dt))
-        except ZeroDivisionError:
-            pdb.set_trace()
-        intrinsicLC = libcarma.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
+        numCadences = int(round(float(duration)/dt))
+        intrinsicLC = kali.lc.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
         self._taskCython.make_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
             intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, threadNum=tnum)

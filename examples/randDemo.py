@@ -8,7 +8,7 @@
 """
 
 import numpy as np
-from . import lib.rand as rand
+import rand
 
 if __name__ == '__main__':
     import argparse as argparse

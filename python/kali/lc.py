@@ -22,9 +22,10 @@ import pdb as pdb
 try:
     import rand as rand
     import CARMATask_cython as CARMATask_cython
-    from util.mpl_settings import set_plot_params
+    import kali.sampler
+    from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
@@ -535,7 +536,7 @@ class lc(object):
 
     @sampler.setter
     def sampler(self, value):
-        self._sampler = eval(str(value).split('.')[-1])(self)
+        self._sampler = eval('kali.sampler.' + str(value).split('.')[-1])(self)
 
     @property
     def mean(self):
