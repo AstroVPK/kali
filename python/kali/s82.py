@@ -38,14 +38,6 @@ except ImportError:
     sys.exit(0)
 
 try:
-    import carmcmc as cmcmc
-except ImportError:
-    carma_pack = False
-    warnings.warn('carma_pack not found. Not using carma_pack!!')
-else:
-    carma_pack = True
-
-try:
     os.environ['DISPLAY']
 except KeyError as Err:
     warnings.warn('No display environment! Using matplotlib backend "Agg"')
