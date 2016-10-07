@@ -1,5 +1,15 @@
+#ifdef __INTEL_COMPILER
+    #include <mathimf.h>
+    #if defined __APPLE__ && defined __MACH__
+        #include <malloc/malloc.h>
+    #else
+        #include <malloc.h>
+    #endif
+#else
+    #include <math.h>
+    #include <mm_malloc.h>
+#endif
 #include <cmath>
-#include <mathimf.h>
 #include <complex>
 #include "Constants.hpp"
 

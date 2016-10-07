@@ -1,4 +1,14 @@
-#include <mathimf.h>
+#ifdef __INTEL_COMPILER
+    #include <mathimf.h>
+    #if defined __APPLE__ && defined __MACH__
+        #include <malloc/malloc.h>
+    #else
+        #include <malloc.h>
+    #endif
+#else
+    #include <math.h>
+    #include <mm_malloc.h>
+#endif
 #include <complex>
 #include <mkl.h>
 #include <mkl_types.h>
@@ -180,7 +190,7 @@ using namespace std;
 		if (count > 0.0) {
 			varVal = varVal/count;
 			}
-		double denomVal = 0.0; 
+		double denomVal = 0.0;
 		if ((varVal - meanerrValSq) > 0.0) {
 			denomVal = varVal - meanerrValSq;
 			} else {

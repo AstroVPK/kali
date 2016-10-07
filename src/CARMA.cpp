@@ -1,14 +1,24 @@
-#if defined __APPLE__ && defined __MACH__
-#include <malloc/malloc.h>
+#ifdef __INTEL_COMPILER
+    #include <mathimf.h>
+    #if defined __APPLE__ && defined __MACH__
+        #include <malloc/malloc.h>
+    #else
+        #include <malloc.h>
+    #endif
 #else
-#include <malloc.h>
+    #include <math.h>
+    #include <mm_malloc.h>
 #endif
 #include <sys/time.h>
 #include <limits>
 #include <omp.h>
 #include <complex>
 #include <cmath>
-#include <mathimf.h>
+#ifdef __INTEL_COMPILER
+    #include <mathimf.h>
+#else
+    #include <math.h>
+#endif
 #include <mkl_types.h>
 #define MKL_Complex8 std::complex<float>
 #define MKL_Complex16 std::complex<double>

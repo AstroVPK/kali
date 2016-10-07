@@ -6,7 +6,7 @@ to model C-ARMA light curves. `Kālī` is written in `c++` and is exposed to `py
 (deprecated).
 
 
-Version: 1.0.0
+Version: 2.0.0
 
 
 Install
@@ -27,11 +27,12 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 6. Ubuntu 16.04 LTS Xenial Xerus
 
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
-Python, the Intel C++ Compiler XE, Intel MKL, NLOpt, `cython` , the `future` package, `fitsio`, `py.test`,
-`cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment, Anaconda Python, the
-Intel C++ Compiler XE, Intel MKL, `cython` & NLOpt are required though the plan is to eventually allow
-the use of `g++` etc... Brandon Kelly's `carma_pack` is not required but is recommended. `cffi` is only
-required if you wish to use the older deprecated `cffi` interface to the `c++` code.
+Python, the Intel C++ Compiler XE or the GNU C++ Compiler, Intel MKL, NLOpt, `cython` , the `future` package,
+`fitsio`, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment,
+Anaconda Python, Intel MKL, `cython` & NLOpt are required. Either of the Intel C++ Compiler or the GNU C++
+Compiler are required though the plan is to evetually support the clang++ Compiler as well. Brandon Kelly's
+`carma_pack` is not required but is recommended. `cffi` is only required if you wish to test `carma_pack`
+against this code.
 
 You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
 `icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
@@ -127,7 +128,22 @@ required by the compiler.
 (gcc version 4.8.0 compatibility)
 
 
-3. Intel MKL Library
+3. GNU C++ Compiler
+
+
+  The GNU C++ compiler is free-ware and is available on most systems.
+
+
+  [GNU C++ Compiler Overview](https://gcc.gnu.org/)
+
+
+  This software has been tested with
+
+
+  1. gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.2)
+
+
+4. Intel MKL Library
 
 
   The Intel MKL library is a high performance math library that is used extensively in this package. Since the
@@ -139,6 +155,13 @@ replace it with an alternative. Intel MKL may be obtained from
 
 
   [Academic Resercher + free MKL](https://software.intel.com/en-us/qualify-for-free-software/academicresearcher)
+
+
+  Add the following line to your `.bashrc` to setup the necessary environment variables
+  required by the compiler.
+
+
+  `source /opt/intel/mkl/bin/mklvars.sh intel64`
 
 
   This software has been tested with
@@ -153,7 +176,7 @@ replace it with an alternative. Intel MKL may be obtained from
   4. Intel® Math Kernel Library 11.3 Update 3 11.3.3
 
 
-4. NLOpt
+5. NLOpt
 
 
   NLOpt is a free/open-source non-liner optimization library written by the AbInitio Group at MIT.
