@@ -47,7 +47,7 @@ else:
     VERFLAGS = ['-std=c++11']
     CPPFLAGS = ['-O3']
     OMPFLAGS = ['-fopenmp', '-fopenmp-simd']
-    OMPLIBS = []
+    OMPLIBS = ['-lgomp']
     ALIGHFLAGS = []
 
 INCLUDE = os.path.join(os.environ['PWD'], 'include')
