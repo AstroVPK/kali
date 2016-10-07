@@ -20,12 +20,12 @@ import matplotlib.pyplot as plt
 import pdb as pdb
 
 try:
-    import rand as rand
+    import rand
     import CARMATask_cython as CARMATask_cython
-    import lc
-    from util.mpl_settings import set_plot_params
+    import kali.lc
+    from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
