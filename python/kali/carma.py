@@ -486,7 +486,7 @@ class CARMATask(object):
         if tnum is None:
             tnum = 0
         numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
-        intrinsicLC = lc.basicLC(
+        intrinsicLC = kali.lc.basicLC(
             numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
             fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
             minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
