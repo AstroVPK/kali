@@ -38,33 +38,27 @@ except KeyError as Err:
     import matplotlib
     matplotlib.use('Agg')
 
-b_ = dict(u=1.4e-10, g=0.9e-10, r=1.2e-10, i=1.8e-10, z=7.4e-10) #band softening parameter
-f0 = 3631.0 #Jy
+b_ = dict(u=1.4e-10, g=0.9e-10, r=1.2e-10, i=1.8e-10, z=7.4e-10)  # band softening parameter
+f0 = 3631.0  # Jy
 
 fhgt = 10
 fwid = 16
 set_plot_params(useTex=True)
 
-@np.vectorize
-def luptitude_to_flux(mag, err, band): #Converts a Luptitude to an SDSS flux
 
-    flux =  math.sinh(math.log(10.0)/-2.5*mag-math.log(b_[band]))*2*b_[band]*f0
+@np.vectorize
+def luptitude_to_flux(mag, err, band):  # Converts a Luptitude to an SDSS flux
+
+    flux = math.sinh(math.log(10.0)/-2.5*mag-math.log(b_[band]))*2*b_[band]*f0
     error = err*math.log(10)/2.5*2*b_[band]*math.sqrt(1+(flux/(2*b_[band]*f0))**2)*f0
     return flux, error
 
-@np.vectorize
-def flux_to_lum(flux, z):
 
-    lum = flux*4*math.pi*lumdist(1.0/(1+z), units = 'm')**2
-    return lum
-
-def time_to_restFrame(time, z): #Converts a cadence to the rest frame
+def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
 
     t = np.zeros(time.shape[0])
     t[1:] = np.cumsum((time[1:] - time[:-1])/(1+z))
-
     return t
-
 
 
 class sdssLC(kali.lc.basicLC):
