@@ -15,15 +15,19 @@ import argparse
 import psutil
 import warnings
 import sys
-import CARMA_Client as cc
+import matplotlib.pyplot as plt
+
+plt.ion()
 
 try:
-    import libcarma as libcarma
+    import lc
+    import carma
     from util.mpl_settings import set_plot_params
     import util.mcmcviz as mcmcviz
     import util.triangle as triangle
+    import CARMA_Client as cc
 except ImportError:
-    print 'libcarma not found! Try setting up libcarma if you have it installed. Unable to proceed!!'
+    print 'carma not found! Try setting up kali if you have it installed. Unable to proceed!!'
     sys.exit(0)
 
 try:
@@ -52,7 +56,7 @@ fwid = 16
 set_plot_params(useTex=True)
 
 
-class sdssLC(libcarma.basicLC):
+class sdssLC(lc.basicLC):
 
     def _getRandLC(self):
         return cc.getRandLC()
@@ -81,16 +85,16 @@ class sdssLC(libcarma.basicLC):
 
         for p in xrange(pMin, pMax + 1):
             for q in xrange(qMin, min(p, qMax + 1)):
-                nt = libcarma.basicTask(
+                nt = carma.CARMATask(
                     p, q, nwalkers=nwalkers, nsteps=nsteps, xTol=xTol, maxEvals=maxEvals)
 
-                print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
+                print 'Starting carma fitting for p = %d and q = %d...'%(p, q)
                 startLCARMA = time.time()
                 nt.fit(self)
                 stopLCARMA = time.time()
                 timeLCARMA = stopLCARMA - startLCARMA
-                print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
-                                                                       timeLCARMA/60.0, timeLCARMA/3600.0)
+                print 'carma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
+                                                                    timeLCARMA/60.0, timeLCARMA/3600.0)
                 self.totalTime += timeLCARMA
 
                 Deviances = copy.copy(nt.LnPosterior[:, nsteps/2:]).reshape((-1))
@@ -98,9 +102,9 @@ class sdssLC(libcarma.basicLC):
                 print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
                 self.DICDict['%d %d'%(p, q)] = DIC
                 self.taskDict['%d %d'%(p, q)] = nt
-        print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
-                                                                                 self.totalTime/60.0,
-                                                                                 self.totalTime/3600.0)
+        print 'Total time taken by carma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
+                                                                              self.totalTime/60.0,
+                                                                              self.totalTime/3600.0)
 
         sortedDICVals = sorted(self.DICDict.items(), key=operator.itemgetter(1))
         self.pBest = int(sortedDICVals[0][0].split()[0])
@@ -480,9 +484,9 @@ class sdssLC(libcarma.basicLC):
         print "Saving..."
         outData = {}
         try:
-            outData['version'] = libcarma.__version__
+            outData['version'] = carma.__version__
         except AttributeError:
-            print "Vishal, please add a __version__ to libcarma or allow direct import of kali"
+            print "Vishal, please add a __version__ to carma or allow direct import of kali"
             pass
         outData.update(self.__dict__)
         del outData['_lcCython']
