@@ -125,8 +125,7 @@ class lc(object):
 
     def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None,
                  band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15,
-                 fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, pSim=0, qSim=0,
-                 pComp=0, qComp=0, sampler=None, path=None, **kwargs):
+                 fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, sampler=None, path=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
@@ -190,10 +189,10 @@ class lc(object):
             self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
             self._observedCadenceNum = -1   # How many cadences have already been observed.
             self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
-            self._pSim = pSim  # C-ARMA model used to simulate the LC.
-            self._qSim = qSim  # C-ARMA model used to simulate the LC.
-            self._pComp = pComp  # C-ARMA model used to simulate the LC.
-            self._qComp = qComp  # C-ARMA model used to simulate the LC.
+            self._pSim = kwargs.get('pSim', 0)  # C-ARMA model used to simulate the LC.
+            self._qSim = kwargs.get('qSim', 0)  # C-ARMA model used to simulate the LC.
+            self._pComp = kwargs.get('pComp', 0)  # C-ARMA model used to simulate the LC.
+            self._qComp = kwargs.get('qComp', 0)  # C-ARMA model used to simulate the LC.
             self._isSmoothed = False  # Has the LC been smoothed?
             self._dtSmooth = 0.0
             self.t = np.require(np.zeros(self.numCadences), requirements=[
@@ -1420,8 +1419,8 @@ class externalLC(basicLC):
         self._maxSigma = 2.0
         self._minTimescale = 2.0
         self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
+        self._pSim = kwargs.get('pSim', 0)
+        self._qSim = kwargs.get('qSim', 0)
         self._pComp = 0
         self._qComp = 0
         self._isSmoothed = False  # Has the LC been smoothed?

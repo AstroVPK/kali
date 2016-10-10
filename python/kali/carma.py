@@ -481,15 +481,27 @@ class CARMATask(object):
             self._taskCython.set_P(np.reshape(P, newshape=(self._p*self._p), order='F'), tnum)
             return newP
 
-    def simulate(self, duration, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001, maxSigma=2.0,
-                 minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None, noiseSeed=None, tnum=None):
+    def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
+                 maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
+                 noiseSeed=None, tnum=None):
         if tnum is None:
             tnum = 0
-        numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
-        intrinsicLC = kali.lc.basicLC(
-            numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
-            fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
-            minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+        if tIn is None and duration is not None:
+            numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
+            intrinsicLC = kali.lc.basicLC(
+                numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+                fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+        elif duration is None and tIn is not None:
+            numCadences = tIn.shape[0]
+            t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
+            y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+            yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+            mask = np.require(np.array(numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+            intrinsicLC = kali.lc.externalLC(
+                name='', band='', t=t, y=y, yerr=yerr, mask=mask, fracIntrinsicVar=fracIntrinsicVar,
+                fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
+                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)
@@ -505,7 +517,8 @@ class CARMATask(object):
         intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
         return intrinsicLC
 
-    def extend(self, intrinsicLC, duration, gap=None, distSeed=None, noiseSeed=None, tnum=None):
+    def extend(
+            self, intrinsicLC, duration=None, tIn=None, gap=None, distSeed=None, noiseSeed=None, tnum=None):
         if tnum is None:
             tnum = 0
         randSeed = np.zeros(1, dtype='uint32')
@@ -525,28 +538,35 @@ class CARMATask(object):
             gapSize = gap
         oldNumCadences = intrinsicLC.numCadences
         gapNumCadences = int(round(float(gapSize)/self._taskCython.get_dt(threadNum=tnum)))
-        extraNumCadences = int(round(float(duration + gapSize)/self._taskCython.get_dt(threadNum=tnum)))
+        if tIn is None and duration is not None:
+            extraNumCadences = int(round(float(duration + gapSize)/self._taskCython.get_dt(threadNum=tnum)))
+        elif duration is None and gap is None and tIn is not None:
+            extraNumCadences = np.array(tIn).shape[0]
+        else:
+            raise ValueError('Cannot specify both tIn and gap at the same time')
         newNumCadences = intrinsicLC.numCadences + extraNumCadences
-        newt = np.require(np.zeros(newNumCadences), requirements=[
-                          'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
-        newx = np.require(np.zeros(newNumCadences), requirements=[
-                          'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-        newy = np.require(np.zeros(newNumCadences), requirements=[
-                          'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed fluxes.
-        newyerr = np.require(np.zeros(newNumCadences), requirements=[
-                             'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed flux errors.
-        newmask = np.require(np.zeros(newNumCadences), requirements=[
-                             'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
+        newt = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        newx = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        newy = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        newyerr = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        newmask = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         for i in xrange(intrinsicLC.numCadences):
             newt[i] = intrinsicLC.t[i]
             newx[i] = intrinsicLC.x[i]
             newy[i] = intrinsicLC.y[i]
             newyerr[i] = intrinsicLC.yerr[i]
             newmask[i] = intrinsicLC.mask[i]
-        for i in xrange(intrinsicLC.numCadences, newNumCadences):
-            newt[i] = newt[intrinsicLC.numCadences - 1] + gapSize + \
-                (i - intrinsicLC.numCadences + 1)*self._taskCython.get_dt(threadNum=tnum)
-            newmask[i] = 1.0
+        if tIn is None and duration is not None:
+            for i in xrange(intrinsicLC.numCadences, newNumCadences):
+                newt[i] = newt[intrinsicLC.numCadences - 1] + gapSize + \
+                    (i - intrinsicLC.numCadences + 1)*self._taskCython.get_dt(threadNum=tnum)
+                newmask[i] = 1.0
+        elif duration is None and gap is None and tIn is not None:
+            for i in xrange(intrinsicLC.numCadences, newNumCadences):
+                newt[i] = tIn[i - intrinsicLC.numCadences]
+                newmask[i] = 1.0
+        else:
+            raise ValueError('Cannot specify both tIn and gap at the same time')
         intrinsicLC._numCadences = newNumCadences
         self._taskCython.extend_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC._simulatedCadenceNum, intrinsicLC._tolIR,
@@ -571,7 +591,7 @@ class CARMATask(object):
         intrinsicLC.yerr = newyerr
         intrinsicLC.mask = newmask
 
-        count = int(np.sum(self.mask))
+        count = int(np.sum(intrinsicLC.mask))
         y_meanSum = 0.0
         yerr_meanSum = 0.0
         for i in xrange(intrinsicLC.numCadences):
