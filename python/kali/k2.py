@@ -84,9 +84,6 @@ class k2LC(kali.lc.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -101,9 +98,6 @@ class k2LC(kali.lc.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -119,9 +113,6 @@ class k2LC(kali.lc.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -137,9 +128,6 @@ class k2LC(kali.lc.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
     def _readMAST(self, name, campaign, path, processing):
         fileName = self._getCanonicalFileName(name, campaign, processing)
@@ -198,11 +186,6 @@ class k2LC(kali.lc.basicLC):
                     self.t[i] = self.t[i - 1] + self.dt
                 self.yerr[i] = math.sqrt(sys.float_info[0])
                 self.mask[i] = 0.0
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
     def _readK2SFF(self, name, campaign, path, processing):
         fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
@@ -240,11 +223,6 @@ class k2LC(kali.lc.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sff')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -303,11 +281,6 @@ class k2LC(kali.lc.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -361,11 +334,6 @@ class k2LC(kali.lc.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -422,11 +390,6 @@ class k2LC(kali.lc.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -471,24 +434,6 @@ class k2LC(kali.lc.basicLC):
                 where all K2 data should live first...')
         filePath = os.path.join(path, fileName)
 
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
-        self._pComp = 0
-        self._qComp = 0
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = 0.0
-        self._isRegular = True
-        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
@@ -513,30 +458,6 @@ class k2LC(kali.lc.basicLC):
 
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
 
     def write(self, name, path=None, **kwrags):
         pass

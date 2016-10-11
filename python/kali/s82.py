@@ -369,7 +369,12 @@ class sdssLC(kali.lc.basicLC):
         return newFig
 
     def read(self, name, band, path=None, **kwargs):
-
+        if path is None:
+            try:
+                path = os.environ['S82DATADIR']
+            except KeyError:
+                raise KeyError('Environment variable "S82DATADIR" not set! Please set "S82DATADIR" to point \
+                where all SDSS S82 data should live first...')
         if 'pickled' in kwargs:
             if kwargs['pickled']:
                 filename = 'SDSSFit_'+name+'_'+band+'.p'
@@ -384,21 +389,6 @@ class sdssLC(kali.lc.basicLC):
 
         self.OutlierDetectionYVal = kwargs.get('outlierDetectionYVal', np.inf)
         self.OutlierDetectionYERRVal = kwargs.get('outlierDetectionYERRVal', 5.0)
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
-        self._pComp = 0
-        self._qComp = 0
-        self.XSim = np.require(np.zeros(self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PSim = np.require(np.zeros(self._pSim*self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PComp = np.require(np.zeros(self._pComp*self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         if name.lower() in ['random', 'rand', 'r', 'rnd', 'any', 'none', '']:
             self._name, self.z, data = self._getRandLC()
         else:
@@ -439,51 +429,18 @@ class sdssLC(kali.lc.basicLC):
         self.y = np.require(np.array(yList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.array(yerrList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.startT = float(self.t[0])
+        self.t = self.t - self.t[0]
         self._name = self.name.split('/')[-1].split('_')[1]
         self._band = band
         self.objID = data['objID']
-        self.startT = float(self.t[0])
-        self.t = self.t - self.t[0]
-        self._band = band
         self._xunit = r'$d$ (MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-        self._isSmoothed = False
-        self._dtSmooth = 0.0
-        self._isRegular = False
         self.colorDict = {'u': '#756bb1', 'g': '#3182bd', 'r': '#31a354', 'i': '#de2d26', 'z': '#636363'}
         self.smoothColorDict = {
             'u': '#bcbddc', 'g': '#9ecae1', 'r': '#a1d99b', 'i': '#fc9272', 'z': '#bdbdbd'}
         self.smoothErrColorDict = {
             'u': '#efedf5', 'g': '#deebf7', 'r': '#e5f5e0', 'i': '#fee0d2', 'z': '#f0f0f0'}
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
 
     def write(self, name=None, band=None, path=None):
         print "Saving..."

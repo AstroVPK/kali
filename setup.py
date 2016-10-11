@@ -76,8 +76,17 @@ rand_ext = Extension(
     include_dirs=[INCLUDE, np.get_include()], extra_link_args=MKLLIBS + OMPLIBS + NLOPTLIBS,
     library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
-CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp',
-                        'LC.cpp', 'MCMC.cpp', 'CARMA.cpp', 'CARMATask.cpp', 'CARMATask_cython.pyx']
+LCTools_sourceList = ['LCTools_cython.pyx', 'LC.cpp']
+LCTools_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in LCTools_sourceList]
+
+LCTools_ext = Extension(
+    name='LCTools_cython', sources=LCTools_List, language='c++',
+    extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS,
+    include_dirs=[INCLUDE, np.get_include()], extra_link_args=MKLLIBS + OMPLIBS + NLOPTLIBS,
+    library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
+
+CARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'MCMC.cpp', 'CARMA.cpp', 'CARMATask.cpp',
+                        'CARMATask_cython.pyx']
 CARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in CARMATask_sourceList]
 
 CARMATask_ext = Extension(
@@ -86,8 +95,8 @@ CARMATask_ext = Extension(
     include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS,
     library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
-MBHBTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'LC.cpp',
-                       'MCMC.cpp', 'MBHB.cpp', 'MBHBTask.cpp', 'MBHBTask_cython.pyx']
+MBHBTask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'MCMC.cpp', 'MBHB.cpp', 'MBHBTask.cpp',
+                       'MBHBTask_cython.pyx']
 MBHBTask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in MBHBTask_sourceList]
 
 MBHBTask_ext = Extension(
@@ -111,5 +120,5 @@ setup(
     classifiers=['AGN', 'C-ARMA', 'stochastic', 'MBHBs'],
     platforms=['Linux', 'Mac OSX'],
     license='GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
-    ext_modules=cythonize([rand_ext, CARMATask_ext, MBHBTask_ext])
+    ext_modules=cythonize([rand_ext, LCTools_ext, CARMATask_ext, MBHBTask_ext])
 )

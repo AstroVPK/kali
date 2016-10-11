@@ -60,8 +60,6 @@ class crtsLC(kali.lc.basicLC):
         MJD, masterID, Mag, Magerr, Flux, Fluxerr, RA, Dec = zip(*zipped)
         self.startT = MJD[0]
         MJD = [(mjd - MJD[0])/(1.0 + self.z) for mjd in MJD]
-        if self.z == 0.0:
-            self.z = r'NO REDSHIFT'
 
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.array(MJD), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -73,58 +71,10 @@ class crtsLC(kali.lc.basicLC):
         self.RA = np.require(np.array(RA), requirements=['F', 'A', 'W', 'O', 'E'])
         self.Dec = np.require(np.array(Dec), requirements=['F', 'A', 'W', 'O', 'E'])
         self.masterID = np.require(np.array(masterID), requirements=['F', 'A', 'W', 'O', 'E'])
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
-        self._pComp = 0
-        self._qComp = 0
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = 0.0
-        self._isRegular = False
-        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'V')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
 
     def write(self, name, path=None, **kwrags):
         pass

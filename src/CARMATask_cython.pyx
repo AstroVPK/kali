@@ -6,38 +6,10 @@ import psutil
 cimport numpy as np
 from libcpp cimport bool
 
+
 cdef extern from 'CARMA.hpp' namespace "kali":
 	void getSigma(int numP, int numQ, double *Theta, double *SigmaOut)
 
-cdef extern from 'LC.hpp':
-	cdef cppclass LCData:
-		int numCadences
-		double dt
-		double meandt
-		double mindt
-		double maxdt
-		double dtSmooth
-		double tolIR
-		double fracIntrinsicVar
-		double fracNoiseToSignal
-		double maxSigma
-		double minTimescale
-		double maxTimescale
-		double *t
-		double *x
-		double *y
-		double *yerr
-		double *mask
-		double *lcXSim
-		double *lcPSim
-		double *lcXComp
-		double *lcPComp
-		LCData() except+
-
-		int acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
-		int acf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, double *lagVals, double *acvfVals, double *acvfErrvals, int threadNum)
-		int sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double*maskIn, double *lagVals, double *sfVals, double *sfErrVals, int threadNum)
-		int dacf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, double *yerrIn, double *maskIn, int numBins, double *lagVals, double *acvfVals, double *acvfErrVals, int threadNum)
 
 cdef extern from 'CARMATask.hpp' namespace "kali":
 	cdef cppclass CARMATask:
@@ -82,128 +54,12 @@ cdef extern from 'CARMATask.hpp' namespace "kali":
 
 		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum)
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def get_Sigma(pNum, qNum, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None):
 	getSigma(pNum, qNum, &Theta[0], &Sigma[0])
 
-cdef class lc:
-	cdef LCData *thisptr
-
-	@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def __cinit__(self, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcXSim not None, np.ndarray[double, ndim=1, mode='c'] lcPSim not None, np.ndarray[double, ndim=1, mode='c'] lcXComp not None, np.ndarray[double, ndim=1, mode='c'] lcPComp not None, dt = 1.0, meandt = 1.0, mindt = 1.0, maxdt = 1.0, dtSmooth = 1.0, tolIR = 1.0e-3, fracIntrinsicVar = 0.15, fracNoiseToSignal = 0.001, maxSigma = 2.0, minTimescale = 2.0, maxTimescale = 0.5):
-		self.thisptr = new LCData()
-		self.thisptr.numCadences = t.shape[0]
-		self.thisptr.dt = dt
-		self.thisptr.mindt = mindt
-		self.thisptr.maxdt = maxdt
-		self.thisptr.meandt = meandt
-		self.thisptr.dtSmooth = dtSmooth
-		self.thisptr.tolIR = tolIR
-		self.thisptr.fracIntrinsicVar = fracIntrinsicVar
-		self.thisptr.fracNoiseToSignal = fracNoiseToSignal
-		self.thisptr.maxSigma = maxSigma
-		self.thisptr.minTimescale = minTimescale
-		self.thisptr.maxTimescale = maxTimescale
-		self.thisptr.t = &t[0]
-		self.thisptr.x = &x[0]
-		self.thisptr.y = &y[0]
-		self.thisptr.yerr = &yerr[0]
-		self.thisptr.mask = &mask[0]
-		self.thisptr.lcXSim = &lcXSim[0]
-		self.thisptr.lcPSim = &lcPSim[0]
-		self.thisptr.lcXComp = &lcXComp[0]
-		self.thisptr.lcPComp = &lcPComp[0]
-
-	property numCadences:
-		def __get__(self): return self.thisptr.numCadences
-		def __set__(self, numCadences): self.thisptr.numCadences = numCadences
-
-	property dt:
-		def __get__(self): return self.thisptr.dt
-		def __set__(self, dt): self.thisptr.dt = dt
-
-	property meandt:
-		def __get__(self): return self.thisptr.meandt
-		def __set__(self, meandt): self.thisptr.meandt = meandt
-
-	property mindt:
-		def __get__(self): return self.thisptr.mindt
-		def __set__(self, mindt): self.thisptr.mindt = mindt
-
-	property maxdt:
-		def __get__(self): return self.thisptr.maxdt
-		def __set__(self, maxdt): self.thisptr.maxdt = maxdt
-
-	property dtSmooth:
-		def __get__(self): return self.thisptr.dtSmooth
-		def __set__(self, dtSmooth): self.thisptr.dtSmooth = dtSmooth
-
-	property tolIR:
-		def __get__(self): return self.thisptr.tolIR
-		def __set__(self, tolIR): self.thisptr.tolIR = tolIR
-
-	property fracIntrinsicVar:
-		def __get__(self): return self.thisptr.fracIntrinsicVar
-		def __set__(self, fracIntrinsicVar): self.thisptr.fracIntrinsicVar = fracIntrinsicVar
-
-	property fracNoiseToSignal:
-		def __get__(self): return self.thisptr.fracNoiseToSignal
-		def __set__(self, fracNoiseToSignal): self.thisptr.fracNoiseToSignal = fracNoiseToSignal
-
-	property maxSigma:
-		def __get__(self): return self.thisptr.maxSigma
-		def __set__(self, maxSigma): self.thisptr.maxSigma = maxSigma
-
-	property minTimescale:
-		def __get__(self): return self.thisptr.minTimescale
-		def __set__(self, minTimescale): self.thisptr.minTimescale = minTimescale
-
-	property maxTimescale:
-		def __get__(self): return self.thisptr.maxTimescale
-		def __set__(self, maxTimescale): self.thisptr.maxTimescale = maxTimescale
-
-	def __len__(self):
-		return self.thisptr.numCadences
-
-	def __setitem__(self, cadence, value):
-		self.thisptr.t[cadence] = value[0]
-		self.thisptr.x[cadence] = value[1]
-		self.thisptr.y[cadence] = value[2]
-		self.thisptr.yerr[cadence] = value[3]
-		self.thisptr.mask[cadence] = value[4]
-
-	def __getitem__(self, cadence):
-		return self.thisptr.t[cadence], self.thisptr.x[cadence], self.thisptr.y[cadence], self.thisptr.yerr[cadence], self.thisptr.mask[cadence]
-
-	@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def compute_ACVF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acvfVals not None, np.ndarray[double, ndim=1, mode='c'] acvfErrVals not None, threadNum = None):
-		if threadNum == None:
-			threadNum = 0
-		return self.thisptr.acvf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acvfVals[0], &acvfErrVals[0], threadNum)
-
-	@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def compute_ACF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] acfVals not None, np.ndarray[double, ndim=1, mode='c'] acfErrVals not None, threadNum = None):
-		if threadNum == None:
-			threadNum = 0
-		return self.thisptr.acf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &acfVals[0], &acfErrVals[0], threadNum)
-
-	@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def compute_SF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] sfVals not None, np.ndarray[double, ndim=1, mode='c'] sfErrVals not None, threadNum = None):
-		if threadNum == None:
-			threadNum = 0
-		return self.thisptr.sf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], &lagVals[0], &sfVals[0], &sfErrVals[0], threadNum)
-
-	@cython.boundscheck(False)
-	@cython.wraparound(False)
-	def compute_DACF(self, numCadences, dt, np.ndarray[double, ndim=1, mode='c'] tIn not None, np.ndarray[double, ndim=1, mode='c'] xIn not None, np.ndarray[double, ndim=1, mode='c'] yIn not None, np.ndarray[double, ndim=1, mode='c'] yerrIn not None, np.ndarray[double, ndim=1, mode='c'] maskIn not None, numBins, np.ndarray[double, ndim=1, mode='c'] lagVals not None, np.ndarray[double, ndim=1, mode='c'] dacfVals not None, np.ndarray[double, ndim=1, mode='c'] dacfErrVals not None, threadNum = None):
-		if threadNum == None:
-			threadNum = 0
-		return self.thisptr.dacf(numCadences, dt, &tIn[0], &xIn[0], &yIn[0], &yerrIn[0], &maskIn[0], numBins, &lagVals[0], &dacfVals[0], &dacfErrVals[0], threadNum)
 
 cdef class CARMATask_cython:
 	cdef CARMATask *thisptr

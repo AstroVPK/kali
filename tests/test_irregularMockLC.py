@@ -86,3 +86,6 @@ class TestIrregularCARMA(unittest.TestCase):
         self.nt.extend(self.nl1, tIn=tIn, distSeed=DISTSEED, noiseSeed=NOISESEED)
         self.assertNotEqual(np.mean(self.nl1.t[0:self.nl1.t.shape[0]/2]),
                             np.mean(self.nl1.t[self.nl1.t.shape[0]/2:]))
+
+if __name__ == "__main__":
+    unittest.main()

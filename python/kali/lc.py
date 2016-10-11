@@ -21,7 +21,7 @@ import pdb as pdb
 
 try:
     import rand as rand
-    import CARMATask_cython as CARMATask_cython
+    import LCTools_cython
     import kali.sampler
     import kali.kernel
     from kali.util.mpl_settings import set_plot_params
@@ -125,8 +125,7 @@ class lc(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None,
-                 band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, maxSigma=2.0,
-                 minTimescale=2.0, maxTimescale=0.5, sampler=None, path=None, **kwargs):
+                 band=None, xunit=None, yunit=None, sampler=None, path=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
@@ -187,17 +186,8 @@ class lc(object):
         else:
             self._numCadences = numCadences     # The number of cadences in the light curve. This is not the
             # same thing as the number of actual observations as we can have missing observations.
-            self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
-            self._observedCadenceNum = -1   # How many cadences have already been observed.
-            self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
-            self._pSim = kwargs.get('pSim', 0)  # C-ARMA model used to simulate the LC.
-            self._qSim = kwargs.get('qSim', 0)  # C-ARMA model used to simulate the LC.
-            self._pComp = kwargs.get('pComp', 0)  # C-ARMA model used to simulate the LC.
-            self._qComp = kwargs.get('qComp', 0)  # C-ARMA model used to simulate the LC.
-            self._isSmoothed = False  # Has the LC been smoothed?
-            self._dtSmooth = 0.0
             self.t = np.require(np.zeros(self.numCadences), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps.
+                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps
             self.x = np.require(np.zeros(self.numCadences), requirements=[
                                 'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self.y = np.require(np.zeros(self.numCadences), requirements=[
@@ -206,79 +196,53 @@ class lc(object):
                                    'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed flux errors.
             self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                    'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-            self.XSim = np.require(np.zeros(self.pSim), requirements=[
-                                   'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-            self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=[
-                                   'F', 'A', 'W', 'O', 'E'])    # Uncertainty in state of light curve at last
-            # timestamp.
-            self.XComp = np.require(np.zeros(self.pComp), requirements=[
-                                    'F', 'A', 'W', 'O', 'E'])  # State of light curve at last timestamp
-            self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=[
-                                    'F', 'A', 'W', 'O', 'E'])  # Uncertainty in state of light curve at last
-            # timestamp.
-            self._name = str(name)  # The name of the light curve (usually the object's name).
-            self._band = str(band)  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
-            if str(xunit)[0] != '$':
-                self._xunit = r'$' + \
-                    str(xunit) + '$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
-            else:
-                self._xunit = str(xunit)
-            if str(yunit)[0] != '$':
-                self._yunit = r'$' + \
-                    str(yunit) + '$'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
-            else:
-                self._yunit = str(yunit)
-            self._tolIR = tolIR  # Tolerance on the irregularity. If IR == False, this parameter is not used.
-            # Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where
-            # t_incr is the new increment in time and dt is the previous increment in time.
-            self._fracIntrinsicVar = fracIntrinsicVar
-            self._fracNoiseToSignal = kwargs.get('fracNoiseToSignal', 0.001)
-            self._maxSigma = maxSigma
-            self._minTimescale = minTimescale
-            self._maxTimescale = maxTimescale
             for i in xrange(self._numCadences):
                 self.t[i] = i*dt
                 self.mask[i] = 1.0
-            self._isRegular = True
-            self._dt = float(self.t[1] - self.t[0])
-            self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-            self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-            self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-            self._T = float(self.t[-1] - self.t[0])
-        self._lcCython = CARMATask_cython.lc(
-            self.t, self.x, self.y, self.yerr, self.mask, self.XSim, self.PSim, self.XComp, self.PComp,
-            dt=self._dt, meandt=self._meandt, mindt=self._mindt, maxdt=self._maxdt, dtSmooth=self._dtSmooth,
-            tolIR=self._tolIR, fracIntrinsicVar=self._fracIntrinsicVar,
-            fracNoiseToSignal=self._fracNoiseToSignal, maxSigma=self._maxSigma,
-            minTimescale=self._minTimescale, maxTimescale=self._maxTimescale)
+            # timestamp.
+            if str(xunit)[0] != '$':
+                self._xunit = r'$' + str(xunit) + '$'  # Unit in which time is measured (eg. s, sec,
+                # seconds etc...).
+            else:
+                self._xunit = str(xunit)
+            if str(yunit)[0] != '$':
+                self._yunit = r'$' + str(yunit) + '$'  # Unit in which the flux is measured (eg Wm^{-2}
+                # etc...).
+            else:
+                self._yunit = str(yunit)
+        self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
+        self._observedCadenceNum = -1   # How many cadences have already been observed.
+        self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
+        self._pSim = kwargs.get('pSim', 0)  # C-ARMA model used to simulate the LC.
+        self._qSim = kwargs.get('qSim', 0)  # C-ARMA model used to simulate the LC.
+        self._pComp = kwargs.get('pComp', 0)  # C-ARMA model used to simulate the LC.
+        self._qComp = kwargs.get('qComp', 0)  # C-ARMA model used to simulate the LC.
+        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
+        self._tolIR = kwargs.get('tolIR', 1.0e-3)  # Tolerance on the irregularity. If IR == False, this
+        # parameter is not used. Otherwise, a timestep is irregular iff
+        # abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where t_incr is the new increment in time and dt is
+        # the previous increment in time.
+        self._fracIntrinsicVar = kwargs.get('fracIntrinsicVar', 1.5e-2)
+        self._fracNoiseToSignal = kwargs.get('fracNoiseToSignal', 1.0e-3)
+        self._maxSigma = kwargs.get('maxSigma', 2.0)
+        self._minTimescale = kwargs.get('minTimescale', 2.0)
+        self._maxTimescale = kwargs.get('maxTimescale', 0.5)
+        self._dt = float(self.t[1] - self.t[0])
+        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
+        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+        self._T = float(self.t[-1] - self.t[0])
+        self._isSmoothed = False  # Has the LC been smoothed?
+        self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if sampler is not None:
             self._sampler = sampler(self)
         else:
             self._sampler = None
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
+        self._checkIsRegular()
+        self._statistics()
 
     @property
     def numCadences(self):
@@ -286,7 +250,6 @@ class lc(object):
 
     @numCadences.setter
     def numCadences(self, value):
-        self._lcCython.numCadences = value
         self._numCadences = value
 
     @property
@@ -391,7 +354,6 @@ class lc(object):
 
     @dt.setter
     def dt(self, value):
-        self._lcCython.dt = value
         self._dt = value
 
     @property
@@ -400,7 +362,6 @@ class lc(object):
 
     @meandt.setter
     def meandt(self, value):
-        self._lcCython.meandt = value
         self._meandt = value
 
     @property
@@ -409,7 +370,6 @@ class lc(object):
 
     @mindt.setter
     def mindt(self, value):
-        self._lcCython.mindt = value
         self._mindt = value
 
     @property
@@ -418,7 +378,6 @@ class lc(object):
 
     @maxdt.setter
     def maxdt(self, value):
-        self._lcCython.maxdt = value
         self._maxdt = value
 
     @property
@@ -427,7 +386,6 @@ class lc(object):
 
     @dtSmooth.setter
     def dtSmooth(self, value):
-        self._lcCython.dtSmooth = value
         self._dtSmooth = value
 
     @property
@@ -483,7 +441,6 @@ class lc(object):
     @tolIR.setter
     def tolIR(self, value):
         self._tolIR = value
-        self._lcCython.tolIR = value
 
     @property
     def fracIntrinsicVar(self):
@@ -492,7 +449,6 @@ class lc(object):
     @fracIntrinsicVar.setter
     def fracIntrinsicVar(self, value):
         self._fracIntrinsicVar = value
-        self._lcCython.fracIntrinsicVar = value
 
     @property
     def fracNoiseToSignal(self):
@@ -501,7 +457,6 @@ class lc(object):
     @fracNoiseToSignal.setter
     def fracNoiseToSignal(self, value):
         self._fracNoiseToSignal = value
-        self._lcCython.fracNoiseToSignal = value
 
     @property
     def maxSigma(self):
@@ -510,7 +465,6 @@ class lc(object):
     @maxSigma.setter
     def maxSigma(self, value):
         self._maxSigma = value
-        self._lcCython.maxSigma = value
 
     @property
     def minTimescale(self):
@@ -519,7 +473,6 @@ class lc(object):
     @minTimescale.setter
     def minTimescale(self, value):
         self._minTimescale = value
-        self._lcCython.minTimescale = value
 
     @property
     def maxTimescale(self):
@@ -528,7 +481,6 @@ class lc(object):
     @maxTimescale.setter
     def maxTimescale(self, value):
         self._maxTimescale = value
-        self._lcCython.maxTimescale = value
 
     @property
     def sampler(self):
@@ -565,6 +517,34 @@ class lc(object):
         \brief Standard deviation of the observation errors yerr.
         """
         return self._stderr
+
+    def _statistics(self):
+        """!
+        \brief Set the four basic statistics - mean, std, meanerr, & stderr
+        """
+        count = int(np.sum(self.mask))
+        y_meanSum = 0.0
+        yerr_meanSum = 0.0
+        for i in xrange(self.numCadences):
+            y_meanSum += self.mask[i]*self.y[i]
+            yerr_meanSum += self.mask[i]*self.yerr[i]
+        if count > 0.0:
+            self._mean = y_meanSum/count
+            self._meanerr = yerr_meanSum/count
+        else:
+            self._mean = 0.0
+            self._meanerr = 0.0
+        y_stdSum = 0.0
+        yerr_stdSum = 0.0
+        for i in xrange(self.numCadences):
+            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
+            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
+        if count > 0.0:
+            self._std = math.sqrt(y_stdSum/count)
+            self._stderr = math.sqrt(yerr_stdSum/count)
+        else:
+            self._std = 0.0
+            self._stderr = 0.0
 
     def __len__(self):
         return self._numCadences
@@ -674,14 +654,43 @@ class lc(object):
         """
         return lcIterator(self.t, self.x, self.y, self.yerr, self.mask)
 
-    @abc.abstractmethod
+    def __copy__(self):
+        """!
+        \brief Return a shallow copy of self
+        """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        """!
+        \brief Return a deep copy of self
+        """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
+
     def copy(self):
         """!
-        \brief Return a copy
-
-        Return a (deep) copy of the object.
+        \brief Type-saver function to prevent the user from having to call copy.deepcopy
         """
-        raise NotImplementedError(r'Override copy by subclassing lc!')
+        return copy.deepcopy(self)
+
+    def _checkIsRegular(self):
+        """!
+        \brief Set the isRegular flag if the lc is regular to within the specified tolerence.
+        """
+        self._isRegular = True
+        for i in xrange(1, self.numCadences):
+            t_incr = self.t[i] - self.t[i-1]
+            fracChange = abs((t_incr - self.dt)/((t_incr + self.dt)/2.0))
+            if fracChange > self._tolIR:
+                self._isRegular = False
+                break
 
     def __invert__(self):
         """!
@@ -921,24 +930,6 @@ class lc(object):
         else:
             raise NotImplemented
 
-    @abc.abstractmethod
-    def read(self, name, band, path=os.environ['PWD'], **kwargs):
-        """!
-        \brief Read the light curve from disk.
-
-        Not implemented!
-        """
-        raise NotImplementedError(r'Override read by subclassing lc!')
-
-    @abc.abstractmethod
-    def write(self, name, band, path=os.environ['PWD'], **kwargs):
-        """!
-        \brief Write the light curve to disk.
-
-        Not implemented
-        """
-        raise NotImplementedError(r'Override write by subclassing lc!')
-
     def regularize(self, newdt=None):
         """!
         \brief Re-sample the light curve on a grid of spacing newdt
@@ -981,24 +972,7 @@ class lc(object):
                 newLC.y[index] = self.y[i]
                 newLC.yerr[index] = self.yerr[i]
                 newLC.mask[index] = 1.0
-            count = int(np.sum(newLC.mask[i]))
-            y_meanSum = 0.0
-            yerr_meanSum = 0.0
-            for i in xrange(newLC.numCadences):
-                y_meanSum += newLC.mask[i]*newLC.y[i]
-                yerr_meanSum += newLC.mask[i]*newLC.yerr[i]
-            if count > 0:
-                newLC._mean = y_meanSum/count
-                newLC._meanerr = yerr_meanSum/count
-            y_stdSum = 0.0
-            yerr_stdSum = 0.0
-            for i in xrange(newLC.numCadences):
-                y_stdSum += math.pow(newLC.mask[i]*newLC.y[i] - newLC._mean, 2.0)
-                yerr_stdSum += math.pow(newLC.mask[i]*newLC.yerr[i] - newLC._meanerr, 2.0)
-            if count > 0:
-                newLC._std = math.sqrt(y_stdSum/count)
-                newLC._stderr = math.sqrt(yerr_stdSum/count)
-
+            newLC._statistics()
             return newLC
         else:
             return self
@@ -1020,9 +994,9 @@ class lc(object):
                                     'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self._acvferr = np.require(np.zeros(useLC.numCadences), requirements=[
                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-            useLC._lcCython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
-                                         useLC.y, useLC.yerr, useLC.mask, self._acvflags, self._acvf,
-                                         self._acvferr)
+            LCTools_cython.compute_ACVF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
+                                        useLC.y, useLC.yerr, useLC.mask, self._acvflags, self._acvf,
+                                        self._acvferr)
             return self._acvflags, self._acvf, self._acvferr
 
     def acf(self, newdt=None):
@@ -1039,9 +1013,9 @@ class lc(object):
                                    'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self._acferr = np.require(np.zeros(useLC.numCadences), requirements=[
                                       'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-            useLC._lcCython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
-                                        useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf,
-                                        self._acferr)
+            LCTools_cython.compute_ACF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
+                                       useLC.y, useLC.yerr, useLC.mask, self._acflags, self._acf,
+                                       self._acferr)
             return self._acflags, self._acf, self._acferr
 
     def dacf(self, nbins=None):
@@ -1056,7 +1030,7 @@ class lc(object):
                                     'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self._dacferr = np.require(np.zeros(self._dacflags.shape[0]), requirements=[
                                        'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-            self._lcCython.compute_DACF(self.numCadences, self.dt, self.t, self.x, self.y,
+            LCTools_cython.compute_DACF(self.numCadences, self.dt, self.t, self.x, self.y,
                                         self.yerr, self.mask, nbins, self._dacflags, self._dacf,
                                         self._dacferr)
             return self._dacflags, self._dacf, self._dacferr
@@ -1075,8 +1049,8 @@ class lc(object):
                                   'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
             self._sferr = np.require(np.zeros(useLC.numCadences), requirements=[
                                      'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-            useLC._lcCython.compute_SF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
-                                       useLC.y, useLC.yerr, useLC.mask, self._sflags, self._sf, self._sferr)
+            LCTools_cython.compute_SF(useLC.numCadences, useLC.dt, useLC.t, useLC.x,
+                                      useLC.y, useLC.yerr, useLC.mask, self._sflags, self._sf, self._sferr)
             return self._sflags, self._sf, self._sferr
 
     def plot(self, fig=-1, doShow=False, clearFig=True):
@@ -1324,7 +1298,26 @@ class lc(object):
         newLC.T = float(newLC.t[-1] - newLC.t[0])
         convKernel = kali.kernel.Lanczos(a)
         convKernel(self, newLC)
+        newLC._statistics()
         return newLC
+
+    @abc.abstractmethod
+    def read(self, name, band, path=os.environ['PWD'], **kwargs):
+        """!
+        \brief Read the light curve from disk.
+
+        Not implemented!
+        """
+        raise NotImplementedError(r'Override read by subclassing lc!')
+
+    @abc.abstractmethod
+    def write(self, name, band, path=os.environ['PWD'], **kwargs):
+        """!
+        \brief Write the light curve to disk.
+
+        Not implemented
+        """
+        raise NotImplementedError(r'Override write by subclassing lc!')
 
 
 class lcIterator(object):
@@ -1357,49 +1350,6 @@ class lcIterator(object):
 
 class basicLC(lc):
 
-    def copy(self):
-        lccopy = basicLC(
-            self.numCadences, dt=self.dt, meandt=self.meandt, mindt=self.mindt, maxdt=self.maxdt,
-            dtSmooth=self.dtSmooth, name=None, band=self.band, xunit=self.xunit, yunit=self.yunit,
-            tolIR=self.tolIR, fracIntrinsicVar=self.fracIntrinsicVar,
-            fracNoiseToSignal=self.fracNoiseToSignal, maxSigma=self.maxSigma, minTimescale=self.minTimescale,
-            maxTimescale=self.maxTimescale)
-        lccopy.t = np.copy(self.t)
-        lccopy.x = np.copy(self.x)
-        lccopy.y = np.copy(self.y)
-        lccopy.yerr = np.copy(self.yerr)
-        lccopy.mask = np.copy(self.mask)
-        lccopy.pSim = np.copy(self.pSim)
-        lccopy.qSim = np.copy(self.qSim)
-        lccopy.pComp = np.copy(self.pComp)
-        lccopy.qComp = np.copy(self.qComp)
-
-        count = int(np.sum(lccopy.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(lccopy.numCadences):
-            y_meanSum += lccopy.mask[i]*lccopy.y[i]
-            yerr_meanSum += lccopy.mask[i]*lccopy.yerr[i]
-        if count > 0.0:
-            lccopy._mean = y_meanSum/count
-            lccopy._meanerr = yerr_meanSum/count
-        else:
-            lccopy._mean = 0.0
-            lccopy._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(lccopy.numCadences):
-            y_stdSum += math.pow(lccopy.mask[i]*lccopy.y[i] - lccopy._mean, 2.0)
-            yerr_stdSum += math.pow(lccopy.mask[i]*lccopy.yerr[i] - lccopy._meanerr, 2.0)
-        if count > 0.0:
-            lccopy._std = math.sqrt(y_stdSum/count)
-            lccopy._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            lccopy._std = 0.0
-            lccopy._stderr = 0.0
-
-        return lccopy
-
     def read(self, name=None, band=None, pwd=None, **kwargs):
         pass
 
@@ -1409,19 +1359,16 @@ class basicLC(lc):
 
 class externalLC(basicLC):
 
-    def _checkIsRegular(self):
-        self._isRegular = True
-        for i in xrange(1, self.numCadences):
-            t_incr = self.t[i] - self.t[i-1]
-            fracChange = abs((t_incr - self.dt)/((t_incr + self.dt)/2.0))
-            if fracChange > self._tolIR:
-                self._isRegular = False
-                break
-
     def read(self, name, band, path=None, **kwargs):
         self._name = name
         self._band = band
-        self._path = path
+        if path is None:
+            try:
+                path = os.environ['DATADIR']
+            except KeyError:
+                # raise KeyError('Environment variable "DATADIR" not set! Please set "DATADIR" to point where
+                # all SDSS S82 data should live first...')
+                path = os.environ['HOME']
         t = kwargs.get('t')
         if t is not None:
             self.t = np.require(t, requirements=['F', 'A', 'W', 'O', 'E'])
@@ -1445,60 +1392,3 @@ class externalLC(basicLC):
             self.mask = np.require(mask, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
             raise Keyerror('Must supply key-word argument mask!')
-
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = kwargs.get('fracNoiseToSignal', 0.001)
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = kwargs.get('pSim', 0)
-        self._qSim = kwargs.get('qSim', 0)
-        self._pComp = 0
-        self._qComp = 0
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = 0.0
-        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])  # State of light
-        # curve at last timestamp
-        # Uncertainty in state of light curve at last timestamp
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])  # State of
-        # light curve at last timestamp
-        # Uncertainty in state of light curve at last timestamp.
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self._xunit = r'$t$ (d)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
-        self._yunit = r'who the f*** knows?'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
-
-        self._startT = float(self.t[0])
-        self.t -= self._startT
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-        self._checkIsRegular()
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
