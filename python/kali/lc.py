@@ -23,6 +23,7 @@ try:
     import rand as rand
     import CARMATask_cython as CARMATask_cython
     import kali.sampler
+    import kali.kernel
     from kali.util.mpl_settings import set_plot_params
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
@@ -124,8 +125,8 @@ class lc(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None,
-                 band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15,
-                 fracNoiseToSignal=0.001, maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, sampler=None, path=None, **kwargs):
+                 band=None, xunit=None, yunit=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, maxSigma=2.0,
+                 minTimescale=2.0, maxTimescale=0.5, sampler=None, path=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
@@ -231,7 +232,7 @@ class lc(object):
             # Otherwise, a timestep is irregular iff abs((t_incr - dt)/((t_incr + dt)/2.0)) > tolIR where
             # t_incr is the new increment in time and dt is the previous increment in time.
             self._fracIntrinsicVar = fracIntrinsicVar
-            self._fracNoiseToSignal = fracNoiseToSignal
+            self._fracNoiseToSignal = kwargs.get('fracNoiseToSignal', 0.001)
             self._maxSigma = maxSigma
             self._minTimescale = minTimescale
             self._maxTimescale = maxTimescale
@@ -1292,6 +1293,39 @@ class lc(object):
         newLC.T = float(newLC.t[-1] - newLC.t[0])
         return newLC
 
+    def interpolate(self, dt=None, a=None):
+        if a is None:
+            a = int(math.ceil(self.maxdt*9))
+        if dt is not None:
+            if dt < self.meandt:
+                raise ValueError('Can\'t interpolate finer than the nyquist rate!')
+        else:
+            dt = self.meandt
+        newLC = self.copy()
+        del newLC.t
+        del newLC.x
+        del newLC.y
+        del newLC.yerr
+        del newLC.mask
+        numCadences = int(round(float(self.T/dt)))
+        newLC.t = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        newLC.x = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        newLC.y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        newLC.yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        newLC.mask = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        for i in xrange(numCadences):
+            newLC.t[i] = self.t[0] + i*dt
+            newLC.mask[i] = 1.0
+        newLC.numCadences = numCadences
+        newLC.dt = float(newLC.t[1] - newLC.t[0])
+        newLC.mindt = float(np.nanmin(newLC.t[1:] - newLC.t[:-1]))
+        newLC.maxdt = float(np.nanmax(newLC.t[1:] - newLC.t[:-1]))
+        newLC.meandt = float(np.nanmean(newLC.t[1:] - newLC.t[:-1]))
+        newLC.T = float(newLC.t[-1] - newLC.t[0])
+        convKernel = kali.kernel.Lanczos(a)
+        convKernel(self, newLC)
+        return newLC
+
 
 class lcIterator(object):
 
@@ -1415,7 +1449,7 @@ class externalLC(basicLC):
         self._computedCadenceNum = -1
         self._tolIR = 1.0e-3
         self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
+        self._fracNoiseToSignal = kwargs.get('fracNoiseToSignal', 0.001)
         self._maxSigma = 2.0
         self._minTimescale = 2.0
         self._maxTimescale = 0.5

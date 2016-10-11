@@ -456,8 +456,8 @@ class MBHBTask(object):
         if tIn is None and duration is not None:
             if dt is None:
                 dt = self.period()/10.0
-                numCadences = int(round(float(duration)/dt))
-                intrinsicLC = kali.lc.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
+            numCadences = int(round(float(duration)/dt))
+            intrinsicLC = kali.lc.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
         elif duration is None and tIn is not None:
             if dt is not None:
                 raise ValueError('dt cannot be supplied when tIn is provided')
