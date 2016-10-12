@@ -210,6 +210,8 @@ class lc(object):
                 # etc...).
             else:
                 self._yunit = str(yunit)
+            self._name = None
+            self._band = None
         self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
         self._observedCadenceNum = -1   # How many cadences have already been observed.
         self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
