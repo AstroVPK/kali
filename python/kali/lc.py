@@ -230,19 +230,15 @@ class lc(object):
         self._maxSigma = kwargs.get('maxSigma', 2.0)
         self._minTimescale = kwargs.get('minTimescale', 2.0)
         self._maxTimescale = kwargs.get('maxTimescale', 0.5)
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if sampler is not None:
             self._sampler = sampler(self)
         else:
             self._sampler = None
+        self._times()
         self._checkIsRegular()
         self._statistics()
+        self._isSmoothed = False  # Has the LC been smoothed?
+        self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
 
     @property
     def numCadences(self):
@@ -517,6 +513,13 @@ class lc(object):
         \brief Standard deviation of the observation errors yerr.
         """
         return self._stderr
+
+    def _times(self):
+        self._dt = float(self.t[1] - self.t[0])
+        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
+        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+        self._T = float(self.t[-1] - self.t[0])
 
     def _statistics(self):
         """!
