@@ -62,6 +62,8 @@ if System == 'Linux':
 elif System == 'Darwin':
     if os.environ['CC'] == 'icpc':
         VERFLAGS += ['-stdlib=libc++']
+    elif os.environ['CC'] == 'g++':
+        VERFLAGS = []
     MKLLIBS = ['-L$MKLROOT/lib', '-Wl,-rpath,$MKLROOT/lib', '-lmkl_rt', '-lpthread', '-lm', '-ldl']
 else:
     MKLLIBS = []
