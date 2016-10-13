@@ -108,6 +108,16 @@ MBHBTask_ext = Extension(
     include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS,
     library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
+MBHBCARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'MCMC.cpp', 'MBHBCARMA.cpp']#, 'CARMATask.cpp',
+                            #'CARMATask_cython.pyx']
+MBHBCARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in MBHBCARMATask_sourceList]
+
+MBHBCARMATask_ext = Extension(
+    name='MBHBCARMATask_cython', sources=MBHBCARMATask_List, language='c++',
+    extra_compile_args=CPPFLAGS + VERFLAGS + ALIGHFLAGS + MKLFLAGS + OMPFLAGS,
+    include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS,
+    library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
+
 setup(
     name='kali',
     version='2.0.0',
@@ -123,5 +133,5 @@ setup(
     classifiers=['AGN', 'C-ARMA', 'stochastic', 'MBHBs'],
     platforms=['Linux', 'Mac OSX'],
     license='GNU GENERAL PUBLIC LICENSE, Version 2, June 1991',
-    ext_modules=cythonize([rand_ext, LCTools_ext, CARMATask_ext, MBHBTask_ext])
+    ext_modules=cythonize([rand_ext, LCTools_ext, CARMATask_ext, MBHBTask_ext, MBHBCARMATask_ext])
 )
