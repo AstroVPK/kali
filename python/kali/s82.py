@@ -61,7 +61,7 @@ def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
     return t
 
 
-class sdssLC(kali.lc.basicLC):
+class sdssLC(kali.lc.lc):
 
     def _getRandLC(self):
         return cc.getRandLC()
@@ -371,10 +371,12 @@ class sdssLC(kali.lc.basicLC):
     def read(self, name, band, path=None, **kwargs):
         if path is None:
             try:
-                path = os.environ['S82DATADIR']
+                self.path = os.environ['S82DATADIR']
             except KeyError:
                 raise KeyError('Environment variable "S82DATADIR" not set! Please set "S82DATADIR" to point \
                 where all SDSS S82 data should live first...')
+        else:
+            self.path = path
         if 'pickled' in kwargs:
             if kwargs['pickled']:
                 filename = 'SDSSFit_'+name+'_'+band+'.p'

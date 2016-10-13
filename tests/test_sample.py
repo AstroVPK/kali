@@ -21,6 +21,11 @@ DayInYear = Year/Day
 BURNSEED = 731647386
 DISTSEED = 219038190
 NOISESEED = 87238923
+SAMPLESEED = 36516342
+ZSSEED = 384789247
+WALKERSEED = 738472981
+MOVESEED = 131343786
+XSEED = 2348713647
 
 
 class TestSamplers(unittest.TestCase):
@@ -46,15 +51,7 @@ class TestSamplers(unittest.TestCase):
         self.nt.observe(nl)
         nl.sampler = 'sincSampler'
         nlMock = nl.sample()
-        startNT = time.time()
-        self.nt.fit(nl)
-        stopNT = time.time()
-        durNT = stopNT - startNT
-        startNTMOCK = time.time()
-        self.ntMock.fit(nlMock)
-        stopNTMOCK = time.time()
-        durNTMOCK = stopNTMOCK - startNTMOCK
-        self.assertLessEqual(durNTMOCK*5.0, durNT)
+        self.assertLessEqual(nlMock.numCadences, nl.numCadences)
 
 if __name__ == "__main__":
     unittest.main()

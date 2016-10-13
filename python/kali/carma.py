@@ -490,20 +490,19 @@ class CARMATask(object):
             tnum = 0
         if tIn is None and duration is not None:
             numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
-            intrinsicLC = kali.lc.basicLC(
-                numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
-                fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
-                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+            intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
+                                         deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
         elif duration is None and tIn is not None:
             numCadences = tIn.shape[0]
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
-            y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            mask = np.require(np.array(numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            intrinsicLC = kali.lc.externalLC(
-                name='', band='', t=t, y=y, yerr=yerr, mask=mask, fracIntrinsicVar=fracIntrinsicVar,
-                fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
-                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)

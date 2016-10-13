@@ -67,7 +67,7 @@ class TestFitCARMA10(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, builtInAmp])
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
-        newLC = self.newTask.simulate(self.T, fracNoiseToSignal=N2S,
+        newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
                                       burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'
@@ -144,7 +144,7 @@ class TestFitCARMA20(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, builtInAmp])
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
-        newLC = self.newTask.simulate(self.T, fracNoiseToSignal=N2S,
+        newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
                                       burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'
@@ -226,7 +226,7 @@ class TestFitCARMA21(unittest.TestCase):
         Rho = np.array([-1.0/builtInTAR1, -1.0/builtInTAR2, -1.0/builtInTMA1, builtInAmp])
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
-        newLC = self.newTask.simulate(self.T, fracNoiseToSignal=N2S,
+        newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
                                       burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'

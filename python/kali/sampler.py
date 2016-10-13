@@ -50,7 +50,7 @@ class sampler(object):
         \brief Initialize the sampler.
 
         """
-        if isinstance(lcObj, kali.lc.basicLC):
+        if isinstance(lcObj, kali.lc.lc):
             self.min_dt = np.min(lcObj.t[1:] - lcObj.t[:-1])
             self.max_T = lcObj.t[-1] - lcObj.t[0]
             self.lcObj = lcObj

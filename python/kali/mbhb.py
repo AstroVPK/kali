@@ -450,24 +450,21 @@ class MBHBTask(object):
             tnum = 0
         return self._taskCython.get_ejectedMass(sigmaStars, rhoStars, H, tnum)
 
-    def simulate(self, duration=None, dt=None, tIn=None, fracNoiseToSignal=0.001, tnum=None):
+    def simulate(self, duration=None, deltaT=None, tIn=None, fracNoiseToSignal=0.001, tnum=None):
         if tnum is None:
             tnum = 0
         if tIn is None and duration is not None:
-            if dt is None:
-                dt = self.period()/10.0
-            numCadences = int(round(float(duration)/dt))
-            intrinsicLC = kali.lc.basicLC(numCadences, dt=dt, fracNoiseToSignal=fracNoiseToSignal)
+            if deltaT is None:
+                deltaT = self.period()/10.0
+            numCadences = int(round(float(duration)/deltaT))
+            intrinsicLC = kali.lc.mockLC(numCadences=numCadences, deltaT=deltaT, fracNoiseToSignal=fracNoiseToSignal)
         elif duration is None and tIn is not None:
-            if dt is not None:
-                raise ValueError('dt cannot be supplied when tIn is provided')
+            if deltaT is not None:
+                raise ValueError('deltaT cannot be supplied when tIn is provided')
             numCadences = tIn.shape[0]
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
-            y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            mask = np.require(np.array(numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            intrinsicLC = kali.lc.externalLC(
-                name='', band='', t=t, y=y, yerr=yerr, mask=mask, fracNoiseToSignal=fracNoiseToSignal)
+            intrinsicLC = kali.lc.mockLC(
+                name='', band='', tIn=t, fracNoiseToSignal=fracNoiseToSignal)
         self._taskCython.make_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
             intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask,
