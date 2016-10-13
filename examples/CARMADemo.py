@@ -13,7 +13,7 @@ import kali.carma
 
 plt.ion()
 parser = argparse.ArgumentParser()
-parser.add_argument("--stop", "-s", default=True, help="Enable pdb breakpoint at end?")
+parser.add_argument("--stop", "-s", default=False, help="Enable pdb breakpoint at end?")
 args = parser.parse_args()
 
 tolIR = 1.0e-3
@@ -98,7 +98,8 @@ plt.ylim([np.min(newTask.Chain[3, :, newTask.nsteps/2:newTask.nsteps]),
 plt.xlabel(r'$b_{0}$')
 plt.ylabel(r'$b_{1}$')
 
-plt.show(False)
+plt.show(True)
+
 if args.stop:
     pdb.set_trace()
 
@@ -149,7 +150,7 @@ plt.ylim([np.min(newTask.Chain[3, :, newTask.nsteps/2:newTask.nsteps]),
 plt.xlabel(r'$b_{0}$')
 plt.ylabel(r'$b_{1}$')
 
-plt.show(False)
+plt.show(True)
 
 if args.stop:
     pdb.set_trace()
