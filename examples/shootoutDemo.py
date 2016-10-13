@@ -13,12 +13,12 @@ import sys as sys
 import pdb
 
 try:
-    import libcarma as libcarma
-    import s82 as s82
-    from util.mpl_settings import set_plot_params
-    import util.triangle as triangle
+    import kali.carma
+    import kali.s82
+    from kali.util.mpl_settings import set_plot_params
+    import kali.util.triangle as triangle
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 try:
@@ -45,7 +45,7 @@ parser.add_argument('-pwd', '--pwd', type=str, default=os.path.join(os.environ['
 parser.add_argument('-n', '--name', type=str, default='rand', help=r'SDSS ID')
 parser.add_argument('-b', '--band', type=str, default='g', help=r'SDSS bandpass')
 parser.add_argument('-libcarmaChain', '--lC', type=str, default='libcarmaChain',
-                    help=r'libcarma Chain Filename')
+                    help=r'kali.carma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type=str, default='cmcmcChain', help=r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type=int, default=250, help=r'Number of steps per walker')
 parser.add_argument('-nwalkers', '--nwalkers', type=int, default=25*psutil.cpu_count(logical=True),
@@ -79,7 +79,7 @@ Q = args.q
 NSTEPS = args.nsteps
 NWALKERS = args.nwalkers
 
-sdss0g = s82.sdssLC(name=args.name, band=args.band, pwd=args.pwd)
+sdss0g = kali.s82.sdssLC(name=args.name, band=args.band, pwd=args.pwd)
 sdss0g.minTimescale = args.minTimescale
 sdss0g.maxTimescale = args.maxTimescale
 sdss0g.maxSigma = args.maxSigma
@@ -93,10 +93,10 @@ except IOError:
     maxT = sdss0g.T*sdss0g.maxTimescale*0.1
     RhoMock = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
     RhoMock[-1] = 6.0e-2*np.std(sdss0g.y)
-    TauMock = libcarma.timescales(P, Q, RhoMock)
-    ThetaMock = libcarma.coeffs(P, Q, RhoMock)
+    TauMock = kali.carma.timescales(P, Q, RhoMock)
+    ThetaMock = kali.carma.coeffs(P, Q, RhoMock)
 
-    newTask = libcarma.basicTask(P, Q)
+    newTask = kali.carma.CARMATask(P, Q)
     newTask.set(sdss0g.mindt, ThetaMock)
     sdss_NtS = np.median(sdss0g.yerr/sdss0g.y)
     sdss_iV = np.std(sdss0g.y)/np.mean(sdss0g.y)
@@ -161,7 +161,7 @@ else:
         mock_sdss0gyerr = np.array(mock_sdss0gyerr)
         mock_sdss0gmask = np.array(mock_sdss0gmask)
         dt = float(np.min(mock_sdss0gt[1:] - mock_sdss0gt[:-1]))
-        mock_sdss0g = libcarma.basicLC(mock_sdss0gt.shape[0], dt)
+        mock_sdss0g = kali.carma.basicLC(mock_sdss0gt.shape[0], dt)
         mock_sdss0g.t = mock_sdss0gt
         mock_sdss0g.x = mock_sdss0gx
         mock_sdss0g.y = mock_sdss0gy
@@ -186,15 +186,15 @@ libcarmaChainFilePath = os.path.join(args.pwd, fileName)
 try:
     chainFile = open(libcarmaChainFilePath, 'r')
 except IOError:
-    ntg = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+    ntg = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
     minT = 5.0*sdss0g.dt*sdss0g.minTimescale
     maxT = 0.2*sdss0g.T*sdss0g.maxTimescale
     RhoGuess = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
     RhoGuess[-1] = 6.0e-2*np.std(sdss0g.y)
-    TauGuess = libcarma.timescales(P, Q, RhoGuess)
-    ThetaGuess = libcarma.coeffs(P, Q, RhoGuess)
+    TauGuess = kali.carma.timescales(P, Q, RhoGuess)
+    ThetaGuess = kali.carma.coeffs(P, Q, RhoGuess)
     ntg.set(mock_sdss0g.dt, ThetaGuess)
-    print "Starting libcarma fitting..."
+    print "Starting kali.carma fitting..."
     startLCARMA = time.time()
     ntg.fit(mock_sdss0g)
     stopLCARMA = time.time()
@@ -219,7 +219,7 @@ else:
     Q = int(words[1])
     NWALKERS = int(words[2])
     NSTEPS = int(words[3])
-    ntg = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+    ntg = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
     for stepNum in xrange(NSTEPS):
         for walkerNum in xrange(NWALKERS):
             line = chainFile.readline()
@@ -476,9 +476,9 @@ if carma_pack_results_g:
     cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
     cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
     for sampleNum in xrange(NSAMPLES):
-        cmcmcRho_g[:, sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:, sampleNum])
+        cmcmcRho_g[:, sampleNum] = kali.carma.roots(P, Q, cmcmcChain_g[:, sampleNum])
         try:
-            cmcmcTau_g[:, sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_g[:, sampleNum]))
+            cmcmcTau_g[:, sampleNum] = kali.carma.timescales(P, Q, (cmcmcRho_g[:, sampleNum]))
         except ValueError:  # Sometimes Kelly's roots are repeated!!! This should not be allowed!
             cmcmcTau_g[:, sampleNum] = np.nan*np.ones(P + Q + 1)
 

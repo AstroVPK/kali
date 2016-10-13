@@ -10,9 +10,11 @@
 
 using namespace std;
 
-double calcCARMALnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
+namespace kali {
 
-double calcCARMALnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcLnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
+
+double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
@@ -183,5 +185,7 @@ void viewMatrix(int nRows, int nCols, complex<double>* mat);
 double dtime();
 
 void kron(int m, int n, double* A, int p, int q, double* B, double* C);
+
+} // namespace kali
 
 #endif

@@ -15,30 +15,21 @@ import argparse
 import psutil
 import warnings
 import sys
-import CARMA_Client as cc
+import os
+import matplotlib.pyplot as plt
+
+plt.ion()
 
 try:
-    import libcarma as libcarma
-    from util.mpl_settings import set_plot_params
-    import util.mcmcviz as mcmcviz
-    import util.triangle as triangle
+    import kali.lc
+    import kali.carma
+    from kali.util.mpl_settings import set_plot_params
+    import kali.util.mcmcviz as mcmcviz
+    import kali.util.triangle as triangle
+    import kali.CARMA_Client as cc
 except ImportError:
-    print 'libcarma not found! Try setting up libcarma if you have it installed. Unable to proceed!!'
+    print 'kali not found! Try setting up kali if you have it installed. Unable to proceed!!'
     sys.exit(0)
-
-try:
-    from JacksTools import jools
-except ImportError:
-    print 'JacksTools not found! Try pip installing JacksTools. Unable to proceed!!'
-    sys.exit(0)
-
-try:
-    import carmcmc as cmcmc
-except ImportError:
-    carma_pack = False
-    warnings.warn('carma_pack not found. Not using carma_pack!!')
-else:
-    carma_pack = True
 
 try:
     os.environ['DISPLAY']
@@ -47,12 +38,30 @@ except KeyError as Err:
     import matplotlib
     matplotlib.use('Agg')
 
+b_ = dict(u=1.4e-10, g=0.9e-10, r=1.2e-10, i=1.8e-10, z=7.4e-10)  # band softening parameter
+f0 = 3631.0  # Jy
+
 fhgt = 10
 fwid = 16
 set_plot_params(useTex=True)
 
 
-class sdssLC(libcarma.basicLC):
+@np.vectorize
+def luptitude_to_flux(mag, err, band):  # Converts a Luptitude to an SDSS flux
+
+    flux = math.sinh(math.log(10.0)/-2.5*mag-math.log(b_[band]))*2*b_[band]*f0
+    error = err*math.log(10)/2.5*2*b_[band]*math.sqrt(1+(flux/(2*b_[band]*f0))**2)*f0
+    return flux, error
+
+
+def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
+
+    t = np.zeros(time.shape[0])
+    t[1:] = np.cumsum((time[1:] - time[:-1])/(1+z))
+    return t
+
+
+class sdssLC(kali.lc.lc):
 
     def _getRandLC(self):
         return cc.getRandLC()
@@ -81,16 +90,16 @@ class sdssLC(libcarma.basicLC):
 
         for p in xrange(pMin, pMax + 1):
             for q in xrange(qMin, min(p, qMax + 1)):
-                nt = libcarma.basicTask(
+                nt = kali.carma.CARMATask(
                     p, q, nwalkers=nwalkers, nsteps=nsteps, xTol=xTol, maxEvals=maxEvals)
 
-                print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
+                print 'Starting carma fitting for p = %d and q = %d...'%(p, q)
                 startLCARMA = time.time()
                 nt.fit(self)
                 stopLCARMA = time.time()
                 timeLCARMA = stopLCARMA - startLCARMA
-                print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
-                                                                       timeLCARMA/60.0, timeLCARMA/3600.0)
+                print 'carma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
+                                                                    timeLCARMA/60.0, timeLCARMA/3600.0)
                 self.totalTime += timeLCARMA
 
                 Deviances = copy.copy(nt.LnPosterior[:, nsteps/2:]).reshape((-1))
@@ -98,9 +107,9 @@ class sdssLC(libcarma.basicLC):
                 print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
                 self.DICDict['%d %d'%(p, q)] = DIC
                 self.taskDict['%d %d'%(p, q)] = nt
-        print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
-                                                                                 self.totalTime/60.0,
-                                                                                 self.totalTime/3600.0)
+        print 'Total time taken by carma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
+                                                                              self.totalTime/60.0,
+                                                                              self.totalTime/3600.0)
 
         sortedDICVals = sorted(self.DICDict.items(), key=operator.itemgetter(1))
         self.pBest = int(sortedDICVals[0][0].split()[0])
@@ -360,7 +369,14 @@ class sdssLC(libcarma.basicLC):
         return newFig
 
     def read(self, name, band, path=None, **kwargs):
-
+        if path is None:
+            try:
+                self.path = os.environ['S82DATADIR']
+            except KeyError:
+                raise KeyError('Environment variable "S82DATADIR" not set! Please set "S82DATADIR" to point \
+                where all SDSS S82 data should live first...')
+        else:
+            self.path = path
         if 'pickled' in kwargs:
             if kwargs['pickled']:
                 filename = 'SDSSFit_'+name+'_'+band+'.p'
@@ -375,21 +391,6 @@ class sdssLC(libcarma.basicLC):
 
         self.OutlierDetectionYVal = kwargs.get('outlierDetectionYVal', np.inf)
         self.OutlierDetectionYERRVal = kwargs.get('outlierDetectionYERRVal', 5.0)
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
-        self._pComp = 0
-        self._qComp = 0
-        self.XSim = np.require(np.zeros(self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PSim = np.require(np.zeros(self._pSim*self._pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PComp = np.require(np.zeros(self._pComp*self._pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         if name.lower() in ['random', 'rand', 'r', 'rnd', 'any', 'none', '']:
             self._name, self.z, data = self._getRandLC()
         else:
@@ -397,8 +398,8 @@ class sdssLC(libcarma.basicLC):
         t = data['mjd_%s' % band]
         y = data['calMag_%s' % band]
         yerr = data['calMagErr_%s' % band]
-        y, yerr = jools.luptitude_to_flux(y, yerr, band)
-        t = jools.time_to_restFrame(t, float(self.z))
+        y, yerr = luptitude_to_flux(y, yerr, band)
+        t = time_to_restFrame(t, float(self.z))
 
         meanYerr = np.mean(yerr)
         stdYerr = np.std(yerr)
@@ -430,65 +431,39 @@ class sdssLC(libcarma.basicLC):
         self.y = np.require(np.array(yList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.array(yerrList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.startT = float(self.t[0])
+        self.t = self.t - self.t[0]
         self._name = self.name.split('/')[-1].split('_')[1]
         self._band = band
         self.objID = data['objID']
-        self.startT = float(self.t[0])
-        self.t = self.t - self.t[0]
-        self._band = band
         self._xunit = r'$d$ (MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-        self._isSmoothed = False
-        self._dtSmooth = 0.0
-        self._isRegular = False
         self.colorDict = {'u': '#756bb1', 'g': '#3182bd', 'r': '#31a354', 'i': '#de2d26', 'z': '#636363'}
         self.smoothColorDict = {
             'u': '#bcbddc', 'g': '#9ecae1', 'r': '#a1d99b', 'i': '#fc9272', 'z': '#bdbdbd'}
         self.smoothErrColorDict = {
             'u': '#efedf5', 'g': '#deebf7', 'r': '#e5f5e0', 'i': '#fee0d2', 'z': '#f0f0f0'}
 
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
-
-    def write(self):
+    def write(self, name=None, band=None, path=None):
         print "Saving..."
         outData = {}
         try:
-            outData['version'] = libcarma.__version__
+            outData['version'] = kali.carma.__version__
         except AttributeError:
-            print "Vishal, please add a __version__ to libcarma or allow direct import of kali"
+            print "Vishal, please add a __version__ to kali.carma or allow direct import of kali - How do I \
+            do this?"
             pass
         outData.update(self.__dict__)
         del outData['_lcCython']
         for key, value in outData['taskDict'].iteritems():
             del outData['taskDict'][key].__dict__['_taskCython']
-        cPickle.dump(outData, open('SDSSFit_'+self.name+'_'+self.band+'.p', 'w'))
+        if path is None:
+            try:
+                path = os.environ['S82DATADIR']
+            except KeyError:
+                raise KeyError('Environment variable "S82DATADIR" not set! Please set "S82DATADIR" to point \
+                where all SDSS S82 data should live first...')
+        cPickle.dump(outData, open(os.path.join(path, 'SDSSFit_'+self.name+'_'+self.band+'.p'), 'w'))
 
 
 def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, minT=2.0, maxT=0.5, maxS=2.0,

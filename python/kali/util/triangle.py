@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import, unicode_literals
 import math as math
 import cmath as cmath
 import numpy as np
@@ -10,7 +11,6 @@ from matplotlib.patches import Ellipse
 import matplotlib as mpl
 import matplotlib.cm as cm
 import pdb
-from __future__ import print_function, absolute_import, unicode_literals
 
 __all__ = ["corner", "hist2d", "error_ellipse"]
 __version__ = "0.1.1"

@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace kali {
+
 class EnsembleSampler {
 private:
 	int numDims, numWalkers, numSteps, numThreads;
@@ -25,5 +27,7 @@ public:
 	void getChain(double *ChainPtr);
 	void getLnLike(double *LnLikePtr);
 	};
+
+} // namespace kali
 
 #endif

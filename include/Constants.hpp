@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace kali {
+
 extern complex<double> complexZero;
 extern complex<double> complexOne;
 extern double pi;
@@ -13,6 +15,8 @@ extern double piSq;
 extern double fourPiSq;
 extern double halfPi;
 extern double e;
+extern double log2OfE;
+extern double log2Pi;
 extern double infiniteVal;
 
 extern double G;
@@ -24,10 +28,13 @@ extern double Year;
 extern double kms2ms;
 extern double SolarMass;
 extern double SolarMassPerCubicParsec;
+extern double secPerSiderealDay;
+
+namespace Kepler {
 
 extern double integrationTime;
 extern double readTime;
-extern int numIntegrationsSC; 
+extern int numIntegrationsSC;
 extern int numIntegrationsLC;
 
 extern double samplingIntervalSC;
@@ -39,12 +46,11 @@ extern double samplingFrequencyLC;
 extern double NyquistFrequencySC;
 extern double NyquistFrequencyLC;
 
-extern double secPerSiderealDay;
 
 extern double scCadence;
 extern double lcCadence;
+} // namespace Kepler
 
-extern double log2OfE;
+} // namespace kali
 
-extern double log2Pi;
 #endif

@@ -1,9 +1,11 @@
-#ifndef BINARYSMBH_HPP
-#define BINARYSMBH_HPP
+#ifndef MBHB_HPP
+#define MBHB_HPP
 
 #include <vector>
 
 using namespace std;
+
+namespace kali {
 
 double calcLnPrior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
@@ -42,15 +44,15 @@ struct LnLikeData {
 	double *lcP;
 	};
 
-class binarySMBH {
+class MBHB {
 private:
 	double rPeribothronTot, rApobothronTot, a1, a2, rPeribothron1, rPeribothron2, rApobothron1, rApobothron2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, _radialBetaFactor1, _radialBetaFactor2;
 	void operator()();
 public:
-	binarySMBH();
-	binarySMBH(double a1Val, double a2Val, double periodVal, double eccentricity, double omega, double inclination, double tau, double alpha1, double alpha2);
-	int checkBinarySMBHParams(double *ThetaIn);
-	void setBinarySMBH(double *ThetaIn);
+	MBHB();
+	MBHB(double a1Val, double a2Val, double periodVal, double eccentricity, double omega, double inclination, double tau, double alpha1, double alpha2);
+	int checkMBHBParams(double *ThetaIn);
+	void setMBHB(double *ThetaIn);
 	void setEpoch(double epochIn);
 	double getEpoch();
 	double getPeriod();
@@ -102,8 +104,10 @@ public:
 
 struct LnLikeArgs {
 	int numThreads;
-	binarySMBH *Systems;
+	MBHB *Systems;
 	LnLikeData *Data;
 	};
+
+} // namespace kali
 
 #endif

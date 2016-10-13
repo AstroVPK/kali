@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 import pdb
 
 try:
-    import libcarma as libcarma
+    import kali.lc
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 
-class k2LC(libcarma.basicLC):
+class k2LC(kali.lc.lc):
 
     sap = ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']
     pdcsap = ['pdcsap', 'mast', 'cal', 'calib', 'calibrated']
@@ -84,9 +84,6 @@ class k2LC(libcarma.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -101,9 +98,6 @@ class k2LC(libcarma.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -119,9 +113,6 @@ class k2LC(libcarma.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -137,9 +128,6 @@ class k2LC(libcarma.basicLC):
                 pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
-        if not os.path.isfile(filePath) and os.path.isfile(filePathFits):
-            subprocess.call(['topcat', '-stilts', 'tcopy', 'in=%s' %
-                            (filePathFits), 'ofmt=ascii', 'out=%s'%(filePath)])
 
     def _readMAST(self, name, campaign, path, processing):
         fileName = self._getCanonicalFileName(name, campaign, processing)
@@ -198,11 +186,6 @@ class k2LC(libcarma.basicLC):
                     self.t[i] = self.t[i - 1] + self.dt
                 self.yerr[i] = math.sqrt(sys.float_info[0])
                 self.mask[i] = 0.0
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
     def _readK2SFF(self, name, campaign, path, processing):
         fileNameMAST = self._getCanonicalFileName(name, campaign, 'mast')
@@ -240,11 +223,6 @@ class k2LC(libcarma.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sff')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -303,11 +281,6 @@ class k2LC(libcarma.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -361,11 +334,6 @@ class k2LC(libcarma.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -422,11 +390,6 @@ class k2LC(libcarma.basicLC):
                     self.t[i] = float(dataLine[0]) - self.startT
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -465,78 +428,38 @@ class k2LC(libcarma.basicLC):
         self.gopi = kwargs.get('gopi', '').lower()
         if path is None:
             try:
-                path = os.environ['K2DATADIR']
+                self.path = os.environ['K2DATADIR']
             except KeyError:
                 raise KeyError('Environment variable "K2DATADIR" not set! Please set "K2DATADIR" to point \
                 where all K2 data should live first...')
-        filePath = os.path.join(path, fileName)
+        else:
+            self.path = path
+        filePath = os.path.join(self.path, fileName)
 
-        self._computedCadenceNum = -1
-        self._tolIR = 1.0e-3
-        self._fracIntrinsicVar = 0.0
-        self._fracNoiseToSignal = 0.0
-        self._maxSigma = 2.0
-        self._minTimescale = 2.0
-        self._maxTimescale = 0.5
-        self._pSim = 0
-        self._qSim = 0
-        self._pComp = 0
-        self._qComp = 0
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = 0.0
-        self._isRegular = True
-        self.XSim = np.require(np.zeros(self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PSim = np.require(np.zeros(self.pSim*self.pSim), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.XComp = np.require(np.zeros(self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.PComp = np.require(np.zeros(self.pComp*self.pComp), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
-        self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
+        self._xunit = r'$t$~(MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         # self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
-        self._yunit = r'$F$'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
+        self._yunit = r'$F$~($\mathrm{e^{-}}$)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-        self._getMAST(name, self.campaign, path, self.goid, self.gopi)
-        self._getHLSP(name, self.campaign, path)
+        self._getMAST(name, self.campaign, self.path, self.goid, self.gopi)
+        self._getHLSP(name, self.campaign, self.path)
 
         if self.processing in self.sap or self.processing in self.pdcsap:
-            self._readMAST(name, self.campaign, path, self.processing)
+            self._readMAST(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2sff:
-            self._readK2SFF(name, self.campaign, path, self.processing)
+            self._readK2SFF(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2sc:
-            self._readK2SC(name, self.campaign, path, self.processing)
+            self._readK2SC(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2varcat:
-            self._readK2VARCAT(name, self.campaign, path, self.processing)
+            self._readK2VARCAT(name, self.campaign, self.path, self.processing)
         elif self.processing in self.everest:
-            self._readEVEREST(name, self.campaign, path, self.processing)
+            self._readEVEREST(name, self.campaign, self.path, self.processing)
         else:
             raise ValueError('Processing not found!')
 
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
-
-        count = int(np.sum(self.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
-            y_meanSum += self.mask[i]*self.y[i]
-            yerr_meanSum += self.mask[i]*self.yerr[i]
-        if count > 0.0:
-            self._mean = y_meanSum/count
-            self._meanerr = yerr_meanSum/count
-        else:
-            self._mean = 0.0
-            self._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
-            y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
-            yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
-        if count > 0.0:
-            self._std = math.sqrt(y_stdSum/count)
-            self._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            self._std = 0.0
-            self._stderr = 0.0
 
     def write(self, name, path=None, **kwrags):
         pass
@@ -560,4 +483,4 @@ if __name__ == '__main__':
     LC.plot()
     LC.plotacf()
     LC.plotsf()
-    plt.show(False)
+    plt.show()

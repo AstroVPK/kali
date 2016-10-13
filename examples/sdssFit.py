@@ -15,13 +15,13 @@ import sys as sys
 import pdb
 
 try:
-    import libcarma as libcarma
-    import util.mcmcviz as mcmcviz
-    import s82 as s82
-    from util.mpl_settings import set_plot_params
-    import util.triangle as triangle
+    import kali.carma
+    import kali.util.mcmcviz as mcmcviz
+    import kali.s82
+    from kali.util.mpl_settings import set_plot_params
+    import kali.util.triangle as triangle
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 try:
@@ -95,15 +95,15 @@ if (args.pMin < 1):
 if (args.qMin < 0):
     raise ValueError('qMin must be greater than or equal to 0')
 
-sdssLC = s82.sdssLC(name=args.name, band=args.band, pwd=args.pwd)
+sdssLC = kali.s82.sdssLC(name=args.name, band=args.band, pwd=args.pwd)
 sdssLC.minTimescale = args.minTimescale
 sdssLC.maxTimescale = args.maxTimescale
 sdssLC.maxSigma = args.maxSigma
 
 if args.plot:
     plt.figure(0, figsize=(fwid, fhgt))
-    plt.errorbar(sdssLC.t, sdssLC.y, sdssLC.yerr, label=r'%s (%s-band)' %
-                 (args.name.split('.')[0], args.band), fmt='.', capsize=0, color='#2ca25f', markeredgecolor='none', zorder=10)
+    plt.errorbar(sdssLC.t, sdssLC.y, sdssLC.yerr, label=r'%s (%s-band)'%(args.name.split('.')[0], args.band),
+                 fmt='.', capsize=0, color='#2ca25f', markeredgecolor='none', zorder=10)
     plt.xlabel(r'$t$ (MJD)')
     plt.ylabel(r'$F$ (Jy)')
     plt.title(r'Light curve')
@@ -116,14 +116,14 @@ totalTime = 0.0
 
 for p in xrange(args.pMin, args.pMax + 1):
     for q in xrange(args.qMin, min(p, args.qMax + 1)):
-        nt = libcarma.basicTask(p, q, nwalkers=args.nwalkers, nsteps=args.nsteps)
+        nt = kali.carma.CARMATask(p, q, nwalkers=args.nwalkers, nsteps=args.nsteps)
 
-        print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
+        print 'Starting carma fitting for p = %d and q = %d...'%(p, q)
         startLCARMA = time.time()
         nt.fit(sdssLC)
         stopLCARMA = time.time()
         timeLCARMA = stopLCARMA - startLCARMA
-        print 'libcarma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
+        print 'carma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA, timeLCARMA/60.0, timeLCARMA/3600.0)
         totalTime += timeLCARMA
 
         Deviances = copy.copy(nt.LnPosterior[:, args.nsteps/2:]).reshape((-1))
@@ -131,8 +131,8 @@ for p in xrange(args.pMin, args.pMax + 1):
         print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
         DICDict['%d %d'%(p, q)] = DIC
         taskDict['%d %d'%(p, q)] = nt
-print 'Total time taken by libcarma is %4.3f s = %4.3f min = %4.3f hrs'%(totalTime, totalTime/60.0,
-                                                                         totalTime/3600.0)
+print 'Total time taken by carma is %4.3f s = %4.3f min = %4.3f hrs'%(totalTime, totalTime/60.0,
+                                                                      totalTime/3600.0)
 
 sortedDICVals = sorted(DICDict.items(), key=operator.itemgetter(1))
 pBest = int(sortedDICVals[0][0].split()[0])
@@ -209,7 +209,7 @@ if args.viewer:
 
 Theta = bestTask.Chain[:, np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[
     0][0], np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[1][0]]
-nt = libcarma.basicTask(pBest, qBest)
+nt = kali.carma.CARMATask(pBest, qBest)
 nt.set(sdssLC.dt, Theta)
 nt.smooth(sdssLC)
 sdssLC.plot()
@@ -223,7 +223,7 @@ plt.errorbar(lagsEst, sfEst, sferrEst, label=r'$SF(\delta t)$ (est)',
 plt.xlabel(r'$\log_{10}\delta t$')
 plt.ylabel(r'$\log_{10} SF$')
 plt.legend(loc=2)
-plt.show()
+plt.show(True)
 
 if args.stop:
     pdb.set_trace()

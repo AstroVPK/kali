@@ -13,11 +13,11 @@ import time as time
 import pdb
 import os as os
 
-import k2
-import libcarma as libcarma
-import util.mcmcviz as mcmcviz
-from util.mpl_settings import set_plot_params
-import util.triangle as triangle
+import kali.k2
+import kali.carma
+import kali.util.mcmcviz as mcmcviz
+from kali.util.mpl_settings import set_plot_params
+import kali.util.triangle as triangle
 
 try:
     os.environ['DISPLAY']
@@ -94,7 +94,7 @@ if (args.pMin < 1):
 if (args.qMin < 0):
     raise ValueError('qMin must be greater than or equal to 0')
 
-LC = k2.k2LC(name=args.name, band=r'Kepler',
+LC = kali.k2.k2LC(name=args.name, band=r'Kepler',
              campaign=args.campaign, pwd=args.pwd, processing=args.processing)
 
 LC.minTimescale = args.minTimescale
@@ -106,7 +106,7 @@ DICDict = dict()
 
 for p in xrange(args.pMin, args.pMax + 1):
     for q in xrange(args.qMin, p):
-        nt = libcarma.basicTask(p, q, nwalkers=args.nwalkers, nsteps=args.nsteps)
+        nt = kali.carma.CARMATask(p, q, nwalkers=args.nwalkers, nsteps=args.nsteps)
 
         print 'Starting libcarma fitting for p = %d and q = %d...'%(p, q)
         startLCARMA = time.time()
@@ -196,7 +196,7 @@ if args.viewer:
 
 Theta = bestTask.Chain[:, np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[
     0][0], np.where(bestTask.LnPosterior == np.max(bestTask.LnPosterior))[1][0]]
-nt = libcarma.basicTask(pBest, qBest)
+nt = kali.carma.CARMATask(pBest, qBest)
 nt.set(LC.dt, Theta)
 nt.smooth(LC)
 LC.plot()

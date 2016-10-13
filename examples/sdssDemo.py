@@ -12,13 +12,13 @@ import sys as sys
 import pdb
 
 try:
-    import libcarma as libcarma
-    import s82 as s82
-    from util.mpl_settings import set_plot_params
-    import util.triangle as triangle
-    import CARMA_Client
+    import kali.carma
+    import kali.s82
+    from kali.util.mpl_settings import set_plot_params
+    import kali.util.triangle as triangle
+    import kali.CARMA_Client
 except ImportError:
-    print 'libcarma is not setup. Setup libcarma by sourcing bin/setup.sh'
+    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 try:
@@ -43,8 +43,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-pwd', '--pwd', type=str, default=os.path.join(os.environ['KALI'], 'examples/data'),
                     help=r'Path to working directory')
 parser.add_argument('-n', '--name', type=str, default='rand', help=r'SDSS ID')
-parser.add_argument('-libcarmaChain', '--lC', type=str, default='libcarmaChain',
-                    help=r'libcarma Chain Filename')
+parser.add_argument('-carmaChain', '--carmaC', type=str, default='carmaChain',
+                    help=r'carma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type=str, default='cmcmcChain', help=r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type=int, default=250, help=r'Number of steps per walker')
 parser.add_argument('-nwalkers', '--nwalkers', type=int, default=25*psutil.cpu_count(logical=True),
@@ -85,8 +85,8 @@ if args.g or args.r:
 
     if args.g:
         try:
-            sdss0g = s82.sdssLC(name=args.name, band='g', pwd=args.pwd)
-        except CARMA_Client.SDSSError as Err:
+            sdss0g = kali.s82.sdssLC(name=args.name, band='g', pwd=args.pwd)
+        except kali.CARMA_Client.SDSSError as Err:
             print str(Err)
             sys.exit(-1)
         sdss0g.minTimescale = args.minTimescale
@@ -97,18 +97,18 @@ if args.g or args.r:
         maxT = sdss0g.T*sdss0g.maxTimescale
         Rho = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
         Rho[-1] = 1.0e-1*np.std(sdss0g.y)
-        Guess = libcarma.coeffs(P, Q, Rho)
+        Guess = kali.carma.coeffs(P, Q, Rho)
 
         plt.figure(1, figsize=(fhgt, fhgt))
         plt.errorbar(sdss0g.t - sdss0g.startT, sdss0g.y, sdss0g.yerr, label=r'sdss-g', fmt='.',
                      capsize=0, color='#2ca25f', markeredgecolor='none', zorder=10)
-        fileName = args.name.split('.')[0] + '_' + args.lC + '_g.dat'
+        fileName = args.name.split('.')[0] + '_' + args.carmaC + '_g.dat'
         libcarmaChain_g = os.path.join(args.pwd, fileName)
         try:
             chainFile = open(libcarmaChain_g, 'r')
         except IOError:
             chainFile = open(libcarmaChain_g, 'w')
-            ntg = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            ntg = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
             ntg.fit(sdss0g)
             line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
             chainFile.write(line)
@@ -127,7 +127,7 @@ if args.g or args.r:
             Q = int(words[1])
             NWALKERS = int(words[2])
             NSTEPS = int(words[3])
-            ntg = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            ntg = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
             for stepNum in xrange(NSTEPS):
                 for walkerNum in xrange(NWALKERS):
                     line = chainFile.readline()
@@ -246,9 +246,9 @@ if args.g or args.r:
             cmcmcRho_g = np.zeros((P + Q + 1, NSAMPLES))
             cmcmcTau_g = np.zeros((P + Q + 1, NSAMPLES))
             for sampleNum in xrange(NSAMPLES):
-                cmcmcRho_g[:, sampleNum] = libcarma.roots(P, Q, cmcmcChain_g[:, sampleNum])
+                cmcmcRho_g[:, sampleNum] = kali.carma.roots(P, Q, cmcmcChain_g[:, sampleNum])
                 try:
-                    cmcmcTau_g[:, sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_g[:, sampleNum]))
+                    cmcmcTau_g[:, sampleNum] = kali.carma.timescales(P, Q, (cmcmcRho_g[:, sampleNum]))
                 except ValueError:  # Sometimes Kelly's roots are repeated!!! This should not be allowed!
                     pass
             plt.figure(6)
@@ -271,8 +271,8 @@ if args.g or args.r:
     if args.r:
         plt.figure(1)
         try:
-            sdss0r = s82.sdssLC(name=args.name, band='r', pwd=args.pwd)
-        except CARMA_Client.SDSSError as Err:
+            sdss0r = kali.s82.sdssLC(name=args.name, band='r', pwd=args.pwd)
+        except kali.CARMA_Client.SDSSError as Err:
             print str(Err)
             sys.exit(-1)
         sdss0r.minTimescale = args.minTimescale
@@ -283,11 +283,11 @@ if args.g or args.r:
         maxT = sdss0r.T*sdss0r.maxTimescale
         Rho = -1.0/((maxT - minT)*np.random.random(P + Q + 1) + minT)
         Rho[-1] = 1.0e-1*np.std(sdss0r.y)
-        Guess = libcarma.coeffs(P, Q, Rho)
+        Guess = kali.carma.coeffs(P, Q, Rho)
 
         plt.errorbar(sdss0r.t - sdss0r.startT, sdss0r.y, sdss0r.yerr, label=r'sdss-r', fmt='.', capsize=0,
                      color='#feb24c', markeredgecolor='none', zorder=10)
-        fileName = args.name.split('.')[0] + '_' + args.lC + '_r.dat'
+        fileName = args.name.split('.')[0] + '_' + args.carmaC + '_r.dat'
         libcarmaChain_r = os.path.join(args.pwd, fileName)
         try:
             chainFile = open(libcarmaChain_r, 'r')
@@ -295,7 +295,7 @@ if args.g or args.r:
             NSAMPLES = NWALKERS*NSTEPS/2
             NBURNIN = NWALKERS*NSTEPS/2
             chainFile = open(libcarmaChain_r, 'w')
-            ntr = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            ntr = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
             ntr.set(sdss0r.dt, Guess)
             ntr.fit(sdss0r)
             line = '%d %d %d %d\n'%(P, Q, NWALKERS, NSTEPS)
@@ -316,7 +316,7 @@ if args.g or args.r:
             Q = int(words[1])
             NWALKERS = int(words[2])
             NSTEPS = int(words[3])
-            ntr = libcarma.basicTask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            ntr = kali.carma.CARMATask(P, Q, nwalkers=NWALKERS, nsteps=NSTEPS)
             for stepNum in xrange(NSTEPS):
                 for walkerNum in xrange(NWALKERS):
                     line = chainFile.readline()
@@ -434,9 +434,9 @@ if args.g or args.r:
             cmcmcRho_r = np.zeros((P + Q + 1, NSAMPLES))
             cmcmcTau_r = np.zeros((P + Q + 1, NSAMPLES))
             for sampleNum in xrange(NSAMPLES):
-                cmcmcRho_r[:, sampleNum] = libcarma.roots(P, Q, cmcmcChain_r[:, sampleNum])
+                cmcmcRho_r[:, sampleNum] = kali.carma.roots(P, Q, cmcmcChain_r[:, sampleNum])
                 try:
-                    cmcmcTau_r[:, sampleNum] = libcarma.timescales(P, Q, (cmcmcRho_r[:, sampleNum]))
+                    cmcmcTau_r[:, sampleNum] = kali.carma.timescales(P, Q, (cmcmcRho_r[:, sampleNum]))
                 except ValueError:  # Sometimes Kelly's roots are repeated!!! This should not be allowed!
                     pass
             plt.figure(8)
@@ -457,7 +457,7 @@ if args.g or args.r:
             plt.tight_layout()
 
     if args.plot:
-        plt.show()
+        plt.show(True)
 
 if args.stop:
     pdb.set_trace()
