@@ -65,8 +65,9 @@ private:
 	int isNotRedundant;
 	int hasUniqueEigenValues;
 	int hasPosSigma;
-	int p;
+    int p;
 	int q;
+    static int r; // Number of MBHB parameters
 	int pSq;
 	int qSq;
 	double dt; // This is the last used step time to compute F, D and Q.
@@ -115,6 +116,7 @@ private:
 public:
 	MBHBCARMA();
 	~MBHBCARMA();
+    int get_r();
 	int get_p();
 	int get_q();
 	double get_dt();

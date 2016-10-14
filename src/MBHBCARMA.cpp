@@ -114,7 +114,7 @@ double kali::calcLnPrior(double *walkerPos, void *func_args) {
 
 		#ifdef DEBUG_CALCLNPRIOR
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+		for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
@@ -126,7 +126,7 @@ double kali::calcLnPrior(double *walkerPos, void *func_args) {
 
 		#ifdef DEBUG_CALCLNPRIOR
 		printf("calcLnLike = threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+		for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 			printf("%f ",walkerPos[dimNum]);
 			}
 		printf("\n");
@@ -163,7 +163,7 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+			for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
 				}
 			printf("\n");
@@ -220,7 +220,7 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+			for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", x[dimNum]);
 				}
 			printf("\n");
@@ -261,7 +261,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+			for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
@@ -317,7 +317,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 
 		#ifdef DEBUG_CALCLNPOSTERIOR
 			printf("calcLnPosterior - threadNum: %d; walkerPos: ", threadNum);
-			for (int dimNum = 0; dimNum < Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
+			for (int dimNum = 0; dimNum <  Systems[threadNum].get_r() + Systems[threadNum].get_p() + Systems[threadNum].get_q() + 1; dimNum++) {
 				printf("%+17.16e ", walkerPos[dimNum]);
 				}
 			printf("\n");
@@ -427,9 +427,9 @@ void kali::kron(int m, int n, double* A, int p, int q, double* B, double* C) {
 		}
 	}
 
-void kali::getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
+void kali::getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut) {
 
-	int p = numP, q = numQ, pSq = p*p, qSq = q*q;
+	int r = numR, p = numP, q = numQ, pSq = p*p, qSq = q*q;
 	lapack_int YesNo;
 	complex<double> alpha = kali::complexOne, beta = kali::complexZero;
 
@@ -473,10 +473,10 @@ void kali::getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 			}
 		}
 
-	A[0] = -1.0*kali::complexOne*Theta[0];
+	A[0] = -1.0*kali::complexOne*Theta[r];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i] = -1.0*kali::complexOne*Theta[i];
+		A[i] = -1.0*kali::complexOne*Theta[r + i];
 		A[i*p + (i - 1)] = kali::complexOne;
 		}
 
@@ -492,7 +492,7 @@ void kali::getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
-		B[p - 1 - rowCtr] = kali::complexOne*Theta[p + rowCtr];
+		B[p - 1 - rowCtr] = kali::complexOne*Theta[r + p + rowCtr];
 		}
 
 	// Start computation of C
@@ -598,6 +598,8 @@ void kali::getSigma(int numP, int numQ, double *Theta, double *SigmaOut) {
 		}
 
 	}
+
+int kali::MBHBCARMA::r = 8;
 
 kali::MBHBCARMA::MBHBCARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/
@@ -840,10 +842,10 @@ void kali::MBHBCARMA::allocMBHBCARMA(int numP, int numQ) {
 			}
 		}
 
-	Theta = static_cast<double*>(_mm_malloc((p + q + 1)*sizeof(double),64));
-	allocated += (p+q+1)*sizeof(double);
+	Theta = static_cast<double*>(_mm_malloc((kali::MBHBCARMA::r + p + q + 1)*sizeof(double),64));
+	allocated += (kali::MBHBCARMA::r+p+q+1)*sizeof(double);
 
-	for (int rowCtr = 0; rowCtr < p + q + 1; ++rowCtr) {
+	for (int rowCtr = 0; rowCtr < kali::MBHBCARMA::r + p + q + 1; ++rowCtr) {
 		Theta[rowCtr] = 0.0;
 		}
 
@@ -1255,6 +1257,10 @@ void kali::MBHBCARMA::deallocMBHBCARMA() {
 	#endif
 	}
 
+int kali::MBHBCARMA::get_r() {
+	return kali::MBHBCARMA::r;
+	}
+
 int kali::MBHBCARMA::get_p() {
 	return p;
 	}
@@ -1437,7 +1443,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 	hasUniqueEigenValues = 1;
 	hasPosSigma = 1;
 
-	if (ThetaIn[p] <= 0.0) {
+	if (ThetaIn[kali::MBHBCARMA::r + p] <= 0.0) {
 		hasPosSigma = 0;
 		}
 
@@ -1448,10 +1454,10 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 			}
 		}
 
-	CARMatrix[p*(p-1)] = -1.0*kali::complexOne*ThetaIn[p-1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
+	CARMatrix[p*(p-1)] = -1.0*kali::complexOne*ThetaIn[kali::MBHBCARMA::r + p - 1]; // The first row has no 1s so we just set the rightmost entry equal to -alpha_p
 	#pragma omp simd
 	for (int rowCtr = 1; rowCtr < p; rowCtr++) {
-		CARMatrix[rowCtr+(p-1)*p] = -1.0*kali::complexOne*ThetaIn[p - 1 - rowCtr]; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
+		CARMatrix[rowCtr+(p-1)*p] = -1.0*kali::complexOne*ThetaIn[kali::MBHBCARMA::r + p - 1 - rowCtr]; // Rightmost column of CARMatrix equals -alpha_k where 1 < k < p.
 		CARMatrix[rowCtr+(rowCtr-1)*p] = kali::complexOne; // CARMatrix has Identity matrix in bottom left.
 		}
 	ilo[0] = 0;
@@ -1466,7 +1472,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 		}
 	#ifdef DEBUG_CHECKARMAPARAMS
 	printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1484,7 +1490,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 
 		#ifdef DEBUG_CHECKARMAPARAMS
 		printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%f ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -1495,7 +1501,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 
 			#ifdef DEBUG_CHECKARMAPARAMS
 			printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 				printf("%f ",Theta[dimNum]);
 				}
 			printf("\n");
@@ -1519,10 +1525,10 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 				CMAMatrix[rowCtr + q*colCtr] = kali::complexZero; // Initialize matrix.
 				}
 			}
-		CMAMatrix[(q-1)*q] = -1.0*kali::complexOne*ThetaIn[p]/ThetaIn[p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
+		CMAMatrix[(q-1)*q] = -1.0*kali::complexOne*ThetaIn[kali::MBHBCARMA::r + p]/ThetaIn[kali::MBHBCARMA::r + p + q]; // MAMatrix has -beta_q/-beta_0 at top right!
 		#pragma omp simd
 		for (int rowCtr = 1; rowCtr < q; ++rowCtr) {
-			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*kali::complexOne*ThetaIn[p + rowCtr]/ThetaIn[p + q]; // Rightmost column of MAMatrix has -MA coeffs.
+			CMAMatrix[rowCtr + (q - 1)*q] = -1.0*kali::complexOne*ThetaIn[kali::MBHBCARMA::r + p + rowCtr]/ThetaIn[kali::MBHBCARMA::r + p + q]; // Rightmost column of MAMatrix has -MA coeffs.
 			CMAMatrix[rowCtr + (rowCtr - 1)*q] = kali::complexOne; // MAMatrix has Identity matrix in bottom left.
 			}
 		ilo[0] = 0;
@@ -1540,7 +1546,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 			}
 		#ifdef DEBUG_CHECKARMAPARAMS
 		printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%f ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -1556,7 +1562,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 
 			#ifdef DEBUG_CHECKARMAPARAMS
 			printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-			for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+			for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 				printf("%f ",Theta[dimNum]);
 				}
 			printf("\n");
@@ -1567,7 +1573,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 
 				#ifdef DEBUG_CHECKARMAPARAMS
 				printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-				for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+				for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 					printf("%f ",Theta[dimNum]);
 					}
 				printf("\n");
@@ -1586,7 +1592,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 				}
 			}
 		} else if (q == 0) {
-		if (Theta[p] < 0) {
+		if (Theta[kali::MBHBCARMA::r+p] < 0) {
 			isInvertible = 0;
 			}
 		} else {
@@ -1596,7 +1602,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 
 	#ifdef DEBUG_CHECKARMAPARAMS
 	printf("checkMBHBCARMAParams - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%f ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1626,7 +1632,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 	#endif
 
 	#pragma omp simd
-	for (int rowCtr = 0; rowCtr < p + q + 1; ++rowCtr) {
+	for (int rowCtr = 0; rowCtr < kali::MBHBCARMA::r + p + q + 1; ++rowCtr) {
 		Theta[rowCtr] = ThetaIn[rowCtr];
 		}
 
@@ -1638,10 +1644,10 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 			}
 		}
 
-	A[0] = -1.0*kali::complexOne*Theta[0];
+	A[0] = -1.0*kali::complexOne*Theta[kali::MBHBCARMA::r];
 	#pragma omp simd
 	for (int i = 1; i < p; ++i) {
-		A[i] = -1.0*kali::complexOne*Theta[i];
+		A[i] = -1.0*kali::complexOne*Theta[kali::MBHBCARMA::r + i];
 		A[i*p + (i - 1)] = kali::complexOne;
 		}
 
@@ -1649,7 +1655,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1688,8 +1694,8 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
-		printf("%+7.6e ",Theta[dimNum]);
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
+		printf("%+7.6e ",Theta[+ dimNum]);
 		}
 	printf("\n");
 	printf("setMBHBCARMA - threadNum: %d; w\n",threadNum);
@@ -1705,12 +1711,12 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < q + 1; rowCtr++) {
-		B[p - 1 - rowCtr] = kali::complexOne*Theta[p + rowCtr];
+		B[p - 1 - rowCtr] = kali::complexOne*Theta[kali::MBHBCARMA::r + p + rowCtr];
 		}
 
 	#ifdef DEBUG_SETMBHBCARMA
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1723,7 +1729,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1742,7 +1748,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1759,7 +1765,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1783,7 +1789,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1801,7 +1807,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1820,7 +1826,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1837,7 +1843,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1858,7 +1864,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 	#ifdef DEBUG_SETMBHBCARMA_C
 	printf("setMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+7.6e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1875,7 +1881,7 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
 void kali::MBHBCARMA::solveMBHBCARMA() {
 	#if (defined DEBUG_SOLVEMBHBCARMA_F) || (defined DEBUG_SOLVEMBHBCARMA_Q)
-	int threadNum = omp_get_thread_num();
+	   int threadNum = omp_get_thread_num();
 	#endif
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
@@ -1885,7 +1891,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1904,7 +1910,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1920,7 +1926,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1939,7 +1945,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1956,7 +1962,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1975,7 +1981,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -1992,7 +1998,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -2013,7 +2019,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 
 	#ifdef DEBUG_SOLVEMBHBCARMA_F
 	printf("solveMBHBCARMA - threadNum: %d; walkerPos: ",threadNum);
-	for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+	for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 		printf("%+8.7e ",Theta[dimNum]);
 		}
 	printf("\n");
@@ -2692,7 +2698,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2706,7 +2712,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2717,7 +2723,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2736,7 +2742,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2753,7 +2759,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2772,7 +2778,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2789,7 +2795,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2810,7 +2816,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2824,7 +2830,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
@@ -2843,7 +2849,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		#ifdef DEBUG_COMPUTEACVF
 		printf("computeACVF - threadNum: %d; walkerPos: ",threadNum);
-		for (int dimNum = 0; dimNum < p+q+1; dimNum++) {
+		for (int dimNum = 0; dimNum < kali::MBHBCARMA::r+p+q+1; dimNum++) {
 			printf("%+8.7e ",Theta[dimNum]);
 			}
 		printf("\n");
