@@ -39,6 +39,7 @@ struct LnLikeData {
 	double meanDT;
 	double fracIntrinsicVar;
 	double fracNoiseToSignal;
+    double startT;
     double lowestFlux;
 	double highestFlux;
 	double maxSigma;
@@ -65,6 +66,7 @@ private:
 	int isNotRedundant;
 	int hasUniqueEigenValues;
 	int hasPosSigma;
+    int mbhbIsGood;
     int p;
 	int q;
     static int r; // Number of MBHB parameters

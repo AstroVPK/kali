@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include <nlopt.hpp>
 #include "Constants.hpp"
 #include "MBHBCARMA.hpp"
 
@@ -660,6 +661,53 @@ kali::MBHBCARMA::MBHBCARMA() {
 	VScratch = nullptr;
 	MScratch = nullptr;
 
+    m1 = 0.0;
+	m2 = 0.0;
+	rS1 = 0.0;
+	rS2 = 0.0;
+	totalMass = 0.0;
+	massRatio = NAN;
+	reducedMass = 0.0;
+	eccentricity = 0.0;
+	eccentricityFactor = 1.0;
+	a1 = 0.0;
+	a2 = 0.0;
+	rPeribothron1 = 0.0;
+	rPeribothron2 = 0.0;
+	rApobothron1 = 0.0;
+	rApobothron2 = 0.0;
+	rPeribothronTot = 0.0;
+	rApobothronTot = 0.0;
+	omega1 = 0.0;
+	omega2 = pi;
+	inclination = pi/2.0;
+	tau = 0.0;
+	alpha1 = -0.44;
+	alpha2 = -0.44;
+	period = 0.0;
+	epoch = 0.0;
+	M = 0.0;
+	E = 0.0;
+	r1 = 0.0; // current distance of m1 from COM
+	r2 = 0.0; // current distance of m2 from COM
+	nu = 0.0; // current true anomoly of m1
+	if (nu < 0.0) {
+		nu += 2.0*pi;
+		}
+	theta1 = nu + omega1;
+	theta2 = nu + omega2;
+	beta1 = 0.0;
+	beta2 = 0.0;
+	_radialBetaFactor1 = 0.0;
+	_radialBetaFactor2 = 0.0;
+	radialBeta1 = 0.0;
+	radialBeta2 = 0.0;
+	dF1 = 0.0;
+	dF2 = 0.0;
+	bF1 = 0.0;
+	bF2 = 0.0;
+	totalFlux = 1.0;
+
 	#ifdef DEBUG_CTORDLM
 	printf("DLM - threadNum: %d; Address of System: %p\n",threadNum,this);
 	#endif
@@ -679,6 +727,7 @@ kali::MBHBCARMA::~MBHBCARMA() {
 	isNotRedundant = 1;
 	hasUniqueEigenValues = 1;
 	hasPosSigma = 1;
+    mbhbIsGood = 1;
 	p = 0;
 	q = 0;
 	pSq = 0;
@@ -1442,6 +1491,94 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 	isNotRedundant = 1;
 	hasUniqueEigenValues = 1;
 	hasPosSigma = 1;
+    mbhbIsGood = 1;
+
+	double a1Val = kali::Parsec*ThetaIn[0];
+	double a2Val = kali::Parsec*ThetaIn[1];
+
+	if (a2Val < a1Val) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("a2: %4.3e\n",a2Val);
+			printf("a2LLim: %4.3e\n",a1Val);
+		#endif
+		}
+
+	double periodVal = kali::Day*ThetaIn[2];
+	double totalMassVal = (kali::fourPiSq*pow(a1Val + a2Val, 3.0))/(kali::G*pow(periodVal, 2.0));
+	double massRatioVal = a1Val/a2Val;
+	double m1Val = totalMassVal*(1.0/(1.0 + massRatioVal));
+	double m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal));
+	double rS1Val = (2.0*kali::G*m1Val)/(pow(kali::c, 2.0));
+	double rS2Val = (2.0*kali::G*m2Val)/(pow(kali::c, 2.0));
+
+	double eccentricityVal = ThetaIn[3];
+	if (eccentricityVal < 0.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("eccentricity: %4.3e\n",eccentricityVal);
+			printf("eccentricityLLim: %4.3e\n",0.0);
+		#endif
+		}
+	if (eccentricityVal >= 1.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("eccentricity: %4.3e\n",eccentricityVal);
+			printf("eccentricityULim: %4.3e\n",1.0);
+		#endif
+		}
+
+	double rPeribothronTotVal = a1Val*(1.0 - eccentricityVal) + a2Val*(1.0 - eccentricityVal);
+	if (rPeribothronTotVal < (10.0*(rS1Val + rS2Val))) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("rPeribothronTot: %+4.3e\n",rPeribothronTotVal);
+			printf("rPeribothronTotLLim: %+4.3e\n", 10.0*(rS1Val + rS2Val));
+		#endif
+		}
+
+	double omega1Val = d2r(ThetaIn[4]);
+	if (omega1Val < 0.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("omega1: %4.3e\n",omega1Val);
+			printf("omega1LLim: %4.3e\n",0.0);
+		#endif
+		}
+	if (omega1Val >= kali::twoPi) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("omega1: %4.3e\n",omega1Val);
+			printf("omega1ULim: %4.3e\n",kali::twoPi);
+		#endif
+		}
+
+	double inclinationVal = d2r(ThetaIn[5]);
+	if (inclinationVal < 0.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("inclination: %4.3e\n",inclinationVal);
+			printf("inclinationLLim: %4.3e\n",0.0);
+		#endif
+		}
+	if (inclinationVal > kali::halfPi) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("inclination: %4.3e\n",inclinationVal);
+			printf("inclinationULim: %4.3e\n",kali::halfPi);
+		#endif
+		}
+
+	double tauVal = ThetaIn[6]*kali::Day;
+
+	double totalFluxVal = ThetaIn[7];
+	if (totalFluxVal < 0.0) {
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("totalFlux: %4.3e\n",totalFluxVal);
+			printf("totalFluxLLim: %4.3e\n",0.0);
+		#endif
+		mbhbIsGood = 0;
+		}
 
 	if (ThetaIn[kali::MBHBCARMA::r + p] <= 0.0) {
 		hasPosSigma = 0;
@@ -1611,12 +1748,13 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 	printf("checkMBHBCARMAParams - threadNum: %d; isNotRedundant: %d\n",threadNum,isNotRedundant);
 	printf("checkMBHBCARMAParams - threadNum: %d; hasUniqueEigenValues: %d\n",threadNum,hasUniqueEigenValues);
 	printf("checkMBHBCARMAParams - threadNum: %d; hasPosSigma: %d\n",threadNum,hasPosSigma);
+    printf("checkMBHBCARMAParams - threadNum: %d; mbhbIsGood: %d\n",threadNum,mbhbIsGood);
 	printf("\n");
 	printf("\n");
 	#endif
 
-	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma;
-	}
+	return isStable*isInvertible*isNotRedundant*hasUniqueEigenValues*hasPosSigma*mbhbIsGood;
+} // checkMBHBCARMAPArams
 
 void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 
@@ -1877,7 +2015,196 @@ void kali::MBHBCARMA::setMBHBCARMA(double *ThetaIn) {
 	#endif
 
 	H[0] = 1.0;
+
+    a1 = Theta[0]*kali::Parsec;
+	a2 = Theta[1]*kali::Parsec;
+	period = Theta[2]*kali::Day;
+	totalMass = (kali::fourPiSq*pow(a1 + a2, 3.0))/(kali::G*pow(period, 2.0));
+	massRatio = a1/a2;
+	m1 = totalMass*(1.0/(1.0 + massRatio));
+	m2 = totalMass*(massRatio/(1.0 + massRatio));
+	rS1 = (2.0*kali::G*m1)/(pow(kali::c, 2.0));
+	rS2 = (2.0*kali::G*m2)/(pow(kali::c, 2.0));
+	reducedMass = m1*m2/(m1 + m2);
+	eccentricity = Theta[3];
+	eccentricityFactor = sqrt((1.0 + eccentricity)/(1.0 - eccentricity));
+	rPeribothron1 = a1*(1.0 - eccentricity);
+	rPeribothron2 = a2*(1.0 - eccentricity);
+	rPeribothronTot = rPeribothron1 + rPeribothron2;
+	rApobothron1 = a1*(1.0 + eccentricity);
+	rApobothron2 = a2*(1.0 + eccentricity);
+	rApobothronTot = rApobothron1 + rApobothron2;
+	omega1 = d2r(Theta[4]);
+	omega2 = omega1 + kali::pi;
+	inclination = d2r(Theta[5]);
+	tau = Theta[6]*kali::Day;
+	alpha1 = -0.44;
+	alpha2 = -0.44;
+	period = kali::twoPi*sqrt(pow(a1 + a2, 3.0)/(kali::G*totalMass));
+	epoch = 0.0;
+	M = kali::twoPi*(epoch - tau)/period;
+	nlopt::opt opt(nlopt::LN_COBYLA, 1);
+	KeplersEqnData Data;
+	Data.eccentricity = eccentricity;
+	Data.M = M;
+	KeplersEqnData *ptr2Data = &Data;
+	opt.set_min_objective(KeplerEqn, ptr2Data);
+	opt.set_xtol_rel(1e-16);
+	std::vector<double> x(1);
+	x[0] = 1.0;
+	double minf;
+	nlopt::result result = opt.optimize(x, minf);
+	E = x[0];
+	r1 = a1*(1.0 - eccentricity*cos(E)); // current distance of m1 from COM
+	r2 = (m1*r1)/m2; // current distance of m2 from COM
+	nu = 2.0*atan(eccentricityFactor*tan(E/2.0)); // current true anomoly of m1
+	if (nu < 0.0) {
+		nu += 2.0*kali::pi;
+		}
+	theta1 = nu + omega1;
+	theta2 = nu + omega2;
+	beta1 = sqrt(((kali::G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/kali::c;
+	beta2 = sqrt(((kali::G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/kali::c;
+	_radialBetaFactor1 = (((kali::twoPi/period)*a1)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	_radialBetaFactor2 = (((kali::twoPi/period)*a2)/(sqrt(1.0 - pow(eccentricity, 2.0))))*sin(inclination);
+	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/kali::c;
+	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/kali::c;
+	dF1 = (sqrt(1.0 - pow(beta1, 2.0)))/(1.0 - radialBeta1);
+	dF2 = (sqrt(1.0 - pow(beta2, 2.0)))/(1.0 - radialBeta2);
+	bF1 = pow(dF1, 3.0 - alpha1);
+	bF2 = pow(dF2, 3.0 - alpha2);
+	totalFlux = Theta[7];
+
+} // setMBHBCARMA
+
+double kali::MBHBCARMA::getEpoch() {return epoch/kali::Day;}
+
+void kali::MBHBCARMA::setEpoch(double epochIn) {
+	epoch = epochIn*kali::Day;
+	(*this)();
 	}
+
+double kali::MBHBCARMA::getPeriod() {return period/kali::Day;}
+
+double kali::MBHBCARMA::getA1() {return a1/kali::Parsec;}
+
+double kali::MBHBCARMA::getA2() {return a2/kali::Parsec;}
+
+double kali::MBHBCARMA::getM1() {return m1/(kali::SolarMass*1.0e6);}
+
+double kali::MBHBCARMA::getM2() {return m2/(kali::SolarMass*1.0e6);}
+
+double kali::MBHBCARMA::getM12() {return totalMass/(kali::SolarMass*1.0e6);}
+
+double kali::MBHBCARMA::getM2OverM1() {return massRatio;}
+
+double kali::MBHBCARMA::getRPeribothron1() {return rPeribothron1/kali::Parsec;}
+
+double kali::MBHBCARMA::getRPeribothron2() {return rPeribothron2/kali::Parsec;}
+
+double kali::MBHBCARMA::getRPeribothronTot() {return rPeribothronTot/kali::Parsec;}
+
+double kali::MBHBCARMA::getRApobothron1() {return rApobothron1/kali::Parsec;}
+
+double kali::MBHBCARMA::getRApobothron2() {return rApobothron2/kali::Parsec;}
+
+double kali::MBHBCARMA::getRApobothronTot() {return rApobothronTot/kali::Parsec;}
+
+double kali::MBHBCARMA::getRS1() {return rS1/kali::Parsec;}
+
+double kali::MBHBCARMA::getRS2() {return rS2/kali::Parsec;}
+
+double kali::MBHBCARMA::getEccentricity() {return eccentricity;}
+
+double kali::MBHBCARMA::getOmega1() {return r2d(omega1);}
+
+double kali::MBHBCARMA::getOmega2() {return r2d(omega2);}
+
+double kali::MBHBCARMA::getInclination() {return r2d(inclination);}
+
+double kali::MBHBCARMA::getTau() {return tau/kali::Day;}
+
+double kali::MBHBCARMA::getMeanAnomoly() {return r2d(M);}
+
+double kali::MBHBCARMA::getEccentricAnomoly() {return r2d(E);}
+
+double kali::MBHBCARMA::getTrueAnomoly() {return r2d(nu);}
+
+double kali::MBHBCARMA::getR1() {return r1/kali::Parsec;}
+
+double kali::MBHBCARMA::getR2() {return r2/kali::Parsec;}
+
+double kali::MBHBCARMA::getTheta1() {return r2d(theta1);}
+
+double kali::MBHBCARMA::getTheta2() {return r2d(theta2);}
+
+double kali::MBHBCARMA::getBeta1() {return beta1;}
+
+double kali::MBHBCARMA::getBeta2() {return beta2;}
+
+double kali::MBHBCARMA::getRadialBeta1() {return radialBeta1;}
+
+double kali::MBHBCARMA::getRadialBeta2() {return radialBeta2;}
+
+double kali::MBHBCARMA::getDopplerFactor1() {return dF1;}
+
+double kali::MBHBCARMA::getDopplerFactor2() {return dF2;}
+
+double kali::MBHBCARMA::getBeamingFactor1() {return bF1;}
+
+double kali::MBHBCARMA::getBeamingFactor2() {return bF2;}
+
+double kali::MBHBCARMA::aH(double sigmaStars) {
+	double aHVal = (kali::G*reducedMass)/(4.0*pow((sigmaStars*kali::kms2ms), 2.0));
+	return aHVal/kali::Parsec;
+	}
+
+double kali::MBHBCARMA::aGW(double sigmaStars, double rhoStars, double H) {
+	double aGWVal = pow((64.0*pow(kali::G*reducedMass, 2.0)*totalMass*(kali::kms2ms*sigmaStars))/(5.0*H*pow(kali::c, 5.0)*(kali::SolarMassPerCubicParsec*rhoStars)), 0.2);
+	return aGWVal/kali::Parsec;
+	}
+
+double kali::MBHBCARMA::durationInHardState(double sigmaStars, double rhoStars, double H) {
+	double durationInHardStateVal = ((sigmaStars*kali::kms2ms)/(H*kali::G*(kali::SolarMassPerCubicParsec*rhoStars)*aGW(sigmaStars, rhoStars, H)));
+	return durationInHardStateVal/kali::Day;
+	}
+
+double kali::MBHBCARMA::ejectedMass(double sigmaStars, double rhoStars, double H) {
+	double ejectedMassVal = totalMass*log(aH(sigmaStars)/aGW(sigmaStars, rhoStars, H));
+	return ejectedMassVal/(kali::SolarMass*1.0e6);
+	}
+
+void kali::MBHBCARMA::operator()() {
+	M = kali::twoPi*(epoch - tau)/period;
+	nlopt::opt opt(nlopt::LN_COBYLA, 1);
+	KeplersEqnData Data;
+	Data.eccentricity = eccentricity;
+	Data.M = M;
+	KeplersEqnData *ptr2Data = &Data;
+	opt.set_min_objective(KeplerEqn, ptr2Data);
+	opt.set_xtol_rel(1e-16);
+	std::vector<double> x(1);
+	x[0] = 1.0;
+	double minf;
+	nlopt::result result = opt.optimize(x, minf);
+	E = x[0];
+	r1 = a1*(1.0 - eccentricity*cos(E)); // current distance of m1 from COM
+	r2 = (m1*r1)/m2; // current distance of m2 from COM
+	nu = 2.0*atan(eccentricityFactor*tan(E/2.0)); // current true anomoly of m1
+	if (nu < 0.0) {
+		nu += 2.0*kali::pi;
+		}
+	theta1 = nu + omega1;
+	theta2 = nu + omega2;
+	beta1 = sqrt(((kali::G*pow(m2, 2.0))/totalMass)*((2.0/r1) - (1.0/a1)))/kali::c;
+	beta2 = sqrt(((kali::G*pow(m1, 2.0))/totalMass)*((2.0/r2) - (1.0/a2)))/kali::c;
+	radialBeta1 = (_radialBetaFactor1*(cos(nu + omega1) + eccentricity*cos(omega1)))/kali::c;
+	radialBeta2 = (_radialBetaFactor1*(cos(nu + omega2) + eccentricity*cos(omega2)))/kali::c;
+	dF1 = (sqrt(1.0 - pow(beta1, 2.0)))/(1.0 - radialBeta1);
+	dF2 = (sqrt(1.0 - pow(beta2, 2.0)))/(1.0 - radialBeta2);
+	bF1 = pow(dF1, 3.0 - alpha1);
+	bF2 = pow(dF2, 3.0 - alpha2);
+} // operator()
 
 void kali::MBHBCARMA::solveMBHBCARMA() {
 	#if (defined DEBUG_SOLVEMBHBCARMA_F) || (defined DEBUG_SOLVEMBHBCARMA_Q)
@@ -2066,7 +2393,7 @@ void kali::MBHBCARMA::solveMBHBCARMA() {
 	//YesNo = LAPACKE_dpotrf(LAPACK_COL_MAJOR, 'U', p, T, p);
 	dpotrf(&uplo, &n, T, &lda, &YesNo);
 
-	}
+} // solveMBHBCARMA
 
 void kali::MBHBCARMA::resetState(double InitUncertainty) {
 
@@ -2135,7 +2462,10 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
+    double fracIntrinsicVar = Data.fracIntrinsicVar;
+    double fracNoiseToSignal = Data.fracNoiseToSignal;
 	double tolIR = Data.tolIR;
+    double startT = Data.startT;
 	double *t = Data.t;
 	double *x = Data.x;
 	double *mask = Data.mask;
@@ -2144,7 +2474,9 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 	VSLStreamStatePtr distStream __attribute__((aligned(64)));
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 
-	double t_incr = 0.0, fracChange = 0.0;
+    double absIntrinsicVar = sqrt(Sigma[0]);
+	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
+	double absFlux = 0.0, noiseLvl = 0.0, t_incr = 0.0, fracChange = 0.0;
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -2152,13 +2484,14 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 		}
 	vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, 1, &distRand[0], p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 
+    setEpoch(t[0] + startT);
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 	cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 	cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
-	x[0] = X[0];
+	x[0] = (X[0] + absMeanFlux)*getBeamingFactor2();
 
 	for (int i = 1; i < numCadences; ++i) {
-
+        setEpoch(t[i] + startT);
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 
@@ -2176,7 +2509,7 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1);
 		cblas_dcopy(p, VScratch, 1, X, 1);
 		cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
-		x[i] = X[0];
+		x[i] = (X[0] + absMeanFlux)*getBeamingFactor2();
 		}
 
 	vslDeleteStream(&distStream);
@@ -2264,15 +2597,12 @@ void kali::MBHBCARMA::observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed,
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	VSLStreamStatePtr noiseStream __attribute__((aligned(64)));
 	vslNewStream(&noiseStream, VSL_BRNG_SFMT19937, noiseSeed);
+	double noiseLvl = 0.0;
 
-	double absIntrinsicVar = sqrt(Sigma[0]);
-	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
-	double absFlux = 0.0, noiseLvl = 0.0;
 	for (int i = 0; i < numCadences; ++i) {
-		absFlux = absMeanFlux + x[i];
-		noiseLvl = fracNoiseToSignal*absFlux;
+		noiseLvl = fracNoiseToSignal*x[i];
 		vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, noiseStream, 1, &noiseRand[i], 0.0, noiseLvl);
-		y[i] = absFlux + noiseRand[i];
+		y[i] = x[i] + noiseRand[i];
 		yerr[i] = noiseLvl;
 		}
 	vslDeleteStream(&noiseStream);
