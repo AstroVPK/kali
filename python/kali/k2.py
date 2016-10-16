@@ -8,8 +8,20 @@ import fitsio
 from fitsio import FITS, FITSHDR
 import subprocess
 import argparse
-import matplotlib.pyplot as plt
 import pdb
+
+import astroquery.exceptions
+from astroquery.simbad import Simbad
+from astroquery.ned import Ned
+from astroquery.vizier import Vizier
+from astroquery.sdss import SDSS
+from astropy import units
+from astropy.coordinates import SkyCoord
+
+import matplotlib.pyplot as plt
+
+Simbad.add_votable_fields('dim', 'morphtype')
+plt.ion()
 
 try:
     import kali.lc
@@ -457,9 +469,51 @@ class k2LC(kali.lc.lc):
             self._readEVEREST(name, self.campaign, self.path, self.processing)
         else:
             raise ValueError('Processing not found!')
-
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
+        self.coordinates = SkyCoord(self._getCoordinates(name),
+                                    unit=(units.hourangle, units.deg), frame='icrs')
+
+    def _getCoordinates(self, name):
+        """!
+        \brief Query K2 EPIC ID to get ra dec etc...
+        """
+        url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&target=%s&outputformat=CSV'%(name)
+        lines = urllib.urlopen(url)
+        data = {}
+        counter = 0
+        lineList = list()
+        for line in lines:
+            lineList.append(line.rstrip('\n'))
+        vals = lineList[2].split(',')
+        coord_str = vals[1] + ' ' + vals[2]
+        return coord_str
+
+    def _catalogue(self):
+        try:
+            self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.ned = err
+            coord_str = None
+        else:
+            coord_str = '%f %+f'%(self.ned['RA(deg)'].tolist()[0], self.ned['DEC(deg)'].tolist()[0])
+            self.coordinates = SkyCoord(coord_str, unit=(units.deg, units.deg), frame='icrs')
+        try:
+            self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.simbad = err
+        else:
+            if coord_str is None:
+                coord_str = self.simbad['RA'].tolist()[0] + ' ' + self.simbad['DEC'].tolist()[0]
+                self.coordinates = SkyCoord(coord_str, unit=(units.hourangle, units.deg), frame='icrs')
+        try:
+            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.vizier = err
+        try:
+            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.sdss = err
 
     def write(self, name, path=None, **kwrags):
         pass

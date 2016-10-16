@@ -1,13 +1,10 @@
-import cPickle
-import math as math
-import cmath as cmath
-import re
+import math
+import cmath
 import numpy as np
-import astropy.io.fits as astfits
+import cPickle
+import re
 import os as os
 import zmq
-import pdb
-from pylab import *
 import time
 import copy
 import operator
@@ -16,8 +13,20 @@ import psutil
 import warnings
 import sys
 import os
+# from pylab import *
+import pdb
+
+import astroquery.exceptions
+from astroquery.simbad import Simbad
+from astroquery.ned import Ned
+from astroquery.vizier import Vizier
+from astroquery.sdss import SDSS
+from astropy import units
+from astropy.coordinates import SkyCoord
+
 import matplotlib.pyplot as plt
 
+Simbad.add_votable_fields('dim', 'morphtype')
 plt.ion()
 
 try:
@@ -443,6 +452,32 @@ class sdssLC(kali.lc.lc):
             'u': '#bcbddc', 'g': '#9ecae1', 'r': '#a1d99b', 'i': '#fc9272', 'z': '#bdbdbd'}
         self.smoothErrColorDict = {
             'u': '#efedf5', 'g': '#deebf7', 'r': '#e5f5e0', 'i': '#fee0d2', 'z': '#f0f0f0'}
+
+    def _catalogue(self):
+        try:
+            self.ned = Ned.query_object('SDSS J' + self.name)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.ned = err
+            coord_str = None
+        else:
+            coord_str = '%f %+f'%(self.ned['RA(deg)'].tolist()[0], self.ned['DEC(deg)'].tolist()[0])
+            self.coordinates = SkyCoord(coord_str, unit=(units.deg, units.deg), frame='icrs')
+        try:
+            self.simbad = Simbad.query_object('SDSS J' + self.name)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.simbad = err
+        else:
+            if coord_str is None:
+                coord_str = self.simbad['RA'].tolist()[0] + ' ' + self.simbad['DEC'].tolist()[0]
+                self.coordinates = SkyCoord(coord_str, unit=(units.hourangle, units.deg), frame='icrs')
+        try:
+            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.vizier = err
+        try:
+            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
+        except astroquery.exceptions.RemoteServiceError as err:
+            self.sdss = err
 
     def write(self, name=None, band=None, path=None):
         print "Saving..."

@@ -1,23 +1,33 @@
 #!/usr/bin/env python
-"""	Module to perform basic C-ARMA modelling.
+"""	Module that defines light curve objects.
 """
-
+import math
+import cmath
 import numpy as np
-import math as math
-import scipy.stats as spstats
-import cmath as cmath
-import operator as operator
-import sys as sys
-import abc as abc
-import psutil as psutil
-import types as types
-import os as os
-import reprlib as reprlib
-import copy as copy
-from scipy.interpolate import UnivariateSpline
-import warnings as warnings
-import matplotlib.pyplot as plt
+import operator
+import sys
+import abc
+import psutil
+import types
+import os
+import reprlib
+import copy
+import warnings
 import pdb as pdb
+
+import scipy.stats as spstats
+from scipy.interpolate import UnivariateSpline
+
+import astroquery.exceptions
+from astroquery.simbad import Simbad
+from astroquery.ned import Ned
+from astroquery.vizier import Vizier
+from astroquery.sdss import SDSS
+from astropy import units
+from astropy.coordinates import SkyCoord
+
+import matplotlib.pyplot as plt
+plt.ion()
 
 try:
     import rand as rand
@@ -207,6 +217,20 @@ class lc(object):
         self._statistics()
         self._isSmoothed = False  # Has the LC been smoothed?
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
+        self.coordinates = kwargs.get('coordinates')
+        self._catalogue()
+
+    def _catalogue(self):
+        if self.coordinates is not None:
+            self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
+            self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
+            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
+            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
+        else:
+            try:
+                self.ned = Ned.query_object(self.name)
+            except astroquery.exceptions.RemoteServiceError as err:
+                self.ned = err
 
     @property
     def numCadences(self):
