@@ -108,8 +108,8 @@ MBHBTask_ext = Extension(
     include_dirs=[INCLUDE, np.get_include()], extra_link_args=OMPLIBS + MKLLIBS + NLOPTLIBS,
     library_dirs=[MKLDIR], runtime_library_dirs=[MKLDIR])
 
-MBHBCARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'MCMC.cpp', 'MBHBCARMA.cpp', 'MBHBCARMATask.cpp']#,
-                            #'CARMATask_cython.pyx']
+MBHBCARMATask_sourceList = ['rdrand.cpp', 'Constants.cpp', 'MCMC.cpp', 'MBHBCARMA.cpp', 'MBHBCARMATask.cpp',
+                            'MBHBCARMATask_cython.pyx']
 MBHBCARMATask_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in MBHBCARMATask_sourceList]
 
 MBHBCARMATask_ext = Extension(

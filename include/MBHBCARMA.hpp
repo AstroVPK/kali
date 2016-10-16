@@ -30,7 +30,7 @@ struct KeplersEqnData {
 
 double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data);
 
-void getSigma(int numP, int numQ, double *Theta, double *SigmaOut);
+void getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut);
 
 struct LnLikeData {
 	int numCadences;

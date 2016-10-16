@@ -602,6 +602,27 @@ void kali::getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOu
 
 int kali::MBHBCARMA::r = 8;
 
+double kali::d2r(double degreeVal) {
+	return degreeVal*(pi/180.0);
+	}
+
+double kali::r2d(double radianVal) {
+	return radianVal*(180.0/pi);
+	}
+
+double kali::KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data) {
+	KeplersEqnData *ptr2Data = reinterpret_cast<KeplersEqnData*>(p2Data);
+	KeplersEqnData Data = *ptr2Data;
+	if (!grad.empty()) {
+		grad[0] = 1.0 - Data.eccentricity*cos(x[0]);
+		}
+	double funcVal = fabs(x[0] - Data.eccentricity*sin(x[0]) - Data.M);
+	#ifdef DEBUG_KEPLEREQN
+		printf("In Kepler's equation; funcVal = %+4.3e\n",funcVal);
+	#endif
+	return funcVal;
+	}
+
 kali::MBHBCARMA::MBHBCARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/
 	#ifdef DEBUG_CTORDLM
