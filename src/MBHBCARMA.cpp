@@ -600,8 +600,6 @@ void kali::getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOu
 
 	}
 
-int kali::MBHBCARMA::r = 8;
-
 double kali::d2r(double degreeVal) {
 	return degreeVal*(pi/180.0);
 	}
@@ -622,6 +620,8 @@ double kali::KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Da
 	#endif
 	return funcVal;
 	}
+
+int kali::MBHBCARMA::r = 8;
 
 kali::MBHBCARMA::MBHBCARMA() {
 	/*! Object that holds data and methods for performing C-ARMA analysis. DLM objects hold pointers to blocks of data that are set as required based on the size of the C-ARMA model.*/

@@ -431,7 +431,7 @@ class MBHBCARMATask(object):
             assert isinstance(nwalkers, int), r'nwalkers must be an integer'
             assert nsteps > 0, r'nsteps must be greater than 0'
             assert isinstance(nsteps, int), r'nsteps must be an integer'
-            self._taskCython.reset_CARMATask(p, q, nburn)
+            self._taskCython.reset_MBHBCARMATask(p, q, nburn)
             self._p = p
             self._q = q
             self._ndims = self._p + self._q + 1

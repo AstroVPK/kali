@@ -87,9 +87,9 @@ class TestConversions10(unittest.TestCase):
 class TestCoeffs21(unittest.TestCase):
 
     def setUp(self):
-        self.r = 8
         self.p = 2
         self.q = 1
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
 
     def tearDown(self):
         pass
@@ -135,8 +135,9 @@ class TestCoeffs21(unittest.TestCase):
 class TestMakeTask(unittest.TestCase):
 
     def setUp(self):
-        self.p = 3
-        self.q = 2
+        self.p = 2
+        self.q = 1
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
 
     def tearDown(self):
         pass
@@ -148,6 +149,48 @@ class TestMakeTask(unittest.TestCase):
         self.assertEqual(newTask.q, self.q, "newTask.q is not working!")
         self.assertEqual(newTask, eval(repr(newTask)))
 
+    def test_changeExistingTask(self):
+        pNew = 4
+        qNew = 2
+        newTask = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        newTask.reset(p=pNew, q=qNew)
+        self.assertEqual(newTask.r, 8, "newTask.r is not working!")
+        self.assertEqual(newTask.p, pNew, "newTask.p is not working!")
+        self.assertEqual(newTask.q, qNew, "newTask.q is not working!")
+
+    def test_checkTask(self):
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.check(theta_carma)
+        theta_mbhbcarma = np.array([SunOrbitRadius, EarthOrbitRadius, Period, EarthOrbitEccentricity,
+                                    0.0, 0.0, 0.0, 100.0, 0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.check(theta_mbhbcarma)
+        self.assertEqual(res_carma, res_mbhbcarma)
+
+    def test_setTask(self):
+        dt = 0.1
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        theta_mbhbcarma = np.array([SunOrbitRadius, EarthOrbitRadius, Period, EarthOrbitEccentricity,
+                                    0.0, 0.0, 0.0, 100.0, 0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+        self.assertEqual(res_carma, res_mbhbcarma)
+
+    def test_miscProps(self):
+        dt = 0.1
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        theta_mbhbcarma = np.array([SunOrbitRadius, EarthOrbitRadius, Period, EarthOrbitEccentricity,
+                                    0.0, 0.0, 0.0, 100.0, 0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+        self.assertAlmostEqual(newTask_carma.dt(), newTask_mbhbcarma.dt())
+        np.testing.assert_array_almost_equal(newTask_carma.Theta(), newTask_mbhbcarma.Theta()[self.r:])
+        np.testing.assert_array_equal(newTask_carma.list(), newTask_mbhbcarma.list())
 
 if __name__ == "__main__":
     unittest.main()

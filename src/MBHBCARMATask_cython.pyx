@@ -74,7 +74,7 @@ cdef class MBHBCARMATask_cython:
 	def __dealloc__(self):
 		del self.thisptr
 
-	def reset_CARMATask(self, p, q, numBurn = None):
+	def reset_MBHBCARMATask(self, p, q, numBurn = None):
 		if numBurn == None:
 			numBurn = 1000000
 		self.thisptr.reset_MBHBCARMATask(p, q, numBurn)

@@ -59,7 +59,10 @@ struct LnLikeData {
 
 class MBHBCARMA {
 private:
-    double rPeribothronTot, rApobothronTot, a1, a2, rPeribothron1, rPeribothron2, rApobothron1, rApobothron2, m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor, omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2, beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, _radialBetaFactor1, _radialBetaFactor2;
+    double rPeribothronTot, rApobothronTot, a1, a2, rPeribothron1, rPeribothron2, rApobothron1, rApobothron2,
+    double m1, m2, rS1, rS2, totalMass, massRatio, reducedMass, period, eccentricity, eccentricityFactor,
+    double omega1, omega2, inclination, tau, alpha1, alpha2, epoch, M, E, nu, theta1, theta2, r1, r2,
+    double beta1, beta2, radialBeta1, radialBeta2, dF1, dF2, bF1, bF2, totalFlux, _radialBetaFactor1, _radialBetaFactor2;
 	int allocated;
 	int isStable;
 	int isInvertible;

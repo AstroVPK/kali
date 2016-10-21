@@ -1440,7 +1440,7 @@ static PyObject *__pyx_n_s_yerr;
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_get_Sigma(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_rNum, PyObject *__pyx_v_pNum, PyObject *__pyx_v_qNum, PyArrayObject *__pyx_v_Theta, PyArrayObject *__pyx_v_Sigma); /* proto */
 static int __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython___cinit__(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numThreads, PyObject *__pyx_v_numBurn); /* proto */
 static void __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_2__dealloc__(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_CARMATask(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numBurn); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_MBHBCARMATask(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numBurn); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_6check_Theta(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_8get_dt(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_10get_Theta(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyArrayObject *__pyx_v_Theta, PyObject *__pyx_v_threadNum); /* proto */
@@ -1899,7 +1899,7 @@ static void __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_2__dealloc__(
  * 	def __dealloc__(self):
  * 		del self.thisptr             # <<<<<<<<<<<<<<
  * 
- * 	def reset_CARMATask(self, p, q, numBurn = None):
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):
  */
   delete __pyx_v_self->thisptr;
 
@@ -1918,20 +1918,20 @@ static void __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_2__dealloc__(
 /* "MBHBCARMATask_cython.pyx":77
  * 		del self.thisptr
  * 
- * 	def reset_CARMATask(self, p, q, numBurn = None):             # <<<<<<<<<<<<<<
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):             # <<<<<<<<<<<<<<
  * 		if numBurn == None:
  * 			numBurn = 1000000
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_CARMATask(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_CARMATask(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_MBHBCARMATask(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_MBHBCARMATask(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_p = 0;
   PyObject *__pyx_v_q = 0;
   PyObject *__pyx_v_numBurn = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("reset_CARMATask (wrapper)", 0);
+  __Pyx_RefNannySetupContext("reset_MBHBCARMATask (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_p,&__pyx_n_s_q,&__pyx_n_s_numBurn,0};
     PyObject* values[3] = {0,0,0};
@@ -1954,7 +1954,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_C
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_q)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("reset_CARMATask", 0, 2, 3, 1); __PYX_ERR(0, 77, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("reset_MBHBCARMATask", 0, 2, 3, 1); __PYX_ERR(0, 77, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -1963,7 +1963,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_C
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "reset_CARMATask") < 0)) __PYX_ERR(0, 77, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "reset_MBHBCARMATask") < 0)) __PYX_ERR(0, 77, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1980,20 +1980,20 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_C
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("reset_CARMATask", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 77, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("reset_MBHBCARMATask", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 77, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.reset_CARMATask", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.reset_MBHBCARMATask", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_CARMATask(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_p, __pyx_v_q, __pyx_v_numBurn);
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_MBHBCARMATask(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_p, __pyx_v_q, __pyx_v_numBurn);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_CARMATask(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numBurn) {
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_MBHBCARMATask(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_p, PyObject *__pyx_v_q, PyObject *__pyx_v_numBurn) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2001,12 +2001,12 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_C
   int __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  __Pyx_RefNannySetupContext("reset_CARMATask", 0);
+  __Pyx_RefNannySetupContext("reset_MBHBCARMATask", 0);
   __Pyx_INCREF(__pyx_v_numBurn);
 
   /* "MBHBCARMATask_cython.pyx":78
  * 
- * 	def reset_CARMATask(self, p, q, numBurn = None):
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):
  * 		if numBurn == None:             # <<<<<<<<<<<<<<
  * 			numBurn = 1000000
  * 		self.thisptr.reset_MBHBCARMATask(p, q, numBurn)
@@ -2017,7 +2017,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_C
   if (__pyx_t_2) {
 
     /* "MBHBCARMATask_cython.pyx":79
- * 	def reset_CARMATask(self, p, q, numBurn = None):
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):
  * 		if numBurn == None:
  * 			numBurn = 1000000             # <<<<<<<<<<<<<<
  * 		self.thisptr.reset_MBHBCARMATask(p, q, numBurn)
@@ -2028,7 +2028,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_C
 
     /* "MBHBCARMATask_cython.pyx":78
  * 
- * 	def reset_CARMATask(self, p, q, numBurn = None):
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):
  * 		if numBurn == None:             # <<<<<<<<<<<<<<
  * 			numBurn = 1000000
  * 		self.thisptr.reset_MBHBCARMATask(p, q, numBurn)
@@ -2055,7 +2055,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_C
   /* "MBHBCARMATask_cython.pyx":77
  * 		del self.thisptr
  * 
- * 	def reset_CARMATask(self, p, q, numBurn = None):             # <<<<<<<<<<<<<<
+ * 	def reset_MBHBCARMATask(self, p, q, numBurn = None):             # <<<<<<<<<<<<<<
  * 		if numBurn == None:
  * 			numBurn = 1000000
  */
@@ -2065,7 +2065,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_4reset_C
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.reset_CARMATask", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.reset_MBHBCARMATask", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_numBurn);
@@ -6953,7 +6953,7 @@ static void __pyx_tp_dealloc_20MBHBCARMATask_cython_MBHBCARMATask_cython(PyObjec
 }
 
 static PyMethodDef __pyx_methods_20MBHBCARMATask_cython_MBHBCARMATask_cython[] = {
-  {"reset_CARMATask", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_CARMATask, METH_VARARGS|METH_KEYWORDS, 0},
+  {"reset_MBHBCARMATask", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_5reset_MBHBCARMATask, METH_VARARGS|METH_KEYWORDS, 0},
   {"check_Theta", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_7check_Theta, METH_VARARGS|METH_KEYWORDS, 0},
   {"get_dt", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_9get_dt, METH_VARARGS|METH_KEYWORDS, 0},
   {"get_Theta", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_11get_Theta, METH_VARARGS|METH_KEYWORDS, 0},
