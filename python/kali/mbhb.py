@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""	Module to perform basic C-ARMA modelling.
+"""	Module to model MBHBs.
 """
 
 import numpy as np
@@ -170,8 +170,8 @@ class MBHBTask(object):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     def __repr__(self):
-        return "libsmbh.task(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
-                                                   self._maxEvals, self._xTol)
+        return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
+                                                         self._maxEvals, self._xTol)
 
     def __str__(self):
         line = 'ndims: %d\n'%(self._ndims)
@@ -183,7 +183,7 @@ class MBHBTask(object):
         line += 'xTol (Fractional tolerance in optimized parameter value): %f'%(self._xTol)
 
     def __eq__(self, other):
-        if isinstance(other, task):
+        if self.__class__ == other.__class__:
             if ((self._nthreads == other.nthreads) and (self._nwalkers == other.nwalkers) and
                     (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and
                     (self.xTol == other.xTol)):

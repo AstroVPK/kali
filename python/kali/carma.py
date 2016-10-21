@@ -128,7 +128,7 @@ def timescales(p, q, Rho):
     imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
     imagPairs = 0
     for i in xrange(q):
-        if Rho[i].imag != 0.0:
+        if Rho[p + i].imag != 0.0:
             imagPairs += 1
     numImag = imagPairs/2
     numReal = numImag + (q - imagPairs)
@@ -349,9 +349,10 @@ class CARMATask(object):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     def __repr__(self):
-        return "libcarma.task(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
-                                                                self._nburn, self._nwalkers, self._nsteps,
-                                                                self._maxEvals, self._xTol)
+        return "kali.carma.CARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
+                                                                       self._nburn, self._nwalkers,
+                                                                       self._nsteps, self._maxEvals,
+                                                                       self._xTol)
 
     def __str__(self):
         line = 'p: %d; q: %d; ndims: %d\n'%(self._p, self._q, self._ndims)
@@ -365,7 +366,7 @@ class CARMATask(object):
         return line
 
     def __eq__(self, other):
-        if isinstance(other, task):
+        if self.__class__ == other.__class__:
             if ((self._p == other.p) and (self._q == other.q) and (self._nthreads == other.nthreads) and
                 (self._nburn == other.nburn) and (self._nwalkers == other.nwalkers) and
                 (self._nsteps == other.nsteps) and (self._maxEvals == other.maxEvals) and
