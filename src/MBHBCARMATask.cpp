@@ -285,6 +285,8 @@ int kali::MBHBCARMATask::make_IntrinsicLC(int numCadences, double tolIR, double 
 	Data.mask = mask;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
+    Data.fracIntrinsicVar = fracIntrinsicVar;
+    Data.fracNoiseToSignal = fracNoiseToSignal;
 	kali::LnLikeData *ptr2Data = &Data;
 	Systems[threadNum].simulateSystem(ptr2Data, distSeed, distRand);
 	_mm_free(distRand);

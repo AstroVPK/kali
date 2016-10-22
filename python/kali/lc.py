@@ -220,19 +220,37 @@ class lc(object):
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if not hasattr(self, 'coordinates'):
             self.coordinates = kwargs.get('coordinates')
-        self._catalogue()
+        try:
+            self._catalogue()
+        except Exception as Err:
+            self.simbad = Err
+            self.ned = Err
+            self.vizier = Err
+            self.sdss = Err
 
     def _catalogue(self):
         if self.coordinates is not None:
-            self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
-            self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
-            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
+            try:
+                self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
+            except Exception as Err:
+                self.simbad = Err
+            try:
+                self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
+            except Exception as Err:
+                self.ned = Err
+            try:
+                self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
+            except Exception as Err:
+                self.vizier = Err
+            try:
+                self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
+            except Exception as Err:
+                self.sdss = Err
         else:
             try:
                 self.ned = Ned.query_object(self.name)
-            except astroquery.exceptions.RemoteServiceError as err:
-                self.ned = err
+            except Exception as Err:
+                self.ned = Err
 
     @property
     def numCadences(self):

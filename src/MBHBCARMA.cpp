@@ -47,6 +47,7 @@
 //#define DEBUG_SETMBHBCARMA_DEEP
 //#define DEBUG_BURNSYSTEM
 //#define WRITE_BURNSYSTEM
+//#define DEBUG_SIMULATESYSTEM
 //#define DEBUG_OBSSYSTEM
 //#define DEBUG_OBS
 //#define DEBUG_CTORMBHBCARMA
@@ -2498,6 +2499,10 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
     double absIntrinsicVar = sqrt(Sigma[0]);
 	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
 	double absFlux = 0.0, noiseLvl = 0.0, t_incr = 0.0, fracChange = 0.0;
+    #ifdef DEBUG_SIMULATESYSTEM
+        printf("\n");
+        printf("absIntrinsicVar: %+e; fracIntrinsicVar: %+e\n", absIntrinsicVar, fracIntrinsicVar);
+    #endif
 
 	#pragma omp simd
 	for (int rowCtr = 0; rowCtr < p; ++rowCtr) {
@@ -2510,6 +2515,10 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 	cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 	cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
 	x[0] = (X[0] + absMeanFlux)*getBeamingFactor2();
+    #ifdef DEBUG_SIMULATESYSTEM
+        printf("\n");
+        printf("X[0]: %+e; absMeanFlux: %+e; getBeamingFactor2(): %+e\n", X[0], absMeanFlux, getBeamingFactor2());
+    #endif
 
 	for (int i = 1; i < numCadences; ++i) {
         setEpoch(t[i] + startT);
@@ -2531,6 +2540,9 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 		cblas_dcopy(p, VScratch, 1, X, 1);
 		cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 		x[i] = (X[0] + absMeanFlux)*getBeamingFactor2();
+        #ifdef DEBUG_SIMULATESYSTEM
+            printf("X[0]: %+e; absMeanFlux: %+e; getBeamingFactor2(): %+e\n", X[0], absMeanFlux, getBeamingFactor2());
+        #endif
 		}
 
 	vslDeleteStream(&distStream);

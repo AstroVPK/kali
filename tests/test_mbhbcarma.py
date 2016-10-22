@@ -39,6 +39,15 @@ EarthOrbitRadius = 4.84814e-6  # AU
 SunOrbitRadius = 4.84814e-6*(EarthMass/SunMass)  # AU
 Period = 31557600.0/86164.090530833  # Day
 EarthOrbitEccentricity = 0.0167
+G = 6.67408e-11
+c = 299792458.0
+pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+twoPi = 2.0*pi
+Parsec = 3.0857e16
+Day = 86164.090530833
+Year = 31557600.0
+DayInYear = Year/Day
+SolarMass = 1.98855e30
 
 
 @unittest.skipIf(skipWorking, 'Works!')
@@ -191,6 +200,27 @@ class TestMakeTask(unittest.TestCase):
         self.assertAlmostEqual(newTask_carma.dt(), newTask_mbhbcarma.dt())
         np.testing.assert_array_almost_equal(newTask_carma.Theta(), newTask_mbhbcarma.Theta()[self.r:])
         np.testing.assert_array_equal(newTask_carma.list(), newTask_mbhbcarma.list())
+        np.testing.assert_array_almost_equal(newTask_carma.Sigma(), newTask_mbhbcarma.Sigma())
+        np.testing.assert_array_almost_equal(newTask_carma.X(), newTask_mbhbcarma.X())
+        np.testing.assert_array_almost_equal(newTask_carma.P(), newTask_mbhbcarma.P())
+
+    def test_simulateLC(self):
+        dt = 0.1
+        N2S = 1.0e-18
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=2000.0, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.1, 0.0, 90.0, 0.0, 100.0, 0.05846154,
+                                    0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=2000.0, fracNoiseToSignal=N2S,
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                     noiseSeed=NOISESEED)
+        newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
 
 if __name__ == "__main__":
     unittest.main()
