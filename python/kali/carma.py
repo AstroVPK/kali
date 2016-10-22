@@ -24,6 +24,7 @@ try:
     import CARMATask_cython as CARMATask_cython
     import kali.lc
     from kali.util.mpl_settings import set_plot_params
+    import kali.util.classproperty
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -57,6 +58,7 @@ def MAD(self, a):
 
 
 def roots(p, q, Theta):
+    r = CARMATask(p, q).r
     ARPoly = np.zeros(p + 1)
     ARPoly[0] = 1.0
     for i in xrange(p):
@@ -73,12 +75,13 @@ def roots(p, q, Theta):
         Rho[p + i] = MARoots[i]
     Sigma = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
     ThetaC = np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E'])
-    CARMATask_cython.get_Sigma(p, q, ThetaC, Sigma)
+    CARMATask_cython.get_Sigma(r, p, q, ThetaC, Sigma)
     Rho[p + q] = math.sqrt(Sigma[0])
     return Rho
 
 
 def coeffs(p, q, Rho):
+    r = CARMATask(p, q).r
     ARRoots = np.zeros(p, dtype='complex128')
     for i in xrange(p):
         ARRoots[i] = Rho[i]
@@ -93,7 +96,7 @@ def coeffs(p, q, Rho):
     ThetaPrime = np.require(
         np.array(ARPoly[1:].tolist() + MAPoly.tolist()[::-1]), requirements=['F', 'A', 'W', 'O', 'E'])
     SigmaPrime = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
-    CARMATask_cython.get_Sigma(p, q, ThetaPrime, SigmaPrime)
+    CARMATask_cython.get_Sigma(r, p, q, ThetaPrime, SigmaPrime)
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         Sigma00 = math.pow(Rho[p + q], 2.0)
@@ -143,6 +146,8 @@ def timescales(p, q, Rho):
 
 class CARMATask(object):
 
+    _r = 0
+
     def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
                  nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
                  mcmcA=2.0):
@@ -182,6 +187,11 @@ class CARMATask(object):
                                                                  self._nburn)
         except AssertionError as err:
             raise AttributeError(str(err))
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def r(self):
+        return self._r
 
     @property
     def p(self):

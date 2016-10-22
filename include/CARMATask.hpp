@@ -18,6 +18,7 @@ class CARMATask {
 private:
 	int p;
 	int q;
+    static int r;
 	int numThreads;
 	int numBurn;
 	kali::CARMA *Systems;

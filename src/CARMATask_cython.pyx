@@ -8,7 +8,7 @@ from libcpp cimport bool
 
 
 cdef extern from 'CARMA.hpp' namespace "kali":
-	void getSigma(int numP, int numQ, double *Theta, double *SigmaOut)
+	void getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut)
 
 
 cdef extern from 'CARMATask.hpp' namespace "kali":
@@ -57,8 +57,8 @@ cdef extern from 'CARMATask.hpp' namespace "kali":
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def get_Sigma(pNum, qNum, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None):
-	getSigma(pNum, qNum, &Theta[0], &Sigma[0])
+def get_Sigma(rNum, pNum, qNum, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None):
+	getSigma(rNum, pNum, qNum, &Theta[0], &Sigma[0])
 
 
 cdef class CARMATask_cython:

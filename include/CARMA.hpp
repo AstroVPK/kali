@@ -20,7 +20,7 @@ double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Ar
 
 double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
-void getSigma(int numP, int numQ, double *Theta, double *SigmaOut);
+void getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut);
 
 struct LnLikeData {
 	int numCadences;
@@ -54,6 +54,7 @@ private:
 	int hasPosSigma;
 	int p;
 	int q;
+    static int r; // Number of fixed (steady-state flux etc...) parameters
 	int pSq;
 	int qSq;
 	double dt; // This is the last used step time to compute F, D and Q.

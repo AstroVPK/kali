@@ -28,6 +28,7 @@ try:
     import rand as rand
     import MBHBTask_cython as MBHBTask_cython
     from util.mpl_settings import set_plot_params
+    import kali.util.classproperty
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -46,7 +47,8 @@ def r2d(radian):
 
 
 class MBHBTask(object):
-    lenTheta = 8
+
+    _r = 8
     G = 6.67408e-11
     c = 299792458.0
     pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
@@ -69,7 +71,7 @@ class MBHBTask(object):
             assert isinstance(maxEvals, int), r'maxEvals must be an integer'
             assert xTol > 0.0, r'xTol must be greater than 0'
             assert isinstance(xTol, float), r'xTol must be a float'
-            self._ndims = self.lenTheta
+            self._ndims = self.r
             self._nthreads = nthreads
             self._nwalkers = nwalkers
             self._nsteps = nsteps
@@ -83,6 +85,11 @@ class MBHBTask(object):
             self._taskCython = MBHBTask_cython.MBHBTask_cython(self._nthreads)
         except AssertionError as err:
             raise AttributeError(str(err))
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def r(self):
+        return self._r
 
     @property
     def nthreads(self):

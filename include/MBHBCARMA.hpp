@@ -72,7 +72,7 @@ private:
     int mbhbIsGood;
     int p;
 	int q;
-    static int r; // Number of MBHB parameters
+    static int r; // Number of fixed (MBHB) parameters
 	int pSq;
 	int qSq;
 	double dt; // This is the last used step time to compute F, D and Q.
