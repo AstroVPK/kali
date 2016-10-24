@@ -56,7 +56,6 @@
 //#define DEBUG_DEALLOCATEMBHBCARMA
 //#define DEBUG_DEALLOCATEMBHBCARMA_DEEP
 //#define DEBUG_RESETSTATE
-//#define DEBUG_CALCLNPRIOR
 //#define DEBUG_CALCLNPOSTERIOR
 //#define DEBUG_COMPUTELNPRIOR
 //#define MAXPRINT 20
@@ -2497,7 +2496,7 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 	vslNewStream(&distStream, VSL_BRNG_SFMT19937, distSeed);
 
     double absIntrinsicVar = sqrt(Sigma[0]);
-	double absMeanFlux = absIntrinsicVar/fracIntrinsicVar;
+	double absMeanFlux = totalFlux; //absIntrinsicVar/fracIntrinsicVar;
 	double absFlux = 0.0, noiseLvl = 0.0, t_incr = 0.0, fracChange = 0.0;
     #ifdef DEBUG_SIMULATESYSTEM
         printf("\n");
@@ -2682,11 +2681,13 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
+    double startT = Data.startT*kali::Day;
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double t_incr = 0.0, LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
+    setEpoch(t[0] + startT);
 	H[0] = mask[0];
 	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
@@ -2694,7 +2695,8 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 
-	v = mask[0]*(y[0] - H[0]*XMinus[0]); // Compute v = y - H*X
+    double yVal = (y[0]/getBeamingFactor2()) - totalFlux;
+	v = mask[0]*(yVal - H[0]*XMinus[0]); // Compute v = y - H*X
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 
@@ -2734,7 +2736,8 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	for (int i = 1; i < numCadences; i++) {
-		t_incr = t[i] - t[i - 1];
+        setEpoch(t[i] + startT);
+        t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {
 			dt = t_incr;
@@ -2746,7 +2749,8 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, F, p, P, p, 0.0, MScratch, p); // Compute MScratch = F*P
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
-		v = mask[i]*(y[i] - H[0]*XMinus[0]); // Compute v = y - H*X
+        yVal = (y[i]/getBeamingFactor2()) - totalFlux;
+        v = mask[i]*(yVal - H[0]*XMinus[0]); // Compute v = y - H*X
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 
@@ -2946,12 +2950,16 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	double currentLnPrior = Data.currentLnPrior;
 	double tolIR = Data.tolIR;
 	double *t = Data.t;
+    double meandt = Data.meandt*kali::Day;
+    double T = (t[numCadences-1] - t[0])*kali::Day;
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
 	double maxSigma = Data.maxSigma;
 	double minTimescale = Data.minTimescale;
 	double maxTimescale = Data.maxTimescale;
+    double lowestFlux = Data.lowestFlux;
+	double highestFlux = Data.highestFlux;
 	double maxDouble = numeric_limits<double>::max();
 
 	#ifdef DEBUG_COMPUTELNPRIOR
@@ -2962,8 +2970,8 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
 
 	#ifdef DEBUG_COMPUTELNPRIOR
-	printf("computeLnPrior - threadNum: %d; maxSigma:           %+4.3e\n", threadNum, maxSigma);
-	printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]):     %+4.3e\n", threadNum, sqrt(Sigma[0]));
+	    printf("computeLnPrior - threadNum: %d; maxSigma:           %+4.3e\n", threadNum, maxSigma);
+	    printf("computeLnPrior - threadNum: %d; sqrt(Sigma[0]):     %+4.3e\n", threadNum, sqrt(Sigma[0]));
 	#endif
 
 	if (sqrt(Sigma[0]) > maxSigma) {
@@ -2975,11 +2983,11 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		timescaleOsc = fabs((2.0*kali::pi)/(CARw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
-		printf("computeLnPrior - threadNum: %d; minTimescale:       %+4.3e\n", threadNum, minTimescale);
-		printf("computeLnPrior - threadNum: %d; maxTimescale:       %+4.3e\n", threadNum, maxTimescale);
-		printf("computeLnPrior - threadNum: %d; CARw:               %+4.3e %+4.3e\n", threadNum, CARw[i].real(), CARw[i].imag());
-		printf("computeLnPrior - threadNum: %d; timescale (CAR):    %+4.3e\n", threadNum, timescale);
-		printf("computeLnPrior - threadNum: %d; timescaleOsc (CAR): %+4.3e\n", threadNum, timescaleOsc);
+		    printf("computeLnPrior - threadNum: %d; minTimescale:       %+4.3e\n", threadNum, minTimescale);
+		    printf("computeLnPrior - threadNum: %d; maxTimescale:       %+4.3e\n", threadNum, maxTimescale);
+		    printf("computeLnPrior - threadNum: %d; CARw:               %+4.3e %+4.3e\n", threadNum, CARw[i].real(), CARw[i].imag());
+		    printf("computeLnPrior - threadNum: %d; timescale (CAR):    %+4.3e\n", threadNum, timescale);
+		    printf("computeLnPrior - threadNum: %d; timescaleOsc (CAR): %+4.3e\n", threadNum, timescaleOsc);
 		#endif
 
 		if (timescale < minTimescale) {
@@ -3003,9 +3011,9 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		timescaleOsc = fabs((2.0*kali::pi)/(CMAw[i].imag()));
 
 		#ifdef DEBUG_COMPUTELNPRIOR
-		printf("computeLnPrior - threadNum: %d; CMAw:               %+4.3e %+4.3e\n", threadNum, CMAw[i].real(), CMAw[i].imag());
-		printf("computeLnPrior - threadNum: %d; timescale (CMA):    %+4.3e\n", threadNum, timescale);
-		printf("computeLnPrior - threadNum: %d; timescaleOsc(CMA):  %+4.3e\n", threadNum, timescaleOsc);
+		    printf("computeLnPrior - threadNum: %d; CMAw:               %+4.3e %+4.3e\n", threadNum, CMAw[i].real(), CMAw[i].imag());
+		    printf("computeLnPrior - threadNum: %d; timescale (CMA):    %+4.3e\n", threadNum, timescale);
+		    printf("computeLnPrior - threadNum: %d; timescaleOsc(CMA):  %+4.3e\n", threadNum, timescaleOsc);
 		#endif
 
 		if (timescale < minTimescale) {
@@ -3024,9 +3032,30 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
 		}
 
-		#ifdef DEBUG_COMPUTELNPRIOR
-		printf("computeLnPrior - threadNum: %d; LnPrior: %+4.3e\n",threadNum,LnPrior);
-		printf("\n");
+        if (totalFlux < lowestFlux) {
+    		LnPrior = -infiniteVal; // The total flux cannot be smaller than the smallest flux in the LC
+    		}
+    	if (totalFlux > highestFlux) {
+    		LnPrior = -infiniteVal; // The total flux cannot be bigger than the biggest flux in the LC
+    		}
+
+    	if (period < 2.0*dt) {
+    		LnPrior = -infiniteVal; // Cut all all configurations where the inferred period is too short!
+    		}
+    	if (period > 10.0*T) {
+    		LnPrior = -infiniteVal; // Cut all all configurations where the inferred period is too short!
+    		}
+
+        #ifdef DEBUG_COMPUTELNPRIOR
+        	printf("computeLnPrior - threadNum: %d; totalFlux: %+e\n", threadNum, totalFlux);
+            printf("computeLnPrior - threadNum: %d; lowestFlux: %+e\n", threadNum, lowestFlux);
+            printf("computeLnPrior - threadNum: %d; highestFlux: %+e\n", threadNum, highestFlux);
+            printf("computeLnPrior - threadNum: %d; period: %+e\n", threadNum, period);
+            printf("computeLnPrior - threadNum: %d; 2.0*dt: %+e\n", 2.0*dt);
+            printf("computeLnPrior - threadNum: %d; 10.0*T: %+e\n", threadNum, 10.0*T);
+		    printf("\n");
+		    printf("computeLnPrior - threadNum: %d; LnPrior: %+4.3e\n",threadNum,LnPrior);
+		    printf("\n");
 		#endif
 
 	Data.currentLnPrior = LnPrior;

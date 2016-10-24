@@ -39,10 +39,10 @@ cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 		int add_ObservationNoise(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum)
 		#int extend_ObservationNoise(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum);
 
-		#double compute_LnPrior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
+		double compute_LnPrior(int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestflux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
 		#double update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum)
 
-		#double compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum)
+		double compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum)
 		#double update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum)
 
 		#double compute_LnPosterior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum)
@@ -215,28 +215,32 @@ cdef class MBHBCARMATask_cython:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.extend_ObservationNoise(numCadences, cadenceNum, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], noiseSeed, threadNum)
+	'''
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def compute_LnPrior(self, numCadences, tolIR, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.compute_LnPrior(numCadences, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
 
+	'''
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
 	def update_LnPrior(self, numCadences, cadenceNum, tolIR, maxSigma, minTimescale, maxTimescale, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.update_LnPrior(numCadences, cadenceNum, tolIR, maxSigma, minTimescale, maxTimescale, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+	'''
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):
+	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)
+		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)
 
+	'''
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
 	def update_LnLikelihood(self, numCadences, cadenceNum, currentLnLikelihood, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):

@@ -410,14 +410,15 @@ int kali::MBHBCARMATask::add_ObservationNoise(int numCadences, double tolIR, dou
 	Systems[threadNum].extendObserveNoise(ptr2Data, noiseSeed, noiseRand);
 	_mm_free(noiseRand);
 	return retVal;
-	}
+} */
 
-double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnPrior = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.tolIR = tolIR;
 	Data.t = t;
+    Data.meandt = meandt;
 	Data.x = x;
 	Data.y = y;
 	Data.yerr = yerr;
@@ -425,12 +426,14 @@ double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double tolIR, doubl
 	Data.maxSigma = maxSigma;
 	Data.minTimescale = minTimescale;
 	Data.maxTimescale = maxTimescale;
+    Data.lowestFlux = lowestFlux;
+    Data.highestFlux = highestFlux;
 	kali::LnLikeData *ptr2Data = &Data;
 	LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 	return LnPrior;
 	}
 
-double kali::MBHBCARMATask::update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+/* double kali::MBHBCARMATask::update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
 	double LnPrior = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -447,9 +450,9 @@ double kali::MBHBCARMATask::update_LnPrior(int numCadences, int cadenceNum, doub
 	kali::LnLikeData *ptr2Data = &Data;
 	LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 	return LnPrior;
-	}
+}*/
 
-double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 	double LnLikelihood = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -460,6 +463,7 @@ double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+    Data.startT = startT;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
 	kali::LnLikeData *ptr2Data = &Data;
@@ -477,7 +481,7 @@ double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum
 	return LnLikelihood;
 	}
 
-double kali::MBHBCARMATask::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+/*double kali::MBHBCARMATask::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 	double LnLikelihood = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;

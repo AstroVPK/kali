@@ -1341,6 +1341,8 @@ int __pyx_module_is_main_MBHBCARMATask_cython = 0;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_RuntimeError;
+static const char __pyx_k_P[] = "P";
+static const char __pyx_k_X[] = "X";
 static const char __pyx_k_p[] = "p";
 static const char __pyx_k_q[] = "q";
 static const char __pyx_k_t[] = "t";
@@ -1366,19 +1368,27 @@ static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_tolIR[] = "tolIR";
 static const char __pyx_k_import[] = "__import__";
+static const char __pyx_k_meandt[] = "meandt";
 static const char __pyx_k_psutil[] = "psutil";
+static const char __pyx_k_startT[] = "startT";
 static const char __pyx_k_logical[] = "logical";
 static const char __pyx_k_numBurn[] = "numBurn";
 static const char __pyx_k_burnSeed[] = "burnSeed";
 static const char __pyx_k_distSeed[] = "distSeed";
+static const char __pyx_k_maxSigma[] = "maxSigma";
 static const char __pyx_k_cpu_count[] = "cpu_count";
 static const char __pyx_k_get_Sigma[] = "get_Sigma";
 static const char __pyx_k_noiseSeed[] = "noiseSeed";
 static const char __pyx_k_threadNum[] = "threadNum";
 static const char __pyx_k_ValueError[] = "ValueError";
+static const char __pyx_k_cadenceNum[] = "cadenceNum";
+static const char __pyx_k_lowestFlux[] = "lowestFlux";
 static const char __pyx_k_numThreads[] = "numThreads";
+static const char __pyx_k_highestflux[] = "highestflux";
 static const char __pyx_k_numCadences[] = "numCadences";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
+static const char __pyx_k_maxTimescale[] = "maxTimescale";
+static const char __pyx_k_minTimescale[] = "minTimescale";
 static const char __pyx_k_fracIntrinsicVar[] = "fracIntrinsicVar";
 static const char __pyx_k_fracNoiseToSignal[] = "fracNoiseToSignal";
 static const char __pyx_k_MBHBCARMATask_cython[] = "MBHBCARMATask_cython";
@@ -1393,25 +1403,34 @@ static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
 static PyObject *__pyx_n_s_MBHBCARMATask_cython;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
+static PyObject *__pyx_n_s_P;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_Sigma;
 static PyObject *__pyx_n_s_Theta;
 static PyObject *__pyx_n_s_ValueError;
+static PyObject *__pyx_n_s_X;
 static PyObject *__pyx_n_s_burnSeed;
+static PyObject *__pyx_n_s_cadenceNum;
 static PyObject *__pyx_n_s_cpu_count;
 static PyObject *__pyx_n_s_distSeed;
 static PyObject *__pyx_n_s_dt;
 static PyObject *__pyx_n_s_fracIntrinsicVar;
 static PyObject *__pyx_n_s_fracNoiseToSignal;
 static PyObject *__pyx_n_s_get_Sigma;
+static PyObject *__pyx_n_s_highestflux;
 static PyObject *__pyx_kp_s_home_vish_code_kali_src_MBHBCAR;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_lcP;
 static PyObject *__pyx_n_s_lcX;
 static PyObject *__pyx_n_s_logical;
+static PyObject *__pyx_n_s_lowestFlux;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_mask;
 static PyObject *__pyx_n_s_math;
+static PyObject *__pyx_n_s_maxSigma;
+static PyObject *__pyx_n_s_maxTimescale;
+static PyObject *__pyx_n_s_meandt;
+static PyObject *__pyx_n_s_minTimescale;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
 static PyObject *__pyx_n_s_newP;
@@ -1429,6 +1448,7 @@ static PyObject *__pyx_n_s_q;
 static PyObject *__pyx_n_s_qNum;
 static PyObject *__pyx_n_s_rNum;
 static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_n_s_startT;
 static PyObject *__pyx_n_s_t;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_threadNum;
@@ -1456,6 +1476,8 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_28set_P(
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_30make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_32get_meanFlux(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_34add_ObservationNoise(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_38compute_LnLikelihood(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyObject *__pyx_v_threadNum); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_20MBHBCARMATask_cython_MBHBCARMATask_cython(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -4799,6 +4821,730 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_34add_Ob
   return __pyx_r;
 }
 
+/* "MBHBCARMATask_cython.pyx":222
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37compute_LnPrior(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_numCadences = 0;
+  PyObject *__pyx_v_meandt = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_maxSigma = 0;
+  PyObject *__pyx_v_minTimescale = 0;
+  PyObject *__pyx_v_maxTimescale = 0;
+  PyObject *__pyx_v_lowestFlux = 0;
+  PyObject *__pyx_v_highestflux = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_x = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("compute_LnPrior (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_meandt,&__pyx_n_s_tolIR,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,&__pyx_n_s_lowestFlux,&__pyx_n_s_highestflux,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_threadNum,0};
+    PyObject* values[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[13] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_meandt)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 1); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 2); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 3); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 4); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 5); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lowestFlux)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 6); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_highestflux)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 7); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 8); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 9); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 10); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 11); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case 12:
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, 12); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case 13:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[13] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnPrior") < 0)) __PYX_ERR(0, 222, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_numCadences = values[0];
+    __pyx_v_meandt = values[1];
+    __pyx_v_tolIR = values[2];
+    __pyx_v_maxSigma = values[3];
+    __pyx_v_minTimescale = values[4];
+    __pyx_v_maxTimescale = values[5];
+    __pyx_v_lowestFlux = values[6];
+    __pyx_v_highestflux = values[7];
+    __pyx_v_t = ((PyArrayObject *)values[8]);
+    __pyx_v_x = ((PyArrayObject *)values[9]);
+    __pyx_v_y = ((PyArrayObject *)values[10]);
+    __pyx_v_yerr = ((PyArrayObject *)values[11]);
+    __pyx_v_mask = ((PyArrayObject *)values[12]);
+    __pyx_v_threadNum = values[13];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 13, 14, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 222, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.compute_LnPrior", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_meandt, __pyx_v_tolIR, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale, __pyx_v_lowestFlux, __pyx_v_highestflux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_threadNum);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_threadNum) {
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
+  __Pyx_Buffer __pyx_pybuffer_x;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  double __pyx_t_4;
+  double __pyx_t_5;
+  double __pyx_t_6;
+  double __pyx_t_7;
+  double __pyx_t_8;
+  double __pyx_t_9;
+  double __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  int __pyx_t_16;
+  __Pyx_RefNannySetupContext("compute_LnPrior", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_x.pybuffer.buf = NULL;
+  __pyx_pybuffer_x.refcount = 0;
+  __pyx_pybuffernd_x.data = NULL;
+  __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+
+  /* "MBHBCARMATask_cython.pyx":223
+ * 	@cython.wraparound(False)
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "MBHBCARMATask_cython.pyx":224
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "MBHBCARMATask_cython.pyx":223
+ * 	@cython.wraparound(False)
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)
+ */
+  }
+
+  /* "MBHBCARMATask_cython.pyx":225
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	'''
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_meandt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_9 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_v_highestflux); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = 0;
+  __pyx_t_14 = 0;
+  __pyx_t_15 = 0;
+  __pyx_t_16 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_16 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnPrior(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_16)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "MBHBCARMATask_cython.pyx":222
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.compute_LnPrior", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "MBHBCARMATask_cython.pyx":238
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_39compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_39compute_LnLikelihood(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_numCadences = 0;
+  PyObject *__pyx_v_cadenceNum = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_startT = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_x = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_X = 0;
+  PyArrayObject *__pyx_v_P = 0;
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("compute_LnLikelihood (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_cadenceNum,&__pyx_n_s_tolIR,&__pyx_n_s_startT,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_X,&__pyx_n_s_P,&__pyx_n_s_threadNum,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+    values[11] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadenceNum)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 1); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 2); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startT)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 3); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 4); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 5); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 6); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 7); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 8); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_X)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 9); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_P)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, 10); __PYX_ERR(0, 238, __pyx_L3_error)
+        }
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[11] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_LnLikelihood") < 0)) __PYX_ERR(0, 238, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_numCadences = values[0];
+    __pyx_v_cadenceNum = values[1];
+    __pyx_v_tolIR = values[2];
+    __pyx_v_startT = values[3];
+    __pyx_v_t = ((PyArrayObject *)values[4]);
+    __pyx_v_x = ((PyArrayObject *)values[5]);
+    __pyx_v_y = ((PyArrayObject *)values[6]);
+    __pyx_v_yerr = ((PyArrayObject *)values[7]);
+    __pyx_v_mask = ((PyArrayObject *)values[8]);
+    __pyx_v_X = ((PyArrayObject *)values[9]);
+    __pyx_v_P = ((PyArrayObject *)values[10]);
+    __pyx_v_threadNum = values[11];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("compute_LnLikelihood", 0, 11, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 238, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.compute_LnLikelihood", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_X), __pyx_ptype_5numpy_ndarray, 0, "X", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_P), __pyx_ptype_5numpy_ndarray, 0, "P", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_38compute_LnLikelihood(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_cadenceNum, __pyx_v_tolIR, __pyx_v_startT, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_X, __pyx_v_P, __pyx_v_threadNum);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_38compute_LnLikelihood(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyObject *__pyx_v_threadNum) {
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_P;
+  __Pyx_Buffer __pyx_pybuffer_P;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_X;
+  __Pyx_Buffer __pyx_pybuffer_X;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
+  __Pyx_Buffer __pyx_pybuffer_x;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  double __pyx_t_5;
+  double __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
+  int __pyx_t_14;
+  __Pyx_RefNannySetupContext("compute_LnLikelihood", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_x.pybuffer.buf = NULL;
+  __pyx_pybuffer_x.refcount = 0;
+  __pyx_pybuffernd_x.data = NULL;
+  __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_X.pybuffer.buf = NULL;
+  __pyx_pybuffer_X.refcount = 0;
+  __pyx_pybuffernd_X.data = NULL;
+  __pyx_pybuffernd_X.rcbuffer = &__pyx_pybuffer_X;
+  __pyx_pybuffer_P.pybuffer.buf = NULL;
+  __pyx_pybuffer_P.refcount = 0;
+  __pyx_pybuffernd_P.data = NULL;
+  __pyx_pybuffernd_P.rcbuffer = &__pyx_pybuffer_P;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_P.rcbuffer->pybuffer, (PyObject*)__pyx_v_P, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_P.diminfo[0].strides = __pyx_pybuffernd_P.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_P.diminfo[0].shape = __pyx_pybuffernd_P.rcbuffer->pybuffer.shape[0];
+
+  /* "MBHBCARMATask_cython.pyx":239
+ * 	@cython.wraparound(False)
+ * 	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "MBHBCARMATask_cython.pyx":240
+ * 	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)
+ * 
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "MBHBCARMATask_cython.pyx":239
+ * 	@cython.wraparound(False)
+ * 	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)
+ */
+  }
+
+  /* "MBHBCARMATask_cython.pyx":241
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.compute_LnLikelihood(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], threadNum)             # <<<<<<<<<<<<<<
+ * 
+ * 	'''
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_cadenceNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_startT); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_7 = 0;
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = 0;
+  __pyx_t_14 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_14 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnLikelihood(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_X.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_X.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_P.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_P.diminfo[0].strides))), __pyx_t_14)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "MBHBCARMATask_cython.pyx":238
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def compute_LnLikelihood(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_P.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_X.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.compute_LnLikelihood", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_P.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_X.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
  *         # experimental exception made for __getbuffer__ and __releasebuffer__
  *         # -- the details of this may change.
@@ -6969,6 +7715,8 @@ static PyMethodDef __pyx_methods_20MBHBCARMATask_cython_MBHBCARMATask_cython[] =
   {"make_IntrinsicLC", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_31make_IntrinsicLC, METH_VARARGS|METH_KEYWORDS, 0},
   {"get_meanFlux", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_33get_meanFlux, METH_VARARGS|METH_KEYWORDS, 0},
   {"add_ObservationNoise", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_35add_ObservationNoise, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compute_LnPrior", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37compute_LnPrior, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compute_LnLikelihood", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_39compute_LnLikelihood, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -7057,25 +7805,34 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Format_string_allocated_too_shor_2, __pyx_k_Format_string_allocated_too_shor_2, sizeof(__pyx_k_Format_string_allocated_too_shor_2), 0, 1, 0, 0},
   {&__pyx_n_s_MBHBCARMATask_cython, __pyx_k_MBHBCARMATask_cython, sizeof(__pyx_k_MBHBCARMATask_cython), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
+  {&__pyx_n_s_P, __pyx_k_P, sizeof(__pyx_k_P), 0, 0, 1, 1},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_Sigma, __pyx_k_Sigma, sizeof(__pyx_k_Sigma), 0, 0, 1, 1},
   {&__pyx_n_s_Theta, __pyx_k_Theta, sizeof(__pyx_k_Theta), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
+  {&__pyx_n_s_X, __pyx_k_X, sizeof(__pyx_k_X), 0, 0, 1, 1},
   {&__pyx_n_s_burnSeed, __pyx_k_burnSeed, sizeof(__pyx_k_burnSeed), 0, 0, 1, 1},
+  {&__pyx_n_s_cadenceNum, __pyx_k_cadenceNum, sizeof(__pyx_k_cadenceNum), 0, 0, 1, 1},
   {&__pyx_n_s_cpu_count, __pyx_k_cpu_count, sizeof(__pyx_k_cpu_count), 0, 0, 1, 1},
   {&__pyx_n_s_distSeed, __pyx_k_distSeed, sizeof(__pyx_k_distSeed), 0, 0, 1, 1},
   {&__pyx_n_s_dt, __pyx_k_dt, sizeof(__pyx_k_dt), 0, 0, 1, 1},
   {&__pyx_n_s_fracIntrinsicVar, __pyx_k_fracIntrinsicVar, sizeof(__pyx_k_fracIntrinsicVar), 0, 0, 1, 1},
   {&__pyx_n_s_fracNoiseToSignal, __pyx_k_fracNoiseToSignal, sizeof(__pyx_k_fracNoiseToSignal), 0, 0, 1, 1},
   {&__pyx_n_s_get_Sigma, __pyx_k_get_Sigma, sizeof(__pyx_k_get_Sigma), 0, 0, 1, 1},
+  {&__pyx_n_s_highestflux, __pyx_k_highestflux, sizeof(__pyx_k_highestflux), 0, 0, 1, 1},
   {&__pyx_kp_s_home_vish_code_kali_src_MBHBCAR, __pyx_k_home_vish_code_kali_src_MBHBCAR, sizeof(__pyx_k_home_vish_code_kali_src_MBHBCAR), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_lcP, __pyx_k_lcP, sizeof(__pyx_k_lcP), 0, 0, 1, 1},
   {&__pyx_n_s_lcX, __pyx_k_lcX, sizeof(__pyx_k_lcX), 0, 0, 1, 1},
   {&__pyx_n_s_logical, __pyx_k_logical, sizeof(__pyx_k_logical), 0, 0, 1, 1},
+  {&__pyx_n_s_lowestFlux, __pyx_k_lowestFlux, sizeof(__pyx_k_lowestFlux), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_mask, __pyx_k_mask, sizeof(__pyx_k_mask), 0, 0, 1, 1},
   {&__pyx_n_s_math, __pyx_k_math, sizeof(__pyx_k_math), 0, 0, 1, 1},
+  {&__pyx_n_s_maxSigma, __pyx_k_maxSigma, sizeof(__pyx_k_maxSigma), 0, 0, 1, 1},
+  {&__pyx_n_s_maxTimescale, __pyx_k_maxTimescale, sizeof(__pyx_k_maxTimescale), 0, 0, 1, 1},
+  {&__pyx_n_s_meandt, __pyx_k_meandt, sizeof(__pyx_k_meandt), 0, 0, 1, 1},
+  {&__pyx_n_s_minTimescale, __pyx_k_minTimescale, sizeof(__pyx_k_minTimescale), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
   {&__pyx_n_s_newP, __pyx_k_newP, sizeof(__pyx_k_newP), 0, 0, 1, 1},
@@ -7093,6 +7850,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_qNum, __pyx_k_qNum, sizeof(__pyx_k_qNum), 0, 0, 1, 1},
   {&__pyx_n_s_rNum, __pyx_k_rNum, sizeof(__pyx_k_rNum), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_n_s_startT, __pyx_k_startT, sizeof(__pyx_k_startT), 0, 0, 1, 1},
   {&__pyx_n_s_t, __pyx_k_t, sizeof(__pyx_k_t), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_threadNum, __pyx_k_threadNum, sizeof(__pyx_k_threadNum), 0, 0, 1, 1},

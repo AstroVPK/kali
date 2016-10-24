@@ -36,7 +36,7 @@ struct LnLikeData {
 	int numCadences;
 	int cadenceNum;
 	double tolIR;
-	double meanDT;
+	double meandt;
 	double fracIntrinsicVar;
 	double fracNoiseToSignal;
     double startT;

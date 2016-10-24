@@ -685,16 +685,18 @@ class MBHBCARMATask(object):
             intrinsicLC._std = 0.0
             intrinsicLC._stderr = 0.0
 
-    '''def logPrior(self, observedLC, forced=True, tnum=None):
+    def logPrior(self, observedLC, forced=True, tnum=None):
         if tnum is None:
             tnum = 0
-        observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.tolIR,
+        observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.meandt,
+                                                                observedLC.tolIR,
                                                                 observedLC.maxSigma*observedLC.std,
                                                                 observedLC.minTimescale*observedLC.mindt,
                                                                 observedLC.maxTimescale*observedLC.T,
+                                                                np.min(observedLC.y), np.max(observedLC.y),
                                                                 observedLC.t, observedLC.x,
-                                                                observedLC.y - observedLC.mean,
-                                                                observedLC.yerr, observedLC.mask, tnum)
+                                                                observedLC.y, observedLC.yerr,
+                                                                observedLC.mask, tnum)
         return observedLC._logPrior
 
     def logLikelihood(self, observedLC, forced=True, tnum=None):
@@ -711,27 +713,27 @@ class MBHBCARMATask(object):
                 for colCtr in xrange(observedLC.pComp):
                     observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
             observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
-                observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t,
-                observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask,
+                observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.startT,
+                observedLC.t, observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask,
                 observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
             pass
-        else:
+        '''else:
             observedLC._logLikelihood = self._taskCython.update_LnLikelihood(
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood,
                 observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr,
                 observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
-            observedLC._computedCadenceNum = observedLC.numCadences - 1
+            observedLC._computedCadenceNum = observedLC.numCadences - 1'''
         return observedLC._logLikelihood
 
     def logPosterior(self, observedLC, forced=True, tnum=None):
         lnLikelihood = self.logLikelihood(observedLC, forced=forced, tnum=tnum)
         return observedLC._logPosterior
 
-    def acvf(self, start=0.0, stop=100.0, num=100, endpoint=True, base=10.0, spacing='linear'):
+    '''def acvf(self, start=0.0, stop=100.0, num=100, endpoint=True, base=10.0, spacing='linear'):
         if spacing.lower() in ['log', 'logarithm', 'ln', 'log10']:
             lags = np.logspace(np.log10(start)/np.log10(base), np.log10(
                 stop)/np.log10(base), num=num, endpoint=endpoint, base=base)
