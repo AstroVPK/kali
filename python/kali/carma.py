@@ -58,7 +58,7 @@ def MAD(self, a):
 
 
 def roots(p, q, Theta):
-    r = CARMATask(p, q).r
+    r = CARMATask.r
     ARPoly = np.zeros(p + 1)
     ARPoly[0] = 1.0
     for i in xrange(p):
@@ -81,7 +81,7 @@ def roots(p, q, Theta):
 
 
 def coeffs(p, q, Rho):
-    r = CARMATask(p, q).r
+    r = CARMATask.r
     ARRoots = np.zeros(p, dtype='complex128')
     for i in xrange(p):
         ARRoots[i] = Rho[i]
@@ -117,31 +117,32 @@ def coeffs(p, q, Rho):
 
 
 def timescales(p, q, Rho):
+    r = CARMATask.r
     imagPairs = 0
     for i in xrange(p):
-        if Rho[i].imag != 0.0:
+        if Rho[r + i].imag != 0.0:
             imagPairs += 1
     numImag = imagPairs/2
     numReal = numImag + (p - imagPairs)
     decayTimescales = np.zeros(numReal)
     oscTimescales = np.zeros(numImag)
-    realRoots = set(Rho[0:p].real)
-    imagRoots = set(abs(Rho[0:p].imag)).difference(set([0.0]))
+    realRoots = set(Rho[r: r + p].real)
+    imagRoots = set(abs(Rho[r:r + p].imag)).difference(set([0.0]))
     realAR = sorted([1.0/abs(x) for x in realRoots])
     imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
     imagPairs = 0
     for i in xrange(q):
-        if Rho[p + i].imag != 0.0:
+        if Rho[r + p + i].imag != 0.0:
             imagPairs += 1
     numImag = imagPairs/2
     numReal = numImag + (q - imagPairs)
     decayTimescales = np.zeros(numReal)
     oscTimescales = np.zeros(numImag)
-    realRoots = set(Rho[p:p + q].real)
-    imagRoots = set(abs(Rho[p:p + q].imag)).difference(set([0.0]))
+    realRoots = set(Rho[r + p:r + p + q].real)
+    imagRoots = set(abs(Rho[r + p:r + p + q].imag)).difference(set([0.0]))
     realMA = sorted([1.0/abs(x) for x in realRoots])
     imagMA = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
-    return np.array(realAR + imagAR + realMA + imagMA + [Rho[p + q]])
+    return np.array(realAR + imagAR + realMA + imagMA + [Rho[r + p + q]])
 
 
 class CARMATask(object):

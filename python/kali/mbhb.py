@@ -464,7 +464,8 @@ class MBHBTask(object):
             if deltaT is None:
                 deltaT = self.period()/10.0
             numCadences = int(round(float(duration)/deltaT))
-            intrinsicLC = kali.lc.mockLC(numCadences=numCadences, deltaT=deltaT, fracNoiseToSignal=fracNoiseToSignal)
+            intrinsicLC = kali.lc.mockLC(numCadences=numCadences, deltaT=deltaT,
+                                         fracNoiseToSignal=fracNoiseToSignal)
         elif duration is None and tIn is not None:
             if deltaT is not None:
                 raise ValueError('deltaT cannot be supplied when tIn is provided')

@@ -61,7 +61,7 @@ def roots(p, q, Theta):
     """!
     \brief Theta -> Roots
     """
-    r = MBHBCARMATask(p, q).r
+    r = MBHBCARMATask.r
     ARPoly = np.zeros(p + 1)
     ARPoly[0] = 1.0
     for i in xrange(p):
@@ -89,7 +89,7 @@ def coeffs(p, q, Rho):
     """!
     \brief Roots -> Coeffs
     """
-    r = MBHBCARMATask(p, q).r
+    r = MBHBCARMATask.r
     ARRoots = np.zeros(p, dtype='complex128')
     for i in xrange(p):
         ARRoots[i] = Rho[r + i]
@@ -131,7 +131,7 @@ def timescales(p, q, Rho):
     """!
     \brief Roots -> Timescales
     """
-    r = MBHBCARMATask(p, q).r
+    r = MBHBCARMATask.r
     imagPairs = 0
     for i in xrange(p):
         if Rho[r + i].imag != 0.0:
