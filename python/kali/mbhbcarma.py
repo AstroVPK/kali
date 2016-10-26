@@ -17,7 +17,11 @@ import copy as copy
 from scipy.interpolate import UnivariateSpline
 import warnings as warnings
 import matplotlib.pyplot as plt
+import random
 import pdb as pdb
+
+import multi_key_dict
+import gatspy.periodic
 
 try:
     import rand
@@ -162,6 +166,28 @@ def timescales(p, q, Rho):
 class MBHBCARMATask(object):
 
     _r = 8
+    G = 6.67408e-11
+    c = 299792458.0
+    pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
+    twoPi = 2.0*pi
+    fourPi = 4.0*pi
+    fourPiSq = 4.0*math.pow(pi, 2.0)
+    Parsec = 3.0857e16
+    Day = 86164.090530833
+    Year = 31557600.0
+    SolarMass = 1.98855e30
+
+    _dict = multi_key_dict.multi_key_dict()
+    _dict[r'$a_{1}$ (pc)', 0, r'0', r'a1', r'a_1', r'$a_{1}$', r'$a_{1}~\mathrm{(pc)}$',
+          'semi-major axis 1', 'semimajor axis 1'] = 0
+    _dict[r'$a_{2}$ (pc)', 1, r'1', r'a2', r'a_2', r'$a_{2}$', r'$a_{2}~\mathrm{(pc)}$',
+          'semi-major axis 2', 'semimajor axis 2'] = 1
+    _dict[r'$T$ (d)', 2, r'2', r'T', r'$T$', r'$T~\mathrm{(d)}$', 'period'] = 2
+    _dict[r'$e$', 3, r'3', r'e', 'ellipticity', 'eccentricity'] = 3
+    _dict[r'$\Omega$ (deg.)', 4, r'4', r'$\Omega~\mathrm{(deg.)}$', r'Omega', r'omega'] = 4
+    _dict[r'$i$ (deg.)', 5, r'5', r'$i~\mathrm{(deg.)}$', r'Inclination', r'inclination'] = 5
+    _dict[r'$\tau$ (d)', 6, r'6', r'$\tau~\mathrm{(d)}$', r'Tau', r'tau'] = 6
+    _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
 
     def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
                  nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
@@ -198,8 +224,18 @@ class MBHBCARMATask(object):
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._LnPosterior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
+            self._deviance = np.require(
+                np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = MBHBCARMATask_cython.MBHBCARMATask_cython(self._p, self._q, self._nthreads,
                                                                          self._nburn)
+            '''for i in xrange(self.p):
+                self._dict[r'$\alpha_{%d}$'%(i + 1), '$\tau_{\mathrm{AR}, %d}$ (d)'%(i + 1), self.r + i,
+                           r'%d'%(self.r + i)] = self.r + i
+            for i in xrange(self.q):
+                self._dict[r'$\beta_{%d}$'%(i), '$\tau_{\mathrm{MA}, %d}$ (d)'%(i + 1), self.r + self.p + i,
+                           r'%d'%(self.r + self.p + i)] = self.r + self.p + i
+            self._dict[r'$\mathrm{Amp}$', r'$\beta_{%d}$'%(self.q), self.r + self.p + self.q,
+                       r'%d'%(self.r + self.p + self.q)] = self.r + self.p + self.q'''
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -372,6 +408,18 @@ class MBHBCARMATask(object):
     @property
     def LnPosterior(self):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def deviance(self):
+        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def dic(self):
+        if hasattr(self, '_dic'):
+            return self._dic
+        else:
+            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
+            return self._dic
 
     def __repr__(self):
         return "kali.mbhbcarma.MBHBCARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q,
@@ -654,40 +702,19 @@ class MBHBCARMATask(object):
                 intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
                 intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
                 intrinsicLC.mask, noiseSeed, threadNum=tnum)
-        else:
+        '''else:
             self._taskCython.extend_ObservationNoise(
                 intrinsicLC.numCadences, intrinsicLC.observedCadenceNum, intrinsicLC.tolIR,
                 intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x,
                 intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
-            intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1
+            intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1'''
 
-        count = int(np.sum(intrinsicLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
-            yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
-        if count > 0.0:
-            intrinsicLC._mean = y_meanSum/count
-            intrinsicLC._meanerr = yerr_meanSum/count
-        else:
-            intrinsicLC._mean = 0.0
-            intrinsicLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
-            yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
-        if count > 0.0:
-            intrinsicLC._std = math.sqrt(y_stdSum/count)
-            intrinsicLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            intrinsicLC._std = 0.0
-            intrinsicLC._stderr = 0.0
+        intrinsicLC._statistics()
 
     def logPrior(self, observedLC, forced=True, tnum=None):
         if tnum is None:
             tnum = 0
+        periodEst = self.estimate(observedLC)
         observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.meandt,
                                                                 observedLC.tolIR,
                                                                 observedLC.maxSigma*observedLC.std,
@@ -696,7 +723,10 @@ class MBHBCARMATask(object):
                                                                 np.min(observedLC.y), np.max(observedLC.y),
                                                                 observedLC.t, observedLC.x,
                                                                 observedLC.y, observedLC.yerr,
-                                                                observedLC.mask, tnum)
+                                                                observedLC.mask,
+                                                                periodEst, 0.05*periodEst,
+                                                                observedLC.mean, 0.05*observedLC.mean,
+                                                                tnum)
         return observedLC._logPrior
 
     def logLikelihood(self, observedLC, forced=True, tnum=None):
@@ -704,6 +734,7 @@ class MBHBCARMATask(object):
             tnum = 0
         observedLC.pComp = self.p
         observedLC.qComp = self.q
+        periodEst = self.estimate(observedLC)
         observedLC._logPrior = self.logPrior(observedLC, forced=forced, tnum=tnum)
         if forced is True:
             observedLC._computedCadenceNum = -1
@@ -714,8 +745,11 @@ class MBHBCARMATask(object):
                     observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
             observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.startT,
-                observedLC.t, observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask,
-                observedLC.XComp, observedLC.PComp, tnum)
+                observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
+                observedLC.XComp, observedLC.PComp,
+                periodEst, 0.05*periodEst,
+                observedLC.mean, 0.05*observedLC.mean,
+                tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
@@ -961,7 +995,78 @@ class MBHBCARMATask(object):
         plt.legend(loc=3)
         if doShow:
             plt.show(False)
-        return newFig
+        return newFig'''
+
+    def estimate(self, observedLC):
+        """!
+        Estimate period
+        """
+        # fluxEst
+        maxPeriodFactor = 10.0
+        if observedLC.numCadences > 50:
+            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
+                                                                                        observedLC.y,
+                                                                                        observedLC.yerr)
+        else:
+            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(observedLC.t,
+                                                                                    observedLC.y,
+                                                                                    observedLC.yerr)
+        periods, power = model.periodogram_auto()  # nyquist_factor=observedLC.numCadences)
+        model.optimizer.period_range = (
+            2.0*observedLC.meandt, maxPeriodFactor*observedLC.T)
+        periodEst = model.best_period
+        return periodEst
+
+    def guess(self, periodEst):
+        notGood = True
+        while notGood:
+            a1Guess = math.pow(10.0, random.uniform(-4.0, 0.0))
+            a2Guess = math.pow(10.0, random.uniform(math.log10(a1Guess), 0.0))
+            eccentricityGuess = random.uniform(0.0, 1.0)
+            totalMassVal = (self.fourPiSq*math.pow(
+                            (a1Guess + a2Guess)*self.Parsec, 3.0))/(self.G*math.pow(periodEst*self.Day, 2.0))
+            massRatioVal = a1Guess/a2Guess
+            m1Val = totalMassVal*(1.0/(1.0 + massRatioVal))
+            m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal))
+            rS1Val = (2.0*self.G*m1Val)/(pow(self.c, 2.0))
+            rS2Val = (2.0*self.G*m2Val)/(pow(self.c, 2.0))
+            rPeribothronTotVal = (a1Guess + a2Guess)*self.Parsec*(1.0 - eccentricityGuess)
+            '''
+            print "              periodEst (d): %+e"%(periodEst)
+            print "               a1Guess (pc): %+e"%(a1Guess)
+            print "               a2Guess (pc): %+e"%(a2Guess)
+            print "          eccentricityGuess: %+e"%(eccentricityGuess)
+            print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
+            print "               massRatioVal: %+e"%(massRatioVal)
+            print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
+            print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
+            print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
+            print "                rS2Val (pc): %+e"%(rS2Val/self.Parsec)
+            print "10.0*(rS1Val + rS2Val) (pc): %+e"%(10.0*(rS1Val + rS2Val)/self.Parsec)
+            print "    rPeribothronTotVal (pc): %+e"%(rPeribothronTotVal/self.Parsec)
+            print " "
+            '''
+            if rPeribothronTotVal > 10.0*(rS1Val + rS2Val):
+                notGood = False
+                break
+        '''
+        print "BREAKING..."
+        print "              periodEst (d): %+e"%(periodEst)
+        print "               a1Guess (pc): %+e"%(a1Guess)
+        print "               a2Guess (pc): %+e"%(a2Guess)
+        print "          eccentricityGuess: %+e"%(eccentricityGuess)
+        print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
+        print "               massRatioVal: %+e"%(massRatioVal)
+        print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
+        print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
+        print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
+        print "                rS2Val (pc): %+e"%(rS2Val/self.Parsec)
+        print "10.0*(rS1Val + rS2Val) (pc): %+e"%(10.0*(rS1Val + rS2Val)/self.Parsec)
+        print "    rPeribothronTotVal (pc): %+e"%(rPeribothronTotVal/self.Parsec)
+        print " "
+        print " "
+        '''
+        return a1Guess, a2Guess, eccentricityGuess
 
     def fit(self, observedLC, zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
         observedLC.pComp = self.p
@@ -985,33 +1090,51 @@ class MBHBCARMATask(object):
         minTLog10 = math.log10(minT)
         maxTLog10 = math.log10(maxT)
 
+        periodEst = self.estimate(observedLC)
+
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             sigmaFactor = 1.0e0
             exp = ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
-            RhoGuess = -1.0/np.power(10.0, exp)
+            a1Guess, a2Guess, eccentricityGuess = self.guess(periodEst)
+            RhoGuess = np.require(np.array([a1Guess, a2Guess, periodEst, eccentricityGuess,
+                                            random.uniform(0.0, 360.0), random.uniform(0.0, 90.0),
+                                            random.uniform(observedLC.startT,
+                                                           observedLC.startT + periodEst),
+                                            observedLC.mean] + (-1.0/np.power(10.0, exp)).tolist()),
+                                  requirements=['F', 'A', 'W', 'O', 'E'])
             while noSuccess:
-                RhoGuess[self.p + self.q] = sigmaFactor*observedLC.std
+                RhoGuess[self.r + self.p + self.q] = sigmaFactor*observedLC.std
                 ThetaGuess = coeffs(self.p, self.q, RhoGuess)
                 res = self.set(observedLC.dt, ThetaGuess)
                 lnPrior = self.logPrior(observedLC)
-                if res == 0 and lnPrior == 0.0:
+                if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
                 else:
-                    print 'SigmaTrial: %e'%(RhoGuess[self.p + self.q])
+                    # print 'SigmaTrial: %e'%(RhoGuess[self.r + self.p + self.q])
+                    # pdb.set_trace()
                     sigmaFactor *= 0.31622776601  # sqrt(0.1)
 
             for dimNum in xrange(self.ndims):
                 xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
         res = self._taskCython.fit_CARMAModel(
-            observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std,
-            observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t,
-            observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask, self.nwalkers,
-            self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart,
-            self._Chain, self._LnPosterior)
+            observedLC.dt, observedLC.numCadences, observedLC.meandt, observedLC.tolIR,
+            observedLC.maxSigma*observedLC.std, observedLC.minTimescale*observedLC.mindt,
+            observedLC.maxTimescale*observedLC.T, np.min(observedLC.y), np.max(observedLC.y),
+            observedLC.startT, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
+            self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA,
+            zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior,
+            periodEst, 0.05*periodEst,
+            observedLC.mean, 0.05*observedLC.mean)
+
+        for stepNum in xrange(self.nsteps):
+            for walkerNum in xrange(self.nwalkers):
+                self._deviance[walkerNum +
+                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
+                                                                               self.nwalkers*stepNum]
         return res
 
-    def smooth(self, observedLC, tnum=None):
+    '''def smooth(self, observedLC, tnum=None):
         if tnum is None:
             tnum = 0
         if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
@@ -1075,3 +1198,48 @@ class MBHBCARMATask(object):
                 observedLC.xerrSmooth[i] = 0.0
         observedLC._isSmoothed = True
         return res'''
+
+    def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    fig=-6, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dimx < self.ndims and dimy < self.ndims:
+            plt.scatter(self.timescaleChain[dimx, :, self.nsteps/2:],
+                        self.timescaleChain[dimy, :, self.nsteps/2:],
+                        c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.colorbar()
+        if truthx is not None:
+            plt.axvline(x=truthx, c=r'#000000')
+        if truthy is not None:
+            plt.axhline(y=truthy, c=r'#000000')
+        if labelx is not None:
+            plt.xlabel(labelx)
+        if labely is not None:
+            plt.ylabel(labely)
+        if doShow:
+            plt.show(False)
+        return newFig
+
+    def plotwalkers(self, dim, truth=None, label=None, fig=-7, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dim < self.ndims:
+            for i in xrange(self.nwalkers):
+                plt.plot(self.timescaleChain[dim, i, :], c=r'#0000ff', alpha=0.1)
+            plt.plot(np.median(self.timescaleChain[dim, :, :], axis=0), c=r'#ff0000')
+            plt.fill_between(range(self.nsteps),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) -
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) +
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             color=r'#ff0000', alpha=0.1)
+        if truth is not None:
+            plt.axhline(truth, c=r'#000000')
+        plt.xlabel(r'step \#')
+        if label is not None:
+            plt.ylabel(label)
+        if doShow:
+            plt.show(False)
+        return newFig

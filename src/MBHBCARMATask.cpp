@@ -22,7 +22,7 @@
 #include "MBHBCARMATask.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
-//#define DEBUG_FIT_MBHBCARMAMODEL
+#define DEBUG_FIT_MBHBCARMAMODEL
 
 using namespace std;
 
@@ -412,13 +412,13 @@ int kali::MBHBCARMATask::add_ObservationNoise(int numCadences, double tolIR, dou
 	return retVal;
 } */
 
-double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum) {
 	double LnPrior = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.tolIR = tolIR;
-	Data.t = t;
     Data.meandt = meandt;
+	Data.t = t;
 	Data.x = x;
 	Data.y = y;
 	Data.yerr = yerr;
@@ -428,6 +428,10 @@ double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, doub
 	Data.maxTimescale = maxTimescale;
     Data.lowestFlux = lowestFlux;
     Data.highestFlux = highestFlux;
+    Data.periodCenter = periodCenter;
+    Data.periodWidth = periodWidth;
+    Data.fluxCenter = fluxCenter;
+    Data.fluxWidth = fluxWidth;
 	kali::LnLikeData *ptr2Data = &Data;
 	LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
 	return LnPrior;
@@ -452,7 +456,7 @@ double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, doub
 	return LnPrior;
 }*/
 
-double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum) {
 	double LnLikelihood = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -466,6 +470,10 @@ double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum
     Data.startT = startT;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
+    Data.periodCenter = periodCenter;
+    Data.periodWidth = periodWidth;
+    Data.fluxCenter = fluxCenter;
+    Data.fluxWidth = fluxWidth;
 	kali::LnLikeData *ptr2Data = &Data;
 	double old_dt = Systems[threadNum].get_dt();
 	Systems[threadNum].set_dt(t[1] - t[0]);
@@ -481,7 +489,8 @@ double kali::MBHBCARMATask::compute_LnLikelihood(int numCadences, int cadenceNum
 	return LnLikelihood;
 	}
 
-/*double kali::MBHBCARMATask::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+/*
+double kali::MBHBCARMATask::update_LnLikelihood(int numCadences, int cadenceNum, double currentLnLikelihood, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 	double LnLikelihood = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -581,23 +590,33 @@ double kali::MBHBCARMATask::update_LnPosterior(int numCadences, int cadenceNum, 
 void kali::MBHBCARMATask::compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum) {
 	Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 	}
+*/
 
-int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double startT, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth) {
 	omp_set_num_threads(numThreads);
-	int ndims = p + q + 1;
+	int ndims = kali::MBHBCARMATask::r + p + q + 1;
 	int threadNum = omp_get_thread_num();
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
+    Data.meandt = meandt;
 	Data.tolIR = tolIR;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+    Data.startT = startT;
 	Data.maxSigma = maxSigma;
 	Data.minTimescale = minTimescale;
 	Data.maxTimescale = maxTimescale;
-	#ifdef DEBUG_FIT_MBHBCARMAMODEL
+    Data.lowestFlux = lowestFlux;
+    Data.highestFlux = highestFlux;
+    Data.periodCenter = periodCenter;
+    Data.periodWidth = periodWidth;
+    Data.fluxCenter = fluxCenter;
+    Data.fluxWidth = fluxWidth;
+	/*
+    #ifdef DEBUG_FIT_MBHBCARMAMODEL
 		#pragma omp critical
 		{
 		printf("fit_MBHBCARMAModel - threadNum: %d; maxSigma: %e\n", threadNum, maxSigma);
@@ -605,6 +624,7 @@ int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double t
 		printf("fit_MBHBCARMAModel - threadNum: %d; maxTimescale: %e\n", threadNum, maxTimescale);
 		}
 	#endif
+    */
 	kali::LnLikeData *ptr2Data = &Data;
 	kali::LnLikeArgs Args;
 	Args.numThreads = numThreads;
@@ -684,6 +704,7 @@ int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double t
 	return 0;
 	}
 
+/*
 int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum) {
 	int successYN = -1;
 	kali::LnLikeData Data;

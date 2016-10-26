@@ -31,6 +31,7 @@
 #include "Constants.hpp"
 #include "CARMA.hpp"
 
+#define MAXPRINT 20
 //#define TIMEALL
 //#define TIMEPER
 //#define TIMEFINE
@@ -46,6 +47,7 @@
 //#define DEBUG_SETCARMA_DEEP
 //#define DEBUG_BURNSYSTEM
 //#define WRITE_BURNSYSTEM
+//#define DEBUG_SIMULATESYSTEM
 //#define DEBUG_OBSSYSTEM
 //#define DEBUG_OBS
 //#define DEBUG_CTORCARMA
@@ -57,7 +59,6 @@
 //#define DEBUG_CALCLNPRIOR
 //#define DEBUG_CALCLNPOSTERIOR
 //#define DEBUG_COMPUTELNPRIOR
-//#define MAXPRINT 20
 //#define DEBUG_COMPUTELNLIKELIHOOD
 //#define DEBUG_COMPUTEACVF
 //#define DEBUG_RTSSMOOTHER
@@ -2152,6 +2153,10 @@ void kali::CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, do
 	cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 	cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
 	x[0] = X[0];
+    #ifdef DEBUG_SIMULATESYSTEM
+        printf("X[0]: %+e\n", X[0]);
+        printf("x[0]: %+e\n", x[0]);
+    #endif
 
 	for (int i = 1; i < numCadences; ++i) {
 
@@ -2173,6 +2178,10 @@ void kali::CARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, do
 		cblas_dcopy(p, VScratch, 1, X, 1);
 		cblas_daxpy(p, 1.0, &distRand[i*p], 1, X, 1);
 		x[i] = X[0];
+        #ifdef DEBUG_SIMULATESYSTEM
+            printf("X[0]: %+e\n", X[0]);
+            printf("x[%d]: %+e\n", i, x[i]);
+        #endif
 		}
 
 	vslDeleteStream(&distStream);
@@ -2335,7 +2344,8 @@ double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 		printf("y[%d]: %e\n", 0, y[0]);
 		printf("yerr[%d]: %e\n", 0, yerr[0]);
 		printf("mask[%d]: %e\n", 0, mask[0]);
-		printf("v[%d]: %e\n", 0, v);
+        printf("H[0]*XMinus[0]: %+e\n", H[0]*XMinus[0]);
+        printf("v[%d]: %e\n", 0, v);
 		printf("S[%d]: %e\n", 0, S);
 	#endif
 
@@ -2388,6 +2398,7 @@ double kali::CARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 				printf("y[%d]: %e\n", i, y[i]);
 				printf("yerr[%d]: %e\n", i, yerr[i]);
 				printf("mask[%d]: %e\n", i, mask[i]);
+                printf("H[0]*XMinus[0]: %+e\n", H[0]*XMinus[0]);
 				printf("v[%d]: %e\n", i, v);
 				printf("S[%d]: %e\n", i, S);
 				}

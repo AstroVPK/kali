@@ -19,6 +19,7 @@ import scipy.stats as spstats
 from scipy.interpolate import UnivariateSpline
 import gatspy.periodic
 
+import gatspy.periodic
 import astroquery.exceptions
 from astroquery.simbad import Simbad
 from astroquery.ned import Ned
@@ -43,6 +44,9 @@ except ImportError:
 fhgt = 10
 fwid = 16
 set_plot_params(useTex=True)
+COLORX = r'#984ea3'
+COLORY = r'#ff7f00'
+COLORS = [r'#4daf4a', r'#ccebc5']
 
 ln10 = math.log(10)
 
@@ -1041,35 +1045,53 @@ class lc(object):
                                       useLC.y, useLC.yerr, useLC.mask, self._sflags, self._sf, self._sferr)
             return self._sflags, self._sf, self._sferr
 
-    def plot(self, fig=-1, doShow=False, clearFig=True):
+    def periodogram(self):
+        if hasattr(self, '_periodogramlags') and hasattr(self, '_periodogram') and hasattr(self,
+                                                                                           '_periodogramerr'):
+            return self._periodogramlags, self._periodogram, self._periodogramerr
+        else:
+            model = gatspy.periodic.LombScargleFast().fit(self.t, self.y, self.yerr)
+            self._periodogramlags, self._periodogram = model.periodogram_auto(nyquist_factor=2)
+            self._periodogramlags = np.require(np.array(self._periodogramlags),
+                                               requirements=['F', 'A', 'W', 'O', 'E'])
+            self._periodogram = np.require(np.array(self._periodogram),
+                                           requirements=['F', 'A', 'W', 'O', 'E'])
+            self._periodogramerr = np.require(np.array(self._periodogram.shape[0]*[0.0]),
+                                              requirements=['F', 'A', 'W', 'O', 'E'])
+            for i in xrange(self._periodogram.shape[0]):
+                if self._periodogram[i] <= 0.0:
+                    self._periodogram[i] = np.nan
+            return self._periodogramlags, self._periodogram, self._periodogramerr
+
+    def plot(self, fig=-1, doShow=False, clearFig=True, colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
-            plt.plot(self.t, self.x, color='#984ea3', zorder=0)
-            plt.plot(self.t, self.x, color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
+            plt.plot(self.t, self.x, color=colorx, zorder=0)
+            plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', zorder=0)
         if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
             plt.errorbar(
                 self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                 self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
             plt.xlim(self.t[0], self.t[-1])
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', zorder=0)
+                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, zorder=0)
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color='#984ea3', marker='o', markeredgecolor='none',
+                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, marker='o', markeredgecolor='none',
                 zorder=0)
             plt.errorbar(
                 self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                 self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
         if self.isSmoothed:
-            plt.plot(self.tSmooth, self.xSmooth, color='#4daf4a',
+            plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
                      marker='o', markeredgecolor='none', zorder=-5)
-            plt.plot(self.tSmooth, self.xSmooth, color='#4daf4a', zorder=-5)
+            plt.plot(self.tSmooth, self.xSmooth, color=colors[0], zorder=-5)
             plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
-                             self.xerrSmooth, facecolor='#ccebc5', alpha=0.5, zorder=-5)
+                             self.xerrSmooth, facecolor=colors[1], alpha=0.5, zorder=-5)
         plt.xlim(self.t[0], self.t[-1])
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
@@ -1079,17 +1101,20 @@ class lc(object):
             plt.show(False)
         return newFig
 
-    def plotacvf(self, fig=-2, newdt=None, doShow=False):
+    def plotacvf(self, fig=-2, newdt=None, doShow=False, clearFig=True,
+                 colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
             lagsE, acvfE, acvferrE = self.acvf(newdt)
             if np.sum(acvfE) != 0.0:
                 plt.errorbar(lagsE[0], acvfE[0], acvferrE[0], label=r'obs. Autocovariance Function',
-                             fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
                 for i in xrange(1, lagsE.shape[0]):
                     if acvfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acvfE[i], acvferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                        plt.errorbar(lagsE[i], acvfE[i], acvferrE[i], fmt='o', capsize=0, color=colory,
                                      markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
@@ -1100,17 +1125,20 @@ class lc(object):
             plt.show(False)
         return newFig
 
-    def plotacf(self, fig=-3, newdt=None, doShow=False):
+    def plotacf(self, fig=-3, newdt=None, doShow=False, clearFig=True,
+                colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
             lagsE, acfE, acferrE = self.acf(newdt)
             if np.sum(acfE) != 0.0:
                 plt.errorbar(lagsE[0], acfE[0], acferrE[0], label=r'obs. Autocorrelation Function',
-                             fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
                 for i in xrange(1, lagsE.shape[0]):
                     if acfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acfE[i], acferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                        plt.errorbar(lagsE[i], acfE[i], acferrE[i], fmt='o', capsize=0, color=colory,
                                      markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
@@ -1122,17 +1150,20 @@ class lc(object):
             plt.show(False)
         return newFig
 
-    def plotdacf(self, fig=-4, numBins=None, doShow=False):
+    def plotdacf(self, fig=-4, numBins=None, doShow=False, clearFig=True,
+                 colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
         if np.sum(self.y) != 0.0:
             lagsE, dacfE, dacferrE = self.dacf(nbins=numBins)
             if np.sum(dacfE) != 0.0:
                 plt.errorbar(
                     lagsE[0], dacfE[0], dacferrE[0], label=r'obs. Discrete Autocorrelation Function', fmt='o',
-                    capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+                    capsize=0, color=colory, markeredgecolor='none', zorder=10)
                 for i in xrange(0, lagsE.shape[0]):
                     if dacfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], dacfE[i], dacferrE[i], fmt='o', capsize=0, color='#ff7f00',
+                        plt.errorbar(lagsE[i], dacfE[i], dacferrE[i], fmt='o', capsize=0, color=colory,
                                      markeredgecolor='none', zorder=10)
                 plt.xlim(lagsE[1], lagsE[-1])
         plt.xlabel(r'$\delta t$')
@@ -1143,8 +1174,11 @@ class lc(object):
             plt.show(False)
         return newFig
 
-    def plotsf(self, fig=-5, newdt=None, doShow=False):
+    def plotsf(self, fig=-5, newdt=None, doShow=False, clearFig=True,
+               colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
         ln10 = math.log(10.0)
         if np.sum(self.y) != 0.0:
             lagsE, sfE, sferrE = self.sf(newdt)
@@ -1155,16 +1189,42 @@ class lc(object):
                         break
                 plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(
                     sferrE[i]/(ln10*sfE[i])), label=r'obs. Structure Function', fmt='o', capsize=0,
-                    color='#ff7f00', markeredgecolor='none', zorder=10)
+                    color=colory, markeredgecolor='none', zorder=10)
                 startI = i
                 for i in xrange(i+1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
                         plt.errorbar(
                             math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(sferrE[i]/(ln10*sfE[i])),
-                            fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
-        plt.xlabel(r'$\delta t$')
+                            fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+        plt.xlabel(r'$\log \delta t$')
         plt.ylabel(r'$\log SF$')
         plt.title(r'Structure Function')
+        plt.legend(loc=2)
+        if doShow:
+            plt.show(False)
+        return newFig
+
+    def plotperiodogram(self, fig=-6, newdt=None, doShow=False, clearFig=True,
+                        colorx=COLORX, colory=COLORY, colors=COLORS):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        ln10 = math.log(10.0)
+        if np.sum(self.y) != 0.0:
+            lagsE, periodogramE, periodogramerrE = self.periodogram()
+            '''if np.sum(periodogramE) != 0.0:
+                for i in xrange(0, lagsE.shape[0]):
+                    if periodogramE[i] > 0.0:
+                        plt.errorbar(
+                            math.log10(lagsE[i]), math.log10(periodogramE[i]),
+                            math.fabs(periodogramerrE[i]/(ln10*periodogramE[i])), fmt='o', capsize=0,
+                            color=colory, markeredgecolor='none', zorder=10)'''
+            plt.loglog(lagsE, periodogramE, color=colory, zorder=-5)
+            plt.fill_between(lagsE, periodogramE - periodogramerrE,
+                             periodogramE + periodogramerrE, facecolor=colory, alpha=0.5, zorder=-5)
+        plt.xlabel(r'$\log t$')
+        plt.ylabel(r'$\log P$')
+        plt.title(r'Periodogram')
         plt.legend(loc=2)
         if doShow:
             plt.show(False)

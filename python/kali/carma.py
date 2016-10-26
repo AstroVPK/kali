@@ -19,6 +19,8 @@ import warnings as warnings
 import matplotlib.pyplot as plt
 import pdb as pdb
 
+import multi_key_dict
+
 try:
     import rand
     import CARMATask_cython as CARMATask_cython
@@ -148,6 +150,7 @@ def timescales(p, q, Rho):
 class CARMATask(object):
 
     _r = 0
+    _dict = multi_key_dict.multi_key_dict()
 
     def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
                  nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
@@ -184,8 +187,18 @@ class CARMATask(object):
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._LnPosterior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
+            self._deviance = np.require(
+                np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads,
                                                                  self._nburn)
+            '''for i in xrange(self.p):
+                self._dict[r'$\alpha_{%d}$'%(i + 1), '$\tau_{\mathrm{AR}, %d}$ (d)'%(i + 1), self.r + i,
+                           r'%d'%(self.r + i)] = self.r + i
+            for i in xrange(self.q):
+                self._dict[r'$\beta_{%d}$'%(i), '$\tau_{\mathrm{MA}, %d}$ (d)'%(i + 1), self.r + self.p + i,
+                           r'%d'%(self.r + self.p + i)] = self.r + self.p + i
+            self._dict[r'$\mathrm{Amp}$', r'$\beta_{%d}$'%(self.q), self.r + self.p + self.q,
+                       r'%d'%(self.r + self.p + self.q)] = self.r + self.p + self.q'''
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -358,6 +371,18 @@ class CARMATask(object):
     @property
     def LnPosterior(self):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def deviance(self):
+        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def dic(self):
+        if hasattr(self, '_dic'):
+            return self._dic
+        else:
+            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
+            return self._dic
 
     def __repr__(self):
         return "kali.carma.CARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
@@ -993,6 +1018,12 @@ class CARMATask(object):
             observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask, self.nwalkers,
             self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart,
             self._Chain, self._LnPosterior)
+
+        for stepNum in xrange(self.nsteps):
+            for walkerNum in xrange(self.nwalkers):
+                self._deviance[walkerNum +
+                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
+                                                                               self.nwalkers*stepNum]
         return res
 
     def smooth(self, observedLC, tnum=None):
@@ -1059,3 +1090,48 @@ class CARMATask(object):
                 observedLC.xerrSmooth[i] = 0.0
         observedLC._isSmoothed = True
         return res
+
+    def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    fig=-6, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dimx < self.ndims and dimy < self.ndims:
+            plt.scatter(self.timescaleChain[dimx, :, self.nsteps/2:],
+                        self.timescaleChain[dimy, :, self.nsteps/2:],
+                        c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.colorbar()
+        if truthx is not None:
+            plt.axvline(x=truthx, c=r'#000000')
+        if truthy is not None:
+            plt.axhline(y=truthy, c=r'#000000')
+        if labelx is not None:
+            plt.xlabel(labelx)
+        if labely is not None:
+            plt.ylabel(labely)
+        if doShow:
+            plt.show(False)
+        return newFig
+
+    def plotwalkers(self, dim, truth=None, label=None, fig=-7, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dim < self.ndims:
+            for i in xrange(self.nwalkers):
+                plt.plot(self.timescaleChain[dim, i, :], c=r'#0000ff', alpha=0.1)
+            plt.plot(np.median(self.timescaleChain[dim, :, :], axis=0), c=r'#ff0000')
+            plt.fill_between(range(self.nsteps),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) -
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) +
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             color=r'#ff0000', alpha=0.1)
+        if truth is not None:
+            plt.axhline(truth, c=r'#000000')
+        plt.xlabel(r'step \#')
+        if label is not None:
+            plt.ylabel(label)
+        if doShow:
+            plt.show(False)
+        return newFig

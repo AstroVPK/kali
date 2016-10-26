@@ -19,7 +19,8 @@ import warnings as warnings
 import matplotlib.pyplot as plt
 import pdb as pdb
 
-from gatspy.periodic import LombScargleFast, SuperSmoother
+import multi_key_dict
+import gatspy.periodic import
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 
@@ -58,6 +59,18 @@ class MBHBTask(object):
     Year = 31557600.0
     SolarMass = 1.98855e30
 
+    _dict = multi_key_dict.multi_key_dict()
+    _dict[r'$a_{1}$ (pc)', 0, r'0', r'a1', r'a_1', r'$a_{1}$', r'$a_{1}~\mathrm{(pc)}$',
+          'semi-major axis 1', 'semimajor axis 1'] = 0
+    _dict[r'$a_{2}$ (pc)', 1, r'1', r'a2', r'a_2', r'$a_{2}$', r'$a_{2}~\mathrm{(pc)}$',
+          'semi-major axis 2', 'semimajor axis 2'] = 1
+    _dict[r'$T$ (d)', 2, r'2', r'T', r'$T$', r'$T~\mathrm{(d)}$', 'period'] = 2
+    _dict[r'$e$', 3, r'3', r'e', 'ellipticity', 'eccentricity'] = 3
+    _dict[r'$\Omega$ (deg.)', 4, r'4', r'$\Omega~\mathrm{(deg.)}$', r'Omega', r'omega'] = 4
+    _dict[r'$i$ (deg.)', 5, r'5', r'$i~\mathrm{(deg.)}$', r'Inclination', r'inclination'] = 5
+    _dict[r'$\tau$ (d)', 6, r'6', r'$\tau~\mathrm{(d)}$', r'Tau', r'tau'] = 6
+    _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
+
     def __init__(self, nthreads=psutil.cpu_count(logical=True), nwalkers=25*psutil.cpu_count(logical=True),
                  nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
@@ -81,6 +94,8 @@ class MBHBTask(object):
             self._Chain = np.require(
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._LnPosterior = np.require(
+                np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
+            self._deviance = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = MBHBTask_cython.MBHBTask_cython(self._nthreads)
         except AssertionError as err:
@@ -175,6 +190,18 @@ class MBHBTask(object):
     @property
     def LnPosterior(self):
         return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def deviance(self):
+        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def dic(self):
+        if hasattr(self, '_dic'):
+            return self._dic
+        else:
+            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
+            return self._dic
 
     def __repr__(self):
         return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
@@ -559,7 +586,14 @@ class MBHBTask(object):
         """
         # fluxEst
         maxPeriodFactor = 10.0
-        model = LombScargleFast().fit(observedLC.t, observedLC.y, observedLC.yerr)
+        if observedLC.numCadences > 50:
+            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
+                                                                                        observedLC.y,
+                                                                                        observedLC.yerr)
+        else:
+            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(observedLC.t,
+                                                                                    observedLC.y,
+                                                                                    observedLC.yerr)
         periods, power = model.periodogram_auto(nyquist_factor=observedLC.numCadences)
         model.optimizer.period_range = (
             2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
@@ -606,7 +640,14 @@ class MBHBTask(object):
             dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
             dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
             dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
-        model = LombScargleFast().fit(dzdtLC.t, dzdtLC.y, dzdtLC.yerr)
+            if observedLC.numCadences > 50:
+                model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
+                                                                                            dzdtLC.y,
+                                                                                            dzdtLC.yerr)
+            else:
+                model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
+                                                                                        dzdtLC.y,
+                                                                                        dzdtLC.yerr)
         periods, power = model.periodogram_auto(nyquist_factor=dzdtLC.numCadences)
         model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
         periodEst = model.best_period
@@ -831,4 +872,55 @@ class MBHBTask(object):
             observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals,
             self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain,
             self._LnPosterior)
+
+        for stepNum in xrange(self.nsteps):
+            for walkerNum in xrange(self.nwalkers):
+                self._deviance[walkerNum +
+                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
+                                                                               self.nwalkers*stepNum]
         return res
+
+    def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    fig=-6, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dimx < self.ndims and dimy < self.ndims:
+            plt.scatter(self.timescaleChain[dimx, :, self.nsteps/2:],
+                        self.timescaleChain[dimy, :, self.nsteps/2:],
+                        c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
+            plt.colorbar()
+        if truthx is not None:
+            plt.axvline(x=truthx, c=r'#00ff00')
+        if truthy is not None:
+            plt.axhline(y=truthy, c=r'#00ff00')
+        if labelx is not None:
+            plt.xlabel(labelx)
+        if labely is not None:
+            plt.ylabel(labely)
+        if doShow:
+            plt.show(False)
+        return newFig
+
+    def plotwalkers(self, dim, truth=None, label=None, fig=-7, doShow=False, clearFig=True):
+        newFig = plt.figure(fig, figsize=(fwid, fhgt))
+        if clearFig:
+            plt.clf()
+        if dim < self.ndims:
+            for i in xrange(self.nwalkers):
+                plt.plot(self.timescaleChain[dim, i, :], c=r'#0000ff', alpha=0.1)
+            plt.plot(np.median(self.timescaleChain[dim, :, :], axis=0), c=r'#ff0000')
+            plt.fill_between(range(self.nsteps),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) -
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             np.median(self.timescaleChain[dim, :, :], axis=0) +
+                             np.std(self.timescaleChain[dim, :, :], axis=0),
+                             color=r'#ff0000', alpha=0.1)
+        if truth is not None:
+            plt.axhline(truth, c=r'#00ff00')
+        plt.xlabel(r'step \#')
+        if label is not None:
+            plt.ylabel(label)
+        if doShow:
+            plt.show(False)
+        return newFig

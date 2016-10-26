@@ -45,6 +45,10 @@ struct LnLikeData {
 	double maxSigma;
 	double minTimescale;
 	double maxTimescale;
+	double periodCenter;
+    double periodWidth;
+    double fluxCenter;
+    double fluxWidth;
 	double currentLnPrior;
 	double currentLnLikelihood;
 	double currentLnPosterior;

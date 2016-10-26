@@ -4,11 +4,13 @@ import copy
 import unittest
 import random
 import psutil
+import os
 import sys
 import pdb
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
+import brewer2mpl
 
 try:
     import kali.mbhbcarma
@@ -24,6 +26,20 @@ except ImportError:
 
 plt.ion()
 skipWorking = False
+skipLong = False
+skipPlottingA1 = True
+skipPlottingA2 = True
+skipPlottingE = True
+skipPlottingOmega = True
+skipPlottingInclination = True
+skipPlottingTau = True
+
+DivergingList = ['BrBG', 'PRGn', 'PiYG', 'PuOr', 'RdBu', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral']
+
+BASEPATH = '/home/vish/Documents/Research/MBHBCARMA/'
+
+BREAK = True
+MULT = 50.0
 BURNSEED = 731647386
 DISTSEED = 219038190
 NOISESEED = 87238923
@@ -141,7 +157,7 @@ class TestCoeffs21(unittest.TestCase):
 
 
 @unittest.skipIf(skipWorking, 'Works!')
-class TestMakeTask(unittest.TestCase):
+class TestMBHBCARMATask(unittest.TestCase):
 
     def setUp(self):
         self.p = 2
@@ -247,12 +263,13 @@ class TestMakeTask(unittest.TestCase):
         self.assertEqual(logPrior_mbhbcarma, 0.0)
 
     def test_logLikelihood(self):
-        dt = 0.1
+        dt = 1.0
+        duration = 2000.0
         N2S = 1.0e-18
         theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
         newTask_carma = kali.carma.CARMATask(self.p, self.q)
         res_carma = newTask_carma.set(dt, theta_carma)
-        newLC_carma = newTask_carma.simulate(duration=2000.0, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
                                              distSeed=DISTSEED, noiseSeed=NOISESEED)
         newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
         logLikelihood_carma = newTask_carma.logLikelihood(newLC_carma)
@@ -261,12 +278,445 @@ class TestMakeTask(unittest.TestCase):
                                     0.05846154, 0.00076923, 0.009461, 0.0236525])
         newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
         res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
-        newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=2000.0, fracNoiseToSignal=N2S,
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
                                                      burnSeed=BURNSEED, distSeed=DISTSEED,
                                                      noiseSeed=NOISESEED)
         newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
         logLikelihood_mbhbcarma = newTask_mbhbcarma.logLikelihood(newLC_mbhbcarma)
         self.assertNotEqual(logLikelihood_mbhbcarma, 0.0)
+
+
+@unittest.skipIf(skipLong, 'Works!')
+class TestFit(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        dt = 2.0
+        duration = 20000.0
+        N2S = 1.0e-18
+        NWALKERS = 8
+        NSTEPS = 10000
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newTask_carma.fit(newLC_carma)
+
+        theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.5, 30.0, 90.0, 10.0, newLC_carma.mean,
+                                    theta_carma[0], theta_carma[1]])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                     noiseSeed=NOISESEED)
+        newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+        newTask_mbhbcarma.fit(newLC_mbhbcarma)
+
+        # pdb.set_trace()
+        # self.assertNotEqual(logLikelihood_carma, 0.0)
+        # self.assertNotEqual(logLikelihood_mbhbcarma, 0.0)
+
+
+@unittest.skipIf(skipPlottingA1, 'Plotted!')
+class TestA1(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'a1'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1List = [0.0001, 0.001, 0.01, 0.1]
+        a2 = 0.1
+        T = 20.5*DayInYear
+        eccentricity = 0.25
+        Omega = 0.0
+        inclination = 90.0
+        tau = 0.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, a1 in enumerate(a1List):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($a1 = %f$)'%(a1)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
+
+@unittest.skipIf(skipPlottingA2, 'Plotted!')
+class TestA2(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'a2'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1 = 0.0001
+        a2List = [0.0001, 0.001, 0.01, 0.1]
+        T = 20.5*DayInYear
+        eccentricity = 0.25
+        Omega = 0.0
+        inclination = 90.0
+        tau = 0.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, a2 in enumerate(a2List):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($a2 = %f$)'%(a2)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
+
+@unittest.skipIf(skipPlottingE, 'Plotted!')
+class TestEccentricity(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'eccentricity'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1 = 0.0001
+        a2 = 0.0001
+        T = 0.0225*DayInYear
+        eccentricityList = [0.0, 0.25, 0.5, 0.75]
+        Omega = 0.0
+        inclination = 90.0
+        tau = 0.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, eccentricity in enumerate(eccentricityList):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($e = %f$)'%(eccentricity)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
+
+@unittest.skipIf(skipPlottingOmega, 'Plotted!')
+class TestOmega(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'Omega'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1 = 0.0001
+        a2 = 0.0001
+        T = 0.0225*DayInYear
+        eccentricity = 0.25
+        OmegaList = [0.0, 45.0, 90.0, 135.0, 180.0]
+        inclination = 90.0
+        tau = 0.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, Omega in enumerate(OmegaList):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($\Omega = %f$)'%(Omega)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
+
+@unittest.skipIf(skipPlottingInclination, 'Plotted!')
+class TestInclination(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'inclination'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1 = 0.0001
+        a2 = 0.0001
+        T = 0.0225*DayInYear
+        eccentricity = 0.25
+        Omega = 0.0
+        inclinationList = [0.0, 45.0, 90.0]
+        tau = 0.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, inclination in enumerate(inclinationList):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($i = %f$)'%(inclination)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
+
+@unittest.skipIf(skipPlottingTau, 'Plotted!')
+class TestTau(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 1
+        self.q = 0
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.test = r'tau'
+
+    def tearDown(self):
+        pass
+
+    def test_fit(self):
+        N2S = 1.0e-18
+        NWALKERS = 80
+        NSTEPS = 2000
+        a1 = 0.0001
+        a2 = 0.0001
+        T = 0.0225*DayInYear
+        eccentricity = 0.25
+        Omega = 0.0
+        inclination = 90.0
+
+        dt = T/MULT
+        duration = T*MULT
+
+        tauList = [0.0, 0.25*duration, 0.5*duration, 0.75*duration]
+
+        rho_carma = np.array([-1.0/200.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+        res_carma = newTask_carma.set(dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.name = r'CARMA LC'
+        LCPlot = newLC_carma.plot(0)
+        ACFPlot = newLC_carma.plotacf(1)
+        SFPlot = newLC_carma.plotsf(2)
+        PPlot = newLC_carma.plotperiodogram(3)
+
+        for ctr, tau in enumerate(tauList):
+            theta_mbhbcarma = np.array([a1, a2, T, eccentricity, Omega, inclination, tau, newLC_carma.mean,
+                                        theta_carma[0], theta_carma[1]])
+            newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q, nwalkers=NWALKERS, nsteps=NSTEPS)
+            res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
+            newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
+                                                         burnSeed=BURNSEED, distSeed=DISTSEED,
+                                                         noiseSeed=NOISESEED)
+            newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+            newLC_mbhbcarma.name = r'MBHBCARMA LC ($\tau = %f$)'%(tau)
+            bmap = brewer2mpl.get_map(DivergingList[ctr], 'Diverging', 3)
+            newLC_mbhbcarma.plot(0, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotacf(1, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotsf(2, clearFig=False, colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+            newLC_mbhbcarma.plotperiodogram(3, clearFig=False,
+                                            colorx=bmap.hex_colors[2], colory=bmap.hex_colors[0])
+
+        LCPlot.savefig(os.path.join(BASEPATH, self.test, 'LCs_full.jpg'), dpi=300)
+        ACFPlot.savefig(os.path.join(BASEPATH, self.test, 'ACFs_full.jpg'), dpi=300)
+        SFPlot.savefig(os.path.join(BASEPATH, self.test, 'SFs_full.jpg'), dpi=300)
+        PPlot.savefig(os.path.join(BASEPATH, self.test, 'Ps_full.jpg'), dpi=300)
+        if BREAK:
+            pdb.set_trace()
+
 
 if __name__ == "__main__":
     unittest.main()
