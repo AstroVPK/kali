@@ -62,8 +62,8 @@ r = kali.mbhbcarma.MBHBCARMATask(p, q).r
 dt = 2.0
 duration = 20000.0
 N2S = 1.0e-18
-NWALKERS = 80
-NSTEPS = 10000
+NWALKERS = 320
+NSTEPS = 2000
 rho_carma = np.array([-1.0/200.0, 1.0])
 theta_carma = kali.carma.coeffs(p, q, rho_carma)
 newTask_carma = kali.carma.CARMATask(p, q, nwalkers=NWALKERS, nsteps=NSTEPS)

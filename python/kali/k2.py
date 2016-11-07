@@ -20,7 +20,7 @@ from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
 
-Simbad.add_votable_fields('dim', 'morphtype')
+# Simbad.add_votable_fields('dim', 'morphtype')
 plt.ion()
 
 try:
