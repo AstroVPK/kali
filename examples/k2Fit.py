@@ -95,7 +95,7 @@ if (args.qMin < 0):
     raise ValueError('qMin must be greater than or equal to 0')
 
 LC = kali.k2.k2LC(name=args.name, band=r'Kepler',
-             campaign=args.campaign, pwd=args.pwd, processing=args.processing)
+                  campaign=args.campaign, pwd=args.pwd, processing=args.processing)
 
 LC.minTimescale = args.minTimescale
 LC.maxTimescale = args.maxTimescale

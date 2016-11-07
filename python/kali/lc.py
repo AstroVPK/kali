@@ -217,7 +217,8 @@ class lc(object):
         self._statistics()
         self._isSmoothed = False  # Has the LC been smoothed?
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
-        self.coordinates = kwargs.get('coordinates')
+        if not hasattr(self, 'coordinates'):
+            self.coordinates = kwargs.get('coordinates')
         self._catalogue()
 
     def _catalogue(self):
