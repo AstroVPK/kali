@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import pdb as pdb
 
 import multi_key_dict
-import gatspy.periodic import
+import gatspy.periodic
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 

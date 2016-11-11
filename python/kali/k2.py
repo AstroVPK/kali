@@ -10,17 +10,10 @@ import subprocess
 import argparse
 import pdb
 
-import astroquery.exceptions
-from astroquery.simbad import Simbad
-from astroquery.ned import Ned
-from astroquery.vizier import Vizier
-from astroquery.sdss import SDSS
 from astropy import units
 from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
-
-# Simbad.add_votable_fields('dim', 'morphtype')
 plt.ion()
 
 try:
@@ -471,14 +464,15 @@ class k2LC(kali.lc.lc):
             raise ValueError('Processing not found!')
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
-        self.coordinates = SkyCoord(self._getCoordinates(name),
+        self.coordinates = SkyCoord(self._getCoordinates(),
                                     unit=(units.hourangle, units.deg), frame='icrs')
 
-    def _getCoordinates(self, name):
+    def _getCoordinates(self):
         """!
         \brief Query K2 EPIC ID to get ra dec etc...
         """
-        url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&target=%s&outputformat=CSV'%(name)
+        url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&target=%s&outputformat=CSV'%(
+            self.name)
         lines = urllib.urlopen(url)
         data = {}
         counter = 0
@@ -489,7 +483,7 @@ class k2LC(kali.lc.lc):
         coord_str = vals[1] + ' ' + vals[2]
         return coord_str
 
-    def _catalogue(self):
+    '''def _catalogue(self):
         try:
             self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
         except astroquery.exceptions.RemoteServiceError as err:
@@ -513,7 +507,7 @@ class k2LC(kali.lc.lc):
         try:
             self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
         except astroquery.exceptions.RemoteServiceError as err:
-            self.sdss = err
+            self.sdss = err'''
 
     def write(self, name, path=None, **kwrags):
         pass

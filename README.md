@@ -2,8 +2,7 @@
 `Kālī` is a software library to model time series data using various stochastic processes such as
 Continuous-time ARMA (C-ARMA) processes. The name of the library is taken from the Hindu goddess Kālī, who is
 the goddess of time and change. It also stands for KArma (C-ARMA) LIbrary because the library began as a tool
-to model C-ARMA light curves. `Kālī` is written in `c++` and is exposed to `python` using `cython` and `cffi`
-(deprecated).
+to model C-ARMA light curves. `Kālī` is written in `c++` and is exposed to `python` using `cython`.
 
 
 Version: 2.0.0
@@ -27,12 +26,11 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 6. Ubuntu 16.04 LTS Xenial Xerus
 
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
-Python, the Intel C++ Compiler XE or the GNU C++ Compiler, Intel MKL, NLOpt, `cython` , the `future` package,
-`fitsio`, `py.test`, `cffi` (optional), & Brandon Kelly's `carma_pack` (optional) installed. At the moment,
-Anaconda Python, Intel MKL, `cython` & NLOpt are required. Either of the Intel C++ Compiler or the GNU C++
-Compiler are required though the plan is to evetually support the clang++ Compiler as well. Brandon Kelly's
-`carma_pack` is not required but is recommended. `cffi` is only required if you wish to test `carma_pack`
-against this code.
+Python, the Intel C++ Compiler XE or the GNU C++ Compiler, Intel MKL, NLOpt, `cython` , the `future`,
+`fitsio`, `py.test`, \& `gatspy` packages, & Brandon Kelly's `carma_pack` (optional) installed. At the moment,
+Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, & NLOpt are required. Either of
+the Intel C++ Compiler or the GNU C++ Compiler are required though the plan is to evetually support the
+clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is recommended.
 
 You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
 `icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
@@ -289,29 +287,14 @@ build. You can get the most recent version using
   1. `py.test` Version 2.9.2
 
 
-9. `cffi`
+9. `gatspy`
 
 
-  The C Foreign Function Interface `cffi` is used to make the libcarma.so library calls from Python. Use of
-  `cffi` is now deprecated. For posterity sake, `cffi` can be installed into Anaconda using
+  General tools for Astronomical Time Series in Python `gatspy` are used to search for periods using a fast
+  version of the Lomb-Scargle periodogram. `gatspy` can be installed into Anaconda using
 
 
-  `bash-prompt$ sudo apt-get install libffi6` (On linux only)
-
-
-  `bash-prompt$ sudo apt-get install libffi6:i386` (On linux only)
-
-
-  `bash-prompt$ sudo apt-get install libffi-dev` (On linux only)
-
-
-  `bash-prompt$ conda update conda`
-
-
-  `bash-prompt$ conda update --all`
-
-
-  `bash-prompt$ conda install cffi`
+  `bash-prompt$ pip install gatspy`
 
 
 10. `carma_pack`

@@ -13,20 +13,12 @@ import psutil
 import warnings
 import sys
 import os
-# from pylab import *
 import pdb
 
-import astroquery.exceptions
-from astroquery.simbad import Simbad
-from astroquery.ned import Ned
-from astroquery.vizier import Vizier
-from astroquery.sdss import SDSS
 from astropy import units
 from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
-
-# Simbad.add_votable_fields('dim', 'morphtype')
 plt.ion()
 
 try:
@@ -452,8 +444,18 @@ class sdssLC(kali.lc.lc):
             'u': '#bcbddc', 'g': '#9ecae1', 'r': '#a1d99b', 'i': '#fc9272', 'z': '#bdbdbd'}
         self.smoothErrColorDict = {
             'u': '#efedf5', 'g': '#deebf7', 'r': '#e5f5e0', 'i': '#fee0d2', 'z': '#f0f0f0'}
+        self.coordinates = SkyCoord(self._getCoordinates(),
+                                    unit=(units.hourangle, units.deg), frame='icrs')
 
-    def _catalogue(self):
+    def _getCoordinates(self):
+        """!
+        \brief Return string containing properly formatted ra dec etc...
+        """
+        coord_str = (self.name[0:2] + ' ' + self.name[2:4] + ' ' + self.name[4:9] + ' ' +
+                     self.name[9:12] + ' ' + self.name[12:14] + ' ' + self.name[14:18])
+        return coord_str
+
+    '''def _catalogue(self):
         try:
             self.ned = Ned.query_object('SDSS J' + self.name)
         except astroquery.exceptions.RemoteServiceError as err:
@@ -477,7 +479,7 @@ class sdssLC(kali.lc.lc):
         try:
             self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
         except astroquery.exceptions.RemoteServiceError as err:
-            self.sdss = err
+            self.sdss = err'''
 
     def write(self, name=None, band=None, path=None):
         print "Saving..."

@@ -22,7 +22,7 @@
 #include "MBHBCARMATask.hpp"
 
 //#define DEBUG_COMPUTELNLIKELIHOOD
-#define DEBUG_FIT_MBHBCARMAMODEL
+//#define DEBUG_FIT_MBHBCARMAMODEL
 
 using namespace std;
 

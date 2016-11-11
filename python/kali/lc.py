@@ -20,11 +20,6 @@ from scipy.interpolate import UnivariateSpline
 import gatspy.periodic
 
 import gatspy.periodic
-import astroquery.exceptions
-from astroquery.simbad import Simbad
-from astroquery.ned import Ned
-from astroquery.vizier import Vizier
-from astroquery.sdss import SDSS
 from astropy import units
 from astropy.coordinates import SkyCoord
 
@@ -224,15 +219,15 @@ class lc(object):
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if not hasattr(self, 'coordinates'):
             self.coordinates = kwargs.get('coordinates')
-        try:
+        '''try:
             self._catalogue()
         except Exception as Err:
             self.simbad = Err
             self.ned = Err
             self.vizier = Err
-            self.sdss = Err
+            self.sdss = Err'''
 
-    def _catalogue(self):
+    '''def _catalogue(self):
         if self.coordinates is not None:
             try:
                 self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
@@ -254,7 +249,7 @@ class lc(object):
             try:
                 self.ned = Ned.query_object(self.name)
             except Exception as Err:
-                self.ned = Err
+                self.ned = Err'''
 
     @property
     def numCadences(self):
