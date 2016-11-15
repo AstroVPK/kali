@@ -1257,9 +1257,11 @@ class lc(object):
         else:
             maxPeriodFactor = 10.0
             if self.numCadences > 50:
-                model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
+                model = gatspy.periodic.LombScargleFast(
+                    optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
             else:
-                model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
+                model = gatspy.periodic.LombScargle(
+                    optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
             periods, power = model.periodogram_auto(nyquist_factor=self.numCadences)
             model.optimizer.period_range = (2.0*np.mean(self.t[1:] - self.t[:-1]), maxPeriodFactor*self.T)
             self._period = model.best_period
