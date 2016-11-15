@@ -717,6 +717,7 @@ class MBHBCARMATask(object):
         periodEst = self.estimate(observedLC)
         observedLC._logPrior = self._taskCython.compute_LnPrior(observedLC.numCadences, observedLC.meandt,
                                                                 observedLC.tolIR,
+                                                                observedLC.startT,
                                                                 observedLC.maxSigma*observedLC.std,
                                                                 observedLC.minTimescale*observedLC.mindt,
                                                                 observedLC.maxTimescale*observedLC.T,

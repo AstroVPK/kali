@@ -412,11 +412,12 @@ int kali::MBHBCARMATask::add_ObservationNoise(int numCadences, double tolIR, dou
 	return retVal;
 } */
 
-double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum) {
+double kali::MBHBCARMATask::compute_LnPrior(int numCadences, double meandt, double tolIR, double startT, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum) {
 	double LnPrior = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.tolIR = tolIR;
+    Data.startT = startT;
     Data.meandt = meandt;
 	Data.t = t;
 	Data.x = x;

@@ -1615,7 +1615,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 		#endif
 		}
 
-	double tauVal = ThetaIn[6]*kali::Day;
+	/*double tauVal = ThetaIn[6]*kali::Day;
     if (tauVal < 0.0) {
 		mbhbIsGood = 0;
 		#ifdef DEBUG_CHECKMBHBCARMAPARAMS
@@ -1629,7 +1629,7 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 			printf("tau: %4.3e\n",tauVal);
 			printf("tauULim: %4.3e\n",periodVal);
 		#endif
-		}
+    }*/
 
 	double totalFluxVal = ThetaIn[7];
 	if (totalFluxVal <= 0.0) {
@@ -3007,6 +3007,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
+    double startT = Data.startT*kali::Day;
 	double maxSigma = Data.maxSigma;
 	double minTimescale = Data.minTimescale;
 	double maxTimescale = Data.maxTimescale;
@@ -3100,6 +3101,17 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 
     #ifdef DEBUG_COMPUTELNPRIOR
 	    printf("computeLnPrior - threadNum: %d; LnPrior after CMA: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
+    if (tau < startT) {
+		LnPrior = -infiniteVal; // Restrict tau to startT < tau < startT + period
+		}
+	if (tau > startT + period) {
+		LnPrior = -infiniteVal; // Restrict tau to startT < tau < startT + period
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after tau: %+4.3e\n",threadNum,LnPrior);
     #endif
 
     if (totalFlux < lowestFlux) {

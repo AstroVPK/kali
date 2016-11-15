@@ -1510,7 +1510,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_28set_P(
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_30make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_32get_meanFlux(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_34add_ObservationNoise(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_38compute_LnLikelihood(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_40fit_CARMAModel(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPosterior, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
@@ -4859,7 +4859,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_34add_Ob
 /* "MBHBCARMATask_cython.pyx":222
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -4870,6 +4870,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_meandt = 0;
   PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_startT = 0;
   PyObject *__pyx_v_maxSigma = 0;
   PyObject *__pyx_v_minTimescale = 0;
   PyObject *__pyx_v_maxTimescale = 0;
@@ -4889,13 +4890,14 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compute_LnPrior (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_meandt,&__pyx_n_s_tolIR,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,&__pyx_n_s_lowestFlux,&__pyx_n_s_highestflux,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_periodCenter,&__pyx_n_s_periodWidth,&__pyx_n_s_fluxCenter,&__pyx_n_s_fluxWidth,&__pyx_n_s_threadNum,0};
-    PyObject* values[18] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[17] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_meandt,&__pyx_n_s_tolIR,&__pyx_n_s_startT,&__pyx_n_s_maxSigma,&__pyx_n_s_minTimescale,&__pyx_n_s_maxTimescale,&__pyx_n_s_lowestFlux,&__pyx_n_s_highestflux,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_periodCenter,&__pyx_n_s_periodWidth,&__pyx_n_s_fluxCenter,&__pyx_n_s_fluxWidth,&__pyx_n_s_threadNum,0};
+    PyObject* values[19] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[18] = ((PyObject *)Py_None);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 19: values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
         case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
         case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
         case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
@@ -4925,87 +4927,92 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_meandt)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 1); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 1); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 2); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 2); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 3); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 3); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxSigma)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 4); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 4); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_minTimescale)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 5); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 5); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lowestFlux)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maxTimescale)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 6); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 6); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_highestflux)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lowestFlux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 7); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 7); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_highestflux)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 8); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 8); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 9); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 9); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 10); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 10); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 11:
-        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 11); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 11); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 12:
-        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 12); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 12); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 13:
-        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_periodCenter)) != 0)) kw_args--;
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 13); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 13); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 14:
-        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_periodWidth)) != 0)) kw_args--;
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_periodCenter)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 14); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 14); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 15:
-        if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fluxCenter)) != 0)) kw_args--;
+        if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_periodWidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 15); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 15); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 16:
-        if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fluxWidth)) != 0)) kw_args--;
+        if (likely((values[16] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fluxCenter)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, 16); __PYX_ERR(0, 222, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 16); __PYX_ERR(0, 222, __pyx_L3_error)
         }
         case 17:
+        if (likely((values[17] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fluxWidth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, 17); __PYX_ERR(0, 222, __pyx_L3_error)
+        }
+        case 18:
         if (kw_args > 0) {
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[17] = value; kw_args--; }
+          if (value) { values[18] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
@@ -5013,8 +5020,9 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 19: values[18] = PyTuple_GET_ITEM(__pyx_args, 18);
         case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
-        case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
+        values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
         values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
         values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
         values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
@@ -5038,25 +5046,26 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
     __pyx_v_numCadences = values[0];
     __pyx_v_meandt = values[1];
     __pyx_v_tolIR = values[2];
-    __pyx_v_maxSigma = values[3];
-    __pyx_v_minTimescale = values[4];
-    __pyx_v_maxTimescale = values[5];
-    __pyx_v_lowestFlux = values[6];
-    __pyx_v_highestflux = values[7];
-    __pyx_v_t = ((PyArrayObject *)values[8]);
-    __pyx_v_x = ((PyArrayObject *)values[9]);
-    __pyx_v_y = ((PyArrayObject *)values[10]);
-    __pyx_v_yerr = ((PyArrayObject *)values[11]);
-    __pyx_v_mask = ((PyArrayObject *)values[12]);
-    __pyx_v_periodCenter = values[13];
-    __pyx_v_periodWidth = values[14];
-    __pyx_v_fluxCenter = values[15];
-    __pyx_v_fluxWidth = values[16];
-    __pyx_v_threadNum = values[17];
+    __pyx_v_startT = values[3];
+    __pyx_v_maxSigma = values[4];
+    __pyx_v_minTimescale = values[5];
+    __pyx_v_maxTimescale = values[6];
+    __pyx_v_lowestFlux = values[7];
+    __pyx_v_highestflux = values[8];
+    __pyx_v_t = ((PyArrayObject *)values[9]);
+    __pyx_v_x = ((PyArrayObject *)values[10]);
+    __pyx_v_y = ((PyArrayObject *)values[11]);
+    __pyx_v_yerr = ((PyArrayObject *)values[12]);
+    __pyx_v_mask = ((PyArrayObject *)values[13]);
+    __pyx_v_periodCenter = values[14];
+    __pyx_v_periodWidth = values[15];
+    __pyx_v_fluxCenter = values[16];
+    __pyx_v_fluxWidth = values[17];
+    __pyx_v_threadNum = values[18];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 17, 18, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 222, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("compute_LnPrior", 0, 18, 19, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 222, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.compute_LnPrior", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5067,7 +5076,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 222, __pyx_L1_error)
-  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_meandt, __pyx_v_tolIR, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale, __pyx_v_lowestFlux, __pyx_v_highestflux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_periodCenter, __pyx_v_periodWidth, __pyx_v_fluxCenter, __pyx_v_fluxWidth, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_meandt, __pyx_v_tolIR, __pyx_v_startT, __pyx_v_maxSigma, __pyx_v_minTimescale, __pyx_v_maxTimescale, __pyx_v_lowestFlux, __pyx_v_highestflux, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_periodCenter, __pyx_v_periodWidth, __pyx_v_fluxCenter, __pyx_v_fluxWidth, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5078,7 +5087,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_37comput
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
   __Pyx_Buffer __pyx_pybuffer_mask;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -5101,16 +5110,17 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
   double __pyx_t_8;
   double __pyx_t_9;
   double __pyx_t_10;
-  Py_ssize_t __pyx_t_11;
+  double __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
-  double __pyx_t_16;
+  Py_ssize_t __pyx_t_16;
   double __pyx_t_17;
   double __pyx_t_18;
   double __pyx_t_19;
-  int __pyx_t_20;
+  double __pyx_t_20;
+  int __pyx_t_21;
   __Pyx_RefNannySetupContext("compute_LnPrior", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
   __pyx_pybuffer_t.pybuffer.buf = NULL;
@@ -5161,10 +5171,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
 
   /* "MBHBCARMATask_cython.pyx":223
  * 	@cython.wraparound(False)
- * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
@@ -5172,10 +5182,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
   if (__pyx_t_2) {
 
     /* "MBHBCARMATask_cython.pyx":224
- * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
@@ -5183,17 +5193,17 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
 
     /* "MBHBCARMATask_cython.pyx":223
  * 	@cython.wraparound(False)
- * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)
  */
   }
 
   /* "MBHBCARMATask_cython.pyx":225
  * 		if threadNum == None:
  * 			threadNum = 0
- * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.compute_LnPrior(numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, &t[0], &x[0], &y[0], &yerr[0], &mask[0], periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	'''
  */
@@ -5201,22 +5211,23 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_meandt); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_9 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_v_highestflux); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_11 = 0;
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_startT); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_maxSigma); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_v_minTimescale); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_9 = __pyx_PyFloat_AsDouble(__pyx_v_maxTimescale); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_v_lowestFlux); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_v_highestflux); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_t_12 = 0;
   __pyx_t_13 = 0;
   __pyx_t_14 = 0;
   __pyx_t_15 = 0;
-  __pyx_t_16 = __pyx_PyFloat_AsDouble(__pyx_v_periodCenter); if (unlikely((__pyx_t_16 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_17 = __pyx_PyFloat_AsDouble(__pyx_v_periodWidth); if (unlikely((__pyx_t_17 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_18 = __pyx_PyFloat_AsDouble(__pyx_v_fluxCenter); if (unlikely((__pyx_t_18 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_19 = __pyx_PyFloat_AsDouble(__pyx_v_fluxWidth); if (unlikely((__pyx_t_19 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_20 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_20 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnPrior(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_16, __pyx_t_17, __pyx_t_18, __pyx_t_19, __pyx_t_20)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_16 = 0;
+  __pyx_t_17 = __pyx_PyFloat_AsDouble(__pyx_v_periodCenter); if (unlikely((__pyx_t_17 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_18 = __pyx_PyFloat_AsDouble(__pyx_v_periodWidth); if (unlikely((__pyx_t_18 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_19 = __pyx_PyFloat_AsDouble(__pyx_v_fluxCenter); if (unlikely((__pyx_t_19 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_v_fluxWidth); if (unlikely((__pyx_t_20 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_21 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_21 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->compute_LnPrior(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9, __pyx_t_10, __pyx_t_11, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_mask.diminfo[0].strides))), __pyx_t_17, __pyx_t_18, __pyx_t_19, __pyx_t_20, __pyx_t_21)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5225,7 +5236,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_36comput
   /* "MBHBCARMATask_cython.pyx":222
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def compute_LnPrior(self, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def compute_LnPrior(self, numCadences, meandt, tolIR, startT, maxSigma, minTimescale, maxTimescale, lowestFlux, highestflux, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, periodCenter, periodWidth, fluxCenter, fluxWidth, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
