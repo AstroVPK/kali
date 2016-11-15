@@ -17,6 +17,7 @@ import pdb as pdb
 
 import scipy.stats as spstats
 from scipy.interpolate import UnivariateSpline
+import gatspy.periodic
 
 import astroquery.exceptions
 from astroquery.simbad import Simbad
@@ -1175,6 +1176,22 @@ class lc(object):
             newLC.t[i] = self.t[0] + i*newLC.dt
             newLC.x[i] = spl(newLC.t[i])
         return newLC
+
+    @property
+    def period(self):
+        if hasattr(self, '_period'):
+            return self._period
+        else:
+            maxPeriodFactor = 10.0
+            if self.numCadences > 50:
+                model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
+            else:
+                model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(self.t, self.y, self.yerr)
+            periods, power = model.periodogram_auto(nyquist_factor=observedLC.numCadences)
+            model.optimizer.period_range = (
+                2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
+            self._period = model.best_period
+            return self._period
 
     def fold(self, foldPeriod, tStart=None):
         if tStart is None:
