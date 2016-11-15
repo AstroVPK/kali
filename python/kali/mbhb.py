@@ -585,7 +585,6 @@ class MBHBTask(object):
         Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini
         """
         # fluxEst
-        maxPeriodFactor = 10.0
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
                                                                                         observedLC.y,
@@ -596,7 +595,7 @@ class MBHBTask(object):
                                                                                     observedLC.yerr)
         periods, power = model.periodogram_auto(nyquist_factor=observedLC.numCadences)
         model.optimizer.period_range = (
-            2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), maxPeriodFactor*observedLC.T)
+            2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), observedLC.T)
         periodEst = model.best_period
         numIntrinsicFlux = 100
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
@@ -649,7 +648,7 @@ class MBHBTask(object):
                                                                                         dzdtLC.y,
                                                                                         dzdtLC.yerr)
         periods, power = model.periodogram_auto(nyquist_factor=dzdtLC.numCadences)
-        model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), maxPeriodFactor*dzdtLC.T)
+        model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), dzdtLC.T)
         periodEst = model.best_period
 
         # eccentricityEst & omega2Est

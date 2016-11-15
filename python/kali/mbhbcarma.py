@@ -1002,7 +1002,6 @@ class MBHBCARMATask(object):
         Estimate period
         """
         # fluxEst
-        maxPeriodFactor = 10.0
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
                                                                                         observedLC.y,
@@ -1013,7 +1012,7 @@ class MBHBCARMATask(object):
                                                                                     observedLC.yerr)
         periods, power = model.periodogram_auto()  # nyquist_factor=observedLC.numCadences)
         model.optimizer.period_range = (
-            2.0*observedLC.meandt, maxPeriodFactor*observedLC.T)
+            2.0*observedLC.meandt, observedLC.T)
         periodEst = model.best_period
         return periodEst
 
