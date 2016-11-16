@@ -725,7 +725,7 @@ class MBHBCARMATask(object):
                                                                 observedLC.t, observedLC.x,
                                                                 observedLC.y, observedLC.yerr,
                                                                 observedLC.mask,
-                                                                periodEst, 0.05*periodEst,
+                                                                periodEst, 0.01*periodEst,
                                                                 observedLC.mean, 0.05*observedLC.mean,
                                                                 tnum)
         return observedLC._logPrior
@@ -1124,7 +1124,7 @@ class MBHBCARMATask(object):
             observedLC.startT, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
             self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA,
             zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior,
-            periodEst, 0.05*periodEst,
+            periodEst, 0.01*periodEst,
             observedLC.mean, 0.05*observedLC.mean)
 
         for stepNum in xrange(self.nsteps):
