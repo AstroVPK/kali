@@ -711,7 +711,7 @@ class MBHBCARMATask(object):
 
         intrinsicLC._statistics()
 
-    def logPrior(self, observedLC, forced=True, tnum=None):
+    def logPrior(self, observedLC, forced=True, widthT=0.01, widthF=0.05, tnum=None):
         if tnum is None:
             tnum = 0
         periodEst = self.estimate(observedLC)
@@ -725,12 +725,12 @@ class MBHBCARMATask(object):
                                                                 observedLC.t, observedLC.x,
                                                                 observedLC.y, observedLC.yerr,
                                                                 observedLC.mask,
-                                                                periodEst, 0.01*periodEst,
-                                                                observedLC.mean, 0.05*observedLC.mean,
+                                                                periodEst, widthT*periodEst,
+                                                                observedLC.mean, widthF*observedLC.mean,
                                                                 tnum)
         return observedLC._logPrior
 
-    def logLikelihood(self, observedLC, forced=True, tnum=None):
+    def logLikelihood(self, observedLC, widthT=0.01, widthF=0.05, forced=True, tnum=None):
         if tnum is None:
             tnum = 0
         observedLC.pComp = self.p
@@ -748,8 +748,8 @@ class MBHBCARMATask(object):
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.startT,
                 observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
                 observedLC.XComp, observedLC.PComp,
-                periodEst, 0.05*periodEst,
-                observedLC.mean, 0.05*observedLC.mean,
+                periodEst, widthT*periodEst,
+                observedLC.mean, widthF*observedLC.mean,
                 tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
@@ -1068,7 +1068,8 @@ class MBHBCARMATask(object):
         '''
         return a1Guess, a2Guess, eccentricityGuess
 
-    def fit(self, observedLC, zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
+    def fit(self, observedLC, widthT=0.01, widthF=0.05,
+            zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
         observedLC.pComp = self.p
         observedLC.qComp = self.q
         randSeed = np.zeros(1, dtype='uint32')
@@ -1107,7 +1108,7 @@ class MBHBCARMATask(object):
                 RhoGuess[self.r + self.p + self.q] = sigmaFactor*observedLC.std
                 ThetaGuess = coeffs(self.p, self.q, RhoGuess)
                 res = self.set(observedLC.dt, ThetaGuess)
-                lnPrior = self.logPrior(observedLC)
+                lnPrior = self.logPrior(observedLC, widthT=widthT, widthF=widthF)
                 if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
                 else:
@@ -1124,8 +1125,8 @@ class MBHBCARMATask(object):
             observedLC.startT, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
             self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA,
             zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior,
-            periodEst, 0.01*periodEst,
-            observedLC.mean, 0.05*observedLC.mean)
+            periodEst, widthT*periodEst,
+            observedLC.mean, widthF*observedLC.mean)
 
         for stepNum in xrange(self.nsteps):
             for walkerNum in xrange(self.nwalkers):
