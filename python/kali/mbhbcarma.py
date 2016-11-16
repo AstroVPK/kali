@@ -736,7 +736,8 @@ class MBHBCARMATask(object):
         observedLC.pComp = self.p
         observedLC.qComp = self.q
         periodEst = self.estimate(observedLC)
-        observedLC._logPrior = self.logPrior(observedLC, forced=forced, tnum=tnum)
+        observedLC._logPrior = self.logPrior(observedLC, widthT=widthT, widthF=widthF,
+                                             forced=forced, tnum=tnum)
         if forced is True:
             observedLC._computedCadenceNum = -1
         if observedLC._computedCadenceNum == -1:
