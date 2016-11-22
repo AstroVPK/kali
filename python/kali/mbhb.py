@@ -24,6 +24,8 @@ import gatspy.periodic
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 
+from matplotlib import cm
+
 try:
     import kali.lc
     import rand as rand
@@ -880,6 +882,7 @@ class MBHBTask(object):
         return res
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    best=False, median=False,
                     fig=-6, doShow=False, clearFig=True):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
@@ -889,6 +892,18 @@ class MBHBTask(object):
                         self.timescaleChain[dimy, :, self.nsteps/2:],
                         c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
             plt.colorbar()
+            if best:
+                loc0 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[0][0]
+                loc1 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[1][0]
+                plt.axvline(x=self.timescaleChain[dimx, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labelx))
+                plt.axhline(y=self.timescaleChain[dimy, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labely))
+            if median:
+                medx = np.median(self.timescaleChain[dimx, :, self.nsteps/2:])
+                medy = np.median(self.timescaleChain[dimy, :, self.nsteps/2:])
+                plt.axvline(x=medx, c=r'#ff00ff', label=r'Median %s'%(labelx))
+                plt.axhline(y=medy, c=r'#ff00ff', labely=r'Median %s'%(labely))
         if truthx is not None:
             plt.axvline(x=truthx, c=r'#00ff00')
         if truthy is not None:
@@ -923,3 +938,20 @@ class MBHBTask(object):
         if doShow:
             plt.show(False)
         return newFig
+
+    def plottriangle(self, doShow=False):
+        orbitChain = copy.copy(self.timescaleChain[0:self.r, :, self.nsteps/2:])
+        flatOrbitChain = np.swapaxes(orbitChain.reshape((self.ndims, -1), order='F'), axis1=0, axis2=1)
+        orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
+                       r'$\tau$ (d)', r'$F$']
+        newFig = orbitalTr = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
+                                                       show_titles=True,
+                                                       title_fmt='.2e',
+                                                       quantiles=[0.16, 0.5, 0.84],
+                                                       plot_contours=False,
+                                                       plot_datapoints=True,
+                                                       plot_contour_lines=False,
+                                                       pcolor_cmap=cm.gist_earth)
+        if doShow:
+            plt.show(False)
+        return newFig,

@@ -20,6 +20,8 @@ import matplotlib.pyplot as plt
 import random
 import pdb as pdb
 
+from matplotlib import cm
+
 import multi_key_dict
 import gatspy.periodic
 
@@ -1021,16 +1023,17 @@ class MBHBCARMATask(object):
     def guess(self, periodEst):
         notGood = True
         while notGood:
-            a1Guess = math.pow(10.0, random.uniform(-4.0, 0.0))
-            a2Guess = math.pow(10.0, random.uniform(math.log10(a1Guess), 0.0))
             eccentricityGuess = random.uniform(0.0, 1.0)
-            totalMassVal = (self.fourPiSq*math.pow(
-                            (a1Guess + a2Guess)*self.Parsec, 3.0))/(self.G*math.pow(periodEst*self.Day, 2.0))
-            massRatioVal = a1Guess/a2Guess
-            m1Val = totalMassVal*(1.0/(1.0 + massRatioVal))
-            m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal))
-            rS1Val = (2.0*self.G*m1Val)/(pow(self.c, 2.0))
-            rS2Val = (2.0*self.G*m2Val)/(pow(self.c, 2.0))
+            m1Val = math.pow(10.0, random.uniform(4.0, 10.0))
+            m2Val = math.pow(10.0, random.uniform(4.0, math.log10(m1Val)))
+            totalMassVal = m1Val + m2Val
+            axisRatioVal = m2Val/m1Val
+            aTotCube = (self.G*math.pow(periodEst*self.Day, 2.0)*totalMassVal*self.SolarMass)/self.fourPiSq
+            totalAxisVal = math.pow(aTotCube, 1.0/3.0)
+            a1Guess = ((axisRatioVal*totalAxisVal)/(1 + axisRatioVal))/self.Parsec
+            a2Guess = (totalAxisVal/(1 + axisRatioVal))/self.Parsec
+            rS1Val = (2.0*self.G*m1Val*self.SolarMass)/(pow(self.c, 2.0))
+            rS2Val = (2.0*self.G*m2Val*self.SolarMass)/(pow(self.c, 2.0))
             rPeribothronTotVal = (a1Guess + a2Guess)*self.Parsec*(1.0 - eccentricityGuess)
             '''
             print "              periodEst (d): %+e"%(periodEst)
@@ -1038,7 +1041,7 @@ class MBHBCARMATask(object):
             print "               a2Guess (pc): %+e"%(a2Guess)
             print "          eccentricityGuess: %+e"%(eccentricityGuess)
             print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
-            print "               massRatioVal: %+e"%(massRatioVal)
+            print "               axisRatioVal: %+e"%(axisRatioVal)
             print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
             print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
             print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
@@ -1057,7 +1060,7 @@ class MBHBCARMATask(object):
         print "               a2Guess (pc): %+e"%(a2Guess)
         print "          eccentricityGuess: %+e"%(eccentricityGuess)
         print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
-        print "               massRatioVal: %+e"%(massRatioVal)
+        print "               axisRatioVal: %+e"%(axisRatioVal)
         print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
         print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
         print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
@@ -1202,6 +1205,7 @@ class MBHBCARMATask(object):
         return res'''
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    best=False, median=False,
                     fig=-6, doShow=False, clearFig=True):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
@@ -1211,6 +1215,18 @@ class MBHBCARMATask(object):
                         self.timescaleChain[dimy, :, self.nsteps/2:],
                         c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
             plt.colorbar()
+            if best:
+                loc0 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[0][0]
+                loc1 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[1][0]
+                plt.axvline(x=self.timescaleChain[dimx, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labelx))
+                plt.axhline(y=self.timescaleChain[dimy, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labely))
+            if median:
+                medx = np.median(self.timescaleChain[dimx, :, self.nsteps/2:])
+                medy = np.median(self.timescaleChain[dimy, :, self.nsteps/2:])
+                plt.axvline(x=medx, c=r'#ff00ff', label=r'Median %s'%(labelx))
+                plt.axhline(y=medy, c=r'#ff00ff', labely=r'Median %s'%(labely))
         if truthx is not None:
             plt.axvline(x=truthx, c=r'#000000')
         if truthy is not None:
@@ -1245,3 +1261,44 @@ class MBHBCARMATask(object):
         if doShow:
             plt.show(False)
         return newFig
+
+    def plottriangle(self, doShow=False):
+        orbitChain = copy.copy(self.timescaleChain[0:self.r, :, self.nsteps/2:])
+        flatOrbitChain = np.swapaxes(orbitChain.reshape((self.r, -1), order='F'), axis1=0, axis2=1)
+        orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
+                       r'$\tau$ (d)', r'$F$']
+        maxOrb = np.max(self.timescaleChain[2, :, self.nsteps/2:])
+        orbitExtents = [0.9, 0.9, (0.95*np.min(self.timescaleChain[2, :, self.nsteps/2:]),
+                                   1.05*np.max(self.timescaleChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
+                        0.9, (0.85*np.min(self.timescaleChain[7, :, self.nsteps/2:]),
+                              1.15*np.max(self.timescaleChain[7, :, self.nsteps/2:]))]
+        newFigOrb = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
+                                              show_titles=True,
+                                              title_fmt='.2e',
+                                              quantiles=[0.16, 0.5, 0.84],
+                                              extents=orbitExtents,
+                                              plot_contours=False,
+                                              plot_datapoints=True,
+                                              plot_contour_lines=False,
+                                              pcolor_cmap=cm.gist_earth)
+
+        stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
+        flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims - self.r, -1), order='F'),
+                                          axis1=0, axis2=1)
+        stochasticLabels = []
+        for i in xrange(self.p):
+            stochasticLabels.append(r'$\tau_{\mathrm{AR,}, %d}$ (d)'%(i + 1))
+        for i in xrange(self.q):
+            stochasticLabels.append(r'$\tau_{\mathrm{MA,}, %d}$ (d)'%(i + 1))
+        stochasticLabels.append(r'$\mathrm{Amp.}$')
+        newFigSto = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,
+                                              show_titles=True,
+                                              title_fmt='.2e',
+                                              quantiles=[0.16, 0.5, 0.84],
+                                              plot_contours=False,
+                                              plot_datapoints=True,
+                                              plot_contour_lines=False,
+                                              pcolor_cmap=cm.gist_earth)
+        if doShow:
+            plt.show(False)
+        return newFigSto, newFigOrb

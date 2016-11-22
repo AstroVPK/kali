@@ -3103,6 +3103,28 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	    printf("computeLnPrior - threadNum: %d; LnPrior after CMA: %+4.3e\n",threadNum,LnPrior);
     #endif
 
+    if (m1 < 1.0e4*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m1 > 10^4 M_Sum
+		}
+	if (m1 > 1.0e10*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m1 < 10^10 M_Sun
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after m1: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
+    if (m1 < 1.0e4*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m2 > 10^4 M_Sum
+		}
+	if (m2 > m1) {
+		LnPrior = -infiniteVal; // Restrict m1 >= m2
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after m2: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
     if (tau < startT) {
 		LnPrior = -infiniteVal; // Restrict tau to startT < tau < startT + period
 		}

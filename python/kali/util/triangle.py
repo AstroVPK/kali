@@ -112,11 +112,11 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     # make plotted lines thicker
     mpl.rcParams['lines.linewidth'] = 1
     # make fonts bigger
-    mpl.rcParams['xtick.labelsize'] = 14
-    mpl.rcParams['ytick.labelsize'] = 14
-    mpl.rcParams['legend.fontsize'] = 14
-    mpl.rcParams['axes.titlesize'] = 14
-    mpl.rcParams['axes.labelsize'] = 14
+    mpl.rcParams['xtick.labelsize'] = 10
+    mpl.rcParams['ytick.labelsize'] = 10
+    mpl.rcParams['legend.fontsize'] = 10
+    mpl.rcParams['axes.titlesize'] = 10
+    mpl.rcParams['axes.labelsize'] = 10
 
     mpl.rcParams['font.family'] = 'serif'
     mpl.rcParams['font.style'] = 'normal'  # 'normal', 'italic','oblique'
@@ -138,7 +138,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     mpl.rcParams['font.monospace'] = ['Bitstream Vera Sans Mono', 'Andale Mono',
                                       'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal',
                                       'monospace']
-    mpl.rcParams['text.usetex'] = False
+    mpl.rcParams['text.usetex'] = True
     # set math mode font properties
     mpl.rcParams['mathtext.cal'] = 'cursive'
     mpl.rcParams['mathtext.rm'] = 'serif'

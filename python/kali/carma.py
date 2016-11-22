@@ -19,6 +19,8 @@ import warnings as warnings
 import matplotlib.pyplot as plt
 import pdb as pdb
 
+from matplotlib import cm
+
 import multi_key_dict
 
 try:
@@ -1092,6 +1094,7 @@ class CARMATask(object):
         return res
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
+                    best=False, median=False,
                     fig=-6, doShow=False, clearFig=True):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
@@ -1101,6 +1104,18 @@ class CARMATask(object):
                         self.timescaleChain[dimy, :, self.nsteps/2:],
                         c=self.LnPosterior[:, self.nsteps/2:], edgecolors='none')
             plt.colorbar()
+            if best:
+                loc0 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[0][0]
+                loc1 = np.where(self.LnPosterior[self.nsteps/2:] ==
+                                np.max(self.LnPosterior[self.nsteps/2:]))[1][0]
+                plt.axvline(x=self.timescaleChain[dimx, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labelx))
+                plt.axhline(y=self.timescaleChain[dimy, loc0, loc1], c=r'#ffff00', label=r'Best %s'%(labely))
+            if median:
+                medx = np.median(self.timescaleChain[dimx, :, self.nsteps/2:])
+                medy = np.median(self.timescaleChain[dimy, :, self.nsteps/2:])
+                plt.axvline(x=medx, c=r'#ff00ff', label=r'Median %s'%(labelx))
+                plt.axhline(y=medy, c=r'#ff00ff', labely=r'Median %s'%(labely))
         if truthx is not None:
             plt.axvline(x=truthx, c=r'#000000')
         if truthy is not None:
@@ -1135,3 +1150,25 @@ class CARMATask(object):
         if doShow:
             plt.show(False)
         return newFig
+
+    def plottriangle(self, doShow=False):
+        stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
+        flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims, -1), order='F'),
+                                          axis1=0, axis2=1)
+        stochasticLabels = []
+        for i in xrange(self.p):
+            stochasticLabels.append(r'$\tau_{\mathrm{AR,}, %d}$ (d)'%(i + 1))
+        for i in xrange(self.q):
+            stochasticLabels.append(r'$\tau_{\mathrm{MA,}, %d}$ (d)'%(i + 1))
+        stochasticLabels.append(r'$\mathrm{Amp.}$')
+        newFig = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,
+                                           show_titles=True,
+                                           title_fmt='.2e',
+                                           quantiles=[0.16, 0.5, 0.84],
+                                           plot_contours=False,
+                                           plot_datapoints=True,
+                                           plot_contour_lines=False,
+                                           pcolor_cmap=cm.gist_earth)
+        if doShow:
+            plt.show(False)
+        return newFig,
