@@ -100,6 +100,8 @@ class MBHBTask(object):
             self._deviance = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = MBHBTask_cython.MBHBTask_cython(self._nthreads)
+            self._pDIC = None
+            self._dic = None
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -126,8 +128,10 @@ class MBHBTask(object):
             assert value >= 0, r'nwalkers must be greater than or equal to 0'
             assert isinstance(value, int), r'nwalkers must be an integer'
             self._nwalkers = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPosterior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                           requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -198,12 +202,12 @@ class MBHBTask(object):
         return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
 
     @property
+    def pDIC(self):
+        return self._pDIC
+
+    @property
     def dic(self):
-        if hasattr(self, '_dic'):
-            return self._dic
-        else:
-            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
-            return self._dic
+        return self._dic
 
     def __repr__(self):
         return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
@@ -876,9 +880,16 @@ class MBHBTask(object):
 
         for stepNum in xrange(self.nsteps):
             for walkerNum in xrange(self.nwalkers):
+                self.set(observedLC.dt, self.Chain[:, walkerNum, stepNum])
                 self._deviance[walkerNum +
-                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
-                                                                               self.nwalkers*stepNum]
+                               self.nwalkers*stepNum] = -2.0*self.logLikelihood(observedLC)
+        self._pDIC = 2.0*np.var(self.deviance[:, self.nsteps/2:])
+        meanTheta = list()
+        for dimNum in xrange(self.ndims):
+            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
+        meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
+        self.set(observedLC.dt, meanTheta)
+        self._dic = -2.0*self.logLikelihood(observedLC) + 2.0*self._pDIC
         return res
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,

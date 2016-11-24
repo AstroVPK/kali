@@ -193,14 +193,8 @@ class CARMATask(object):
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads,
                                                                  self._nburn)
-            '''for i in xrange(self.p):
-                self._dict[r'$\alpha_{%d}$'%(i + 1), '$\tau_{\mathrm{AR}, %d}$ (d)'%(i + 1), self.r + i,
-                           r'%d'%(self.r + i)] = self.r + i
-            for i in xrange(self.q):
-                self._dict[r'$\beta_{%d}$'%(i), '$\tau_{\mathrm{MA}, %d}$ (d)'%(i + 1), self.r + self.p + i,
-                           r'%d'%(self.r + self.p + i)] = self.r + self.p + i
-            self._dict[r'$\mathrm{Amp}$', r'$\beta_{%d}$'%(self.q), self.r + self.p + self.q,
-                       r'%d'%(self.r + self.p + self.q)] = self.r + self.p + self.q'''
+            self._pDIC = None
+            self._dic = None
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -379,12 +373,12 @@ class CARMATask(object):
         return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
 
     @property
+    def pDIC(self):
+        return self._pDIC
+
+    @property
     def dic(self):
-        if hasattr(self, '_dic'):
-            return self._dic
-        else:
-            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
-            return self._dic
+        return self._dic
 
     def __repr__(self):
         return "kali.carma.CARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
@@ -1023,9 +1017,16 @@ class CARMATask(object):
 
         for stepNum in xrange(self.nsteps):
             for walkerNum in xrange(self.nwalkers):
+                self.set(observedLC.dt, self.Chain[:, walkerNum, stepNum])
                 self._deviance[walkerNum +
-                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
-                                                                               self.nwalkers*stepNum]
+                               self.nwalkers*stepNum] = -2.0*self.logLikelihood(observedLC)
+        self._pDIC = 2.0*np.var(self.deviance[:, self.nsteps/2:])
+        meanTheta = list()
+        for dimNum in xrange(self.ndims):
+            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
+        meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
+        self.set(observedLC.dt, meanTheta)
+        self._dic = -2.0*self.logLikelihood(observedLC) + 2.0*self._pDIC
         return res
 
     def smooth(self, observedLC, tnum=None):
