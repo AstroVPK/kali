@@ -799,6 +799,7 @@ class MBHBCARMATask(object):
             intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, threadNum=tnum)
         intrinsicLC._simulatedCadenceNum = numCadences - 1
         intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+        return intrinsicLC
 
     def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
                  maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
@@ -820,6 +821,8 @@ class MBHBCARMATask(object):
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
+            for i in xrange(intrinsicLC.numCadences):
+                intrinsicLC.mask[i] = 1.0
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)

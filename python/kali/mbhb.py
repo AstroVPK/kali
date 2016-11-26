@@ -522,6 +522,8 @@ class MBHBTask(object):
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
             intrinsicLC = kali.lc.mockLC(
                 name='', band='', tIn=t, fracNoiseToSignal=fracNoiseToSignal)
+            for i in xrange(intrinsicLC.numCadences):
+                intrinsicLC.mask[i] = 1.0
         self._taskCython.make_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
             intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask,
