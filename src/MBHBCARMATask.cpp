@@ -425,6 +425,29 @@ double kali::MBHBCARMATask::get_ejectedMass(double sigmaStars, double rhoStars, 
 	return Systems[threadNum].ejectedMass(sigmaStars, rhoStars, H);
 	}
 
+int kali::MBHBCARMATask::make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+	int retVal = 0;
+	Systems[threadNum].resetState();
+	double old_dt = Systems[threadNum].get_dt();
+	kali::LnLikeData Data;
+	Data.numCadences = numCadences;
+	Data.tolIR = tolIR;
+	Data.t = t;
+	Data.x = x;
+	Data.y = y;
+	Data.yerr = yerr;
+	Data.mask = mask;
+	Data.lcX = lcX;
+	Data.lcP = lcP;
+    Data.fracIntrinsicVar = fracIntrinsicVar;
+    Data.fracNoiseToSignal = fracNoiseToSignal;
+	kali::LnLikeData *ptr2Data = &Data;
+	Systems[threadNum].beamSystem(ptr2Data);
+	Systems[threadNum].getX(lcX);
+	Systems[threadNum].getP(lcP);
+	return retVal;
+	}
+
 int kali::MBHBCARMATask::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
 	int retVal = 0;
 	Systems[threadNum].resetState();

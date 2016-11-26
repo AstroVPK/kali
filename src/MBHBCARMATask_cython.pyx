@@ -74,6 +74,7 @@ cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 		double get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum);
 		double get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum);
 
+		int make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
 		int make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum)
 		double get_meanFlux(double fracIntrinsicVar, int threadNum)
 		#int extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum)
@@ -415,6 +416,13 @@ cdef class MBHBCARMATask_cython:
 		if threadNum == None:
 			threadNum = 0
 		return self.thisptr.get_ejectedMass(sigmaStars, rhoStars, H, threadNum)
+
+	@cython.boundscheck(False)
+	@cython.wraparound(False)
+	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
+		if threadNum == None:
+			threadNum = 0
+		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)

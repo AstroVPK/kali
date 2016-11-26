@@ -89,6 +89,7 @@ public:
 	double get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum);
 	double get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum);
 
+	int make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
 	int make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum);
 	//int extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum);
 	double get_meanFlux(double fracIntrinsicVar, int threadNum);

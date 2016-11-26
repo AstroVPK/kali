@@ -773,6 +773,33 @@ class MBHBCARMATask(object):
             tnum = 0
         return self._taskCython.get_ejectedMass(sigmaStars, rhoStars, H, tnum)
 
+    def beam(self, duration=None, tIn=None, tnum=None, tolIR=1.0e-3,
+             fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
+             maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5):
+        if tnum is None:
+            tnum = 0
+        if tIn is None and duration is not None:
+            numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
+            intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
+                                         deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
+        elif duration is None and tIn is not None:
+            numCadences = tIn.shape[0]
+            t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
+        self._taskCython.make_BeamedLC(
+            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
+            intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
+            intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, threadNum=tnum)
+        intrinsicLC._simulatedCadenceNum = numCadences - 1
+        intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+
     def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
                  maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
                  tnum=None):

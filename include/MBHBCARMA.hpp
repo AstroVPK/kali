@@ -218,6 +218,7 @@ public:
 	double getIntrinsicVar();
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
+	void beamSystem(LnLikeData *ptr2Data);
 	void simulateSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
 	//void extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand);
 	double getMeanFlux(LnLikeData *ptr2Data);

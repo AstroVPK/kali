@@ -2521,6 +2521,53 @@ void kali::MBHBCARMA::burnSystem(int numBurn, unsigned int burnSeed, double* bur
 		}
 	}
 
+void kali::MBHBCARMA::beamSystem(LnLikeData *ptr2Data) {
+	kali::LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+    double fracIntrinsicVar = Data.fracIntrinsicVar;
+    double fracNoiseToSignal = Data.fracNoiseToSignal;
+	double tolIR = Data.tolIR;
+    double startT = Data.startT;
+	double *t = Data.t;
+	double *x = Data.x;
+	double *mask = Data.mask;
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+
+	double absMeanFlux = totalFlux; //absIntrinsicVar/fracIntrinsicVar;
+	double absFlux = 0.0, noiseLvl = 0.0, t_incr = 0.0, fracChange = 0.0;
+    #ifdef DEBUG_BEAMSYSTEM
+        printf("\n");
+        printf("absMeanFlux: %+e\n", absMeanFlux);
+    #endif
+
+    setEpoch(t[0] + startT);
+	x[0] = absMeanFlux*getBeamingFactor2();
+    #ifdef DEBUG_BEAMSYSTEM
+        printf("absMeanFlux: %+e\n", absMeanFlux);
+        printf("getBeamingFactor2(): %+e\n", getBeamingFactor2());
+        printf("x[0]: %+e\n", x[0]);
+    #endif
+
+	for (int i = 1; i < numCadences; ++i) {
+        setEpoch(t[i] + startT);
+		t_incr = t[i] - t[i - 1];
+		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+
+		if (fracChange > tolIR) {
+			dt = t_incr;
+			}
+
+		x[i] = absMeanFlux*getBeamingFactor2();
+        #ifdef DEBUG_BEAMSYSTEM
+            printf("absMeanFlux: %+e\n", absMeanFlux);
+            printf("getBeamingFactor2(): %+e\n", getBeamingFactor2());
+            printf("x[%d]: %+e\n", i, x[i]);
+        #endif
+		}
+	}
+
 void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	kali::LnLikeData Data = *ptr2Data;
 
