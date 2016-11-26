@@ -18,7 +18,7 @@ double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs, double & LnPrior, double &LnLikelihood);
 
 double d2r(double degreeVal);
 double r2d(double radianVal);

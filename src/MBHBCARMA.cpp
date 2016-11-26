@@ -241,7 +241,7 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 	return LnPosterior;
 	}
 
-double kali::calcLnPosterior(double *walkerPos, void *func_args) {
+double kali::calcLnPosterior(double *walkerPos, void *func_args, double &LnPrior, double &LnLikelihood) {
 
 	int threadNum = omp_get_thread_num();
 
@@ -251,7 +251,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 	kali::LnLikeData *Data = Args.Data;
 	kali::MBHBCARMA *Systems = Args.Systems;
 	kali::LnLikeData *ptr2Data = Data;
-	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
+	double LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkMBHBCARMAParams(walkerPos) == 1) {
 		old_dt = Systems[threadNum].get_dt();
@@ -310,7 +310,8 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 			fflush(0);
 		#endif
 
-		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
+        LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		LnPosterior = LnLikelihood + LnPrior;
 
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveMBHBCARMA();
@@ -333,7 +334,9 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 		#endif
 
 		} else {
-		LnPosterior = -kali::infiniteVal;
+        LnPrior = -kali::infiniteVal;
+        LnLikelihood = -kali::infiniteVal;;
+        LnPosterior = -kali::infiniteVal;
 		}
 	return LnPosterior;
 	}

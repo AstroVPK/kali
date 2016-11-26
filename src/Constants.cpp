@@ -36,7 +36,7 @@ extern double kali::Year = 31557600.0; // s
 extern double kali::kms2ms = 1.0e3; // m/s
 extern double kali::SolarMass = 1.98855e30; // kg
 extern double kali::SolarMassPerCubicParsec = kali::SolarMass/pow(kali::Parsec, 3.0); // kg/m^3
-extern double secPerSiderealDay = 86164.090530833;
+extern double kali::secPerSiderealDay = 86164.090530833;
 
 extern double kali::Kepler::integrationTime = 6.019802903;
 extern double kali::Kepler::readTime = 0.5189485261;

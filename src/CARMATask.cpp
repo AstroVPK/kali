@@ -560,7 +560,7 @@ void kali::CARMATask::compute_ACVF(int numLags, double *Lags, double *ACVF, int 
 	Systems[threadNum].computeACVF(numLags, Lags, ACVF);
 	}
 
-int kali::CARMATask::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+int kali::CARMATask::fit_CARMAModel(double dt, int numCadences, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood) {
 	omp_set_num_threads(numThreads);
 	int ndims = p + q + 1;
 	int threadNum = omp_get_thread_num();
@@ -658,7 +658,7 @@ int kali::CARMATask::fit_CARMAModel(double dt, int numCadences, double tolIR, do
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
 	newEnsemble.getChain(Chain);
-	newEnsemble.getLnLike(LnPosterior);
+	newEnsemble.getChainVals(LnPrior, LnLikelihood);
 	return 0;
 	}
 

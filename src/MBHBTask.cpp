@@ -345,7 +345,7 @@ double kali::MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cade
 	return LnLikelihood;
 	}
 
-int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPosterior) {
+int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood) {
 	#ifdef DEBUG_FIT_MBHBMODEL
 		printf("numThreads: %d\n",numThreads);
 	#endif
@@ -437,6 +437,6 @@ int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux,
 	newEnsemble.runMCMC(initPos);
 	_mm_free(initPos);
 	newEnsemble.getChain(Chain);
-	newEnsemble.getLnLike(LnPosterior);
+	newEnsemble.getChainVals(LnPrior, LnLikelihood);
 	return 0;
 	}

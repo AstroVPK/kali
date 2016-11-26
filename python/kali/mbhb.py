@@ -60,6 +60,8 @@ class MBHBTask(object):
     Day = 86164.090530833
     Year = 31557600.0
     SolarMass = 1.98855e30
+    kms2ms = 1.0e3
+    SolarMassPerCubicParsec = SolarMass/math.pow(Parsec, 3.0)
 
     _dict = multi_key_dict.multi_key_dict()
     _dict[r'$a_{1}$ (pc)', 0, r'0', r'a1', r'a_1', r'$a_{1}$', r'$a_{1}~\mathrm{(pc)}$',
@@ -95,9 +97,9 @@ class MBHBTask(object):
             self._mcmcA = mcmcA
             self._Chain = np.require(
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._LnPosterior = np.require(
+            self._LnPrior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._deviance = np.require(
+            self._LnLikelihood = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = MBHBTask_cython.MBHBTask_cython(self._nthreads)
             self._pDIC = None
@@ -130,8 +132,10 @@ class MBHBTask(object):
             self._nwalkers = value
             self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
                                      requirements=['F', 'A', 'W', 'O', 'E'])
-            self._LnPosterior = np.require(np.zeros(self._nwalkers*self._nsteps),
-                                           requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -145,8 +149,12 @@ class MBHBTask(object):
             assert value >= 0, r'nsteps must be greater than or equal to 0'
             assert isinstance(value, int), r'nsteps must be an integer'
             self._nsteps = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -194,12 +202,16 @@ class MBHBTask(object):
         return np.reshape(self._Chain, newshape=(self._ndims, self._nwalkers, self._nsteps), order='F')
 
     @property
-    def LnPosterior(self):
-        return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnPrior(self):
+        return np.reshape(self._LnPrior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     @property
-    def deviance(self):
-        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnLikelihood(self):
+        return np.reshape(self._LnLikelihood, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def LnPosterior(self):
+        return self.LnPrior + self.LnLikelihood
 
     @property
     def pDIC(self):
@@ -251,8 +263,12 @@ class MBHBTask(object):
             assert isinstance(nsteps, int), r'nsteps must be an integer'
             self._nwalkers = nwalkers
             self._nsteps = nsteps
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -325,7 +341,7 @@ class MBHBTask(object):
             tnum = 0
         return self._taskCython.get_M12(tnum)
 
-    def q(self, tnum=None):
+    def mratio(self, tnum=None):
         if tnum is None:
             tnum = 0
         return self._taskCython.get_M2OverM1(tnum)
@@ -876,21 +892,71 @@ class MBHBTask(object):
             observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
             observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals,
             self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain,
-            self._LnPosterior)
+            self._LnPrior, self._LnLikelihood)
 
-        for stepNum in xrange(self.nsteps):
-            for walkerNum in xrange(self.nwalkers):
-                self.set(observedLC.dt, self.Chain[:, walkerNum, stepNum])
-                self._deviance[walkerNum +
-                               self.nwalkers*stepNum] = -2.0*self.logLikelihood(observedLC)
-        self._pDIC = 2.0*np.var(self.deviance[:, self.nsteps/2:])
         meanTheta = list()
         for dimNum in xrange(self.ndims):
             meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
         meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
-        self.set(observedLC.dt, meanTheta)
-        self._dic = -2.0*self.logLikelihood(observedLC) + 2.0*self._pDIC
+        self.set(meanTheta)
+        devianceThetaBar = -2.0*self.logLikelihood(observedLC)
+        barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
+        self._pDIC = barDeviance - devianceThetaBar
+        self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
+
+    @classmethod
+    def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
+        a1 = a1*cls.Parsec
+        a2 = a2*cls.Parsec
+        T = T*cls.Day
+        MTot = ((cls.fourPiSq*math.pow(a1 + a2, 3.0))/(cls.G*math.pow(T, 2.0)))/cls.SolarMass
+        MRat = a1/a2
+        m1 = (MTot*(1.0/(1.0 + MRat)))*cls.SolarMass
+        m2 = (MTot*(MRat/(1.0 + MRat)))*cls.SolarMass
+        MRed = m1*m2/(m1 + m2)
+        rPeri = ((a1 + a2)*(1.0 - eccentricity))/cls.Parsec
+        rApo = ((a1 + a2)*(1.0 + eccentricity))/cls.Parsec
+        rSch = ((2.0*cls.G*(MTot*cls.SolarMass))/(math.pow(cls.c, 2.0)))/cls.Parsec
+        aHard = ((cls.G*MRed)/(4.0*math.pow((sigmaStars*cls.kms2ms), 2.0)))/cls.Parsec
+        numer = 64.0*math.pow(cls.G, 2.0)*m1*m2*(MTot*cls.SolarMass)*(cls.kms2ms*sigmaStars)
+        denom = 5.0*H*math.pow(cls.c, 5.0)*(cls.SolarMassPerCubicParsec*rhoStars)
+        aGW = math.pow(numer/denom, 0.2)/cls.Parsec
+        THard = ((sigmaStars*cls.kms2ms
+                  )/(H*cls.G*(cls.SolarMassPerCubicParsec*rhoStars)*aGW*cls.Parsec))/cls.Year
+        MEject = (MTot*math.log(aHard/aGW))/1.0e6
+        MTot = MTot/1.0e6
+        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject
+
+    @property
+    def auxChain(self):
+        if hasattr(self, '_auxChain'):
+            return self._auxChain
+        else:
+            self._auxChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
+                                        requirements=['F', 'A', 'W', 'O', 'E'])
+            for stepNum in xrange(self.nsteps/2, self.nsteps, 1):
+                for walkerNum in xrange(self.nwalkers):
+                    a1 = self.Chain[0, walkerNum, stepNum]
+                    a2 = self.Chain[1, walkerNum, stepNum]
+                    T = self.Chain[2, walkerNum, stepNum]
+                    eccentricity = self.Chain[3, walkerNum, stepNum]
+                    mTot, q, rPeri, rApo, rSch, aHard, aGW, THard, MEject = self._auxillary(a1, a2,
+                                                                                            T, eccentricity)
+                    self._auxChain[0, walkerNum, stepNum] = a1
+                    self._auxChain[1, walkerNum, stepNum] = a2
+                    self._auxChain[2, walkerNum, stepNum] = T
+                    self._auxChain[3, walkerNum, stepNum] = eccentricity
+                    self._auxChain[4, walkerNum, stepNum] = mTot
+                    self._auxChain[5, walkerNum, stepNum] = q
+                    self._auxChain[6, walkerNum, stepNum] = rPeri
+                    self._auxChain[7, walkerNum, stepNum] = rApo
+                    self._auxChain[8, walkerNum, stepNum] = rSch
+                    self._auxChain[9, walkerNum, stepNum] = aHard
+                    self._auxChain[10, walkerNum, stepNum] = aGW
+                    self._auxChain[11, walkerNum, stepNum] = THard
+                    self._auxChain[12, walkerNum, stepNum] = MEject
+            return self._auxChain
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
                     best=False, median=False,
@@ -955,14 +1021,34 @@ class MBHBTask(object):
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.ndims, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
                        r'$\tau$ (d)', r'$F$']
-        newFig = orbitalTr = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
-                                                       show_titles=True,
-                                                       title_fmt='.2e',
-                                                       quantiles=[0.16, 0.5, 0.84],
-                                                       plot_contours=False,
-                                                       plot_datapoints=True,
-                                                       plot_contour_lines=False,
-                                                       pcolor_cmap=cm.gist_earth)
+        newFigOrb = orbitalTr = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
+                                                          show_titles=True,
+                                                          title_fmt='.2e',
+                                                          quantiles=[0.16, 0.5, 0.84],
+                                                          plot_contours=False,
+                                                          plot_datapoints=True,
+                                                          plot_contour_lines=False,
+                                                          pcolor_cmap=cm.gist_earth)
+
+        flatAuxChain = np.swapaxes(self.auxChain.reshape((13, -1), order='F'), axis1=0, axis2=1)
+        auxLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$',
+                     r'$M_{12}$ ($10^{6} \times M_{\odot}$)', r'$M_{2}/M_{1}$',
+                     r'$r_{\mathrm{Peribothron}}$ (pc)', r'$r_{\mathrm{Apobothron}}$ (pc)',
+                     r'$r_{\mathrm{Schwarzschild}}$ (pc)',
+                     r'$a_{\mathrm{Hard}}$ (pc)', r'$a_{\mathrm{GW}}$ (pc)', r'$T_{\mathrm{Hard}}$ (yr)',
+                     r'$M_{\mathrm{Eject}}$ ($10^{6} \times M_{\odot}$)']
+        auxExtents = [0.9, 0.9, (0.95*np.min(self.auxChain[2, :, self.nsteps/2:]),
+                                 1.05*np.max(self.auxChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
+                      0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
+        newFigAux = kali.util.triangle.corner(flatAuxChain, labels=auxLabels,
+                                              show_titles=True,
+                                              title_fmt='.2e',
+                                              quantiles=[0.16, 0.5, 0.84],
+                                              extents=auxExtents,
+                                              plot_contours=False,
+                                              plot_datapoints=True,
+                                              plot_contour_lines=False,
+                                              pcolor_cmap=cm.gist_earth)
         if doShow:
             plt.show(False)
-        return newFig,
+        return newFigOrb, newFigAux

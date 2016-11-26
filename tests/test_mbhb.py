@@ -27,6 +27,15 @@ skipLnLikelihood = False
 skipWorking = False
 doPlot = False
 
+BURNSEED = 731647386
+DISTSEED = 219038190
+NOISESEED = 87238923
+SAMPLESEED = 36516342
+ZSSEED = 384789247
+WALKERSEED = 738472981
+MOVESEED = 131343786
+XSEED = 2348713647
+
 
 class TestPeriod(unittest.TestCase):
 
@@ -75,6 +84,7 @@ class TestNoInclination(unittest.TestCase):
         del self.nt1
         del self.nt2
 
+    @unittest.skipIf(skipWorking, 'Works!')
     def test_masses(self):
         self.assertEqual(self.nt1.q(), (self.a1/self.a2))
 
@@ -144,8 +154,8 @@ class TestInclinationNoNoise(unittest.TestCase):
         n2s = 1.0e-18
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0, fracNoiseToSignal=n2s)
-        self.nt1.observe(nl1)
-        self.nt2.observe(nl2)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
+        self.nt2.observe(nl2, noiseSeed=NOISESEED)
 
         LnLike11 = self.nt1.logLikelihood(nl1)
         LnLike22 = self.nt2.logLikelihood(nl2)
@@ -209,8 +219,8 @@ class TestInclinationNoise(unittest.TestCase):
         n2s = 1.0e-4
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0, fracNoiseToSignal=n2s)
-        self.nt1.observe(nl1)
-        self.nt2.observe(nl2)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
+        self.nt2.observe(nl2, noiseSeed=NOISESEED)
 
         LnLike11 = self.nt1.logLikelihood(nl1)
         LnLike22 = self.nt2.logLikelihood(nl2)
@@ -228,8 +238,8 @@ class TestInclinationNoise(unittest.TestCase):
         n2s = 1.0e-3
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0, fracNoiseToSignal=n2s)
-        self.nt1.observe(nl1)
-        self.nt2.observe(nl2)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
+        self.nt2.observe(nl2, noiseSeed=NOISESEED)
 
         LnLike11 = self.nt1.logLikelihood(nl1)
         LnLike22 = self.nt2.logLikelihood(nl2)
@@ -247,8 +257,8 @@ class TestInclinationNoise(unittest.TestCase):
         n2s = 1.0e-2
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0, fracNoiseToSignal=n2s)
-        self.nt1.observe(nl1)
-        self.nt2.observe(nl2)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
+        self.nt2.observe(nl2, noiseSeed=NOISESEED)
 
         LnLike11 = self.nt1.logLikelihood(nl1)
         LnLike22 = self.nt2.logLikelihood(nl2)
@@ -266,8 +276,8 @@ class TestInclinationNoise(unittest.TestCase):
         n2s = 5.0e-2
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0, fracNoiseToSignal=n2s)
-        self.nt1.observe(nl1)
-        self.nt2.observe(nl2)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
+        self.nt2.observe(nl2, noiseSeed=NOISESEED)
 
         LnLike11 = self.nt1.logLikelihood(nl1)
         LnLike22 = self.nt2.logLikelihood(nl2)
@@ -298,13 +308,14 @@ class TestEstimate(unittest.TestCase):
         self.assertAlmostEqual(math.fabs((periodEst - self.nt1.period())/self.nt1.period()), 0.0, places=1)
         self.assertAlmostEqual(math.fabs((eccentricityEst - self.eccentricity)/self.eccentricity), 0.0,
                                delta=0.25)
-        self.assertAlmostEqual(math.fabs((
-            math.cos(omega1Est*(math.pi/180.0)) - math.cos(self.omega1*(math.pi/180.0)))/math.cos(self.omega1*(math.pi/180.0))),
-            0.0, delta=0.1)
+        self.assertAlmostEqual(math.fabs((math.cos(omega1Est*(math.pi/180.0)) -
+                                          math.cos(self.omega1*(math.pi/180.0))
+                                          )/math.cos(self.omega1*(math.pi/180.0))), 0.0, delta=0.1)
         self.assertAlmostEqual(math.fabs((tauEst - self.tau)/self.tau), 0.0, delta=periodEst/10.0)
-        self.assertAlmostEqual(
-            math.fabs((a2sinInclinationEst - self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))),
-            0.0, delta=1.0)
+        self.assertAlmostEqual(math.fabs((a2sinInclinationEst -
+                                          self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0))
+                                          )/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))),
+                               0.0, delta=1.0)
 
     @unittest.skipIf(skipWorking, 'Works!')
     def test_estimates1(self):
@@ -318,7 +329,7 @@ class TestEstimate(unittest.TestCase):
                 self.flux])
         self.nt1.set(self.Theta1)
         nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
-        self.nt1.observe(nl1)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
@@ -334,7 +345,7 @@ class TestEstimate(unittest.TestCase):
                 self.flux])
         self.nt1.set(self.Theta1)
         nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
-        self.nt1.observe(nl1)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
@@ -350,7 +361,7 @@ class TestEstimate(unittest.TestCase):
                 self.flux])
         self.nt1.set(self.Theta1)
         nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
-        self.nt1.observe(nl1)
+        self.nt1.observe(nl1, noiseSeed=NOISESEED)
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
@@ -367,8 +378,9 @@ class TestEstimate(unittest.TestCase):
         self.nt1.set(self.Theta1)
         for i in xrange(10):
             nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
-            self.nt1.observe(nl1)
-            fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2SinInclinationEst = self.nt1.estimate(nl1)
+            self.nt1.observe(nl1, noiseSeed=NOISESEED)
+            (fluxEst, periodEst, eccentricityEst,
+             omega1Est, tauEst, a2SinInclinationEst) = self.nt1.estimate(nl1)
             a1Guess, a2Guess, inclinationGuess = self.nt1.guess(a2SinInclinationEst)
             ntEst = kali.mbhb.MBHBTask()
             ThetaEst = np.array(
@@ -377,7 +389,7 @@ class TestEstimate(unittest.TestCase):
             res = ntEst.set(ThetaEst)
             self.assertGreaterEqual(self.nt1.logPosterior(nl1), ntEst.logPosterior(nl1))
             nlEst = ntEst.simulate(periodEst*10.0, fracNoiseToSignal=self.n2s)
-            ntEst.observe(nlEst)
+            ntEst.observe(nlEst, noiseSeed=NOISESEED)
             self.assertGreaterEqual(ntEst.logPosterior(nlEst), self.nt1.logPosterior(nlEst))
 
 
@@ -399,7 +411,7 @@ class TestFit(unittest.TestCase):
         self.nt1 = kali.mbhb.MBHBTask()
         self.nt1.set(self.Theta)
         self.nl1 = self.nt1.simulate(self.period*5.0, fracNoiseToSignal=self.n2s)
-        self.nt1.observe(self.nl1)
+        self.nt1.observe(self.nl1, noiseSeed=NOISESEED)
 
     def tearDown(self):
         del self.Theta
@@ -409,7 +421,7 @@ class TestFit(unittest.TestCase):
     # @unittest.skipIf(skipWorking, 'Works!')
     def test_fit(self):
         ntFit = kali.mbhb.MBHBTask(nsteps=self.nsteps)
-        ntFit.fit(self.nl1)
+        ntFit.fit(self.nl1, zSSeed=ZSSEED, walkerSeed=WALKERSEED, moveSeed=MOVESEED, xSeed=XSEED)
 
         if doPlot:
             plt.figure(0)
