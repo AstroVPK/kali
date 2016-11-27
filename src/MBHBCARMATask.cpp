@@ -892,8 +892,7 @@ int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double m
 	return 0;
 	}
 
-/*
-int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum) {
+int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum) {
 	int successYN = -1;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -916,7 +915,7 @@ int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolI
 	Systems[threadNum].set_dt(t[1] - t[0]);
 	Systems[threadNum].solveMBHBCARMA();
 	Systems[threadNum].resetState();
-	successYN = Systems[threadNum].RTSSmoother(ptr2Data, XSmooth, PSmooth);
+	successYN = Systems[threadNum].RTSSmoother(ptr2Data, XSmooth, PSmooth, xSmooth, xerrSmooth);
 	Systems[threadNum].getX(lcX);
 	Systems[threadNum].getP(lcP);
 	cadenceNum = Data.cadenceNum;
@@ -924,4 +923,4 @@ int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolI
 	Systems[threadNum].solveMBHBCARMA();
 	Systems[threadNum].resetState();
 	return successYN;
-}*/
+}

@@ -228,7 +228,7 @@ public:
 	//double updateLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	//void computeACVF(int numLags, double *Lags, double* ACVF);
-	//int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth);
+	int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth);
 	};
 
 struct LnLikeArgs {

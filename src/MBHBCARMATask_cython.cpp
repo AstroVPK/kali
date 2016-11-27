@@ -1380,9 +1380,12 @@ static const char __pyx_k_startT[] = "startT";
 static const char __pyx_k_xStart[] = "xStart";
 static const char __pyx_k_zSSeed[] = "zSSeed";
 static const char __pyx_k_LnPrior[] = "LnPrior";
+static const char __pyx_k_PSmooth[] = "PSmooth";
+static const char __pyx_k_XSmooth[] = "XSmooth";
 static const char __pyx_k_epochIn[] = "epochIn";
 static const char __pyx_k_logical[] = "logical";
 static const char __pyx_k_numBurn[] = "numBurn";
+static const char __pyx_k_xSmooth[] = "xSmooth";
 static const char __pyx_k_burnSeed[] = "burnSeed";
 static const char __pyx_k_distSeed[] = "distSeed";
 static const char __pyx_k_maxEvals[] = "maxEvals";
@@ -1402,6 +1405,7 @@ static const char __pyx_k_lowestFlux[] = "lowestFlux";
 static const char __pyx_k_numThreads[] = "numThreads";
 static const char __pyx_k_sigmaStars[] = "sigmaStars";
 static const char __pyx_k_walkerSeed[] = "walkerSeed";
+static const char __pyx_k_xerrSmooth[] = "xerrSmooth";
 static const char __pyx_k_highestFlux[] = "highestFlux";
 static const char __pyx_k_highestflux[] = "highestflux";
 static const char __pyx_k_numCadences[] = "numCadences";
@@ -1430,11 +1434,13 @@ static PyObject *__pyx_n_s_LnPrior;
 static PyObject *__pyx_n_s_MBHBCARMATask_cython;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
 static PyObject *__pyx_n_s_P;
+static PyObject *__pyx_n_s_PSmooth;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_Sigma;
 static PyObject *__pyx_n_s_Theta;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_X;
+static PyObject *__pyx_n_s_XSmooth;
 static PyObject *__pyx_n_s_burnSeed;
 static PyObject *__pyx_n_s_cadenceNum;
 static PyObject *__pyx_n_s_cpu_count;
@@ -1496,8 +1502,10 @@ static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_walkerSeed;
 static PyObject *__pyx_n_s_x;
 static PyObject *__pyx_n_s_xSeed;
+static PyObject *__pyx_n_s_xSmooth;
 static PyObject *__pyx_n_s_xStart;
 static PyObject *__pyx_n_s_xTol;
+static PyObject *__pyx_n_s_xerrSmooth;
 static PyObject *__pyx_n_s_y;
 static PyObject *__pyx_n_s_yerr;
 static PyObject *__pyx_n_s_zSSeed;
@@ -1565,6 +1573,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_118add_O
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_120compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_122compute_LnLikelihood(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_124fit_CARMAModel(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPrior, PyArrayObject *__pyx_v_LnLikelihood, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_20MBHBCARMATask_cython_MBHBCARMATask_cython(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -12312,7 +12321,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_124fit_C
  * 	def fit_CARMAModel(self, dt, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestFlux, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, np.ndarray[double, ndim=1, mode='c'] xStart not None, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] LnPrior not None, np.ndarray[double, ndim=1, mode='c'] LnLikelihood not None, periodCenter, periodWidth, fluxCenter, fluxWidth):
  * 		return self.thisptr.fit_MBHBCARMAModel(dt, numCadences, meandt, tolIR, maxSigma, minTimescale, maxTimescale, lowestFlux, highestFlux, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], nwalkers, nsteps, maxEvals, xTol, mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, &xStart[0], &Chain[0], &LnPrior[0], &LnLikelihood[0], periodCenter, periodWidth, fluxCenter, fluxWidth)             # <<<<<<<<<<<<<<
  * 
- * 	'''
+ * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_dt); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 531, __pyx_L1_error)
@@ -12392,6 +12401,457 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_124fit_C
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
   __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
   __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "MBHBCARMATask_cython.pyx":535
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smooth_RTS(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smooth_RTS(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_numCadences = 0;
+  PyObject *__pyx_v_cadenceNum = 0;
+  PyObject *__pyx_v_tolIR = 0;
+  PyArrayObject *__pyx_v_t = 0;
+  PyArrayObject *__pyx_v_x = 0;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayObject *__pyx_v_yerr = 0;
+  PyArrayObject *__pyx_v_mask = 0;
+  PyArrayObject *__pyx_v_X = 0;
+  PyArrayObject *__pyx_v_P = 0;
+  PyArrayObject *__pyx_v_XSmooth = 0;
+  PyArrayObject *__pyx_v_PSmooth = 0;
+  PyArrayObject *__pyx_v_xSmooth = 0;
+  PyArrayObject *__pyx_v_xerrSmooth = 0;
+  PyObject *__pyx_v_threadNum = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("smooth_RTS (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_cadenceNum,&__pyx_n_s_tolIR,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_X,&__pyx_n_s_P,&__pyx_n_s_XSmooth,&__pyx_n_s_PSmooth,&__pyx_n_s_xSmooth,&__pyx_n_s_xerrSmooth,&__pyx_n_s_threadNum,0};
+    PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[14] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_numCadences)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadenceNum)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 1); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 2); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 3); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 4); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 5); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 6); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 7); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_X)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 8); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case  9:
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_P)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 9); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 10:
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_XSmooth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 10); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_PSmooth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 11); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 12:
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xSmooth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 12); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 13:
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xerrSmooth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 13); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 14:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
+          if (value) { values[14] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "smooth_RTS") < 0)) __PYX_ERR(0, 535, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_numCadences = values[0];
+    __pyx_v_cadenceNum = values[1];
+    __pyx_v_tolIR = values[2];
+    __pyx_v_t = ((PyArrayObject *)values[3]);
+    __pyx_v_x = ((PyArrayObject *)values[4]);
+    __pyx_v_y = ((PyArrayObject *)values[5]);
+    __pyx_v_yerr = ((PyArrayObject *)values[6]);
+    __pyx_v_mask = ((PyArrayObject *)values[7]);
+    __pyx_v_X = ((PyArrayObject *)values[8]);
+    __pyx_v_P = ((PyArrayObject *)values[9]);
+    __pyx_v_XSmooth = ((PyArrayObject *)values[10]);
+    __pyx_v_PSmooth = ((PyArrayObject *)values[11]);
+    __pyx_v_xSmooth = ((PyArrayObject *)values[12]);
+    __pyx_v_xerrSmooth = ((PyArrayObject *)values[13]);
+    __pyx_v_threadNum = values[14];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 535, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.smooth_RTS", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 0, "t", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_x), __pyx_ptype_5numpy_ndarray, 0, "x", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 0, "y", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yerr), __pyx_ptype_5numpy_ndarray, 0, "yerr", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_X), __pyx_ptype_5numpy_ndarray, 0, "X", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_P), __pyx_ptype_5numpy_ndarray, 0, "P", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_XSmooth), __pyx_ptype_5numpy_ndarray, 0, "XSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PSmooth), __pyx_ptype_5numpy_ndarray, 0, "PSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xSmooth), __pyx_ptype_5numpy_ndarray, 0, "xSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xerrSmooth), __pyx_ptype_5numpy_ndarray, 0, "xerrSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_cadenceNum, __pyx_v_tolIR, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_X, __pyx_v_P, __pyx_v_XSmooth, __pyx_v_PSmooth, __pyx_v_xSmooth, __pyx_v_xerrSmooth, __pyx_v_threadNum);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum) {
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_P;
+  __Pyx_Buffer __pyx_pybuffer_P;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_PSmooth;
+  __Pyx_Buffer __pyx_pybuffer_PSmooth;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_X;
+  __Pyx_Buffer __pyx_pybuffer_X;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_XSmooth;
+  __Pyx_Buffer __pyx_pybuffer_XSmooth;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_mask;
+  __Pyx_Buffer __pyx_pybuffer_mask;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
+  __Pyx_Buffer __pyx_pybuffer_t;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
+  __Pyx_Buffer __pyx_pybuffer_x;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_xSmooth;
+  __Pyx_Buffer __pyx_pybuffer_xSmooth;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_xerrSmooth;
+  __Pyx_Buffer __pyx_pybuffer_xerrSmooth;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_y;
+  __Pyx_Buffer __pyx_pybuffer_y;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_yerr;
+  __Pyx_Buffer __pyx_pybuffer_yerr;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  double __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
+  int __pyx_t_17;
+  __Pyx_RefNannySetupContext("smooth_RTS", 0);
+  __Pyx_INCREF(__pyx_v_threadNum);
+  __pyx_pybuffer_t.pybuffer.buf = NULL;
+  __pyx_pybuffer_t.refcount = 0;
+  __pyx_pybuffernd_t.data = NULL;
+  __pyx_pybuffernd_t.rcbuffer = &__pyx_pybuffer_t;
+  __pyx_pybuffer_x.pybuffer.buf = NULL;
+  __pyx_pybuffer_x.refcount = 0;
+  __pyx_pybuffernd_x.data = NULL;
+  __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
+  __pyx_pybuffer_y.pybuffer.buf = NULL;
+  __pyx_pybuffer_y.refcount = 0;
+  __pyx_pybuffernd_y.data = NULL;
+  __pyx_pybuffernd_y.rcbuffer = &__pyx_pybuffer_y;
+  __pyx_pybuffer_yerr.pybuffer.buf = NULL;
+  __pyx_pybuffer_yerr.refcount = 0;
+  __pyx_pybuffernd_yerr.data = NULL;
+  __pyx_pybuffernd_yerr.rcbuffer = &__pyx_pybuffer_yerr;
+  __pyx_pybuffer_mask.pybuffer.buf = NULL;
+  __pyx_pybuffer_mask.refcount = 0;
+  __pyx_pybuffernd_mask.data = NULL;
+  __pyx_pybuffernd_mask.rcbuffer = &__pyx_pybuffer_mask;
+  __pyx_pybuffer_X.pybuffer.buf = NULL;
+  __pyx_pybuffer_X.refcount = 0;
+  __pyx_pybuffernd_X.data = NULL;
+  __pyx_pybuffernd_X.rcbuffer = &__pyx_pybuffer_X;
+  __pyx_pybuffer_P.pybuffer.buf = NULL;
+  __pyx_pybuffer_P.refcount = 0;
+  __pyx_pybuffernd_P.data = NULL;
+  __pyx_pybuffernd_P.rcbuffer = &__pyx_pybuffer_P;
+  __pyx_pybuffer_XSmooth.pybuffer.buf = NULL;
+  __pyx_pybuffer_XSmooth.refcount = 0;
+  __pyx_pybuffernd_XSmooth.data = NULL;
+  __pyx_pybuffernd_XSmooth.rcbuffer = &__pyx_pybuffer_XSmooth;
+  __pyx_pybuffer_PSmooth.pybuffer.buf = NULL;
+  __pyx_pybuffer_PSmooth.refcount = 0;
+  __pyx_pybuffernd_PSmooth.data = NULL;
+  __pyx_pybuffernd_PSmooth.rcbuffer = &__pyx_pybuffer_PSmooth;
+  __pyx_pybuffer_xSmooth.pybuffer.buf = NULL;
+  __pyx_pybuffer_xSmooth.refcount = 0;
+  __pyx_pybuffernd_xSmooth.data = NULL;
+  __pyx_pybuffernd_xSmooth.rcbuffer = &__pyx_pybuffer_xSmooth;
+  __pyx_pybuffer_xerrSmooth.pybuffer.buf = NULL;
+  __pyx_pybuffer_xerrSmooth.refcount = 0;
+  __pyx_pybuffernd_xerrSmooth.data = NULL;
+  __pyx_pybuffernd_xerrSmooth.rcbuffer = &__pyx_pybuffer_xerrSmooth;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_t.rcbuffer->pybuffer, (PyObject*)__pyx_v_t, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer, (PyObject*)__pyx_v_yerr, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_yerr.diminfo[0].strides = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yerr.diminfo[0].shape = __pyx_pybuffernd_yerr.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mask.rcbuffer->pybuffer, (PyObject*)__pyx_v_mask, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_mask.diminfo[0].strides = __pyx_pybuffernd_mask.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mask.diminfo[0].shape = __pyx_pybuffernd_mask.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_P.rcbuffer->pybuffer, (PyObject*)__pyx_v_P, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_P.diminfo[0].strides = __pyx_pybuffernd_P.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_P.diminfo[0].shape = __pyx_pybuffernd_P.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_XSmooth.rcbuffer->pybuffer, (PyObject*)__pyx_v_XSmooth, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_XSmooth.diminfo[0].strides = __pyx_pybuffernd_XSmooth.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_XSmooth.diminfo[0].shape = __pyx_pybuffernd_XSmooth.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PSmooth.rcbuffer->pybuffer, (PyObject*)__pyx_v_PSmooth, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_PSmooth.diminfo[0].strides = __pyx_pybuffernd_PSmooth.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PSmooth.diminfo[0].shape = __pyx_pybuffernd_PSmooth.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xSmooth.rcbuffer->pybuffer, (PyObject*)__pyx_v_xSmooth, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_xSmooth.diminfo[0].strides = __pyx_pybuffernd_xSmooth.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_xSmooth.diminfo[0].shape = __pyx_pybuffernd_xSmooth.rcbuffer->pybuffer.shape[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer, (PyObject*)__pyx_v_xerrSmooth, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_xerrSmooth.diminfo[0].strides = __pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_xerrSmooth.diminfo[0].shape = __pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer.shape[0];
+
+  /* "MBHBCARMATask_cython.pyx":536
+ * 	@cython.wraparound(False)
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 536, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "MBHBCARMATask_cython.pyx":537
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 		if threadNum == None:
+ * 			threadNum = 0             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
+
+    /* "MBHBCARMATask_cython.pyx":536
+ * 	@cython.wraparound(False)
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 		if threadNum == None:             # <<<<<<<<<<<<<<
+ * 			threadNum = 0
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ */
+  }
+
+  /* "MBHBCARMATask_cython.pyx":538
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_cadenceNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_6 = 0;
+  __pyx_t_7 = 0;
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = 0;
+  __pyx_t_14 = 0;
+  __pyx_t_15 = 0;
+  __pyx_t_16 = 0;
+  __pyx_t_17 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_17 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->smooth_RTS(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_X.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_X.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_P.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_P.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_XSmooth.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_XSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_PSmooth.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_PSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xSmooth.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_xSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_xerrSmooth.diminfo[0].strides))), __pyx_t_17)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "MBHBCARMATask_cython.pyx":535
+ * 	@cython.boundscheck(False)
+ * 	@cython.wraparound(False)
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 		if threadNum == None:
+ * 			threadNum = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_P.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_PSmooth.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_X.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_XSmooth.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xSmooth.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.smooth_RTS", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_P.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_PSmooth.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_X.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_XSmooth.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mask.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_t.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_x.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xSmooth.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_y.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yerr.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XDECREF(__pyx_v_threadNum);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -14612,6 +15072,7 @@ static PyMethodDef __pyx_methods_20MBHBCARMATask_cython_MBHBCARMATask_cython[] =
   {"compute_LnPrior", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_121compute_LnPrior, METH_VARARGS|METH_KEYWORDS, 0},
   {"compute_LnLikelihood", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_123compute_LnLikelihood, METH_VARARGS|METH_KEYWORDS, 0},
   {"fit_CARMAModel", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_125fit_CARMAModel, METH_VARARGS|METH_KEYWORDS, 0},
+  {"smooth_RTS", (PyCFunction)__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smooth_RTS, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -14705,11 +15166,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MBHBCARMATask_cython, __pyx_k_MBHBCARMATask_cython, sizeof(__pyx_k_MBHBCARMATask_cython), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
   {&__pyx_n_s_P, __pyx_k_P, sizeof(__pyx_k_P), 0, 0, 1, 1},
+  {&__pyx_n_s_PSmooth, __pyx_k_PSmooth, sizeof(__pyx_k_PSmooth), 0, 0, 1, 1},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_Sigma, __pyx_k_Sigma, sizeof(__pyx_k_Sigma), 0, 0, 1, 1},
   {&__pyx_n_s_Theta, __pyx_k_Theta, sizeof(__pyx_k_Theta), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_X, __pyx_k_X, sizeof(__pyx_k_X), 0, 0, 1, 1},
+  {&__pyx_n_s_XSmooth, __pyx_k_XSmooth, sizeof(__pyx_k_XSmooth), 0, 0, 1, 1},
   {&__pyx_n_s_burnSeed, __pyx_k_burnSeed, sizeof(__pyx_k_burnSeed), 0, 0, 1, 1},
   {&__pyx_n_s_cadenceNum, __pyx_k_cadenceNum, sizeof(__pyx_k_cadenceNum), 0, 0, 1, 1},
   {&__pyx_n_s_cpu_count, __pyx_k_cpu_count, sizeof(__pyx_k_cpu_count), 0, 0, 1, 1},
@@ -14771,8 +15234,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_walkerSeed, __pyx_k_walkerSeed, sizeof(__pyx_k_walkerSeed), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
   {&__pyx_n_s_xSeed, __pyx_k_xSeed, sizeof(__pyx_k_xSeed), 0, 0, 1, 1},
+  {&__pyx_n_s_xSmooth, __pyx_k_xSmooth, sizeof(__pyx_k_xSmooth), 0, 0, 1, 1},
   {&__pyx_n_s_xStart, __pyx_k_xStart, sizeof(__pyx_k_xStart), 0, 0, 1, 1},
   {&__pyx_n_s_xTol, __pyx_k_xTol, sizeof(__pyx_k_xTol), 0, 0, 1, 1},
+  {&__pyx_n_s_xerrSmooth, __pyx_k_xerrSmooth, sizeof(__pyx_k_xerrSmooth), 0, 0, 1, 1},
   {&__pyx_n_s_y, __pyx_k_y, sizeof(__pyx_k_y), 0, 0, 1, 1},
   {&__pyx_n_s_yerr, __pyx_k_yerr, sizeof(__pyx_k_yerr), 0, 0, 1, 1},
   {&__pyx_n_s_zSSeed, __pyx_k_zSSeed, sizeof(__pyx_k_zSSeed), 0, 0, 1, 1},

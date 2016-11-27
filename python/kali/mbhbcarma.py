@@ -1386,7 +1386,7 @@ class MBHBCARMATask(object):
         self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
 
-    '''def smooth(self, observedLC, tnum=None):
+    def smooth(self, observedLC, tnum=None):
         if tnum is None:
             tnum = 0
         if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
@@ -1437,19 +1437,20 @@ class MBHBCARMATask(object):
                 observedLC.yerrSmooth[i] = unObsErr
                 observedLC.maskSmooth[i] = 0.0
 
-        preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
+        # preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
         res = self._taskCython.smooth_RTS(
             observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth,
-            observedLC.ySmooth - preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth,
-            observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
-        for i in xrange(observedLC.numCadencesSmooth):
+            observedLC.ySmooth, observedLC.yerrSmooth, observedLC.maskSmooth,
+            observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth,
+            observedLC.xSmooth, observedLC.xerrSmooth, tnum)
+        '''for i in xrange(observedLC.numCadencesSmooth):
             observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
             try:
                 observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
             except ValueError:
-                observedLC.xerrSmooth[i] = 0.0
+                observedLC.xerrSmooth[i] = 0.0'''
         observedLC._isSmoothed = True
-        return res'''
+        return res
 
     @classmethod
     def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
