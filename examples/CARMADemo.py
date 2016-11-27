@@ -71,7 +71,8 @@ newTask.fit(newLC)
 stopT = time.time()
 print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0,
                                                         (stopT - startT)/3600.0)
-
+print "pDIC: %e"%(newTask.pDIC)
+print "DIC: %e"%(newTask.dic)
 maxLnPosterior = np.nanmax(newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps])
 flatTimescaleChain = np.swapaxes(
     copy.deepcopy(newTask.timescaleChain[:, :, newTask.nsteps/2:]).reshape((ndims, -1), order='F'),
@@ -108,7 +109,8 @@ newTask.fit(sampledNewLC)
 stopT = time.time()
 print "Time taken: %+4.3e sec; %+4.3e min; %+4.3e hrs"%((stopT - startT), (stopT - startT)/60.0,
                                                         (stopT - startT)/3600.0)
-
+print "pDIC: %e"%(newTask.pDIC)
+print "DIC: %e"%(newTask.dic)
 maxLnPosterior = np.nanmax(newTask.LnPosterior[:, newTask.nsteps/2:newTask.nsteps])
 flatTimescaleChain = np.swapaxes(
     copy.deepcopy(newTask.timescaleChain[:, :, newTask.nsteps/2:]).reshape((ndims, -1), order='F'),

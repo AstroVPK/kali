@@ -114,7 +114,7 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 	return LnPosterior;
 	}
 
-double kali::calcLnPosterior(double *walkerPos, void *func_args) {
+double kali::calcLnPosterior(double *walkerPos, void *func_args, double &LnPrior, double &LnLikelihood) {
 	int threadNum = omp_get_thread_num();
 	LnLikeArgs *ptr2Args = reinterpret_cast<LnLikeArgs*>(func_args);
 	LnLikeArgs Args = *ptr2Args;
@@ -124,6 +124,8 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 	double LnPosterior = 0.0, old_dt = 0.0;
 	if (Systems[threadNum].checkMBHBParams(walkerPos) == 1) {
 		Systems[threadNum].setMBHB(walkerPos);
+        LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
+
 		#ifdef DEBUG_CALCLNPOSTERIOR
 		#pragma omp critical
 		{
@@ -135,7 +137,10 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 			fflush(0);
 		}
 		#endif
-		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + Systems[threadNum].computeLnPrior(ptr2Data);
+
+        LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		LnPosterior = LnLikelihood + LnPrior;
+
 		#ifdef DEBUG_CALCLNPOSTERIOR
 		#pragma omp critical
 		{
@@ -147,8 +152,11 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 			printf("\n");
 		}
 		#endif
+
 		} else {
-		LnPosterior = -infiniteVal;
+        LnPrior = -kali::infiniteVal;
+        LnLikelihood = -kali::infiniteVal;;
+    	LnPosterior = -kali::infiniteVal;
 		}
 	return LnPosterior;
 	}

@@ -178,6 +178,8 @@ class MBHBCARMATask(object):
     Day = 86164.090530833
     Year = 31557600.0
     SolarMass = 1.98855e30
+    kms2ms = 1.0e3
+    SolarMassPerCubicParsec = SolarMass/math.pow(Parsec, 3.0)
 
     _dict = multi_key_dict.multi_key_dict()
     _dict[r'$a_{1}$ (pc)', 0, r'0', r'a1', r'a_1', r'$a_{1}$', r'$a_{1}~\mathrm{(pc)}$',
@@ -224,20 +226,14 @@ class MBHBCARMATask(object):
             self._mcmcA = mcmcA
             self._Chain = np.require(
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._LnPosterior = np.require(
+            self._LnPrior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._deviance = np.require(
+            self._LnLikelihood = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = MBHBCARMATask_cython.MBHBCARMATask_cython(self._p, self._q, self._nthreads,
                                                                          self._nburn)
-            '''for i in xrange(self.p):
-                self._dict[r'$\alpha_{%d}$'%(i + 1), '$\tau_{\mathrm{AR}, %d}$ (d)'%(i + 1), self.r + i,
-                           r'%d'%(self.r + i)] = self.r + i
-            for i in xrange(self.q):
-                self._dict[r'$\beta_{%d}$'%(i), '$\tau_{\mathrm{MA}, %d}$ (d)'%(i + 1), self.r + self.p + i,
-                           r'%d'%(self.r + self.p + i)] = self.r + self.p + i
-            self._dict[r'$\mathrm{Amp}$', r'$\beta_{%d}$'%(self.q), self.r + self.p + self.q,
-                       r'%d'%(self.r + self.p + self.q)] = self.r + self.p + self.q'''
+            self._pDIC = None
+            self._dic = None
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -259,7 +255,8 @@ class MBHBCARMATask(object):
             self._taskCython.reset_CARMATask(value, self._q, self._nburn)
             self._p = value
             self._ndims = self._p + self._q + 1
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -276,7 +273,8 @@ class MBHBCARMATask(object):
             self._taskCython.reset_CARMATask(self._p, value, self._nburn)
             self._q = value
             self._ndims = self._p + self._q + 1
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -312,8 +310,12 @@ class MBHBCARMATask(object):
             assert value >= 0, r'nwalkers must be greater than or equal to 0'
             assert isinstance(value, int), r'nwalkers must be an integer'
             self._nwalkers = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -327,8 +329,12 @@ class MBHBCARMATask(object):
             assert value >= 0, r'nsteps must be greater than or equal to 0'
             assert isinstance(value, int), r'nsteps must be an integer'
             self._nsteps = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -408,20 +414,24 @@ class MBHBCARMATask(object):
         return self._timescaleChain
 
     @property
-    def LnPosterior(self):
-        return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnPrior(self):
+        return np.reshape(self._LnPrior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     @property
-    def deviance(self):
-        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnLikelihood(self):
+        return np.reshape(self._LnLikelihood, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def LnPosterior(self):
+        return self.LnPrior + self.LnLikelihood
+
+    @property
+    def pDIC(self):
+        return self._pDIC
 
     @property
     def dic(self):
-        if hasattr(self, '_dic'):
-            return self._dic
-        else:
-            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
-            return self._dic
+        return self._dic
 
     def __repr__(self):
         return "kali.mbhbcarma.MBHBCARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q,
@@ -488,8 +498,12 @@ class MBHBCARMATask(object):
             self._nburn = nburn
             self._nwalkers = nwalkers
             self._nsteps = nsteps
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -559,9 +573,209 @@ class MBHBCARMATask(object):
             self._taskCython.set_P(np.reshape(P, newshape=(self._p*self._p), order='F'), tnum)
             return newP
 
-    def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
-                 maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
-                 noiseSeed=None, tnum=None):
+    def epoch(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Epoch(tnum)
+
+    def period(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Period(tnum)
+
+    def a1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_A1(tnum)
+
+    def a2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_A2(tnum)
+
+    def m1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_M1(tnum)
+
+    def m2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_M2(tnum)
+
+    def m12(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_M12(tnum)
+
+    def mratio(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_M2OverM1(tnum)
+
+    def rPeribothron1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RPeribothron1(tnum)
+
+    def rPeribothron2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RPeribothron2(tnum)
+
+    def rApobothron1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RApobothron1(tnum)
+
+    def rApobothron2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RApobothron2(tnum)
+
+    def rPeribothron(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RPeribothronTot(tnum)
+
+    def rApobothron(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RApobothronTot(tnum)
+
+    def rS1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RS1(tnum)
+
+    def rS2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RS2(tnum)
+
+    def eccentricity(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Eccentricity(tnum)
+
+    def omega1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Omega1(tnum)
+
+    def omega2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Omega2(tnum)
+
+    def inclination(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Inclination(tnum)
+
+    def tau(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Tau(tnum)
+
+    def M(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_MeanAnomoly(tnum)
+
+    def E(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_EccentricAnomoly(tnum)
+
+    def nu(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_TrueAnomoly(tnum)
+
+    def r1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_R1(tnum)
+
+    def r2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_R2(tnum)
+
+    def theta1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Theta1(tnum)
+
+    def theta2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Theta2(tnum)
+
+    def Beta1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Beta1(tnum)
+
+    def Beta2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_Beta2(tnum)
+
+    def radialBeta1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RadialBeta1(tnum)
+
+    def radialBeta2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_RadialBeta2(tnum)
+
+    def dopplerFactor1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_DopplerFactor1(tnum)
+
+    def dopplerFactor2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_DopplerFactor2(tnum)
+
+    def beamingFactor1(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_BeamingFactor1(tnum)
+
+    def beamingFactor2(self, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_BeamingFactor2(tnum)
+
+    def aH(self, sigmaStars=200.0, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_aH(sigmaStars, tnum)
+
+    def aGW(self, sigmaStars=200.0, rhoStars=1000.0, H=16, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_aGW(sigmaStars, rhoStars, H, tnum)
+
+    def durationInHardState(self, sigmaStars=200.0, rhoStars=1000.0, H=16, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_durationInHardState(sigmaStars, rhoStars, H, tnum)
+
+    def ejectedMass(self, sigmaStars=200.0, rhoStars=1000.0, H=16, tnum=None):
+        if tnum is None:
+            tnum = 0
+        return self._taskCython.get_ejectedMass(sigmaStars, rhoStars, H, tnum)
+
+    def beam(self, duration=None, tIn=None, tnum=None, tolIR=1.0e-3,
+             fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
+             maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5):
         if tnum is None:
             tnum = 0
         if tIn is None and duration is not None:
@@ -579,6 +793,36 @@ class MBHBCARMATask(object):
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
+        self._taskCython.make_BeamedLC(
+            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
+            intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
+            intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, threadNum=tnum)
+        intrinsicLC._simulatedCadenceNum = numCadences - 1
+        intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
+        return intrinsicLC
+
+    def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
+                 maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
+                 tnum=None):
+        if tnum is None:
+            tnum = 0
+        if tIn is None and duration is not None:
+            numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
+            intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
+                                         deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
+        elif duration is None and tIn is not None:
+            numCadences = tIn.shape[0]
+            t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
+            for i in xrange(intrinsicLC.numCadences):
+                intrinsicLC.mask[i] = 1.0
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)
@@ -710,7 +954,6 @@ class MBHBCARMATask(object):
                 intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x,
                 intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
             intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1'''
-
         intrinsicLC._statistics()
 
     def logPrior(self, observedLC, forced=True, widthT=0.01, widthF=0.05, tnum=None):
@@ -1100,17 +1343,17 @@ class MBHBCARMATask(object):
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             sigmaFactor = 1.0e0
-            exp = ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
+            expVal = ((maxTLog10 - minTLog10)*np.random.random(self._p + self._q + 1) + minTLog10)
             a1Guess, a2Guess, eccentricityGuess = self.guess(periodEst)
             RhoGuess = np.require(np.array([a1Guess, a2Guess, periodEst, eccentricityGuess,
                                             random.uniform(0.0, 360.0), random.uniform(0.0, 90.0),
                                             random.uniform(observedLC.startT,
                                                            observedLC.startT + periodEst),
-                                            observedLC.mean] + (-1.0/np.power(10.0, exp)).tolist()),
+                                            observedLC.mean] + (-1.0/np.power(10.0, expVal)).tolist()),
                                   requirements=['F', 'A', 'W', 'O', 'E'])
             while noSuccess:
-                RhoGuess[self.r + self.p + self.q] = sigmaFactor*observedLC.std
-                ThetaGuess = coeffs(self.p, self.q, RhoGuess)
+                RhoGuess[self._r + self._p + self._q] = sigmaFactor*observedLC.std
+                ThetaGuess = coeffs(self._p, self._q, RhoGuess)
                 res = self.set(observedLC.dt, ThetaGuess)
                 lnPrior = self.logPrior(observedLC, widthT=widthT, widthF=widthF)
                 if res == 0 and not np.isinf(lnPrior):
@@ -1128,18 +1371,22 @@ class MBHBCARMATask(object):
             observedLC.maxTimescale*observedLC.T, np.min(observedLC.y), np.max(observedLC.y),
             observedLC.startT, observedLC.t, observedLC.x, observedLC.y, observedLC.yerr, observedLC.mask,
             self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA,
-            zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior,
+            zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPrior, self._LnLikelihood,
             periodEst, widthT*periodEst,
             observedLC.mean, widthF*observedLC.mean)
 
-        for stepNum in xrange(self.nsteps):
-            for walkerNum in xrange(self.nwalkers):
-                self._deviance[walkerNum +
-                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
-                                                                               self.nwalkers*stepNum]
+        meanTheta = list()
+        for dimNum in xrange(self.ndims):
+            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
+        meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
+        self.set(observedLC.dt, meanTheta)
+        devianceThetaBar = -2.0*self.logLikelihood(observedLC)
+        barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
+        self._pDIC = barDeviance - devianceThetaBar
+        self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
 
-    '''def smooth(self, observedLC, tnum=None):
+    def smooth(self, observedLC, tnum=None):
         if tnum is None:
             tnum = 0
         if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
@@ -1190,19 +1437,73 @@ class MBHBCARMATask(object):
                 observedLC.yerrSmooth[i] = unObsErr
                 observedLC.maskSmooth[i] = 0.0
 
-        preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
+        # preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
         res = self._taskCython.smooth_RTS(
             observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth,
-            observedLC.ySmooth - preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth,
-            observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
-        for i in xrange(observedLC.numCadencesSmooth):
+            observedLC.ySmooth, observedLC.yerrSmooth, observedLC.maskSmooth,
+            observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth,
+            observedLC.xSmooth, observedLC.xerrSmooth, tnum)
+        '''for i in xrange(observedLC.numCadencesSmooth):
             observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
             try:
                 observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
             except ValueError:
-                observedLC.xerrSmooth[i] = 0.0
+                observedLC.xerrSmooth[i] = 0.0'''
         observedLC._isSmoothed = True
-        return res'''
+        return res
+
+    @classmethod
+    def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
+        a1 = a1*cls.Parsec
+        a2 = a2*cls.Parsec
+        T = T*cls.Day
+        MTot = ((cls.fourPiSq*math.pow(a1 + a2, 3.0))/(cls.G*math.pow(T, 2.0)))/cls.SolarMass
+        MRat = a1/a2
+        m1 = (MTot*(1.0/(1.0 + MRat)))*cls.SolarMass
+        m2 = (MTot*(MRat/(1.0 + MRat)))*cls.SolarMass
+        MRed = m1*m2/(m1 + m2)
+        rPeri = ((a1 + a2)*(1.0 - eccentricity))/cls.Parsec
+        rApo = ((a1 + a2)*(1.0 + eccentricity))/cls.Parsec
+        rSch = ((2.0*cls.G*(MTot*cls.SolarMass))/(math.pow(cls.c, 2.0)))/cls.Parsec
+        aHard = ((cls.G*MRed)/(4.0*math.pow((sigmaStars*cls.kms2ms), 2.0)))/cls.Parsec
+        numer = 64.0*math.pow(cls.G, 2.0)*m1*m2*(MTot*cls.SolarMass)*(cls.kms2ms*sigmaStars)
+        denom = 5.0*H*math.pow(cls.c, 5.0)*(cls.SolarMassPerCubicParsec*rhoStars)
+        aGW = math.pow(numer/denom, 0.2)/cls.Parsec
+        THard = ((sigmaStars*cls.kms2ms
+                  )/(H*cls.G*(cls.SolarMassPerCubicParsec*rhoStars)*aGW*cls.Parsec))/cls.Year
+        MEject = (MTot*math.log(aHard/aGW))/1.0e6
+        MTot = MTot/1.0e6
+        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject
+
+    @property
+    def auxChain(self):
+        if hasattr(self, '_auxChain'):
+            return self._auxChain
+        else:
+            self._auxChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
+                                        requirements=['F', 'A', 'W', 'O', 'E'])
+            for stepNum in xrange(self.nsteps/2, self.nsteps, 1):
+                for walkerNum in xrange(self.nwalkers):
+                    a1 = self.Chain[0, walkerNum, stepNum]
+                    a2 = self.Chain[1, walkerNum, stepNum]
+                    T = self.Chain[2, walkerNum, stepNum]
+                    eccentricity = self.Chain[3, walkerNum, stepNum]
+                    mTot, q, rPeri, rApo, rSch, aHard, aGW, THard, MEject = self._auxillary(a1, a2,
+                                                                                            T, eccentricity)
+                    self._auxChain[0, walkerNum, stepNum] = a1
+                    self._auxChain[1, walkerNum, stepNum] = a2
+                    self._auxChain[2, walkerNum, stepNum] = T
+                    self._auxChain[3, walkerNum, stepNum] = eccentricity
+                    self._auxChain[4, walkerNum, stepNum] = mTot
+                    self._auxChain[5, walkerNum, stepNum] = q
+                    self._auxChain[6, walkerNum, stepNum] = rPeri
+                    self._auxChain[7, walkerNum, stepNum] = rApo
+                    self._auxChain[8, walkerNum, stepNum] = rSch
+                    self._auxChain[9, walkerNum, stepNum] = aHard
+                    self._auxChain[10, walkerNum, stepNum] = aGW
+                    self._auxChain[11, walkerNum, stepNum] = THard
+                    self._auxChain[12, walkerNum, stepNum] = MEject
+            return self._auxChain
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
                     best=False, median=False,
@@ -1267,7 +1568,6 @@ class MBHBCARMATask(object):
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.r, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
                        r'$\tau$ (d)', r'$F$']
-        maxOrb = np.max(self.timescaleChain[2, :, self.nsteps/2:])
         orbitExtents = [0.9, 0.9, (0.95*np.min(self.timescaleChain[2, :, self.nsteps/2:]),
                                    1.05*np.max(self.timescaleChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
                         0.9, (0.85*np.min(self.timescaleChain[7, :, self.nsteps/2:]),
@@ -1299,6 +1599,26 @@ class MBHBCARMATask(object):
                                               plot_datapoints=True,
                                               plot_contour_lines=False,
                                               pcolor_cmap=cm.gist_earth)
+
+        flatAuxChain = np.swapaxes(self.auxChain.reshape((13, -1), order='F'), axis1=0, axis2=1)
+        auxLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$',
+                     r'$M_{12}$ ($10^{6} \times M_{\odot}$)', r'$M_{2}/M_{1}$',
+                     r'$r_{\mathrm{Peribothron}}$ (pc)', r'$r_{\mathrm{Apobothron}}$ (pc)',
+                     r'$r_{\mathrm{Schwarzschild}}$ (pc)',
+                     r'$a_{\mathrm{Hard}}$ (pc)', r'$a_{\mathrm{GW}}$ (pc)', r'$T_{\mathrm{Hard}}$ (yr)',
+                     r'$M_{\mathrm{Eject}}$ ($10^{6} \times M_{\odot}$)']
+        auxExtents = [0.9, 0.9, (0.95*np.min(self.auxChain[2, :, self.nsteps/2:]),
+                                 1.05*np.max(self.auxChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
+                      0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
+        newFigAux = kali.util.triangle.corner(flatAuxChain, labels=auxLabels,
+                                              show_titles=True,
+                                              title_fmt='.2e',
+                                              quantiles=[0.16, 0.5, 0.84],
+                                              extents=auxExtents,
+                                              plot_contours=False,
+                                              plot_datapoints=True,
+                                              plot_contour_lines=False,
+                                              pcolor_cmap=cm.gist_earth)
         if doShow:
             plt.show(False)
-        return newFigSto, newFigOrb
+        return newFigSto, newFigOrb, newFigAux

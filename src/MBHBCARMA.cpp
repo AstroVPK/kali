@@ -241,7 +241,7 @@ double kali::calcLnPosterior(const vector<double> &x, vector<double>& grad, void
 	return LnPosterior;
 	}
 
-double kali::calcLnPosterior(double *walkerPos, void *func_args) {
+double kali::calcLnPosterior(double *walkerPos, void *func_args, double &LnPrior, double &LnLikelihood) {
 
 	int threadNum = omp_get_thread_num();
 
@@ -251,7 +251,7 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 	kali::LnLikeData *Data = Args.Data;
 	kali::MBHBCARMA *Systems = Args.Systems;
 	kali::LnLikeData *ptr2Data = Data;
-	double LnPrior = 0.0, LnPosterior = 0.0, old_dt = 0.0;
+	double LnPosterior = 0.0, old_dt = 0.0;
 
 	if (Systems[threadNum].checkMBHBCARMAParams(walkerPos) == 1) {
 		old_dt = Systems[threadNum].get_dt();
@@ -310,7 +310,8 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 			fflush(0);
 		#endif
 
-		LnPosterior = Systems[threadNum].computeLnLikelihood(ptr2Data) + LnPrior;
+        LnLikelihood = Systems[threadNum].computeLnLikelihood(ptr2Data);
+		LnPosterior = LnLikelihood + LnPrior;
 
 		Systems[threadNum].set_dt(old_dt);
 		Systems[threadNum].solveMBHBCARMA();
@@ -333,7 +334,9 @@ double kali::calcLnPosterior(double *walkerPos, void *func_args) {
 		#endif
 
 		} else {
-		LnPosterior = -kali::infiniteVal;
+        LnPrior = -kali::infiniteVal;
+        LnLikelihood = -kali::infiniteVal;;
+        LnPosterior = -kali::infiniteVal;
 		}
 	return LnPosterior;
 	}
@@ -2518,6 +2521,53 @@ void kali::MBHBCARMA::burnSystem(int numBurn, unsigned int burnSeed, double* bur
 		}
 	}
 
+void kali::MBHBCARMA::beamSystem(LnLikeData *ptr2Data) {
+	kali::LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+    double fracIntrinsicVar = Data.fracIntrinsicVar;
+    double fracNoiseToSignal = Data.fracNoiseToSignal;
+	double tolIR = Data.tolIR;
+    double startT = Data.startT;
+	double *t = Data.t;
+	double *x = Data.x;
+	double *mask = Data.mask;
+
+	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
+
+	double absMeanFlux = totalFlux; //absIntrinsicVar/fracIntrinsicVar;
+	double absFlux = 0.0, noiseLvl = 0.0, t_incr = 0.0, fracChange = 0.0;
+    #ifdef DEBUG_BEAMSYSTEM
+        printf("\n");
+        printf("absMeanFlux: %+e\n", absMeanFlux);
+    #endif
+
+    setEpoch(t[0] + startT);
+	x[0] = absMeanFlux*getBeamingFactor2();
+    #ifdef DEBUG_BEAMSYSTEM
+        printf("absMeanFlux: %+e\n", absMeanFlux);
+        printf("getBeamingFactor2(): %+e\n", getBeamingFactor2());
+        printf("x[0]: %+e\n", x[0]);
+    #endif
+
+	for (int i = 1; i < numCadences; ++i) {
+        setEpoch(t[i] + startT);
+		t_incr = t[i] - t[i - 1];
+		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
+
+		if (fracChange > tolIR) {
+			dt = t_incr;
+			}
+
+		x[i] = absMeanFlux*getBeamingFactor2();
+        #ifdef DEBUG_BEAMSYSTEM
+            printf("absMeanFlux: %+e\n", absMeanFlux);
+            printf("getBeamingFactor2(): %+e\n", getBeamingFactor2());
+            printf("x[%d]: %+e\n", i, x[i]);
+        #endif
+		}
+	}
+
 void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand) {
 	kali::LnLikeData Data = *ptr2Data;
 
@@ -3397,7 +3447,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		}
 	}*/
 
-/*int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth) {
+int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth) {
 	kali::LnLikeData Data = *ptr2Data;
 
 	int numCadences = Data.numCadences;
@@ -3430,7 +3480,8 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, F, p, 0.0, PMinus, p); // Compute PMinus = MScratch*F_Transpose
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, I, p, Q, p, 1.0, PMinus, p); // Compute PMinus = I*Q + PMinus;
 	cblas_dcopy(pSq, PMinus, 1, &PMinusList[0], 1); // Copy PMinus into PMinusList[0:pSq]
-	v = mask[0]*(y[0] - H[0]*XMinus[0]); // Compute v = y - H*X
+    double yVal = (y[0]/getBeamingFactor2()) - totalFlux;
+	v = mask[0]*(yVal - H[0]*XMinus[0]); // Compute v = y - H*X
 	cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 	S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 	SInv = 1.0/S;
@@ -3442,7 +3493,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 			}
 		}
 	cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
-	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[0], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, yVal, VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
 	cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
 	cblas_dcopy(p, X, 1, &XList[0], 1); // Copy X into XList[0:p]
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
@@ -3477,7 +3528,8 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 			viewMatrix(p,p,PMinus);
 		#endif
 		cblas_dcopy(pSq, PMinus, 1, &PMinusList[i*pSq], 1); // Copy PMinus into PMinusList[i*pSq:(i+1)*pSq]
-		v = mask[i]*(y[i] - H[0]*XMinus[0]); // Compute v = y - H*X
+        yVal = (y[i]/getBeamingFactor2()) - totalFlux;
+    	v = mask[i]*(yVal - H[0]*XMinus[0]); // Compute v = y - H*X
 		cblas_dgemv(CblasColMajor, CblasTrans, p, p, 1.0, PMinus, p, H, 1, 0.0, K, 1); // Compute K = PMinus*H_Transpose
 		S = cblas_ddot(p, K, 1, H, 1) + R[0]; // Compute S = H*K + R
 		SInv = 1.0/S;
@@ -3489,7 +3541,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 				}
 			}
 		cblas_dcopy(p, K, 1, VScratch, 1); // Compute VScratch = K
-		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, y[i], VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
+		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, MScratch, p, XMinus, 1, yVal, VScratch, 1); // Compute X = VScratch*y[i] + MScratch*XMinus
 		cblas_dcopy(p, VScratch, 1, X, 1); // Compute X = VScratch
 		cblas_dcopy(p, X, 1, &XList[i*p], 1); // Copy X into XList[i*p:(i+1)*p]
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, p, p, p, 1.0, MScratch, p, PMinus, p, 0.0, P, p); // Compute P = IMinusKH*PMinus
@@ -3518,7 +3570,13 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	// Reverse iteration of RTS Smoother
 	// Iterate through last point
 	cblas_dcopy(p, &XList[(numCadences - 1)*p], 1, &XSmooth[(numCadences - 1)*p], 1); // Compute XSmooth_{N} = X^{+}_{N}
+    xSmooth[numCadences - 1] = (XSmooth[(numCadences - 1)*p] + totalFlux)*getBeamingFactor2();
 	cblas_dcopy(pSq, &PList[(numCadences - 1)*pSq], 1, &PSmooth[(numCadences - 1)*pSq], 1); // Compute PSmooth_{N} = P^{+}_{N}
+    try {
+        xerrSmooth[numCadences - 1] = sqrt(PSmooth[(numCadences - 1)*pSq])*getBeamingFactor2();
+    } catch (exception &err) {
+        xerrSmooth[numCadences - 1] = 0.0;
+    }
 	#ifdef DEBUG_RTSSMOOTHER
 		printf("PSmooth_{%d}\n",numCadences-1);
 		viewMatrix(p,p,&PSmooth[(numCadences - 1)*pSq]);
@@ -3608,6 +3666,11 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		cblas_dcopy(pSq, &PList[i*pSq], 1, PMinus, 1); // Copy PMinus = PSmooth_{i}
 		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, p, p, p, 1.0, MScratch, p, KScratch, p, 1.0, PMinus, p); // Compute PMinus = PMinus + MScratch*KScratch_Transpose
 		cblas_dcopy(pSq, PMinus, 1, &PSmooth[i*pSq], 1); // Copy PSmooth_{i} = PMinus
+        try {
+            xerrSmooth[i] = sqrt(PSmooth[i*pSq])*getBeamingFactor2();
+        } catch (exception &err) {
+            xerrSmooth[i] = 0.0;
+        }
 
 		// Compute XSmooth_{i} = X_{i} + K_{i}*(XSmooth_{i + 1} - XMinus_{i + 1})
 		#pragma omp simd
@@ -3617,7 +3680,8 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 		cblas_dcopy(p, &XList[i*p], 1, XMinus, 1); // Copy XMinus = XSmooth_{i}
 		cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, KScratch, p, VScratch, 1, 1.0, XMinus, 1); // Compute XMinus = XMinus + KScratch*VScratch
 		cblas_dcopy(p, XMinus, 1, &XSmooth[i*p], 1);// Copy XSmooth_{i} = VScratch
-		}
+        xSmooth[i] = (XSmooth[i*p] + totalFlux)*getBeamingFactor2();
+        }
 
 	// Deallocate arrays used to hold MScratch2, XMinus, PMinus, X and P for backward recursion
 	if (KScratch) {
@@ -3644,4 +3708,4 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
 	Data.cadenceNum = numCadences - 1;
 	Data.currentLnLikelihood = LnLikelihood;
 	return 0;
-}*/
+}

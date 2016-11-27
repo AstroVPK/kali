@@ -18,7 +18,7 @@ double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs, double & LnPrior, double &LnLikelihood);
 
 void getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut);
 

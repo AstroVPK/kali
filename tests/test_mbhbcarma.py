@@ -227,15 +227,14 @@ class TestMBHBCARMATask(unittest.TestCase):
         newTask_carma = kali.carma.CARMATask(self.p, self.q)
         res_carma = newTask_carma.set(dt, theta_carma)
         newLC_carma = newTask_carma.simulate(duration=2000.0, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
-                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                             distSeed=DISTSEED)
         newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
         theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.1, 0.0, 90.0, 0.0, newLC_carma.mean,
                                     0.05846154, 0.00076923, 0.009461, 0.0236525])
         newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
         res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
         newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=2000.0, fracNoiseToSignal=N2S,
-                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
-                                                     noiseSeed=NOISESEED)
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
         newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
         lcRatio = newLC_mbhbcarma.y/newLC_carma.y
         self.assertNotEqual(np.mean(lcRatio), 0.0)
@@ -247,7 +246,7 @@ class TestMBHBCARMATask(unittest.TestCase):
         newTask_carma = kali.carma.CARMATask(self.p, self.q)
         res_carma = newTask_carma.set(dt, theta_carma)
         newLC_carma = newTask_carma.simulate(duration=2000.0, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
-                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                             distSeed=DISTSEED)
         newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
         logPrior_carma = newTask_carma.logPrior(newLC_carma)
         self.assertEqual(logPrior_carma, 0.0)
@@ -256,8 +255,7 @@ class TestMBHBCARMATask(unittest.TestCase):
         newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
         res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
         newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=2000.0, fracNoiseToSignal=N2S,
-                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
-                                                     noiseSeed=NOISESEED)
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
         newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
         logPrior_mbhbcarma = newTask_mbhbcarma.logPrior(newLC_mbhbcarma)
         self.assertNotEqual(logPrior_mbhbcarma, 0.0)
@@ -270,7 +268,7 @@ class TestMBHBCARMATask(unittest.TestCase):
         newTask_carma = kali.carma.CARMATask(self.p, self.q)
         res_carma = newTask_carma.set(dt, theta_carma)
         newLC_carma = newTask_carma.simulate(duration=duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
-                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                             distSeed=DISTSEED)
         newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
         logLikelihood_carma = newTask_carma.logLikelihood(newLC_carma)
         self.assertNotEqual(logLikelihood_carma, 0.0)
@@ -279,8 +277,7 @@ class TestMBHBCARMATask(unittest.TestCase):
         newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
         res_mbhbcarma = newTask_mbhbcarma.set(dt, theta_mbhbcarma)
         newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=duration, fracNoiseToSignal=N2S,
-                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
-                                                     noiseSeed=NOISESEED)
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
         newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
         logLikelihood_mbhbcarma = newTask_mbhbcarma.logLikelihood(newLC_mbhbcarma)
         self.assertNotEqual(logLikelihood_mbhbcarma, 0.0)
@@ -313,7 +310,7 @@ class TestFit(unittest.TestCase):
                                              nwalkers=NWALKERS, nsteps=NSTEPS)
         res_carma = newTask_carma.set(self.dt, theta_carma)
         newLC_carma = newTask_carma.simulate(duration=self.duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
-                                             distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                             distSeed=DISTSEED)
         newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
         newLC_carma.sampler = 'sincSampler'
         sampledLC_carma = newLC_carma.sample(width=self.sincWidth, center=self.sincCenter,
@@ -325,8 +322,7 @@ class TestFit(unittest.TestCase):
                                                          nwalkers=NWALKERS, nsteps=NSTEPS)
         res_mbhbcarma = newTask_mbhbcarma.set(self.dt, theta_mbhbcarma)
         newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=self.duration, fracNoiseToSignal=N2S,
-                                                     burnSeed=BURNSEED, distSeed=DISTSEED,
-                                                     noiseSeed=NOISESEED)
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
         newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
         newLC_mbhbcarma.sampler = 'sincSampler'
         sampledLC_mbhbcarma = newLC_mbhbcarma.sample(width=self.sincWidth, center=self.sincCenter,
@@ -335,6 +331,113 @@ class TestFit(unittest.TestCase):
         newTask_mbhbcarma.fit(newLC_mbhbcarma)
         self.assertNotEqual(np.median(newTask_mbhbcarma.timescaleChain[self.r + self.p + self.q,
                                                                        :, NSTEPS/2:]), 0.0)
+
+
+@unittest.skipIf(skipWorking, 'Works!')
+class TestBeam(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 2
+        self.q = 1
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.dt = 2.0
+        self.duration = 20000.0
+        self.sincWidth = 20.0
+        self.sincCenter = self.duration/2.0
+
+    def tearDown(self):
+        pass
+
+    def test_makeBeamedLC(self):
+        N2S = 1.0e-18
+        ENTRY = 100
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(self.dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=self.duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+
+        theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.1, 0.0, 90.0, 0.0, newLC_carma.mean,
+                                    0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(self.dt, theta_mbhbcarma)
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(duration=self.duration, fracNoiseToSignal=N2S,
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
+        newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+
+        beamLC_mbhbcarma = newTask_mbhbcarma.beam(duration=self.duration, fracNoiseToSignal=N2S)
+        beamVal = beamLC_mbhbcarma.x[ENTRY]/newLC_carma.mean
+        self.assertEqual(beamVal*(newLC_carma.x[ENTRY] + newLC_carma.mean), newLC_mbhbcarma.x[ENTRY])
+
+    def test_makeIrrBeamedLC(self):
+        N2S = 1.0e-18
+        ENTRY = 25
+        theta_carma = np.array([0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(self.dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=self.duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.sampler = 'sincSampler'
+        sampledLC_carma = newLC_carma.sample(width=self.sincWidth, center=self.sincCenter,
+                                             sampleSeed=SAMPLESEED)
+        newLC2_carma = newTask_carma.simulate(tIn=sampledLC_carma.t, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                              distSeed=DISTSEED)
+
+        theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.1, 0.0, 90.0, 0.0, newLC_carma.mean,
+                                    0.05846154, 0.00076923, 0.009461, 0.0236525])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(self.dt, theta_mbhbcarma)
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(tIn=sampledLC_carma.t, fracNoiseToSignal=N2S,
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
+        newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+
+        beamLC_mbhbcarma = newTask_mbhbcarma.beam(tIn=sampledLC_carma.t, fracNoiseToSignal=N2S)
+        beamVal = beamLC_mbhbcarma.x[ENTRY]/newLC_carma.mean
+        self.assertEqual(beamVal*(newLC2_carma.x[ENTRY] + newLC_carma.mean), newLC_mbhbcarma.x[ENTRY])
+
+
+@unittest.skipIf(skipWorking, 'Works!')
+class TestSmooth(unittest.TestCase):
+
+    def setUp(self):
+        self.p = 2
+        self.q = 1
+        self.r = kali.mbhbcarma.MBHBCARMATask(self.p, self.q).r
+        self.dt = 2.0
+        self.duration = 20000.0
+        self.sincWidth = 20.0
+        self.sincCenter = self.duration/2.0
+
+    def tearDown(self):
+        pass
+
+    def test_makeSmoothIrrBeamedLC(self):
+        N2S = 1.0e-18
+        ENTRY = 100
+        rho_carma = np.array([-1.0/self.duration/20.0, -1.0/100.0, -1.0/25.0, 1.0])
+        theta_carma = kali.carma.coeffs(self.p, self.q, rho_carma)
+        newTask_carma = kali.carma.CARMATask(self.p, self.q)
+        res_carma = newTask_carma.set(self.dt, theta_carma)
+        newLC_carma = newTask_carma.simulate(duration=self.duration, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                             distSeed=DISTSEED)
+        newTask_carma.observe(newLC_carma, noiseSeed=NOISESEED)
+        newLC_carma.sampler = 'sincSampler'
+        sampledLC_carma = newLC_carma.sample(width=self.sincWidth, center=self.sincCenter,
+                                             sampleSeed=SAMPLESEED)
+        newLC2_carma = newTask_carma.simulate(tIn=sampledLC_carma.t, fracNoiseToSignal=N2S, burnSeed=BURNSEED,
+                                              distSeed=DISTSEED)
+
+        theta_mbhbcarma = np.array([0.01, 0.02, 3.0*DayInYear, 0.1, 0.0, 90.0, 0.0, newLC_carma.mean,
+                                    theta_carma[0], theta_carma[1], theta_carma[2], theta_carma[3]])
+        newTask_mbhbcarma = kali.mbhbcarma.MBHBCARMATask(self.p, self.q)
+        res_mbhbcarma = newTask_mbhbcarma.set(self.dt, theta_mbhbcarma)
+        newLC_mbhbcarma = newTask_mbhbcarma.simulate(tIn=sampledLC_carma.t, fracNoiseToSignal=N2S,
+                                                     burnSeed=BURNSEED, distSeed=DISTSEED)
+        newTask_mbhbcarma.observe(newLC_mbhbcarma, noiseSeed=NOISESEED)
+        newTask_mbhbcarma.smooth(newLC_mbhbcarma)
+        self.assertNotEqual(newLC_mbhbcarma.xSmooth[ENTRY], 0.0)
 
 if __name__ == "__main__":
     unittest.main()

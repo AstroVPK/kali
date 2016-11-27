@@ -187,20 +187,14 @@ class CARMATask(object):
             self._mcmcA = mcmcA
             self._Chain = np.require(
                 np.zeros(self._ndims*self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._LnPosterior = np.require(
+            self._LnPrior = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
-            self._deviance = np.require(
+            self._LnLikelihood = np.require(
                 np.zeros(self._nwalkers*self._nsteps), requirements=['F', 'A', 'W', 'O', 'E'])
             self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads,
                                                                  self._nburn)
-            '''for i in xrange(self.p):
-                self._dict[r'$\alpha_{%d}$'%(i + 1), '$\tau_{\mathrm{AR}, %d}$ (d)'%(i + 1), self.r + i,
-                           r'%d'%(self.r + i)] = self.r + i
-            for i in xrange(self.q):
-                self._dict[r'$\beta_{%d}$'%(i), '$\tau_{\mathrm{MA}, %d}$ (d)'%(i + 1), self.r + self.p + i,
-                           r'%d'%(self.r + self.p + i)] = self.r + self.p + i
-            self._dict[r'$\mathrm{Amp}$', r'$\beta_{%d}$'%(self.q), self.r + self.p + self.q,
-                       r'%d'%(self.r + self.p + self.q)] = self.r + self.p + self.q'''
+            self._pDIC = None
+            self._dic = None
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -222,7 +216,8 @@ class CARMATask(object):
             self._taskCython.reset_CARMATask(value, self._q, self._nburn)
             self._p = value
             self._ndims = self._p + self._q + 1
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -239,7 +234,8 @@ class CARMATask(object):
             self._taskCython.reset_CARMATask(self._p, value, self._nburn)
             self._q = value
             self._ndims = self._p + self._q + 1
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -275,8 +271,12 @@ class CARMATask(object):
             assert value >= 0, r'nwalkers must be greater than or equal to 0'
             assert isinstance(value, int), r'nwalkers must be an integer'
             self._nwalkers = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -290,8 +290,12 @@ class CARMATask(object):
             assert value >= 0, r'nsteps must be greater than or equal to 0'
             assert isinstance(value, int), r'nsteps must be an integer'
             self._nsteps = value
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -371,20 +375,24 @@ class CARMATask(object):
         return self._timescaleChain
 
     @property
-    def LnPosterior(self):
-        return np.reshape(self._LnPosterior, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnPrior(self):
+        return np.reshape(self._LnPrior, newshape=(self._nwalkers, self._nsteps), order='F')
 
     @property
-    def deviance(self):
-        return np.reshape(self._deviance, newshape=(self._nwalkers, self._nsteps), order='F')
+    def LnLikelihood(self):
+        return np.reshape(self._LnLikelihood, newshape=(self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def LnPosterior(self):
+        return self.LnPrior + self.LnLikelihood
+
+    @property
+    def pDIC(self):
+        return self._pDIC
 
     @property
     def dic(self):
-        if hasattr(self, '_dic'):
-            return self._dic
-        else:
-            self._dic = 0.5*np.var(self.deviance[:, self.nsteps/2]) + np.mean(self.deviance[:, self.nsteps/2])
-            return self._dic
+        return self._dic
 
     def __repr__(self):
         return "kali.carma.CARMATask(%d, %d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
@@ -451,8 +459,12 @@ class CARMATask(object):
             self._nburn = nburn
             self._nwalkers = nwalkers
             self._nsteps = nsteps
-            self._Chain = np.zeros(self._ndims*self._nwalkers*self._nsteps)
-            self._LnPosterior = np.zeros(self._nwalkers*self._nsteps)
+            self._Chain = np.require(np.zeros(self._ndims*self._nwalkers*self._nsteps),
+                                     requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnPrior = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                       requirements=['F', 'A', 'W', 'O', 'E'])
+            self._LnLikelihood = np.require(np.zeros(self._nwalkers*self._nsteps),
+                                            requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -524,7 +536,7 @@ class CARMATask(object):
 
     def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
                  maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
-                 noiseSeed=None, tnum=None):
+                 tnum=None):
         if tnum is None:
             tnum = 0
         if tIn is None and duration is not None:
@@ -542,6 +554,8 @@ class CARMATask(object):
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
+            for i in xrange(intrinsicLC.numCadences):
+                intrinsicLC.mask[i] = 1.0
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)
@@ -566,8 +580,8 @@ class CARMATask(object):
             rand.rdrand(randSeed)
             distSeed = randSeed[0]
         if noiseSeed is None:
-            rand.rdrand(randSeed)
-            noiseSeed = randSeed[0]
+            rand.rdrand(noiseSeed)
+            distSeed = randSeed[0]
         if intrinsicLC.pSim != self.p:
             intrinsicLC.pSim = self.p
         if intrinsicLC.qSim != self.q:
@@ -630,30 +644,7 @@ class CARMATask(object):
         intrinsicLC.y = newy
         intrinsicLC.yerr = newyerr
         intrinsicLC.mask = newmask
-
-        count = int(np.sum(intrinsicLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
-            yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
-        if count > 0.0:
-            intrinsicLC._mean = y_meanSum/count
-            intrinsicLC._meanerr = yerr_meanSum/count
-        else:
-            intrinsicLC._mean = 0.0
-            intrinsicLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
-            yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
-        if count > 0.0:
-            intrinsicLC._std = math.sqrt(y_stdSum/count)
-            intrinsicLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            intrinsicLC._std = 0.0
-            intrinsicLC._stderr = 0.0
+        intrinsicLC._statistics()
 
     def observe(self, intrinsicLC, noiseSeed=None, tnum=None):
         if tnum is None:
@@ -673,30 +664,7 @@ class CARMATask(object):
                 intrinsicLC.fracIntrinsicVar, intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x,
                 intrinsicLC.y, intrinsicLC.yerr, intrinsicLC.mask, noiseSeed, threadNum=tnum)
             intrinsicLC._observedCadenceNum = intrinsicLC._numCadences - 1
-
-        count = int(np.sum(intrinsicLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
-            yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
-        if count > 0.0:
-            intrinsicLC._mean = y_meanSum/count
-            intrinsicLC._meanerr = yerr_meanSum/count
-        else:
-            intrinsicLC._mean = 0.0
-            intrinsicLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
-            y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
-            yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
-        if count > 0.0:
-            intrinsicLC._std = math.sqrt(y_stdSum/count)
-            intrinsicLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            intrinsicLC._std = 0.0
-            intrinsicLC._stderr = 0.0
+        intrinsicLC._statistics()
 
     def logPrior(self, observedLC, forced=True, tnum=None):
         if tnum is None:
@@ -1019,13 +987,17 @@ class CARMATask(object):
             observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t,
             observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask, self.nwalkers,
             self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart,
-            self._Chain, self._LnPosterior)
+            self._Chain, self._LnPrior, self._LnLikelihood)
 
-        for stepNum in xrange(self.nsteps):
-            for walkerNum in xrange(self.nwalkers):
-                self._deviance[walkerNum +
-                               self.nwalkers*stepNum] = -2.0*self._LnPosterior[walkerNum +
-                                                                               self.nwalkers*stepNum]
+        meanTheta = list()
+        for dimNum in xrange(self.ndims):
+            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
+        meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
+        self.set(observedLC.dt, meanTheta)
+        devianceThetaBar = -2.0*self.logLikelihood(observedLC)
+        barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
+        self._pDIC = barDeviance - devianceThetaBar
+        self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
 
     def smooth(self, observedLC, tnum=None):

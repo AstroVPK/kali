@@ -38,7 +38,7 @@
 
 using namespace std;
 
-kali::EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthreads, double a, double (*func)(double* x, void* funcArgs), void* funcArgs, unsigned int zSeed, unsigned int bernoulliSeed, unsigned int walkerSeed) {
+kali::EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int nthreads, double a, double (*func)(double* x, void* funcArgs, double &LnPriorVal, double &LnLikelihoodVal), void* funcArgs, unsigned int zSeed, unsigned int bernoulliSeed, unsigned int walkerSeed) {
 	#ifdef DEBUG_CTORENSEMBLESAMPLER
 	printf("EnsembleSampler - Constructing obj at %p!\n",this);
 	#endif
@@ -83,12 +83,14 @@ kali::EnsembleSampler::EnsembleSampler(int ndims, int nwalkers, int nsteps, int 
 	Zs = static_cast<double*>(_mm_malloc(numChoices*sizeof(double),64));
 	WalkerChoice = static_cast<int*>(_mm_malloc(numChoices*sizeof(int),64));
 	MoveYesNo = static_cast<int*>(_mm_malloc(numChoices*sizeof(int),64));
-	LnLike = static_cast<double*>(_mm_malloc(numChoices*sizeof(double),64));
+    LnPrior = static_cast<double*>(_mm_malloc(numChoices*sizeof(double),64));
+    LnLike = static_cast<double*>(_mm_malloc(numChoices*sizeof(double),64));
 
 	for (int choiceNum = 0; choiceNum < numChoices; choiceNum++) {
 		Zs[choiceNum] = 0.0;
 		WalkerChoice[choiceNum] = 0;
 		MoveYesNo[choiceNum] = 0;
+        LnPrior[choiceNum] = 0.0;
 		LnLike[choiceNum] = 0.0;
 		}
 
@@ -168,6 +170,11 @@ kali::EnsembleSampler::~EnsembleSampler() {
 		MoveYesNo = nullptr;
 		}
 
+    if (LnPrior) {
+    	_mm_free(LnPrior);
+    	LnPrior = nullptr;
+    	}
+
 	if (LnLike) {
 		_mm_free(LnLike);
 		LnLike = nullptr;
@@ -217,10 +224,10 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 	printf("runMCMC - numChoices: %d\n",numChoices);
 	#endif
 
-	double *p2Chain = &Chain[0], *p2LnLike = &LnLike[0], *p2Zs = &Zs[0];
+	double *p2Chain = &Chain[0], *p2LnPrior = &LnPrior[0], *p2LnLike = &LnLike[0], *p2Zs = &Zs[0];
 	int *p2WalkerChoice = &WalkerChoice[0], *p2MoveYesNo = &MoveYesNo[0];
 
-	double (*p2Func)(double* x, void* FuncArgs) = Func;
+	double (*p2Func)(double* x, void* FuncArgs, double &LnPriorVal, double &LnLikelihoodVal) = Func;
 	void* p2FuncArgs = FuncArgs;
 
 	#ifdef DEBUG_RUNMCMC_DEEP
@@ -232,7 +239,7 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 		}
 	#endif
 
-	#pragma omp parallel for default(none) shared(nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnLike,p2Func,p2FuncArgs,initPos)
+	#pragma omp parallel for default(none) shared(nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnPrior,p2LnLike,p2Func,p2FuncArgs,initPos)
 	for (int walkerNum = 0; walkerNum < nwalkers; walkerNum++) {
 
 		#ifdef DEBUG_RUNMCMC_OMP
@@ -265,10 +272,11 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 		fflush(0);
 		#endif
 
-		p2LnLike[walkerNum] = p2Func(currWalkerNewPos, p2FuncArgs);
+		double LnPostVal = p2Func(currWalkerNewPos, p2FuncArgs, p2LnPrior[walkerNum], p2LnLike[walkerNum]);
 
 		#ifdef DEBUG_RUNMCMC
-		printf("runMCMC - Thread: %d; LnLike[%d]: %f\n",threadNum,walkerNum,p2LnLike[walkerNum]);
+        printf("runMCMC - Thread: %d; LnPrior[%d]: %f\n",threadNum,walkerNum,p2LnPrior[walkerNum]);
+		printf("runMCMC - Thread: %d;  LnLike[%d]: %f\n",threadNum,walkerNum,p2LnLike[walkerNum]);
 		printf("\n");
 		#endif
 		}
@@ -321,7 +329,7 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 			/*!
 			Move over walkers in current sub-chain
 			*/
-			#pragma omp parallel for default(none) shared(stepNum,subSetNum,log2OfE,nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnLike,p2Func,p2FuncArgs,currSubSetOld,compSubSetOld,currSubSetNew,p2Zs,p2WalkerChoice,p2MoveYesNo,BernoulliStream)// num_threads(numThreads)
+			#pragma omp parallel for default(none) shared(stepNum,subSetNum,log2OfE,nwalkers,ndims,nthreads,sizeChain,sizeStep,sizeHalfStep,halfNumWalkers,p2Chain,p2LnPrior,p2LnLike,p2Func,p2FuncArgs,currSubSetOld,compSubSetOld,currSubSetNew,p2Zs,p2WalkerChoice,p2MoveYesNo,BernoulliStream)// num_threads(numThreads)
 			for (int walkerNum = 0; walkerNum < halfNumWalkers; walkerNum++) {
 
 				#ifdef DEBUG_RUNMCMC_OMP
@@ -332,7 +340,8 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 				#endif
 
 				int threadNum = omp_get_thread_num();
-				double newLnLike = 0.0, oldLnLike = 0.0, pAccept = 0.0;
+				double newLnPost = 0.0, oldLnPost = 0.0, pAccept = 0.0;
+                double newLnPrior = 0.0, newLnLike = 0.0, oldLnPrior = 0.0, oldLnLike = 0.0;
 				double *compWalkerOldPos = nullptr, *currWalkerOldPos = nullptr, *currWalkerNewPos = nullptr;
 
 				/*!
@@ -391,25 +400,27 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 				/*!
 				Now compute the logLike at the new location and fetch the LnLike at the old location.
 				*/
-				newLnLike = p2Func(currWalkerNewPos, p2FuncArgs);
+				newLnPost = p2Func(currWalkerNewPos, p2FuncArgs, newLnPrior, newLnLike);
+                oldLnPrior = p2LnPrior[walkerNum + subSetNum*halfNumWalkers + (stepNum-1)*nwalkers];
 				oldLnLike = p2LnLike[walkerNum + subSetNum*halfNumWalkers + (stepNum-1)*nwalkers];
-				//oldLnLike = p2Func(currWalkerOldPos, p2FuncArgs);
+                oldLnPost = oldLnPrior + oldLnLike;
+				//oldLnPost = p2Func(currWalkerOldPos, p2FuncArgs);
 
 				#ifdef DEBUG_RUNMCMC
-				printf("runMCMC - threadNum: %d; stepNum: %d; currWalkerNum: %d; Old LnLike: %f\n",threadNum,stepNum,walkerNum+halfNumWalkers*subSetNum,oldLnLike);
-				printf("runMCMC - threadNum: %d; stepNum: %d; currWalkerNum: %d; New LnLike: %f\n",threadNum,stepNum,walkerNum+halfNumWalkers*subSetNum,newLnLike);
+				printf("runMCMC - threadNum: %d; stepNum: %d; currWalkerNum: %d; Old LnLike: %f\n",threadNum,stepNum,walkerNum+halfNumWalkers*subSetNum,oldLnPost);
+				printf("runMCMC - threadNum: %d; stepNum: %d; currWalkerNum: %d; New LnLike: %f\n",threadNum,stepNum,walkerNum+halfNumWalkers*subSetNum,newLnPost);
 				#endif
 
 				/*!
 				Calculate likelihood of accepting proposal. If both log likelihoods are non-neg infinity, calculate it. If the new likelihood is
 				*/
-				if ((oldLnLike != -HUGE_VAL) and (newLnLike != -HUGE_VAL)) {
-					pAccept = exp(min(0.0, (ndims-1)*(log2(p2Zs[(stepNum-1)*nwalkers + subSetNum*halfNumWalkers + walkerNum])/log2OfE) + newLnLike - oldLnLike));
-					} else if ((oldLnLike == -HUGE_VAL) and (newLnLike != -HUGE_VAL)) {
+				if ((oldLnPost != -HUGE_VAL) and (newLnPost != -HUGE_VAL)) {
+					pAccept = exp(min(0.0, (ndims-1)*(log2(p2Zs[(stepNum-1)*nwalkers + subSetNum*halfNumWalkers + walkerNum])/log2OfE) + newLnPost - oldLnPost));
+					} else if ((oldLnPost == -HUGE_VAL) and (newLnPost != -HUGE_VAL)) {
 					pAccept = 1.0;
-					} else if ((oldLnLike != -HUGE_VAL) and (newLnLike == -HUGE_VAL)) {
+					} else if ((oldLnPost != -HUGE_VAL) and (newLnPost == -HUGE_VAL)) {
 					pAccept = 0.0;
-					} else if ((oldLnLike == -HUGE_VAL) and (newLnLike == -HUGE_VAL)) {
+					} else if ((oldLnPost == -HUGE_VAL) and (newLnPost == -HUGE_VAL)) {
 					pAccept = 0.0;
 					}
 
@@ -431,9 +442,11 @@ void kali::EnsembleSampler::runMCMC(double* initPos) {
 				Check the result of the coin toss. Based on the result, either move the walker, or leave it alone. Write out the LnLike to the correct location.
 				*/
 				if (p2MoveYesNo[(stepNum-1)*nwalkers + subSetNum*halfNumWalkers + walkerNum] == 1) { // Record the new LnLike as the LnLike for this walker. He has already moved so do nothing to his position.
+                    p2LnPrior[walkerNum + subSetNum*halfNumWalkers + stepNum*nwalkers] = newLnPrior;
 					p2LnLike[walkerNum + subSetNum*halfNumWalkers + stepNum*nwalkers] = newLnLike;
 					} else { // Record the old LnLike as the LnLike for this walker. Move the walker's position back.
-					p2LnLike[walkerNum + subSetNum*halfNumWalkers + stepNum*nwalkers] = oldLnLike;
+                    p2LnPrior[walkerNum + subSetNum*halfNumWalkers + stepNum*nwalkers] = oldLnPrior;
+                    p2LnLike[walkerNum + subSetNum*halfNumWalkers + stepNum*nwalkers] = oldLnLike;
 					for (int dimNum = 0; dimNum < ndims; dimNum++) {
 						currWalkerNewPos[dimNum] = currWalkerOldPos[dimNum];
 						}
@@ -488,14 +501,16 @@ void kali::EnsembleSampler::getChain(double *ChainPtr) {
 		}
 	}
 
-void kali::EnsembleSampler::getLnLike(double *LnLikePtr) {
+void kali::EnsembleSampler::getChainVals(double *LnPriorPtr, double *LnLikePtr) {
 	int nsteps = numSteps;
 	int nwalkers = numWalkers;
 	int ndims = numDims;
-	int sizeLnLike = numWalkers*numSteps;
+	int sizeChain = numWalkers*numSteps;
+    double* Ptr2LnPrior = &LnPrior[0];
 	double* Ptr2LnLike = &LnLike[0];
-	#pragma omp parallel for simd default(none) shared(sizeLnLike, LnLikePtr, Ptr2LnLike)
-	for (int i = 0; i < sizeLnLike; ++i) {
-		LnLikePtr[i] = Ptr2LnLike[i];
+	#pragma omp parallel for simd default(none) shared(sizeChain, LnPriorPtr, LnLikePtr, Ptr2LnPrior, Ptr2LnLike)
+	for (int i = 0; i < sizeChain; ++i) {
+        LnPriorPtr[i] = Ptr2LnPrior[i];
+        LnLikePtr[i] = Ptr2LnLike[i];
 		}
 	}

@@ -18,7 +18,7 @@ double calcLnPrior(double* walkerPos, void* vdPtr2LnLikeArgs);
 
 double calcLnPosterior(const vector<double> &x, vector<double>& grad, void* p2Args);
 
-double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs);
+double calcLnPosterior(double* walkerPos, void* vdPtr2LnLikeArgs, double & LnPrior, double &LnLikelihood);
 
 double d2r(double degreeVal);
 double r2d(double radianVal);
@@ -218,6 +218,7 @@ public:
 	double getIntrinsicVar();
 
 	void burnSystem(int numBurn, unsigned int burnSeed, double* burnRand);
+	void beamSystem(LnLikeData *ptr2Data);
 	void simulateSystem(LnLikeData *ptr2LnLikeData, unsigned int distSeed, double *distRand);
 	//void extendSystem(LnLikeData *ptr2Data, unsigned int distSeed, double *distRand);
 	double getMeanFlux(LnLikeData *ptr2Data);
@@ -227,7 +228,7 @@ public:
 	//double updateLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
 	//void computeACVF(int numLags, double *Lags, double* ACVF);
-	//int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth);
+	int RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth);
 	};
 
 struct LnLikeArgs {

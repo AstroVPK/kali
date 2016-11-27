@@ -62,7 +62,7 @@ class TestIrregularCARMA(unittest.TestCase):
         self.theta = kali.carma.coeffs(2, 1, self.rho)
         self.nt = kali.carma.CARMATask(2, 1)
         self.nt.set(self.dt, self.theta)
-        self.nl1 = self.nt.simulate(duration=300.0, burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
+        self.nl1 = self.nt.simulate(duration=300.0, burnSeed=BURNSEED, distSeed=DISTSEED)
 
     def tearDown(self):
         del self.nl1
@@ -73,7 +73,7 @@ class TestIrregularCARMA(unittest.TestCase):
     def test_irregularSimulate(self):
         tInOff = np.random.normal(0.0, (self.nl1.t[1] - self.nl1.t[0])/10.0, self.nl1.t.shape[0])
         tIn = self.nl1.t + tInOff
-        nl2 = self.nt.simulate(tIn=tIn, burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
+        nl2 = self.nt.simulate(tIn=tIn, burnSeed=BURNSEED, distSeed=DISTSEED)
         self.assertNotEqual(np.mean(self.nl1.t - nl2.t), 0.0)
         self.assertNotEqual(np.mean(nl2.t), 0.0)
 

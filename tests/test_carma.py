@@ -68,7 +68,7 @@ class TestFitCARMA10(unittest.TestCase):
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
         newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
-                                      burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                      burnSeed=BURNSEED, distSeed=DISTSEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'
         sampledLC = newLC.sample(width=self.sincWidth, center=self.sincCenter, sampleSeed=SAMPLESEED)
@@ -145,7 +145,7 @@ class TestFitCARMA20(unittest.TestCase):
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
         newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
-                                      burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                      burnSeed=BURNSEED, distSeed=DISTSEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'
         sampledLC = newLC.sample(width=self.sincWidth, center=self.sincCenter, sampleSeed=SAMPLESEED)
@@ -227,7 +227,7 @@ class TestFitCARMA21(unittest.TestCase):
         Theta = kali.carma.coeffs(self.p, self.q, Rho)
         self.newTask.set(self.dt, Theta)
         newLC = self.newTask.simulate(duration=self.T, fracNoiseToSignal=N2S,
-                                      burnSeed=BURNSEED, distSeed=DISTSEED, noiseSeed=NOISESEED)
+                                      burnSeed=BURNSEED, distSeed=DISTSEED)
         self.newTask.observe(newLC, noiseSeed=NOISESEED)
         newLC.sampler = 'sincSampler'
         sampledLC = newLC.sample(width=self.sincWidth, center=self.sincCenter, sampleSeed=SAMPLESEED)
