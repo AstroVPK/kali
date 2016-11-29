@@ -907,6 +907,36 @@ class MBHBTask(object):
         self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
 
+    @property
+    def bestTheta(self):
+        if hasattr(self, '_bestTheta'):
+            return self._bestTheta
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestTheta = copy.copy(self.Chain[:, bestWalker, bestStep])
+            return self._bestTheta
+
+    @property
+    def bestRho(self):
+        if hasattr(self, '_bestRho'):
+            return self._bestRho
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestRho = copy.copy(self.rootChain[:, bestWalker, bestStep])
+            return self._bestRho
+
+    @property
+    def bestTau(self):
+        if hasattr(self, '_bestTau'):
+            return self._bestTau
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
+            return self._bestTau
+
     @classmethod
     def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
         a1 = a1*cls.Parsec

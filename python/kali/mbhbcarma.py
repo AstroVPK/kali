@@ -1386,19 +1386,51 @@ class MBHBCARMATask(object):
         self._dic = devianceThetaBar + 2.0*self.pDIC
         return res
 
-    def smooth(self, observedLC, tnum=None):
+    @property
+    def bestTheta(self):
+        if hasattr(self, '_bestTheta'):
+            return self._bestTheta
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestTheta = copy.copy(self.Chain[:, bestWalker, bestStep])
+            return self._bestTheta
+
+    @property
+    def bestRho(self):
+        if hasattr(self, '_bestRho'):
+            return self._bestRho
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestRho = copy.copy(self.rootChain[:, bestWalker, bestStep])
+            return self._bestRho
+
+    @property
+    def bestTau(self):
+        if hasattr(self, '_bestTau'):
+            return self._bestTau
+        else:
+            bestWalker = np.where(np.max(self.LnPosterior) == self.LnPosterior)[0][0]
+            bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
+            self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
+            return self._bestTau
+
+    def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
         if tnum is None:
             tnum = 0
         if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
             observedLC.dtSmooth = observedLC.mindt/10.0
-
         observedLC.pComp = self.p
         observedLC.qComp = self.q
 
-        t = sorted(observedLC.t.tolist() + np.linspace(start=observedLC.t[0], stop=observedLC.t[
-                   -1], num=int(math.ceil(observedLC.T/observedLC.dtSmooth)), endpoint=False).tolist())
+        if not startT:
+            startT = observedLC.t[0]
+        if not stopT:
+            stopT = observedLC.t[-1]
+        t = sorted(observedLC.t.tolist() + np.linspace(start=startT, stop=stopT,
+                   num=int(math.ceil((stopT - startT)/observedLC.dtSmooth)), endpoint=False).tolist())
         t = _f7(t)  # remove duplicates
-
         observedLC.numCadencesSmooth = len(t)
 
         observedLC.tSmooth = np.require(np.array(t), requirements=[
@@ -1418,9 +1450,7 @@ class MBHBCARMATask(object):
         observedLC.PSmooth = np.require(np.zeros(
             observedLC.numCadencesSmooth*observedLC.pComp*observedLC.pComp),
             requirements=['F', 'A', 'W', 'O', 'E'])
-
         unObsErr = math.sqrt(sys.float_info.max)
-
         obsCtr = 0
         for i in xrange(observedLC.numCadencesSmooth):
             if observedLC.tSmooth[i] == observedLC.t[obsCtr]:
@@ -1429,7 +1459,8 @@ class MBHBCARMATask(object):
                 observedLC.ySmooth[i] = observedLC.y[obsCtr]
                 observedLC.yerrSmooth[i] = observedLC.yerr[obsCtr]
                 observedLC.maskSmooth[i] = observedLC.mask[obsCtr]
-                obsCtr += 1
+                if obsCtr < observedLC.numCadences - 1:
+                    obsCtr += 1
             else:
                 observedLC.xSmooth[i] = 0.0
                 observedLC.xerrSmooth[i] = unObsErr

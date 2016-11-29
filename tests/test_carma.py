@@ -258,5 +258,6 @@ class TestFitCARMA21(unittest.TestCase):
         N2S = 1.0e-3  # LSST-ish
         self.run_test(N2S)
 
+
 if __name__ == "__main__":
     unittest.main()

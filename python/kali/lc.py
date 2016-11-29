@@ -1070,7 +1070,6 @@ class lc(object):
                 self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                 self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
                 fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
-            plt.xlim(self.t[0], self.t[-1])
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
                 self.y[np.where(self.mask == 1.0)[0]]), color=colorx, zorder=0)
@@ -1087,7 +1086,10 @@ class lc(object):
             plt.plot(self.tSmooth, self.xSmooth, color=colors[0], zorder=-5)
             plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
                              self.xerrSmooth, facecolor=colors[1], alpha=0.5, zorder=-5)
-        plt.xlim(self.t[0], self.t[-1])
+        if hasattr(self, 'tSmooth'):
+            plt.xlim(self.tSmooth[0], self.tSmooth[-1])
+        else:
+            plt.xlim(self.t[0], self.t[-1])
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')

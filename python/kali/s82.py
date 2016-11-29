@@ -283,7 +283,6 @@ class sdssLC(kali.lc.lc):
                 self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                 self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
                 fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
-            plt.xlim(self.t[0], self.t[-1])
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(
                 self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
@@ -295,7 +294,6 @@ class sdssLC(kali.lc.lc):
                 self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                 self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
                 fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
-        plt.xlim(self.t[0], self.t[-1])
         if self.isSmoothed:
             plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[self.band], marker='o',
                      markeredgecolor='none', zorder=-5)
@@ -303,6 +301,10 @@ class sdssLC(kali.lc.lc):
             plt.fill_between(
                 self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth + self.xerrSmooth,
                 facecolor=self.smoothErrColorDict[self.band], alpha=0.5, zorder=-5)
+        if hasattr(self, 'tSmooth'):
+            plt.xlim(self.tSmooth[0], self.tSmooth[-1])
+        else:
+            plt.xlim(self.t[0], self.t[-1])
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')
