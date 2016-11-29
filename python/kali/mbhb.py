@@ -931,12 +931,12 @@ class MBHBTask(object):
         return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject
 
     @property
-    def auxChain(self):
-        if hasattr(self, '_auxChain'):
-            return self._auxChain
+    def auxillaryChain(self):
+        if hasattr(self, '_auxillaryChain'):
+            return self._auxillaryChain
         else:
-            self._auxChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
-                                        requirements=['F', 'A', 'W', 'O', 'E'])
+            self._auxillaryChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
+                                              requirements=['F', 'A', 'W', 'O', 'E'])
             for stepNum in xrange(self.nsteps):
                 for walkerNum in xrange(self.nwalkers):
                     a1 = self.Chain[0, walkerNum, stepNum]
@@ -945,20 +945,20 @@ class MBHBTask(object):
                     eccentricity = self.Chain[3, walkerNum, stepNum]
                     mTot, q, rPeri, rApo, rSch, aHard, aGW, THard, MEject = self._auxillary(a1, a2,
                                                                                             T, eccentricity)
-                    self._auxChain[0, walkerNum, stepNum] = a1
-                    self._auxChain[1, walkerNum, stepNum] = a2
-                    self._auxChain[2, walkerNum, stepNum] = T
-                    self._auxChain[3, walkerNum, stepNum] = eccentricity
-                    self._auxChain[4, walkerNum, stepNum] = mTot
-                    self._auxChain[5, walkerNum, stepNum] = q
-                    self._auxChain[6, walkerNum, stepNum] = rPeri
-                    self._auxChain[7, walkerNum, stepNum] = rApo
-                    self._auxChain[8, walkerNum, stepNum] = rSch
-                    self._auxChain[9, walkerNum, stepNum] = aHard
-                    self._auxChain[10, walkerNum, stepNum] = aGW
-                    self._auxChain[11, walkerNum, stepNum] = THard
-                    self._auxChain[12, walkerNum, stepNum] = MEject
-            return self._auxChain
+                    self._auxillaryChain[0, walkerNum, stepNum] = a1
+                    self._auxillaryChain[1, walkerNum, stepNum] = a2
+                    self._auxillaryChain[2, walkerNum, stepNum] = T
+                    self._auxillaryChain[3, walkerNum, stepNum] = eccentricity
+                    self._auxillaryChain[4, walkerNum, stepNum] = mTot
+                    self._auxillaryChain[5, walkerNum, stepNum] = q
+                    self._auxillaryChain[6, walkerNum, stepNum] = rPeri
+                    self._auxillaryChain[7, walkerNum, stepNum] = rApo
+                    self._auxillaryChain[8, walkerNum, stepNum] = rSch
+                    self._auxillaryChain[9, walkerNum, stepNum] = aHard
+                    self._auxillaryChain[10, walkerNum, stepNum] = aGW
+                    self._auxillaryChain[11, walkerNum, stepNum] = THard
+                    self._auxillaryChain[12, walkerNum, stepNum] = MEject
+            return self._auxillaryChain
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
                     best=False, median=False,
@@ -1032,15 +1032,16 @@ class MBHBTask(object):
                                                           plot_contour_lines=False,
                                                           pcolor_cmap=cm.gist_earth)
 
-        flatAuxChain = np.swapaxes(self.auxChain.reshape((13, -1), order='F'), axis1=0, axis2=1)
+        auxChain = copy.copy(self.auxillaryChain[:, :, self.nsteps/2:])
+        flatAuxChain = np.swapaxes(auxChain.reshape((13, -1), order='F'), axis1=0, axis2=1)
         auxLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$',
                      r'$M_{12}$ ($10^{6} \times M_{\odot}$)', r'$M_{2}/M_{1}$',
                      r'$r_{\mathrm{Peribothron}}$ (pc)', r'$r_{\mathrm{Apobothron}}$ (pc)',
                      r'$r_{\mathrm{Schwarzschild}}$ (pc)',
                      r'$a_{\mathrm{Hard}}$ (pc)', r'$a_{\mathrm{GW}}$ (pc)', r'$T_{\mathrm{Hard}}$ (yr)',
                      r'$M_{\mathrm{Eject}}$ ($10^{6} \times M_{\odot}$)']
-        auxExtents = [0.9, 0.9, (0.95*np.min(self.auxChain[2, :, self.nsteps/2:]),
-                                 1.05*np.max(self.auxChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
+        auxExtents = [0.9, 0.9, (0.95*np.min(self.auxillaryChain[2, :, self.nsteps/2:]),
+                                 1.05*np.max(self.auxillaryChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
                       0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
         newFigAux = kali.util.triangle.corner(flatAuxChain, labels=auxLabels,
                                               show_titles=True,
