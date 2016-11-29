@@ -937,7 +937,7 @@ class MBHBTask(object):
         else:
             self._auxChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
                                         requirements=['F', 'A', 'W', 'O', 'E'])
-            for stepNum in xrange(self.nsteps/2, self.nsteps, 1):
+            for stepNum in xrange(self.nsteps):
                 for walkerNum in xrange(self.nwalkers):
                     a1 = self.Chain[0, walkerNum, stepNum]
                     a2 = self.Chain[1, walkerNum, stepNum]
