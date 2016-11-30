@@ -198,6 +198,21 @@ class CARMATask(object):
         except AssertionError as err:
             raise AttributeError(str(err))
 
+    def __getstate__(self):
+        """!
+        \brief Trim the c-pointer from the task and return the remaining __dict__ for pickling.
+        """
+        state = copy.copy(self.__dict__)
+        del state['_taskCython']
+        return state
+
+    def __setstate__(self, state):
+        """!
+        \brief Restore an un-pickled task completely by setting the c-pointer to the right Cython class.
+        """
+        self.__dict__ = copy.copy(state)
+        self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads, self._nburn)
+
     @kali.util.classproperty.ClassProperty
     @classmethod
     def r(self):
