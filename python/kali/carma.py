@@ -1186,7 +1186,8 @@ class CARMATask(object):
                                            plot_contours=False,
                                            plot_datapoints=True,
                                            plot_contour_lines=False,
-                                           pcolor_cmap=cm.gist_earth)
+                                           pcolor_cmap=cm.gist_earth,
+                                           verbose=False)
         if doShow:
             plt.show(False)
         return newFig,

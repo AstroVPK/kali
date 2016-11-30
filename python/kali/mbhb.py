@@ -1075,7 +1075,8 @@ class MBHBTask(object):
                                                           plot_contours=False,
                                                           plot_datapoints=True,
                                                           plot_contour_lines=False,
-                                                          pcolor_cmap=cm.gist_earth)
+                                                          pcolor_cmap=cm.gist_earth,
+                                                          verbose=False)
 
         auxChain = copy.copy(self.auxillaryChain[:, :, self.nsteps/2:])
         flatAuxChain = np.swapaxes(auxChain.reshape((13, -1), order='F'), axis1=0, axis2=1)
@@ -1096,7 +1097,8 @@ class MBHBTask(object):
                                               plot_contours=False,
                                               plot_datapoints=True,
                                               plot_contour_lines=False,
-                                              pcolor_cmap=cm.gist_earth)
+                                              pcolor_cmap=cm.gist_earth,
+                                              verbose=False)
         if doShow:
             plt.show(False)
         return newFigOrb, newFigAux
