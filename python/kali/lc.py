@@ -1474,6 +1474,8 @@ class externalLC(lc):
             self.t = np.require(t, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
             raise KeyError('Must supply key-word argument t!')
+        self.startT = self.t[0]
+        self.t = self.t - self.startT
         self._numCadences = self.t.shape[0]
         self.x = np.require(
             kwargs.get('x', np.zeros(self.numCadences)), requirements=['F', 'A', 'W', 'O', 'E'])
