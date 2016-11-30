@@ -89,8 +89,8 @@ public:
 	double get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum);
 	double get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum);
 
-	int make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
-	int make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum);
+	int make_BeamedLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
+	int make_IntrinsicLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum);
 	//int extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum);
 	double get_meanFlux(double fracIntrinsicVar, int threadNum);
 	int  make_ObservedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum);
@@ -110,7 +110,7 @@ public:
 
 	int fit_MBHBCARMAModel(double dt, int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double startT, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth);
 
-	int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum);
+	int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum);
 	};
 
 } //namespace kali

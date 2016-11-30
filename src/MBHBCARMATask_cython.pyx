@@ -74,8 +74,8 @@ cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 		double get_durationInHardState(double sigmaStars, double rhoStars, double H, int threadNum);
 		double get_ejectedMass(double sigmaStars, double rhoStars, double H, int threadNum);
 
-		int make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
-		int make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum)
+		int make_BeamedLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum);
+		int make_IntrinsicLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum)
 		double get_meanFlux(double fracIntrinsicVar, int threadNum)
 		#int extend_IntrinsicLC(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int distSeed, int threadNum)
 		int make_ObservedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int burnSeed, unsigned int distSeed, unsigned int noiseSeed, int threadNum)
@@ -95,7 +95,7 @@ cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 
 		int fit_MBHBCARMAModel(double dt, int numCadences, double meandt, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double lowestFlux, double highestFlux, double startT, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth);
 
-		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum)
+		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum)
 
 
 @cython.boundscheck(False)
@@ -419,17 +419,17 @@ cdef class MBHBCARMATask_cython:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
+	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
+		return self.thisptr.make_BeamedLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
+	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
+		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
 
 	'''
 	@cython.boundscheck(False)
@@ -532,7 +532,7 @@ cdef class MBHBCARMATask_cython:
 
 	@cython.boundscheck(False)
 	@cython.wraparound(False)
-	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
 		if threadNum == None:
 			threadNum = 0
-		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)

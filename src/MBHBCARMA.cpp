@@ -3456,6 +3456,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
+    double startT = Data.startT*kali::Day;
 	double maxDouble = numeric_limits<double>::max();
 
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
@@ -3472,6 +3473,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 
 	// Forward iteration of RTS Smoother
 	// Iterate through first point
+    setEpoch(t[0] + startT);
 	H[0] = mask[0];
 	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
@@ -3510,6 +3512,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	// Iterate through remaining points
 	for (int i = 1; i < numCadences; i++) {
+        setEpoch(t[i] + startT);
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {
@@ -3583,7 +3586,8 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 	#endif
 	// Iterate backwards through remaining points
 	for (int i = numCadences - 2; i > -1; --i) {
-		t_incr = t[i] - t[i - 1];
+        setEpoch(t[i] + startT);
+        t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {
 			dt = t_incr;

@@ -425,7 +425,7 @@ double kali::MBHBCARMATask::get_ejectedMass(double sigmaStars, double rhoStars, 
 	return Systems[threadNum].ejectedMass(sigmaStars, rhoStars, H);
 	}
 
-int kali::MBHBCARMATask::make_BeamedLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
+int kali::MBHBCARMATask::make_BeamedLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, int threadNum) {
 	int retVal = 0;
 	Systems[threadNum].resetState();
 	double old_dt = Systems[threadNum].get_dt();
@@ -437,6 +437,7 @@ int kali::MBHBCARMATask::make_BeamedLC(int numCadences, double tolIR, double fra
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+    Data.startT = startT;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
     Data.fracIntrinsicVar = fracIntrinsicVar;
@@ -448,7 +449,7 @@ int kali::MBHBCARMATask::make_BeamedLC(int numCadences, double tolIR, double fra
 	return retVal;
 	}
 
-int kali::MBHBCARMATask::make_IntrinsicLC(int numCadences, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
+int kali::MBHBCARMATask::make_IntrinsicLC(int numCadences, double tolIR, double startT, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, unsigned int burnSeed, unsigned int distSeed, int threadNum) {
 	int retVal = 0;
 	Systems[threadNum].resetState();
 	double old_dt = Systems[threadNum].get_dt();
@@ -470,6 +471,7 @@ int kali::MBHBCARMATask::make_IntrinsicLC(int numCadences, double tolIR, double 
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+    Data.startT = startT;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
     Data.fracIntrinsicVar = fracIntrinsicVar;
@@ -892,7 +894,7 @@ int kali::MBHBCARMATask::fit_MBHBCARMAModel(double dt, int numCadences, double m
 	return 0;
 	}
 
-int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum) {
+int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum) {
 	int successYN = -1;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
@@ -903,6 +905,7 @@ int kali::MBHBCARMATask::smooth_RTS(int numCadences, int cadenceNum, double tolI
 	Data.y = y;
 	Data.yerr = yerr;
 	Data.mask = mask;
+    Data.startT = startT;
 	Data.lcX = lcX;
 	Data.lcP = lcP;
 	kali::LnLikeData *ptr2Data = &Data;

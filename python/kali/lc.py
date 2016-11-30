@@ -24,7 +24,6 @@ from astropy import units
 from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
-plt.ion()
 
 try:
     import rand as rand
@@ -1432,7 +1431,7 @@ class mockLC(lc):
                 self.numCadences = numCadences
                 self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
                 self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-                self.startT = 0.0
+                self.startT = kwargs.get('startT', 0.0)
                 for i in xrange(self._numCadences):
                     self.t[i] = i*deltaT
                     self.mask[i] = 1.0

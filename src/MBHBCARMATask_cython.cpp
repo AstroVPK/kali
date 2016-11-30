@@ -1566,14 +1566,14 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_104get_a
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_106get_aGW(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_108get_durationInHardState(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_110get_ejectedMass(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_sigmaStars, PyObject *__pyx_v_rhoStars, PyObject *__pyx_v_H, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_threadNum); /* proto */
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_116get_meanFlux(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_118add_ObservationNoise(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_noiseSeed, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_120compute_LnPrior(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestflux, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_122compute_LnLikelihood(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth, PyObject *__pyx_v_threadNum); /* proto */
 static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_124fit_CARMAModel(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_dt, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_meandt, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_maxSigma, PyObject *__pyx_v_minTimescale, PyObject *__pyx_v_maxTimescale, PyObject *__pyx_v_lowestFlux, PyObject *__pyx_v_highestFlux, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyObject *__pyx_v_nwalkers, PyObject *__pyx_v_nsteps, PyObject *__pyx_v_maxEvals, PyObject *__pyx_v_xTol, PyObject *__pyx_v_mcmcA, PyObject *__pyx_v_zSSeed, PyObject *__pyx_v_walkerSeed, PyObject *__pyx_v_moveSeed, PyObject *__pyx_v_xSeed, PyArrayObject *__pyx_v_xStart, PyArrayObject *__pyx_v_Chain, PyArrayObject *__pyx_v_LnPrior, PyArrayObject *__pyx_v_LnLikelihood, PyObject *__pyx_v_periodCenter, PyObject *__pyx_v_periodWidth, PyObject *__pyx_v_fluxCenter, PyObject *__pyx_v_fluxWidth); /* proto */
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum); /* proto */
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_20MBHBCARMATask_cython_MBHBCARMATask_cython(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -9786,7 +9786,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_110get_e
 /* "MBHBCARMATask_cython.pyx":422
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -9796,6 +9796,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
 static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_BeamedLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_startT = 0;
   PyObject *__pyx_v_fracIntrinsicVar = 0;
   PyObject *__pyx_v_fracNoiseToSignal = 0;
   PyArrayObject *__pyx_v_t = 0;
@@ -9810,13 +9811,14 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("make_BeamedLC (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_tolIR,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracNoiseToSignal,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_lcX,&__pyx_n_s_lcP,&__pyx_n_s_threadNum,0};
-    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
-    values[11] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_tolIR,&__pyx_n_s_startT,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracNoiseToSignal,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_lcX,&__pyx_n_s_lcP,&__pyx_n_s_threadNum,0};
+    PyObject* values[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[12] = ((PyObject *)Py_None);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -9840,57 +9842,62 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 1); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 1); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 2); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 2); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 3); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 3); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 4); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 4); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 5); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 5); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 6); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 6); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 7); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 7); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 8); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 8); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcX)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 9); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 9); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcP)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcX)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, 10); __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 10); __PYX_ERR(0, 422, __pyx_L3_error)
         }
         case 11:
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcP)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, 11); __PYX_ERR(0, 422, __pyx_L3_error)
+        }
+        case 12:
         if (kw_args > 0) {
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[11] = value; kw_args--; }
+          if (value) { values[12] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
@@ -9898,8 +9905,9 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
-        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
         values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -9916,20 +9924,21 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
     }
     __pyx_v_numCadences = values[0];
     __pyx_v_tolIR = values[1];
-    __pyx_v_fracIntrinsicVar = values[2];
-    __pyx_v_fracNoiseToSignal = values[3];
-    __pyx_v_t = ((PyArrayObject *)values[4]);
-    __pyx_v_x = ((PyArrayObject *)values[5]);
-    __pyx_v_y = ((PyArrayObject *)values[6]);
-    __pyx_v_yerr = ((PyArrayObject *)values[7]);
-    __pyx_v_mask = ((PyArrayObject *)values[8]);
-    __pyx_v_lcX = ((PyArrayObject *)values[9]);
-    __pyx_v_lcP = ((PyArrayObject *)values[10]);
-    __pyx_v_threadNum = values[11];
+    __pyx_v_startT = values[2];
+    __pyx_v_fracIntrinsicVar = values[3];
+    __pyx_v_fracNoiseToSignal = values[4];
+    __pyx_v_t = ((PyArrayObject *)values[5]);
+    __pyx_v_x = ((PyArrayObject *)values[6]);
+    __pyx_v_y = ((PyArrayObject *)values[7]);
+    __pyx_v_yerr = ((PyArrayObject *)values[8]);
+    __pyx_v_mask = ((PyArrayObject *)values[9]);
+    __pyx_v_lcX = ((PyArrayObject *)values[10]);
+    __pyx_v_lcP = ((PyArrayObject *)values[11]);
+    __pyx_v_threadNum = values[12];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 11, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 422, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_BeamedLC", 0, 12, 13, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 422, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.make_BeamedLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9942,7 +9951,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 422, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_lcX), __pyx_ptype_5numpy_ndarray, 0, "lcX", 0))) __PYX_ERR(0, 422, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_lcP), __pyx_ptype_5numpy_ndarray, 0, "lcP", 0))) __PYX_ERR(0, 422, __pyx_L1_error)
-  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_tolIR, __pyx_v_fracIntrinsicVar, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_lcX, __pyx_v_lcP, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_tolIR, __pyx_v_startT, __pyx_v_fracIntrinsicVar, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_lcX, __pyx_v_lcP, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -9953,7 +9962,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_113make_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_BeamedLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_lcP;
   __Pyx_Buffer __pyx_pybuffer_lcP;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_lcX;
@@ -9976,14 +9985,15 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
   double __pyx_t_4;
   double __pyx_t_5;
   double __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  double __pyx_t_7;
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   Py_ssize_t __pyx_t_10;
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
-  int __pyx_t_14;
+  Py_ssize_t __pyx_t_14;
+  int __pyx_t_15;
   __Pyx_RefNannySetupContext("make_BeamedLC", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
   __pyx_pybuffer_t.pybuffer.buf = NULL;
@@ -10052,10 +10062,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
 
   /* "MBHBCARMATask_cython.pyx":423
  * 	@cython.wraparound(False)
- * 	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
+ * 	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
+ * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 423, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 423, __pyx_L1_error)
@@ -10063,10 +10073,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
   if (__pyx_t_2) {
 
     /* "MBHBCARMATask_cython.pyx":424
- * 	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
+ * 	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
+ * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
@@ -10074,34 +10084,35 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
 
     /* "MBHBCARMATask_cython.pyx":423
  * 	@cython.wraparound(False)
- * 	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
+ * 	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
+ * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)
  */
   }
 
   /* "MBHBCARMATask_cython.pyx":425
  * 		if threadNum == None:
  * 			threadNum = 0
- * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.make_BeamedLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
   __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
-  __pyx_t_7 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_startT); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
   __pyx_t_11 = 0;
   __pyx_t_12 = 0;
   __pyx_t_13 = 0;
-  __pyx_t_14 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_14 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_BeamedLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcX.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_lcX.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcP.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_lcP.diminfo[0].strides))), __pyx_t_14)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
+  __pyx_t_14 = 0;
+  __pyx_t_15 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_15 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_BeamedLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcX.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_lcX.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcP.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_lcP.diminfo[0].strides))), __pyx_t_15)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10110,7 +10121,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
   /* "MBHBCARMATask_cython.pyx":422
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def make_BeamedLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def make_BeamedLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -10151,7 +10162,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_112make_
 /* "MBHBCARMATask_cython.pyx":429
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -10161,6 +10172,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
 static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_IntrinsicLC(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_startT = 0;
   PyObject *__pyx_v_fracIntrinsicVar = 0;
   PyObject *__pyx_v_fracNoiseToSignal = 0;
   PyArrayObject *__pyx_v_t = 0;
@@ -10177,13 +10189,14 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("make_IntrinsicLC (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_tolIR,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracNoiseToSignal,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_lcX,&__pyx_n_s_lcP,&__pyx_n_s_burnSeed,&__pyx_n_s_distSeed,&__pyx_n_s_threadNum,0};
-    PyObject* values[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[13] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_tolIR,&__pyx_n_s_startT,&__pyx_n_s_fracIntrinsicVar,&__pyx_n_s_fracNoiseToSignal,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_lcX,&__pyx_n_s_lcP,&__pyx_n_s_burnSeed,&__pyx_n_s_distSeed,&__pyx_n_s_threadNum,0};
+    PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[14] = ((PyObject *)Py_None);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
         case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
         case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
@@ -10209,67 +10222,72 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 1); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 1); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 2); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 2); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracIntrinsicVar)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 3); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 3); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fracNoiseToSignal)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 4); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 4); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 5); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 5); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 6); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 6); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 7); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 7); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 8); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 8); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcX)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 9); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 9); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcP)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcX)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 10); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 10); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case 11:
-        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_burnSeed)) != 0)) kw_args--;
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lcP)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 11); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 11); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case 12:
-        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_distSeed)) != 0)) kw_args--;
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_burnSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, 12); __PYX_ERR(0, 429, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 12); __PYX_ERR(0, 429, __pyx_L3_error)
         }
         case 13:
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_distSeed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, 13); __PYX_ERR(0, 429, __pyx_L3_error)
+        }
+        case 14:
         if (kw_args > 0) {
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[13] = value; kw_args--; }
+          if (value) { values[14] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
@@ -10277,8 +10295,9 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
         case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
-        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
+        values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
         values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -10297,22 +10316,23 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
     }
     __pyx_v_numCadences = values[0];
     __pyx_v_tolIR = values[1];
-    __pyx_v_fracIntrinsicVar = values[2];
-    __pyx_v_fracNoiseToSignal = values[3];
-    __pyx_v_t = ((PyArrayObject *)values[4]);
-    __pyx_v_x = ((PyArrayObject *)values[5]);
-    __pyx_v_y = ((PyArrayObject *)values[6]);
-    __pyx_v_yerr = ((PyArrayObject *)values[7]);
-    __pyx_v_mask = ((PyArrayObject *)values[8]);
-    __pyx_v_lcX = ((PyArrayObject *)values[9]);
-    __pyx_v_lcP = ((PyArrayObject *)values[10]);
-    __pyx_v_burnSeed = values[11];
-    __pyx_v_distSeed = values[12];
-    __pyx_v_threadNum = values[13];
+    __pyx_v_startT = values[2];
+    __pyx_v_fracIntrinsicVar = values[3];
+    __pyx_v_fracNoiseToSignal = values[4];
+    __pyx_v_t = ((PyArrayObject *)values[5]);
+    __pyx_v_x = ((PyArrayObject *)values[6]);
+    __pyx_v_y = ((PyArrayObject *)values[7]);
+    __pyx_v_yerr = ((PyArrayObject *)values[8]);
+    __pyx_v_mask = ((PyArrayObject *)values[9]);
+    __pyx_v_lcX = ((PyArrayObject *)values[10]);
+    __pyx_v_lcP = ((PyArrayObject *)values[11]);
+    __pyx_v_burnSeed = values[12];
+    __pyx_v_distSeed = values[13];
+    __pyx_v_threadNum = values[14];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 13, 14, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 429, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_IntrinsicLC", 0, 14, 15, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 429, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.make_IntrinsicLC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10325,7 +10345,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mask), __pyx_ptype_5numpy_ndarray, 0, "mask", 0))) __PYX_ERR(0, 429, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_lcX), __pyx_ptype_5numpy_ndarray, 0, "lcX", 0))) __PYX_ERR(0, 429, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_lcP), __pyx_ptype_5numpy_ndarray, 0, "lcP", 0))) __PYX_ERR(0, 429, __pyx_L1_error)
-  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_tolIR, __pyx_v_fracIntrinsicVar, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_lcX, __pyx_v_lcP, __pyx_v_burnSeed, __pyx_v_distSeed, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_tolIR, __pyx_v_startT, __pyx_v_fracIntrinsicVar, __pyx_v_fracNoiseToSignal, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_lcX, __pyx_v_lcP, __pyx_v_burnSeed, __pyx_v_distSeed, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -10336,7 +10356,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_115make_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_IntrinsicLC(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyObject *__pyx_v_fracIntrinsicVar, PyObject *__pyx_v_fracNoiseToSignal, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_lcX, PyArrayObject *__pyx_v_lcP, PyObject *__pyx_v_burnSeed, PyObject *__pyx_v_distSeed, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_lcP;
   __Pyx_Buffer __pyx_pybuffer_lcP;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_lcX;
@@ -10359,16 +10379,17 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_
   double __pyx_t_4;
   double __pyx_t_5;
   double __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  double __pyx_t_7;
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   Py_ssize_t __pyx_t_10;
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
-  unsigned int __pyx_t_14;
+  Py_ssize_t __pyx_t_14;
   unsigned int __pyx_t_15;
-  int __pyx_t_16;
+  unsigned int __pyx_t_16;
+  int __pyx_t_17;
   __Pyx_RefNannySetupContext("make_IntrinsicLC", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
   __pyx_pybuffer_t.pybuffer.buf = NULL;
@@ -10437,10 +10458,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_
 
   /* "MBHBCARMATask_cython.pyx":430
  * 	@cython.wraparound(False)
- * 	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
+ * 	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
+ * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 430, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 430, __pyx_L1_error)
@@ -10448,10 +10469,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_
   if (__pyx_t_2) {
 
     /* "MBHBCARMATask_cython.pyx":431
- * 	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
+ * 	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
+ * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
  * 
  */
     __Pyx_INCREF(__pyx_int_0);
@@ -10459,36 +10480,37 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_
 
     /* "MBHBCARMATask_cython.pyx":430
  * 	@cython.wraparound(False)
- * 	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
+ * 	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
+ * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)
  */
   }
 
   /* "MBHBCARMATask_cython.pyx":432
  * 		if threadNum == None:
  * 			threadNum = 0
- * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.make_IntrinsicLC(numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &lcX[0], &lcP[0], burnSeed, distSeed, threadNum)             # <<<<<<<<<<<<<<
  * 
  * 	'''
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
   __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_7 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_startT); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_fracIntrinsicVar); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_fracNoiseToSignal); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
   __pyx_t_10 = 0;
   __pyx_t_11 = 0;
   __pyx_t_12 = 0;
   __pyx_t_13 = 0;
-  __pyx_t_14 = __Pyx_PyInt_As_unsigned_int(__pyx_v_burnSeed); if (unlikely((__pyx_t_14 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_distSeed); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_16 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_16 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_IntrinsicLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcX.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_lcX.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcP.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_lcP.diminfo[0].strides))), __pyx_t_14, __pyx_t_15, __pyx_t_16)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_14 = 0;
+  __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_burnSeed); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_v_distSeed); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_17 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->make_IntrinsicLC(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcX.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_lcX.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_lcP.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_lcP.diminfo[0].strides))), __pyx_t_15, __pyx_t_16, __pyx_t_17)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10497,7 +10519,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_114make_
   /* "MBHBCARMATask_cython.pyx":429
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def make_IntrinsicLC(self, numCadences, tolIR, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def make_IntrinsicLC(self, numCadences, tolIR, startT, fracIntrinsicVar, fracNoiseToSignal, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] lcX not None, np.ndarray[double, ndim=1, mode='c'] lcP not None, burnSeed, distSeed, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -12409,7 +12431,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_124fit_C
 /* "MBHBCARMATask_cython.pyx":535
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */
@@ -12420,6 +12442,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
   PyObject *__pyx_v_numCadences = 0;
   PyObject *__pyx_v_cadenceNum = 0;
   PyObject *__pyx_v_tolIR = 0;
+  PyObject *__pyx_v_startT = 0;
   PyArrayObject *__pyx_v_t = 0;
   PyArrayObject *__pyx_v_x = 0;
   PyArrayObject *__pyx_v_y = 0;
@@ -12436,13 +12459,14 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("smooth_RTS (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_cadenceNum,&__pyx_n_s_tolIR,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_X,&__pyx_n_s_P,&__pyx_n_s_XSmooth,&__pyx_n_s_PSmooth,&__pyx_n_s_xSmooth,&__pyx_n_s_xerrSmooth,&__pyx_n_s_threadNum,0};
-    PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[14] = ((PyObject *)Py_None);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_numCadences,&__pyx_n_s_cadenceNum,&__pyx_n_s_tolIR,&__pyx_n_s_startT,&__pyx_n_s_t,&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_yerr,&__pyx_n_s_mask,&__pyx_n_s_X,&__pyx_n_s_P,&__pyx_n_s_XSmooth,&__pyx_n_s_PSmooth,&__pyx_n_s_xSmooth,&__pyx_n_s_xerrSmooth,&__pyx_n_s_threadNum,0};
+    PyObject* values[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[15] = ((PyObject *)Py_None);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
         case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
         case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
         case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
@@ -12469,72 +12493,77 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cadenceNum)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 1); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 1); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tolIR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 2); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 2); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_startT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 3); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 3); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 4); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 4); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 5); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 5); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 6); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 6); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_yerr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 7); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 7); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_X)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 8); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 8); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_P)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_X)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 9); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 9); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_XSmooth)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_P)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 10); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 10); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case 11:
-        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_PSmooth)) != 0)) kw_args--;
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_XSmooth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 11); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 11); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case 12:
-        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xSmooth)) != 0)) kw_args--;
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_PSmooth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 12); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 12); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case 13:
-        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xerrSmooth)) != 0)) kw_args--;
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xSmooth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, 13); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 13); __PYX_ERR(0, 535, __pyx_L3_error)
         }
         case 14:
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_xerrSmooth)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, 14); __PYX_ERR(0, 535, __pyx_L3_error)
+        }
+        case 15:
         if (kw_args > 0) {
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threadNum);
-          if (value) { values[14] = value; kw_args--; }
+          if (value) { values[15] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
@@ -12542,8 +12571,9 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
         case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
-        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
         values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
         values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
@@ -12564,22 +12594,23 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
     __pyx_v_numCadences = values[0];
     __pyx_v_cadenceNum = values[1];
     __pyx_v_tolIR = values[2];
-    __pyx_v_t = ((PyArrayObject *)values[3]);
-    __pyx_v_x = ((PyArrayObject *)values[4]);
-    __pyx_v_y = ((PyArrayObject *)values[5]);
-    __pyx_v_yerr = ((PyArrayObject *)values[6]);
-    __pyx_v_mask = ((PyArrayObject *)values[7]);
-    __pyx_v_X = ((PyArrayObject *)values[8]);
-    __pyx_v_P = ((PyArrayObject *)values[9]);
-    __pyx_v_XSmooth = ((PyArrayObject *)values[10]);
-    __pyx_v_PSmooth = ((PyArrayObject *)values[11]);
-    __pyx_v_xSmooth = ((PyArrayObject *)values[12]);
-    __pyx_v_xerrSmooth = ((PyArrayObject *)values[13]);
-    __pyx_v_threadNum = values[14];
+    __pyx_v_startT = values[3];
+    __pyx_v_t = ((PyArrayObject *)values[4]);
+    __pyx_v_x = ((PyArrayObject *)values[5]);
+    __pyx_v_y = ((PyArrayObject *)values[6]);
+    __pyx_v_yerr = ((PyArrayObject *)values[7]);
+    __pyx_v_mask = ((PyArrayObject *)values[8]);
+    __pyx_v_X = ((PyArrayObject *)values[9]);
+    __pyx_v_P = ((PyArrayObject *)values[10]);
+    __pyx_v_XSmooth = ((PyArrayObject *)values[11]);
+    __pyx_v_PSmooth = ((PyArrayObject *)values[12]);
+    __pyx_v_xSmooth = ((PyArrayObject *)values[13]);
+    __pyx_v_xerrSmooth = ((PyArrayObject *)values[14]);
+    __pyx_v_threadNum = values[15];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 14, 15, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 535, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("smooth_RTS", 0, 15, 16, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 535, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MBHBCARMATask_cython.MBHBCARMATask_cython.smooth_RTS", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12596,7 +12627,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PSmooth), __pyx_ptype_5numpy_ndarray, 0, "PSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xSmooth), __pyx_ptype_5numpy_ndarray, 0, "xSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xerrSmooth), __pyx_ptype_5numpy_ndarray, 0, "xerrSmooth", 0))) __PYX_ERR(0, 535, __pyx_L1_error)
-  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_cadenceNum, __pyx_v_tolIR, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_X, __pyx_v_P, __pyx_v_XSmooth, __pyx_v_PSmooth, __pyx_v_xSmooth, __pyx_v_xerrSmooth, __pyx_v_threadNum);
+  __pyx_r = __pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(((struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *)__pyx_v_self), __pyx_v_numCadences, __pyx_v_cadenceNum, __pyx_v_tolIR, __pyx_v_startT, __pyx_v_t, __pyx_v_x, __pyx_v_y, __pyx_v_yerr, __pyx_v_mask, __pyx_v_X, __pyx_v_P, __pyx_v_XSmooth, __pyx_v_PSmooth, __pyx_v_xSmooth, __pyx_v_xerrSmooth, __pyx_v_threadNum);
 
   /* function exit code */
   goto __pyx_L0;
@@ -12607,7 +12638,7 @@ static PyObject *__pyx_pw_20MBHBCARMATask_cython_20MBHBCARMATask_cython_127smoot
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum) {
+static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smooth_RTS(struct __pyx_obj_20MBHBCARMATask_cython_MBHBCARMATask_cython *__pyx_v_self, PyObject *__pyx_v_numCadences, PyObject *__pyx_v_cadenceNum, PyObject *__pyx_v_tolIR, PyObject *__pyx_v_startT, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_x, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_yerr, PyArrayObject *__pyx_v_mask, PyArrayObject *__pyx_v_X, PyArrayObject *__pyx_v_P, PyArrayObject *__pyx_v_XSmooth, PyArrayObject *__pyx_v_PSmooth, PyArrayObject *__pyx_v_xSmooth, PyArrayObject *__pyx_v_xerrSmooth, PyObject *__pyx_v_threadNum) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_P;
   __Pyx_Buffer __pyx_pybuffer_P;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_PSmooth;
@@ -12637,7 +12668,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
   int __pyx_t_3;
   int __pyx_t_4;
   double __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
+  double __pyx_t_6;
   Py_ssize_t __pyx_t_7;
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
@@ -12648,7 +12679,8 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
   Py_ssize_t __pyx_t_16;
-  int __pyx_t_17;
+  Py_ssize_t __pyx_t_17;
+  int __pyx_t_18;
   __Pyx_RefNannySetupContext("smooth_RTS", 0);
   __Pyx_INCREF(__pyx_v_threadNum);
   __pyx_pybuffer_t.pybuffer.buf = NULL;
@@ -12753,10 +12785,10 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
 
   /* "MBHBCARMATask_cython.pyx":536
  * 	@cython.wraparound(False)
- * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_threadNum, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 536, __pyx_L1_error)
@@ -12764,33 +12796,33 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
   if (__pyx_t_2) {
 
     /* "MBHBCARMATask_cython.pyx":537
- * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
  * 		if threadNum == None:
  * 			threadNum = 0             # <<<<<<<<<<<<<<
- * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
  */
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_threadNum, __pyx_int_0);
 
     /* "MBHBCARMATask_cython.pyx":536
  * 	@cython.wraparound(False)
- * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):
  * 		if threadNum == None:             # <<<<<<<<<<<<<<
  * 			threadNum = 0
- * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)
  */
   }
 
   /* "MBHBCARMATask_cython.pyx":538
  * 		if threadNum == None:
  * 			threadNum = 0
- * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)             # <<<<<<<<<<<<<<
+ * 		return self.thisptr.smooth_RTS(numCadences, cadenceNum, tolIR, startT, &t[0], &x[0], &y[0], &yerr[0], &mask[0], &X[0], &P[0], &XSmooth[0], &PSmooth[0], &xSmooth[0], &xerrSmooth[0], threadNum)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_numCadences); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_cadenceNum); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
   __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_tolIR); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
-  __pyx_t_6 = 0;
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_startT); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
   __pyx_t_7 = 0;
   __pyx_t_8 = 0;
   __pyx_t_9 = 0;
@@ -12801,8 +12833,9 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
   __pyx_t_14 = 0;
   __pyx_t_15 = 0;
   __pyx_t_16 = 0;
-  __pyx_t_17 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_17 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->smooth_RTS(__pyx_t_3, __pyx_t_4, __pyx_t_5, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_X.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_X.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_P.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_P.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_XSmooth.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_XSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_PSmooth.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_PSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xSmooth.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_xSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_xerrSmooth.diminfo[0].strides))), __pyx_t_17)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_17 = 0;
+  __pyx_t_18 = __Pyx_PyInt_As_int(__pyx_v_threadNum); if (unlikely((__pyx_t_18 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->smooth_RTS(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_t.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_t.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_x.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_x.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_y.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_y.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_yerr.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_yerr.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_mask.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_mask.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_X.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_X.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_P.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_P.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_XSmooth.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_XSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_PSmooth.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_PSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xSmooth.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_xSmooth.diminfo[0].strides))), (&(*__Pyx_BufPtrCContig1d(double *, __pyx_pybuffernd_xerrSmooth.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_xerrSmooth.diminfo[0].strides))), __pyx_t_18)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -12811,7 +12844,7 @@ static PyObject *__pyx_pf_20MBHBCARMATask_cython_20MBHBCARMATask_cython_126smoot
   /* "MBHBCARMATask_cython.pyx":535
  * 	@cython.boundscheck(False)
  * 	@cython.wraparound(False)
- * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
+ * 	def smooth_RTS(self, numCadences, cadenceNum, tolIR, startT, np.ndarray[double, ndim=1, mode='c'] t not None, np.ndarray[double, ndim=1, mode='c'] x not None, np.ndarray[double, ndim=1, mode='c'] y not None, np.ndarray[double, ndim=1, mode='c'] yerr not None, np.ndarray[double, ndim=1, mode='c'] mask not None, np.ndarray[double, ndim=1, mode='c'] X not None, np.ndarray[double, ndim=1, mode='c'] P not None, np.ndarray[double, ndim=1, mode='c'] XSmooth not None, np.ndarray[double, ndim=1, mode='c'] PSmooth not None, np.ndarray[double, ndim=1, mode='c'] xSmooth not None, np.ndarray[double, ndim=1, mode='c'] xerrSmooth not None, threadNum = None):             # <<<<<<<<<<<<<<
  * 		if threadNum == None:
  * 			threadNum = 0
  */

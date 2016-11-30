@@ -789,7 +789,7 @@ class MBHBCARMATask(object):
             tnum = 0
         return self._taskCython.get_ejectedMass(sigmaStars, rhoStars, H, tnum)
 
-    def beam(self, duration=None, tIn=None, tnum=None, tolIR=1.0e-3,
+    def beam(self, duration=None, tIn=None, tnum=None, tolIR=1.0e-3, startT=0.0,
              fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
              maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5):
         if tnum is None:
@@ -798,26 +798,28 @@ class MBHBCARMATask(object):
             numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
             intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
                                          deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
-                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         startT=startT, fracIntrinsicVar=fracIntrinsicVar,
                                          fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
         elif duration is None and tIn is not None:
             numCadences = tIn.shape[0]
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
-            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, startT=startT,
+                                         fracIntrinsicVar=fracIntrinsicVar,
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
         self._taskCython.make_BeamedLC(
-            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
+            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.startT, intrinsicLC.fracIntrinsicVar,
             intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
             intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, threadNum=tnum)
         intrinsicLC._simulatedCadenceNum = numCadences - 1
         intrinsicLC._T = intrinsicLC.t[-1] - intrinsicLC.t[0]
         return intrinsicLC
 
-    def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
+    def simulate(self, duration=None, tIn=None, tolIR=1.0e-3, startT=0.0,
+                 fracIntrinsicVar=0.15, fracNoiseToSignal=0.001,
                  maxSigma=2.0, minTimescale=2.0, maxTimescale=0.5, burnSeed=None, distSeed=None,
                  tnum=None):
         if tnum is None:
@@ -826,14 +828,15 @@ class MBHBCARMATask(object):
             numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
             intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
                                          deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
-                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         startT=startT, fracIntrinsicVar=fracIntrinsicVar,
                                          fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
         elif duration is None and tIn is not None:
             numCadences = tIn.shape[0]
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
-            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, startT=startT,
+                                         fracIntrinsicVar=fracIntrinsicVar,
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
@@ -847,7 +850,7 @@ class MBHBCARMATask(object):
             rand.rdrand(randSeed)
             distSeed = randSeed[0]
         self._taskCython.make_IntrinsicLC(
-            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.fracIntrinsicVar,
+            intrinsicLC.numCadences, intrinsicLC.tolIR, intrinsicLC.startT, intrinsicLC.fracIntrinsicVar,
             intrinsicLC.fracNoiseToSignal, intrinsicLC.t, intrinsicLC.x, intrinsicLC.y, intrinsicLC.yerr,
             intrinsicLC.mask, intrinsicLC.XSim, intrinsicLC.PSim, burnSeed, distSeed, threadNum=tnum)
         intrinsicLC._simulatedCadenceNum = numCadences - 1
@@ -1484,18 +1487,12 @@ class MBHBCARMATask(object):
                 observedLC.yerrSmooth[i] = unObsErr
                 observedLC.maskSmooth[i] = 0.0
 
-        # preSmoothYMean = np.mean(observedLC.ySmooth[np.nonzero(observedLC.maskSmooth)])
         res = self._taskCython.smooth_RTS(
-            observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth,
+            observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.startT,
+            observedLC.tSmooth, observedLC.xSmooth,
             observedLC.ySmooth, observedLC.yerrSmooth, observedLC.maskSmooth,
             observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth,
             observedLC.xSmooth, observedLC.xerrSmooth, tnum)
-        '''for i in xrange(observedLC.numCadencesSmooth):
-            observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
-            try:
-                observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
-            except ValueError:
-                observedLC.xerrSmooth[i] = 0.0'''
         observedLC._isSmoothed = True
         return res
 
