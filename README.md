@@ -42,6 +42,17 @@ compiler is installed in a non-standard location and can be resolved by setting 
 
 and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
+If you upgrade to Sierra 10.12.1 on Mac, you may need to re-install nlopt if the library cannot be found by your c compiler.  If you have a kali import error (while running tests) your python may not be seeing your PYTHONPATH environment variable as set by sourcing bin/setup.py.   To solve this issue create the following file in your home directory:
+
+'.launchd.conf'
+
+with the contents (for my case):
+
+launchctl setenv PYTHONPATH $PYTHONPATH
+
+launchctl setenv DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH
+
+
 1. Anaconda Python
 
 
