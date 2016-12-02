@@ -9,7 +9,6 @@ import re
 import argparse
 import matplotlib.pyplot as plt
 import pdb
-from sklearn import datasets, linear_model
 
 try:
 	import kali.lc
@@ -74,7 +73,6 @@ class crtsLC(kali.lc.lc):
 		regressions = list()
 		tempnewFlux = list()
 		tempnewMJD = list()
-
 		totalMag = 0
 		totalMJD = 0
 		sumMagerr = 0
@@ -82,10 +80,8 @@ class crtsLC(kali.lc.lc):
 		objCount = 1
 		initialLength = len(MJD)
 		rMJD = [MJD[i]//1 for i in range (0, len(MJD))]
-		regr = linear_model.LinearRegression()
-
+		
 		for i in range (0, initialLength - 1):
-			
 			if rMJD[i] == rMJD[i+1] and i != initialLength - 2:
 				totalMag += Mag[i]
 				totalMJD += MJD[i]
@@ -97,21 +93,18 @@ class crtsLC(kali.lc.lc):
 				newRA.append(RA[i])
 				newDec.append(Dec[i])
 				newmasterID.append(masterID[i])
-		
 				totalMag += Mag[i]
 				totalMJD += MJD[i]
 				tempnewMJD.append(MJD[i])
 				tempnewflux, tempnewfluxerr = kali.carma.pogsonFlux((float(Mag[i])), float(Magerr[i]))
 				tempnewFlux.append(tempnewflux)
 				count += 1
-		
 				averageMJD = totalMJD/count
 				newMJD.append(averageMJD)
 				averageMag = totalMag/count
 				newMag.append(averageMag)
-				#regr.fit(newMJD, newFlux) 
-				#regressions.append(regr.coef_)
-		
+				m, b = np.polyfit(tempnewMJD, tempnewFlux, 1)
+				regressions.append(m)
 				count = 0
 				totalMag = 0
 				totalMJD = 0
@@ -122,7 +115,6 @@ class crtsLC(kali.lc.lc):
 			if rMJD[j] == rMJD[j+1]:
 				sumMagerr += (Mag[j]-newMag[objCount-1])**2
 				count += 1
-
 			else:
 				sumMagerr += (Mag[j]-newMag[objCount-1])**2
 				count += 1
@@ -138,8 +130,11 @@ class crtsLC(kali.lc.lc):
 			newflux, newfluxerr = kali.carma.pogsonFlux(float(newMag[k]), float(newMagerr[k]))
 			newFlux.append(newflux)
 			newFluxerr.append(newfluxerr)
-
-		#avgCoef = sum(regressions)/len(regressions)
+		
+		#just as a check
+		print regressions[:]
+		print ">>>>>The sum of all m's is: %r" %(sum(regressions))
+		print ">>>>>The average m is: %r" %(sum(regressions)/len(regressions))
 		
 		self._numCadences = len(newMJD) - 1
 		self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
