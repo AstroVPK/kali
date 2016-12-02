@@ -42,11 +42,18 @@ compiler is installed in a non-standard location and can be resolved by setting 
 
 and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
-If you upgrade to Sierra 10.12.1 on Mac, you may need to re-install nlopt if the library cannot be found by your c compiler.  If you have a kali import error (while running tests) your python may not be seeing your PYTHONPATH environment variable as set by sourcing bin/setup.py.   To solve this issue create the following file in your home directory:
+If you upgrade to Sierra 10.12.1 on Mac, you may find that the compiler is unable to link against `nlopt`
+because the `nlopt` library cannot be found anymore. This issue is resolvable by simply updating your shared
+library cache (i.e. doing the Mac OSX equivalent of running `ldconfig` for Linux).
+
+If you have a kali import error, e.g. when attempting to run tests, it is because of the Mac OSX Sytems
+Integrity Protection (SIP) technology cleaning your shell environment. This means that the environment passed
+to the python interpreter no longer has a `PYTHONPATH` defined. To solve this issue, create the following file
+in your home directory:
 
 '.launchd.conf'
 
-with the contents (for my case):
+with the contents:
 
 launchctl setenv PYTHONPATH $PYTHONPATH
 
