@@ -103,8 +103,11 @@ class crtsLC(kali.lc.lc):
 				newMJD.append(averageMJD)
 				averageMag = totalMag/count
 				newMag.append(averageMag)
-				m, b = np.polyfit(tempnewMJD, tempnewFlux, 1)
-				regressions.append(m)
+				if len(tempnewMJD) == 1:
+					regressions.append(0)
+				else:	
+					m, b = np.polyfit(tempnewMJD, tempnewFlux, 1)
+					regressions.append(m)
 				count = 0
 				totalMag = 0
 				totalMJD = 0
@@ -131,14 +134,10 @@ class crtsLC(kali.lc.lc):
 			newFlux.append(newflux)
 			newFluxerr.append(newfluxerr)
 		
-		#just as a check
-		print ">>>>>The sum of all m's is: %r" %(sum(regressions))
-		print ">>>>>The average m is: %r" %(sum(regressions)/len(regressions))
-		
 		self._numCadences = len(newMJD) - 1
 		self.regressions = np.require(np.array(regressions), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-		self.t = np.require(np.array(newMJD), requirements=['F', 'A', 'W', 'O', 'E'])
+		self.t = np.require(np.array(newMJD[:-1]), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.y = np.require(np.array(newFlux), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.yerr = np.require(np.array(newFluxerr), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.x = np.require(np.array(self._numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
