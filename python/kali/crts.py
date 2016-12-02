@@ -132,11 +132,11 @@ class crtsLC(kali.lc.lc):
 			newFluxerr.append(newfluxerr)
 		
 		#just as a check
-		print regressions[:]
 		print ">>>>>The sum of all m's is: %r" %(sum(regressions))
 		print ">>>>>The average m is: %r" %(sum(regressions)/len(regressions))
 		
 		self._numCadences = len(newMJD) - 1
+		self.regressions = np.require(np.array(regressions), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.t = np.require(np.array(newMJD), requirements=['F', 'A', 'W', 'O', 'E'])
 		self.y = np.require(np.array(newFlux), requirements=['F', 'A', 'W', 'O', 'E'])
