@@ -70,7 +70,14 @@ class k2LC(kali.lc.lc):
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = ''.join([name[4:6], '000'])
             fullURL = '/'.join([baseURL, camp, name1Dir, name2Dir, fileNameFits])
-            result = urllib.urlretrieve(fullURL, filePathFits)
+            try:
+                ret = urllib2.urlopen(fullURL)
+            except (urllib2.HTTPError, urllib2.URLError) as err:
+                print 'Could not reach %s -\
+                %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
+                pass
+            else:
+                result = urllib.urlretrieve(fullURL, filePathFits)
 
     def _getHLSP(self, name, campaign, path):
         baseURL = 'http://archive.stsci.edu/missions/hlsp'
@@ -85,8 +92,10 @@ class k2LC(kali.lc.lc):
             fullURL = '/'.join([baseURL, 'k2sff', campaign, name1Dir, name2Dir, fileNameFits])
             try:
                 ret = urllib2.urlopen(fullURL)
-            except urllib2.HTTPError:
-                pass
+            except (urllib2.HTTPError, urllib2.URLError) as err:
+                    print 'Could not reach %s -\
+                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
+                    pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
 
@@ -99,8 +108,10 @@ class k2LC(kali.lc.lc):
             fullURL = '/'.join([baseURL, 'k2sc', campaign, name1Dir, fileNameFits])
             try:
                 ret = urllib2.urlopen(fullURL)
-            except urllib2.HTTPError:
-                pass
+            except (urllib2.HTTPError, urllib2.URLError) as err:
+                    print 'Could not reach %s -\
+                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
+                    pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
 
@@ -114,8 +125,10 @@ class k2LC(kali.lc.lc):
             fullURL = '/'.join([baseURL, 'k2varcat', campaign, name1Dir, name2Dir, fileNameFits])
             try:
                 ret = urllib2.urlopen(fullURL)
-            except urllib2.HTTPError:
-                pass
+            except (urllib2.HTTPError, urllib2.URLError) as err:
+                    print 'Could not reach %s -\
+                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
+                    pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
 
@@ -129,8 +142,10 @@ class k2LC(kali.lc.lc):
             fullURL = '/'.join([baseURL, 'everest', campaign, name1Dir, name2Dir, fileNameFits])
             try:
                 ret = urllib2.urlopen(fullURL)
-            except urllib2.HTTPError:
-                pass
+            except (urllib2.HTTPError, urllib2.URLError) as err:
+                    print 'Could not reach %s -\
+                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
+                    pass
             else:
                 result = urllib.urlretrieve(fullURL, filePathFits)
 
@@ -473,7 +488,12 @@ class k2LC(kali.lc.lc):
         """
         url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&target=%s&outputformat=CSV'%(
             self.name)
-        lines = urllib.urlopen(url)
+        try:
+            lines = urllib.urlopen(url)
+        except (urllib2.HTTPError, urllib2.URLError, IOError) as err:
+            print 'Could not reach %s -\
+            %s may not be functioning at this time. Error %s'%(url, url, err)
+            sys.exit(-1)
         data = {}
         counter = 0
         lineList = list()
