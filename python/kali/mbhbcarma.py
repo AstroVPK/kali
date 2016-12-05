@@ -15,6 +15,7 @@ import os as os
 import reprlib as reprlib
 import copy as copy
 from scipy.interpolate import UnivariateSpline
+import scipy.signal.spectral
 import warnings as warnings
 import matplotlib.pyplot as plt
 import random
@@ -1265,21 +1266,25 @@ class MBHBCARMATask(object):
 
     def estimate(self, observedLC):
         """!
-        Estimate period
+        Estimate period using gatspy
         """
-        # fluxEst
         if observedLC.numCadences > 50:
-            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
-                                                                                        observedLC.y,
-                                                                                        observedLC.yerr)
+            model = gatspy.periodic.LombScargleFast()
         else:
-            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(observedLC.t,
-                                                                                    observedLC.y,
-                                                                                    observedLC.yerr)
-        periods, power = model.periodogram_auto()  # nyquist_factor=observedLC.numCadences)
-        model.optimizer.period_range = (
-            2.0*observedLC.meandt, observedLC.T)
-        periodEst = model.best_period
+            model = gatspy.periodic.LombScargle()
+        model.optimizer.set(quiet=True, period_range=(observedLC.mindt/10.0, observedLC.T*10.0))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            model.fit(observedLC.t,
+                      observedLC.y,
+                      observedLC.yerr)
+            periodEst = model.best_period
+        if periodEst < observedLC.mindt/10.0 or periodEst > observedLC.T*10.0:
+            scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
+            freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
+                                observedLC.numCadences*100)
+            periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
+            periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
         return periodEst
 
     def guess(self, periodEst):
@@ -1358,7 +1363,6 @@ class MBHBCARMATask(object):
         maxTLog10 = math.log10(maxT)
 
         periodEst = self.estimate(observedLC)
-
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             sigmaFactor = 1.0e0
