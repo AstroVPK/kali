@@ -4,6 +4,7 @@ import urllib
 import urllib2
 import os as os
 import sys as sys
+import warnings
 import fitsio
 from fitsio import FITS, FITSHDR
 import subprocess
@@ -53,6 +54,29 @@ class k2LC(kali.lc.lc):
             raise ValueError('Unrecognized k2LC type')
         return fileName
 
+    def _fetchFromURL(self, fullURL):
+        ret = None
+        try:
+            ret = urllib2.urlopen(fullURL)
+        except (urllib2.HTTPError, urllib2.URLError) as err:
+                warnings.warn('Could not fetch %s'%(fullURL), UserWarning)
+                if isinstance(err, urllib2.HTTPError):
+                    pass
+                else:
+                    try:
+                        retGOOGLE = urllib2.urlopen('http://www.google.com')
+                    except (urllib2.HTTPError, urllib2.URLError) as errGOOGLE:
+                        raise urllib2.URLError('Could not reach www.google.com -\
+                        check your internet connection')
+                    else:
+                        try:
+                            retSTSCI = urllib2.urlopen('http://www.stsci.edu')
+                        except (urllib2.HTTPError, urllib2.URLError) as errSTSCI:
+                            raise urllib2.URLError('stsci.edu may be down.')
+                        else:
+                            raise ValueError('Invalid name & campaign combination!')
+        return ret
+
     def _getMAST(self, name, campaign, path, goid, gopi):
         baseURL = 'http://archive.stsci.edu/pub/k2/lightcurves'
         recordFile = 'k2List.dat'
@@ -70,14 +94,11 @@ class k2LC(kali.lc.lc):
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = ''.join([name[4:6], '000'])
             fullURL = '/'.join([baseURL, camp, name1Dir, name2Dir, fileNameFits])
-            try:
-                ret = urllib2.urlopen(fullURL)
-            except (urllib2.HTTPError, urllib2.URLError) as err:
-                print 'Could not reach %s -\
-                %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
-                pass
-            else:
+            ret = self._fetchFromURL(fullURL)
+            if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+            else:
+                raise ValueError('Invalid name & campaign combination!')
 
     def _getHLSP(self, name, campaign, path):
         baseURL = 'http://archive.stsci.edu/missions/hlsp'
@@ -90,14 +111,11 @@ class k2LC(kali.lc.lc):
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = name[4:]
             fullURL = '/'.join([baseURL, 'k2sff', campaign, name1Dir, name2Dir, fileNameFits])
-            try:
-                ret = urllib2.urlopen(fullURL)
-            except (urllib2.HTTPError, urllib2.URLError) as err:
-                    print 'Could not reach %s -\
-                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
-                    pass
-            else:
+            ret = self._fetchFromURL(fullURL)
+            if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+            else:
+                pass
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -106,14 +124,11 @@ class k2LC(kali.lc.lc):
         if not os.path.isfile(filePathFits):
             name1Dir = ''.join([name[0:4], '00000'])
             fullURL = '/'.join([baseURL, 'k2sc', campaign, name1Dir, fileNameFits])
-            try:
-                ret = urllib2.urlopen(fullURL)
-            except (urllib2.HTTPError, urllib2.URLError) as err:
-                    print 'Could not reach %s -\
-                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
-                    pass
-            else:
+            ret = self._fetchFromURL(fullURL)
+            if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+            else:
+                pass
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -123,14 +138,11 @@ class k2LC(kali.lc.lc):
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = ''.join([name[4:6], '000'])
             fullURL = '/'.join([baseURL, 'k2varcat', campaign, name1Dir, name2Dir, fileNameFits])
-            try:
-                ret = urllib2.urlopen(fullURL)
-            except (urllib2.HTTPError, urllib2.URLError) as err:
-                    print 'Could not reach %s -\
-                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
-                    pass
-            else:
+            ret = self._fetchFromURL(fullURL)
+            if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+            else:
+                pass
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -140,14 +152,11 @@ class k2LC(kali.lc.lc):
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = ''.join([name[4:]])
             fullURL = '/'.join([baseURL, 'everest', campaign, name1Dir, name2Dir, fileNameFits])
-            try:
-                ret = urllib2.urlopen(fullURL)
-            except (urllib2.HTTPError, urllib2.URLError) as err:
-                    print 'Could not reach %s -\
-                    %s may not be functioning at this time. Error %s'%(fullURL, fullURL, err)
-                    pass
-            else:
+            ret = self._fetchFromURL(fullURL)
+            if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+            else:
+                pass
 
     def _readMAST(self, name, campaign, path, processing):
         fileName = self._getCanonicalFileName(name, campaign, processing)
@@ -479,8 +488,10 @@ class k2LC(kali.lc.lc):
             raise ValueError('Processing not found!')
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
-        self.coordinates = SkyCoord(self._getCoordinates(),
-                                    unit=(units.hourangle, units.deg), frame='icrs')
+        coords = self._getCoordinates()
+        if coords:
+            self.coordinates = SkyCoord(self._getCoordinates(),
+                                        unit=(units.hourangle, units.deg), frame='icrs')
 
     def _getCoordinates(self):
         """!
@@ -499,8 +510,12 @@ class k2LC(kali.lc.lc):
         lineList = list()
         for line in lines:
             lineList.append(line.rstrip('\n'))
-        vals = lineList[2].split(',')
-        coord_str = vals[1] + ' ' + vals[2]
+        if lineList[0] == 'target not resolved, continue':
+            warnings.warn('Unable to fetch cordinates! - %s returns: %s'%(url, lineList[0]), UserWarning)
+            coord_str = None
+        else:
+            vals = lineList[2].split(',')
+            coord_str = vals[1] + ' ' + vals[2]
         return coord_str
 
     '''def _catalogue(self):
