@@ -1273,12 +1273,10 @@ class MBHBCARMATask(object):
         else:
             model = gatspy.periodic.LombScargle()
         model.optimizer.set(quiet=True, period_range=(observedLC.mindt/10.0, observedLC.T*10.0))
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            model.fit(observedLC.t,
-                      observedLC.y,
-                      observedLC.yerr)
-            periodEst = model.best_period
+        model.fit(observedLC.t,
+                  observedLC.y,
+                  observedLC.yerr)
+        periodEst = model.best_period
         if periodEst < observedLC.mindt/10.0 or periodEst > observedLC.T*10.0:
             scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
             freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
@@ -1302,41 +1300,9 @@ class MBHBCARMATask(object):
             rS1Val = (2.0*self.G*m1Val*self.SolarMass)/(pow(self.c, 2.0))
             rS2Val = (2.0*self.G*m2Val*self.SolarMass)/(pow(self.c, 2.0))
             rPeribothronTotVal = (a1Guess + a2Guess)*self.Parsec*(1.0 - eccentricityGuess)
-            '''
-            print "              periodEst (d): %+e"%(periodEst)
-            print "               a1Guess (pc): %+e"%(a1Guess)
-            print "               a2Guess (pc): %+e"%(a2Guess)
-            print "          eccentricityGuess: %+e"%(eccentricityGuess)
-            print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
-            print "               axisRatioVal: %+e"%(axisRatioVal)
-            print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
-            print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
-            print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
-            print "                rS2Val (pc): %+e"%(rS2Val/self.Parsec)
-            print "10.0*(rS1Val + rS2Val) (pc): %+e"%(10.0*(rS1Val + rS2Val)/self.Parsec)
-            print "    rPeribothronTotVal (pc): %+e"%(rPeribothronTotVal/self.Parsec)
-            print " "
-            '''
             if rPeribothronTotVal > 10.0*(rS1Val + rS2Val):
                 notGood = False
                 break
-        '''
-        print "BREAKING..."
-        print "              periodEst (d): %+e"%(periodEst)
-        print "               a1Guess (pc): %+e"%(a1Guess)
-        print "               a2Guess (pc): %+e"%(a2Guess)
-        print "          eccentricityGuess: %+e"%(eccentricityGuess)
-        print "       totalMassVal (M_Sun): %+e"%(totalMassVal/self.SolarMass)
-        print "               axisRatioVal: %+e"%(axisRatioVal)
-        print "              m1Val (M_Sun): %+e"%(m1Val/self.SolarMass)
-        print "              m2Val (M_Sun): %+e"%(m2Val/self.SolarMass)
-        print "                rS1Val (pc): %+e"%(rS1Val/self.Parsec)
-        print "                rS2Val (pc): %+e"%(rS2Val/self.Parsec)
-        print "10.0*(rS1Val + rS2Val) (pc): %+e"%(10.0*(rS1Val + rS2Val)/self.Parsec)
-        print "    rPeribothronTotVal (pc): %+e"%(rPeribothronTotVal/self.Parsec)
-        print " "
-        print " "
-        '''
         return a1Guess, a2Guess, eccentricityGuess
 
     def fit(self, observedLC, widthT=0.01, widthF=0.05,
@@ -1382,8 +1348,6 @@ class MBHBCARMATask(object):
                 if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
                 else:
-                    # print 'SigmaTrial: %e'%(RhoGuess[self.r + self.p + self.q])
-                    # pdb.set_trace()
                     sigmaFactor *= 0.31622776601  # sqrt(0.1)
 
             for dimNum in xrange(self.ndims):
