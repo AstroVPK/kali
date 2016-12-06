@@ -497,7 +497,7 @@ class k2LC(kali.lc.lc):
         """!
         \brief Query K2 EPIC ID to get ra dec etc...
         """
-        url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&target=%s&outputformat=CSV'%(
+        url = 'http://archive.stsci.edu/k2/epic/search.php?action=Search&id=%s&outputformat=CSV'%(
             self.name)
         try:
             lines = urllib.urlopen(url)
