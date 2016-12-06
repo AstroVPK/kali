@@ -57,22 +57,95 @@ class crtsLC(kali.lc.lc):
                 RA.append(float(splitLine[3]))
                 Dec.append(float(splitLine[4]))
                 MJD.append(float(splitLine[5]))
-        self._numCadences = len(MJD)
         zipped = sorted(zip(MJD, masterID, Mag, Magerr, Flux, Fluxerr, RA, Dec))
         MJD, masterID, Mag, Magerr, Flux, Fluxerr, RA, Dec = zip(*zipped)
-        self.startT = MJD[0]
         MJD = [(mjd - MJD[0])/(1.0 + self.z) for mjd in MJD]
+        self.startT = MJD[0]
+        rMJD = list()
+        newMJD = list()
+        newRA = list()
+        newDec = list()
+        newmasterID = list()
+        newMagerr = list()
+        newMag = list()
+        newFlux = list()
+        newFluxerr = list()
+        regressions = list()
+        tempnewFlux = list()
+        tempnewMJD = list()
+        totalMag = 0
+        totalMJD = 0
+        sumMagerr = 0
+        count = 0
+        objCount = 1
+        initialLength = len(MJD)
+        rMJD = [MJD[i]//1 for i in range(0, len(MJD))]
 
+        for i in range(0, initialLength - 1):
+            if rMJD[i] == rMJD[i+1] and i != initialLength - 2:
+                totalMag += Mag[i]
+                totalMJD += MJD[i]
+                tempnewMJD.append(MJD[i])
+                tempnewflux, tempnewfluxerr = kali.carma.pogsonFlux((float(Mag[i])), float(Magerr[i]))
+                tempnewFlux.append(tempnewflux)
+                count += 1
+            else:
+                newRA.append(RA[i])
+                newDec.append(Dec[i])
+                newmasterID.append(masterID[i])
+                totalMag += Mag[i]
+                totalMJD += MJD[i]
+                tempnewMJD.append(MJD[i])
+                tempnewflux, tempnewfluxerr = kali.carma.pogsonFlux((float(Mag[i])), float(Magerr[i]))
+                tempnewFlux.append(tempnewflux)
+                count += 1
+                averageMJD = totalMJD/count
+                newMJD.append(averageMJD)
+                averageMag = totalMag/count
+                newMag.append(averageMag)
+                if len(tempnewMJD) == 1:
+                    regressions.append(0)
+                else:
+                    m, b = np.polyfit(tempnewMJD, tempnewFlux, 1)
+                    regressions.append(m)
+                count = 0
+                totalMag = 0
+                totalMJD = 0
+                tempnewMJD = []
+                tempnewFlux = []
+
+        for j in range(0, initialLength - 1):
+            if rMJD[j] == rMJD[j+1]:
+                sumMagerr += (Mag[j]-newMag[objCount-1])**2
+                count += 1
+            else:
+                sumMagerr += (Mag[j]-newMag[objCount-1])**2
+                count += 1
+                if count >= 2:
+                    newMagerr.append(np.sqrt(sumMagerr/(count-1)))
+                else:
+                    newMagerr.append(np.sqrt(sumMagerr/(count)))
+                objCount += 1
+                count = 0
+                sumMagerr = 0
+
+        for k in range(0, len(newMJD)-1):
+            newflux, newfluxerr = kali.carma.pogsonFlux(float(newMag[k]), float(newMagerr[k]))
+            newFlux.append(newflux)
+            newFluxerr.append(newfluxerr)
+
+        self._numCadences = len(newMJD) - 1
+        self.regressions = np.require(np.array(regressions), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.t = np.require(np.array(MJD), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.y = np.require(np.array(Flux), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.yerr = np.require(np.array(Fluxerr), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.t = np.require(np.array(newMJD[:-1]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.y = np.require(np.array(newFlux), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.yerr = np.require(np.array(newFluxerr), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.array(self._numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.mag = np.require(np.array(Mag), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.magerr = np.require(np.array(Magerr), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.RA = np.require(np.array(RA), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.Dec = np.require(np.array(Dec), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.masterID = np.require(np.array(masterID), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.mag = np.require(np.array(newMag), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.magerr = np.require(np.array(newMagerr), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.RA = np.require(np.array(newRA), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.Dec = np.require(np.array(newDec), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.masterID = np.require(np.array(newmasterID), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'V')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
