@@ -26,11 +26,12 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 6. Ubuntu 16.04 LTS Xenial Xerus
 
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
-Python, the Intel C++ Compiler XE or the GNU C++ Compiler, Intel MKL, NLOpt, `cython` , the `future`,
-`fitsio`, `py.test`, \& `gatspy` packages, & Brandon Kelly's `carma_pack` (optional) installed. At the moment,
-Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, `multi_key_dict`, & NLOpt are
-required. Either of the Intel C++ Compiler or the GNU C++ Compiler are required though the plan is to
-eventually support the clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is
+Python (free), the Intel C++ Compiler XE (license req. if not student) or the GNU C++ Compiler (free),
+Intel MKL (free), NLOpt (free), `cython` (free), `future` (free), `fitsio` (free), `py.test` (free), `gatspy`
+(free), \& multi_key_dict (free) packages, & Brandon Kelly's `carma_pack` (optional \& free) installed. At the
+moment, Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, `multi_key_dict`, &
+NLOpt are required. Either of the Intel C++ Compiler or the GNU C++ Compiler are required though the plan is
+to eventually support the clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is
 recommended.
 
 You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
@@ -164,14 +165,11 @@ required by the compiler.
 
 
   The Intel MKL library is a high performance math library that is used extensively in this package. Since the
-library can be obtained free of cost by both students as well as academic researchers, there is no plan to
-replace it with an alternative. Intel MKL may be obtained from
+  library can be obtained free of cost by everyone, there is no plan to replace it with an alternative. Intel
+  MKL may be obtained from
 
 
-  [Student + free Compiler & MKL](https://software.intel.com/en-us/qualify-for-free-software/student)
-
-
-  [Academic Resercher + free MKL](https://software.intel.com/en-us/qualify-for-free-software/academicresearcher)
+  [Community License MKL + Misc. Intel HPC Librarues](https://registrationcenter.intel.com/en/forms/?productid=2558&licensetype=2)
 
 
   Add the following line to your `.bashrc` to setup the necessary environment variables
