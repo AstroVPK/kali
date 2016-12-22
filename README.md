@@ -26,7 +26,7 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 6. Ubuntu 16.04 LTS Xenial Xerus
 
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
-Python (free), the Intel C++ Compiler XE (license req. if not student) or the GNU C++ Compiler (free),
+Python (free), the Intel C++ Compiler XE (free for students) or the GNU C++ Compiler (free),
 Intel MKL (free), NLOpt (free), `cython` (free), `future` (free), `fitsio` (free), `py.test` (free), `gatspy`
 (free), \& multi_key_dict (free) packages, & Brandon Kelly's `carma_pack` (optional \& free) installed. At the
 moment, Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, `multi_key_dict`, &
