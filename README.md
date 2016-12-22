@@ -319,11 +319,11 @@ build. You can get the most recent version using
 11. `multi_key_dict`
 
 
-`multi_key_dict` adds support for Python dictionaries with multiple keys mapping to the same value - a must
-have for people (such as myself) with poor memories for names. `multi_key_dict` can be installed using
+  `multi_key_dict` adds support for Python dictionaries with multiple keys mapping to the same value - a must
+  have for people (such as myself) with poor memories for names. `multi_key_dict` can be installed using
 
 
-`bash-prompt$ pip install multi_key_dict`
+  `bash-prompt$ pip install multi_key_dict`
 
 
 12. `carma_pack`
