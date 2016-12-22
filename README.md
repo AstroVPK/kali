@@ -28,9 +28,10 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
 Python, the Intel C++ Compiler XE or the GNU C++ Compiler, Intel MKL, NLOpt, `cython` , the `future`,
 `fitsio`, `py.test`, \& `gatspy` packages, & Brandon Kelly's `carma_pack` (optional) installed. At the moment,
-Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, & NLOpt are required. Either of
-the Intel C++ Compiler or the GNU C++ Compiler are required though the plan is to evetually support the
-clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is recommended.
+Anaconda Python, Intel MKL, `cython`, `future`, `fitsio`, `py.test`, `gatspy`, `multi_key_dict`, & NLOpt are
+required. Either of the Intel C++ Compiler or the GNU C++ Compiler are required though the plan is to
+eventually support the clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is
+recommended.
 
 You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
 `icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
@@ -313,6 +314,16 @@ build. You can get the most recent version using
 
 
   `bash-prompt$ pip install gatspy`
+
+
+10. `multi_key_dict`
+
+
+`multi_key_dict` adds support for Python dictionaries with multiple keys mapping to the same value - a must
+have for people (such as myself) with poor memories for names. `multi_key_dict` can be installed using
+
+
+`bash-prompt$ pip install multi_key_dict`
 
 
 10. `carma_pack`
