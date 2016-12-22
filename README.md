@@ -286,7 +286,7 @@ build. You can get the most recent version using
   1. `fitsio` Version 0.9.10
 
 
-8. `py.test`
+9. `py.test`
 
   `py.test` is used for testing purposes. `py.test` can be installed into Anaconda using
 
@@ -306,7 +306,7 @@ build. You can get the most recent version using
   1. `py.test` Version 2.9.2
 
 
-9. `gatspy`
+10. `gatspy`
 
 
   General tools for Astronomical Time Series in Python `gatspy` are used to search for periods using a fast
@@ -316,7 +316,7 @@ build. You can get the most recent version using
   `bash-prompt$ pip install gatspy`
 
 
-10. `multi_key_dict`
+11. `multi_key_dict`
 
 
 `multi_key_dict` adds support for Python dictionaries with multiple keys mapping to the same value - a must
@@ -326,7 +326,7 @@ have for people (such as myself) with poor memories for names. `multi_key_dict` 
 `bash-prompt$ pip install multi_key_dict`
 
 
-10. `carma_pack`
+12. `carma_pack`
 
 
   Brandon Kelly's `carma_pack` is a C-ARMA analysis package written in C++ and Python. It may be obtained at
