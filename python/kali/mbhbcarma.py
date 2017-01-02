@@ -1268,6 +1268,7 @@ class MBHBCARMATask(object):
         """!
         Estimate period using gatspy
         """
+        '''
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast()
         else:
@@ -1283,6 +1284,12 @@ class MBHBCARMATask(object):
                                 observedLC.numCadences*100)
             periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
             periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+        '''
+        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
+        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
+                            observedLC.numCadences*100)
+        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
+        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
         return periodEst
 
     def guess(self, periodEst):

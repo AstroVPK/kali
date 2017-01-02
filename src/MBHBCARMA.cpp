@@ -1558,6 +1558,23 @@ int kali::MBHBCARMA::checkMBHBCARMAParams(double *ThetaIn /**< [in]  */) {
 	double massRatioVal = a1Val/a2Val;
 	double m1Val = totalMassVal*(1.0/(1.0 + massRatioVal));
 	double m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal));
+
+    if (m1Val < 0.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1LLim: %4.3e\n",0.0);
+		#endif
+		}
+
+    if (m2Val < 0.0) {
+		mbhbIsGood = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2LLim: %4.3e\n",0.0);
+		#endif
+		}
+
 	double rS1Val = (2.0*kali::G*m1Val)/(pow(kali::c, 2.0));
 	double rS2Val = (2.0*kali::G*m2Val)/(pow(kali::c, 2.0));
 
@@ -2542,7 +2559,7 @@ void kali::MBHBCARMA::beamSystem(LnLikeData *ptr2Data) {
         printf("absMeanFlux: %+e\n", absMeanFlux);
     #endif
 
-    setEpoch(t[0] + startT);
+    setEpoch(t[0]);
 	x[0] = absMeanFlux*getBeamingFactor2();
     #ifdef DEBUG_BEAMSYSTEM
         printf("absMeanFlux: %+e\n", absMeanFlux);
@@ -2551,7 +2568,7 @@ void kali::MBHBCARMA::beamSystem(LnLikeData *ptr2Data) {
     #endif
 
 	for (int i = 1; i < numCadences; ++i) {
-        setEpoch(t[i] + startT);
+        setEpoch(t[i]);
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 
@@ -2598,7 +2615,7 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
 		}
 	vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_ICDF, distStream, 1, &distRand[0], p, VSL_MATRIX_STORAGE_FULL, VScratch, T);
 
-    setEpoch(t[0] + startT);
+    setEpoch(t[0]);
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, VScratch, 1); // VScratch = F*x
 	cblas_dcopy(p, VScratch, 1, X, 1); // X = VScratch
 	cblas_daxpy(p, 1.0, &distRand[0], 1, X, 1);
@@ -2611,7 +2628,7 @@ void kali::MBHBCARMA::simulateSystem(LnLikeData *ptr2Data, unsigned int distSeed
     #endif
 
 	for (int i = 1; i < numCadences; ++i) {
-        setEpoch(t[i] + startT);
+        setEpoch(t[i]);
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 
@@ -2781,7 +2798,7 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double t_incr = 0.0, LnLikelihood = 0.0, ptCounter = 0.0, v = 0.0, S = 0.0, SInv = 0.0, fracChange = 0.0, Contrib = 0.0;
 
-    setEpoch(t[0] + startT);
+    setEpoch(t[0]);
 	H[0] = mask[0];
 	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
@@ -2834,7 +2851,7 @@ double kali::MBHBCARMA::computeLnLikelihood(LnLikeData *ptr2Data) {
 	LnLikelihood = LnLikelihood + Contrib; // LnLike += -0.5*v*v*SInv -0.5*log(det(S)) -0.5*log(2.0*pi)
 	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	for (int i = 1; i < numCadences; i++) {
-        setEpoch(t[i] + startT);
+        setEpoch(t[i]);
         t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {
@@ -3164,7 +3181,7 @@ double kali::MBHBCARMA::computeLnPrior(LnLikeData *ptr2Data) {
         printf("computeLnPrior - threadNum: %d; LnPrior after m1: %+4.3e\n",threadNum,LnPrior);
     #endif
 
-    if (m1 < 1.0e4*kali::SolarMass) {
+    if (m2 < 1.0e4*kali::SolarMass) {
 		LnPrior = -infiniteVal; // Restrict m2 > 10^4 M_Sum
 		}
 	if (m2 > m1) {
@@ -3473,7 +3490,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 
 	// Forward iteration of RTS Smoother
 	// Iterate through first point
-    setEpoch(t[0] + startT);
+    setEpoch(t[0]);
 	H[0] = mask[0];
 	R[0] = yerr[0]*yerr[0]; // Heteroskedastic errors
 	cblas_dgemv(CblasColMajor, CblasNoTrans, p, p, 1.0, F, p, X, 1, 0.0, XMinus, 1); // Compute XMinus = F*X
@@ -3512,7 +3529,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 	ptCounter = ptCounter + 1*static_cast<int>(mask[0]);
 	// Iterate through remaining points
 	for (int i = 1; i < numCadences; i++) {
-        setEpoch(t[i] + startT);
+        setEpoch(t[i]);
 		t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {
@@ -3586,7 +3603,7 @@ int kali::MBHBCARMA::RTSSmoother(LnLikeData *ptr2Data, double *XSmooth, double *
 	#endif
 	// Iterate backwards through remaining points
 	for (int i = numCadences - 2; i > -1; --i) {
-        setEpoch(t[i] + startT);
+        setEpoch(t[i]);
         t_incr = t[i] - t[i - 1];
 		fracChange = abs((t_incr - dt)/((t_incr + dt)/2.0));
 		if (fracChange > tolIR) {

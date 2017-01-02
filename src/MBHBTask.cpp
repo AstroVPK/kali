@@ -306,11 +306,12 @@ int kali::MBHBTask::add_ObservationNoise(int numCadences, double dt, double frac
 	return 0;
 	}
 
-double kali::MBHBTask::compute_LnPrior(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum) {
+double kali::MBHBTask::compute_LnPrior(int numCadences, double dt, double startT, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum) {
 	double LnPrior = 0.0;
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
+    Data.startT = startT;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
@@ -318,6 +319,10 @@ double kali::MBHBTask::compute_LnPrior(int numCadences, double dt, double lowest
 	Data.mask = mask;
 	Data.lowestFlux = lowestFlux;
 	Data.highestFlux = highestFlux;
+    Data.periodCenter = periodCenter;
+    Data.periodWidth = periodWidth;
+    Data.fluxCenter = fluxCenter;
+    Data.fluxWidth = fluxWidth;
 	kali::LnLikeData *ptr2Data = &Data;
 
 	LnPrior = Systems[threadNum].computeLnPrior(ptr2Data);
@@ -345,7 +350,7 @@ double kali::MBHBTask::compute_LnLikelihood(int numCadences, double dt, int cade
 	return LnLikelihood;
 	}
 
-int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood) {
+int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double startT, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth) {
 	#ifdef DEBUG_FIT_MBHBMODEL
 		printf("numThreads: %d\n",numThreads);
 	#endif
@@ -355,6 +360,7 @@ int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux,
 	kali::LnLikeData Data;
 	Data.numCadences = numCadences;
 	Data.dt = dt;
+    Data.startT = startT;
 	Data.t = t;
 	Data.x = x;
 	Data.y = y;
@@ -362,6 +368,10 @@ int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux,
 	Data.mask = mask;
 	Data.lowestFlux = lowestFlux;
 	Data.highestFlux = highestFlux;
+    Data.periodCenter = periodCenter;
+    Data.periodWidth = periodWidth;
+    Data.fluxCenter = fluxCenter;
+    Data.fluxWidth = fluxWidth;
 	kali::LnLikeData *ptr2Data = &Data;
 	kali::LnLikeArgs Args;
 	Args.numThreads = numThreads;
@@ -440,3 +450,13 @@ int kali::MBHBTask::fit_MBHBModel(int numCadences, double dt, double lowestFlux,
 	newEnsemble.getChainVals(LnPrior, LnLikelihood);
 	return 0;
 	}
+
+int kali::MBHBTask::smooth_Lightcurve(int numCadences, double *t, double *xSmooth, int threadNum) {
+    kali::LnLikeData Data;
+	Data.numCadences = numCadences;
+	Data.t = t;
+	kali::LnLikeData *ptr2Data = &Data;
+    Systems[threadNum].setEpoch(t[0]);
+	Systems[threadNum].Smoother(ptr2Data, xSmooth);
+    return 0;
+}

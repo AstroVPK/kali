@@ -5,6 +5,7 @@
 import numpy as np
 import math as math
 import scipy.stats as spstats
+import scipy.signal.spectral
 from scipy.interpolate import UnivariateSpline
 import cmath as cmath
 import random
@@ -49,6 +50,13 @@ def r2d(radian):
     return radian*(180.0/math.pi)
 
 
+def _f7(seq):
+    """http://tinyurl.com/angxm5"""
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
+
+
 class MBHBTask(object):
 
     _r = 8
@@ -56,6 +64,8 @@ class MBHBTask(object):
     c = 299792458.0
     pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
     twoPi = 2.0*pi
+    fourPi = 4.0*pi
+    fourPiSq = 4.0*math.pow(pi, 2.0)
     Parsec = 3.0857e16
     Day = 86164.090530833
     Year = 31557600.0
@@ -215,6 +225,22 @@ class MBHBTask(object):
     @property
     def Chain(self):
         return np.reshape(self._Chain, newshape=(self._ndims, self._nwalkers, self._nsteps), order='F')
+
+    @property
+    def rootChain(self):
+        if hasattr(self, '_rootChain'):
+            return self._rootChain
+        else:
+            self._rootChain = self.Chain
+        return self._rootChain
+
+    @property
+    def timescaleChain(self):
+        if hasattr(self, '_timescaleChain'):
+            return self._timescaleChain
+        else:
+            self._timescaleChain = self.Chain
+        return self._timescaleChain
 
     @property
     def LnPrior(self):
@@ -582,14 +608,19 @@ class MBHBTask(object):
             intrinsicLC._std = 0.0
             intrinsicLC._stderr = 0.0
 
-    def logPrior(self, observedLC, forced=True, tnum=None):
+    def logPrior(self, observedLC, forced=True, widthT=0.01, widthF=0.05, tnum=None):
         if tnum is None:
             tnum = 0
+        fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinIncEst = self.estimate(observedLC)
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
         observedLC._logPrior = self._taskCython.compute_LnPrior(
-            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
-            observedLC.y, observedLC.yerr, observedLC.mask, tnum)
+            observedLC.numCadences, observedLC.dt, observedLC.startT, lowestFlux, highestFlux,
+            observedLC.t, observedLC.x,
+            observedLC.y, observedLC.yerr, observedLC.mask,
+            periodEst, widthT*periodEst,
+            fluxEst, widthF*fluxEst,
+            tnum)
         return observedLC._logPrior
 
     def logLikelihood(self, observedLC, forced=True, tnum=None):
@@ -624,6 +655,7 @@ class MBHBTask(object):
         Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini
         """
         # fluxEst
+        '''
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
                                                                                         observedLC.y,
@@ -636,6 +668,13 @@ class MBHBTask(object):
         model.optimizer.period_range = (
             2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), observedLC.T)
         periodEst = model.best_period
+        '''
+        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
+        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
+                            observedLC.numCadences*100)
+        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
+        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+
         numIntrinsicFlux = 100
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)])
@@ -678,17 +717,35 @@ class MBHBTask(object):
             dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
             dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
             dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
-            if observedLC.numCadences > 50:
-                model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
-                                                                                            dzdtLC.y,
-                                                                                            dzdtLC.yerr)
-            else:
-                model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
+        '''
+        if observedLC.numCadences > 50:
+            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
                                                                                         dzdtLC.y,
                                                                                         dzdtLC.yerr)
+        else:
+            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
+                                                                                    dzdtLC.y,
+                                                                                    dzdtLC.yerr)
         periods, power = model.periodogram_auto(nyquist_factor=dzdtLC.numCadences)
         model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), dzdtLC.T)
         periodEst = model.best_period
+        #################################################OR################################################
+        if observedLC.numCadences > 50:
+            model = gatspy.periodic.LombScargleFast()
+        else:
+            model = gatspy.periodic.LombScargle()
+        model.optimizer.set(quiet=True, period_range=(observedLC.mindt/10.0, observedLC.T*10.0))
+        model.fit(observedLC.t,
+                  observedLC.y,
+                  observedLC.yerr)
+        periodEst = model.best_period
+        if periodEst < 2.0*observedLC.mindt or periodEst > observedLC.T*10.0:
+        '''
+        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
+        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
+                            observedLC.numCadences*100)
+        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
+        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
 
         # eccentricityEst & omega2Est
         # First find a full period going from rising to falling.
@@ -854,7 +911,7 @@ class MBHBTask(object):
             tauEst = zDotZeros[np.where(zDotZeros > tC)[0][0]]
         else:
             tauEst = zDotZeros[np.where(zDotZeros > tE)[0][0]]
-        tauEst = tauEst%periodEst
+        tauEst = tauEst%periodEst + observedLC.startT
 
         # a2sinInclinationEst
         a2sinInclinationEst = ((KEst*periodEst*self.Day*self.c*math.sqrt(1.0 - math.pow(
@@ -870,7 +927,8 @@ class MBHBTask(object):
         a1Guess = random.uniform(0.0, a2Guess)
         return a1Guess, a2Guess, inclinationGuess
 
-    def fit(self, observedLC, zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
+    def fit(self, observedLC, widthT=0.01, widthF=0.05,
+            zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
         randSeed = np.zeros(1, dtype='uint32')
         if zSSeed is None:
             rand.rdrand(randSeed)
@@ -898,7 +956,7 @@ class MBHBTask(object):
                         fluxEst])
                 res = self.set(ThetaGuess)
                 lnPrior = self.logPrior(observedLC)
-                if res == 0 and lnPrior == 0.0:
+                if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
             for dimNum in xrange(self.ndims):
                 xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
@@ -906,10 +964,13 @@ class MBHBTask(object):
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
         highestFlux = np.max(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
         res = self._taskCython.fit_MBHBModel(
-            observedLC.numCadences, observedLC.dt, lowestFlux, highestFlux, observedLC.t, observedLC.x,
+            observedLC.numCadences, observedLC.dt, observedLC.startT, lowestFlux, highestFlux,
+            observedLC.t, observedLC.x,
             observedLC.y, observedLC.yerr, observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals,
             self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart, self._Chain,
-            self._LnPrior, self._LnLikelihood)
+            self._LnPrior, self._LnLikelihood,
+            periodEst, widthT*periodEst,
+            fluxEst, widthF*fluxEst)
 
         meanTheta = list()
         for dimNum in xrange(self.ndims):
@@ -951,6 +1012,65 @@ class MBHBTask(object):
             bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
             self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
             return self._bestTau
+
+    def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
+        if tnum is None:
+            tnum = 0
+        if observedLC.dtSmooth is None or observedLC.dtSmooth == 0.0:
+            observedLC.dtSmooth = observedLC.mindt/10.0
+        observedLC.pComp = 0
+        observedLC.qComp = 0
+
+        if not startT:
+            startT = observedLC.t[0]
+        if not stopT:
+            stopT = observedLC.t[-1]
+        t = sorted(observedLC.t.tolist() + np.linspace(start=startT, stop=stopT,
+                   num=int(math.ceil((stopT - startT)/observedLC.dtSmooth)), endpoint=False).tolist())
+        t = _f7(t)  # remove duplicates
+        observedLC.numCadencesSmooth = len(t)
+
+        observedLC.tSmooth = np.require(np.array(t), requirements=[
+                                        'F', 'A', 'W', 'O', 'E'])
+        observedLC.xSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
+                                        'F', 'A', 'W', 'O', 'E'])
+        observedLC.xerrSmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
+                                           'F', 'A', 'W', 'O', 'E'])
+        observedLC.ySmooth = np.require(np.zeros(observedLC.numCadencesSmooth), requirements=[
+                                        'F', 'A', 'W', 'O', 'E'])
+        observedLC.yerrSmooth = np.require(
+            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])
+        observedLC.maskSmooth = np.require(
+            np.zeros(observedLC.numCadencesSmooth), requirements=['F', 'A', 'W', 'O', 'E'])
+        observedLC.XSmooth = np.require(np.zeros(observedLC.numCadencesSmooth*observedLC.pComp),
+                                        requirements=['F', 'A', 'W', 'O', 'E'])
+        observedLC.PSmooth = np.require(np.zeros(
+            observedLC.numCadencesSmooth*observedLC.pComp*observedLC.pComp),
+            requirements=['F', 'A', 'W', 'O', 'E'])
+        unObsErr = 0.0
+        obsCtr = 0
+        for i in xrange(observedLC.numCadencesSmooth):
+            if observedLC.tSmooth[i] == observedLC.t[obsCtr]:
+                observedLC.xSmooth[i] = 0.0
+                observedLC.xerrSmooth[i] = unObsErr
+                observedLC.ySmooth[i] = observedLC.y[obsCtr]
+                observedLC.yerrSmooth[i] = observedLC.yerr[obsCtr]
+                observedLC.maskSmooth[i] = observedLC.mask[obsCtr]
+                if obsCtr < observedLC.numCadences - 1:
+                    obsCtr += 1
+            else:
+                observedLC.xSmooth[i] = 0.0
+                observedLC.xerrSmooth[i] = unObsErr
+                observedLC.ySmooth[i] = 0.0
+                observedLC.yerrSmooth[i] = unObsErr
+                observedLC.maskSmooth[i] = 0.0
+
+        res = self._taskCython.smooth_Lightcurve(
+            observedLC.numCadencesSmooth,
+            observedLC.tSmooth,
+            observedLC.xSmooth, tnum)
+        observedLC._isSmoothed = True
+        return res
 
     @classmethod
     def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
@@ -1068,10 +1188,15 @@ class MBHBTask(object):
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.ndims, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
                        r'$\tau$ (d)', r'$F$']
+        orbitExtents = [0.9, 0.9, (0.95*np.min(self.timescaleChain[2, :, self.nsteps/2:]),
+                                   1.05*np.max(self.timescaleChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
+                        0.9, (0.85*np.min(self.timescaleChain[7, :, self.nsteps/2:]),
+                              1.15*np.max(self.timescaleChain[7, :, self.nsteps/2:]))]
         newFigOrb = orbitalTr = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
                                                           show_titles=True,
                                                           title_fmt='.2e',
                                                           quantiles=[0.16, 0.5, 0.84],
+                                                          extents=orbitExtents,
                                                           plot_contours=False,
                                                           plot_datapoints=True,
                                                           plot_contour_lines=False,

@@ -28,10 +28,15 @@ double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data);
 struct LnLikeData {
 	int numCadences;
 	double dt;
+	double startT;
 	int cadenceNum;
 	double fracNoiseToSignal;
 	double lowestFlux;
 	double highestFlux;
+	double periodCenter;
+    double periodWidth;
+    double fluxCenter;
+    double fluxWidth;
 	double currentLnPrior;
 	double currentLnLikelihood;
 	double currentLnPosterior;
@@ -100,6 +105,7 @@ public:
 	void observeNoise(LnLikeData *ptr2Data, unsigned int noiseSeed, double* noiseRand);
 	double computeLnLikelihood(LnLikeData *ptr2LnLikeData);
 	double computeLnPrior(LnLikeData *ptr2LnLikeData);
+	int Smoother(LnLikeData *ptr2Data, double *xSmooth);
 };
 
 struct LnLikeArgs {
