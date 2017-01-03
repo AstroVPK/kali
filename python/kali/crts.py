@@ -39,9 +39,9 @@ class crtsLC(kali.lc.lc):
         allLines = [line.rstrip('\n') for line in allLines]
         masterID = list()
         Mag = list()
-        Magerr = list()
+        MagErr = list()
         Flux = list()
-        Fluxerr = list()
+        FluxErr = list()
         RA = list()
         Dec = list()
         MJD = list()
@@ -50,106 +50,65 @@ class crtsLC(kali.lc.lc):
             if int(splitLine[6]) == 0:
                 masterID.append(int(float(splitLine[0])))
                 Mag.append(float(splitLine[1]))
-                Magerr.append(float(splitLine[2]))
+                MagErr.append(float(splitLine[2]))
                 flux, fluxerr = kali.carma.pogsonFlux(float(splitLine[1]), float(splitLine[2]))
                 Flux.append(flux)
-                Fluxerr.append(fluxerr)
+                FluxErr.append(fluxerr)
                 RA.append(float(splitLine[3]))
                 Dec.append(float(splitLine[4]))
                 MJD.append(float(splitLine[5]))
-        zipped = sorted(zip(MJD, masterID, Mag, Magerr, Flux, Fluxerr, RA, Dec))
-        MJD, masterID, Mag, Magerr, Flux, Fluxerr, RA, Dec = zip(*zipped)
-        MJD = [(mjd - MJD[0])/(1.0 + self.z) for mjd in MJD]
-        self.startT = MJD[0]
-        rMJD = list()
-        newMJD = list()
-        newRA = list()
-        newDec = list()
-        newmasterID = list()
-        newMagerr = list()
-        newMag = list()
-        newFlux = list()
-        newFluxerr = list()
-        regressions = list()
-        tempnewFlux = list()
-        tempnewMJD = list()
-        totalMag = 0
-        totalMJD = 0
-        sumMagerr = 0
-        count = 0
-        objCount = 1
-        initialLength = len(MJD)
-        rMJD = [MJD[i]//1 for i in range(0, len(MJD))]
+        zipped = sorted(zip(MJD, masterID, Mag, MagErr, Flux, FluxErr, RA, Dec))
+        MJD, masterID, Mag, MagErr, Flux, FluxErr, RA, Dec = zip(*zipped)
+        oldNumCadences = len(MJD)
+        intMJD = np.array(sorted(list(set([int(MJD[i]//1) for i in xrange(len(MJD))]))))
+        self.numCadences = len(intMJD)
+        self.t = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.mag = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.magerr = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.y = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.yerr = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.RA = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.Dec = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.mask = np.require(np.array(self.numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.counts = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
 
-        for i in range(0, initialLength - 1):
-            if rMJD[i] == rMJD[i+1] and i != initialLength - 2:
-                totalMag += Mag[i]
-                totalMJD += MJD[i]
-                tempnewMJD.append(MJD[i])
-                tempnewflux, tempnewfluxerr = kali.carma.pogsonFlux((float(Mag[i])), float(Magerr[i]))
-                tempnewFlux.append(tempnewflux)
-                count += 1
-            else:
-                newRA.append(RA[i])
-                newDec.append(Dec[i])
-                newmasterID.append(masterID[i])
-                totalMag += Mag[i]
-                totalMJD += MJD[i]
-                tempnewMJD.append(MJD[i])
-                tempnewflux, tempnewfluxerr = kali.carma.pogsonFlux((float(Mag[i])), float(Magerr[i]))
-                tempnewFlux.append(tempnewflux)
-                count += 1
-                averageMJD = totalMJD/count
-                newMJD.append(averageMJD)
-                averageMag = totalMag/count
-                newMag.append(averageMag)
-                if len(tempnewMJD) == 1:
-                    regressions.append(0)
-                else:
-                    m, b = np.polyfit(tempnewMJD, tempnewFlux, 1)
-                    regressions.append(m)
-                count = 0
-                totalMag = 0
-                totalMJD = 0
-                tempnewMJD = []
-                tempnewFlux = []
+        for i in xrange(oldNumCadences):
+            index = np.where(int(MJD[i]//1) == intMJD)[0][0]
+            self.t[index] += MJD[i]
+            self.mag[index] += Mag[i]
+            # self.magerr[index] += MagErr[i]
+            self.y[index] += Flux[i]
+            # self.yerr[index] += FluxErr[i]
+            self.RA[index] += RA[i]
+            self.Dec[index] += Dec[i]
+            self.counts[index] += 1.0
 
-        for j in range(0, initialLength - 1):
-            if rMJD[j] == rMJD[j+1]:
-                sumMagerr += (Mag[j]-newMag[objCount-1])**2
-                count += 1
-            else:
-                sumMagerr += (Mag[j]-newMag[objCount-1])**2
-                count += 1
-                if count >= 2:
-                    newMagerr.append(np.sqrt(sumMagerr/(count-1)))
-                else:
-                    newMagerr.append(np.sqrt(sumMagerr/(count)))
-                objCount += 1
-                count = 0
-                sumMagerr = 0
+        MagCont = list()
+        FluxCont = list()
+        for i in xrange(self.numCadences):
+            self.t[i] = self.t[i]/self.counts[i]
+            self.mag[i] = self.mag[i]/self.counts[i]
+            self.y[i] = self.y[i]/self.counts[i]
+            self.RA[i] = self.RA[i]/self.counts[i]
+            self.Dec[i] = self.Dec[i]/self.counts[i]
+            del MagCont[:]
+            del FluxCont[:]
+            for j in xrange(oldNumCadences):
+                if int(MJD[j]//1) == intMJD[i]:
+                    MagCont.append(Mag[j])
+                    FluxCont.append(Flux[j])
+            self.magerr[i] = np.std(np.array(MagCont), ddof=1)
+            self.yerr[i] = np.std(np.array(FluxCont), ddof=1)
+            if self.yerr[i] == 0.0:
+                self.yerr[i] = self.y[i]/200.0  # Ugly hack in case the fluxes are all actaully the same.
 
-        for k in range(0, len(newMJD)-1):
-            newflux, newfluxerr = kali.carma.pogsonFlux(float(newMag[k]), float(newMagerr[k]))
-            newFlux.append(newflux)
-            newFluxerr.append(newfluxerr)
-
-        self._numCadences = len(newMJD) - 1
-        self.regressions = np.require(np.array(regressions), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.t = np.require(np.array(newMJD[:-1]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.y = np.require(np.array(newFlux), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.yerr = np.require(np.array(newFluxerr), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.x = np.require(np.array(self._numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.mag = np.require(np.array(newMag), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.magerr = np.require(np.array(newMagerr), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.RA = np.require(np.array(newRA), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.Dec = np.require(np.array(newDec), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.masterID = np.require(np.array(newmasterID), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.startT = self.t[0]/(1.0 + self.z)
+        self.t = (self.t - self.startT)/(1.0 + self.z)
+        self.x = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'V')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
-        self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
-        self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
+        self._xunit = r'$t_{\mathrm{rest}}$ (d)'  # Unit in which time is measured.
+        self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured.
 
     def write(self, name, path=None, **kwrags):
         pass

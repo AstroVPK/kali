@@ -24,6 +24,7 @@
 //#define DEBUG_SIMULATESYSTEM
 //#define DEBUG_CHECKMBHBPARAMS
 //#define DEBUG_CALCLNPOSTERIOR
+//#define DEBUG_COMPUTELNPRIOR
 
 //#if defined(DEBUG_KEPLEREQN) || defined(DEBUG_SIMULATESYSTEM) || defined(DEBUG_CHECKMBHBPARAMS) || defined(DEBUG_CALCLNPOSTERIOR)
 //	#include <stdio.h>
@@ -401,10 +402,36 @@ int kali::MBHB::checkMBHBParams(double *ThetaIn) {
 		}
 
 	double periodVal = kali::Day*ThetaIn[2];
+
+    if (periodVal <= 0.0) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKMBHBCARMAPARAMS
+			printf("period: %4.3e\n",periodVal);
+			printf("periodLLim: %4.3e\n",0.0);
+		#endif
+		}
+
 	double totalMassVal = (kali::fourPiSq*pow(a1Val + a2Val, 3.0))/(kali::G*pow(periodVal, 2.0));
 	double massRatioVal = a1Val/a2Val;
 	double m1Val = totalMassVal*(1.0/(1.0 + massRatioVal));
 	double m2Val = totalMassVal*(massRatioVal/(1.0 + massRatioVal));
+
+    if (m1Val < 0.0) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("m1: %4.3e\n",m1Val);
+			printf("m1LLim: %4.3e\n",0.0);
+		#endif
+		}
+
+    if (m2Val < 0.0) {
+		retVal = 0;
+		#ifdef DEBUG_CHECKMBHBPARAMS
+			printf("m2: %4.3e\n",m2Val);
+			printf("m2LLim: %4.3e\n",0.0);
+		#endif
+		}
+
 	double rS1Val = (2.0*kali::G*m1Val)/(pow(kali::c, 2.0));
 	double rS2Val = (2.0*kali::G*m2Val)/(pow(kali::c, 2.0));
 
@@ -690,8 +717,13 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	double *y = Data.y;
 	double *yerr = Data.yerr;
 	double *mask = Data.mask;
+    double startT = Data.startT*kali::Day;
 	double lowestFlux = Data.lowestFlux;
 	double highestFlux = Data.highestFlux;
+    double periodCenter = Data.periodCenter;
+    double periodWidth = Data.periodWidth;
+    double fluxCenter = Data.fluxCenter;
+    double fluxWidth = Data.fluxWidth;
 	double maxDouble = numeric_limits<double>::max();
 
 	#ifdef DEBUG_COMPUTELNPRIOR
@@ -701,12 +733,49 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
 
+    if (m1 < 1.0e4*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m1 > 10^4 M_Sum
+		}
+	if (m1 > 1.0e10*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m1 < 10^10 M_Sun
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after m1: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
+    if (m2 < 1.0e4*kali::SolarMass) {
+		LnPrior = -infiniteVal; // Restrict m2 > 10^4 M_Sum
+		}
+	if (m2 > m1) {
+		LnPrior = -infiniteVal; // Restrict m1 >= m2
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after m2: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
+    if (tau < startT) {
+		LnPrior = -infiniteVal; // Restrict tau to startT < tau < startT + period
+		}
+	if (tau > startT + period) {
+		LnPrior = -infiniteVal; // Restrict tau to startT < tau < startT + period
+		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after tau: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
 	if (totalFlux < lowestFlux) {
 		LnPrior = -infiniteVal; // The total flux cannot be smaller than the smallest flux in the LC
 		}
 	if (totalFlux > highestFlux) {
 		LnPrior = -infiniteVal; // The total flux cannot be bigger than the biggest flux in the LC
 		}
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after flux: %+4.3e\n",threadNum,LnPrior);
+    #endif
 
 	if (period < 2.0*dt) {
 		LnPrior = -infiniteVal; // Cut all all configurations where the inferred period is too short!
@@ -716,57 +785,36 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 		LnPrior = -infiniteVal; // Cut all all configurations where the inferred period is too short!
 		}
 
-	/*
-	if (m1Val < 1.0e-2*1.0e-6*kali::SolarMass) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("m1: %4.3e\n",m1Val);
-			printf("m1LLim: %4.3e\n",1.0e-1*1.0e-6*kali::SolarMass);
-		#endif
-		}
-	if (m2Val < 1.0e-2*1.0e-6*kali::SolarMass) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("m2: %4.3e\n",m2Val);
-			printf("m2LLim: %4.3e\n",1.0e-1*1.0e-6*kali::SolarMass);
-		#endif
-		}
-	if (m1Val > 1.0e4*1.0e-6*kali::SolarMass) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("m1: %4.3e\n",m1Val);
-			printf("m1ULim: %4.3e\n",1.0e3*1.0e-6*kali::SolarMass);
-		#endif
-		}
-	if (m2Val > m1Val) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("m2: %4.3e\n",m2Val);
-			printf("m2ULim: %4.3e\n",m1Val);
-		#endif
-		}
-	if (rPeribothronTotVal > 10.0*kali::kali::Parsec) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("rPeribothronTot: %4.3e\n",rPeribothronTotVal);
-			printf("rPeribothronTotULim: %4.3e\n",1.0*kali::kali::Parsec);
-		#endif
-		}
-	if (tauVal < 0.0) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("tau: %4.3e\n",tauVal);
-			printf("tauLLim: %4.3e\n",0.0);
-		#endif
-		}
-	if (tauVal > periodVal) {
-		retVal = 0;
-		#ifdef DEBUG_CHECKMBHBPARAMS
-			printf("tau: %4.3e\n",tauVal);
-			printf("tauULim: %4.3e\n",periodVal);
-		#endif
-		}
-	*/
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior after period: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
+    double periodPrior = -0.5*pow(((periodCenter*kali::Day) - period)/(periodWidth*kali::Day), 2.0); // Prior on period
+    double totalFluxPrior = -0.5*pow((fluxCenter - totalFlux)/fluxWidth, 2.0); // Prior on totalFlux
+    LnPrior += periodPrior + totalFluxPrior;
+
+    #ifdef DEBUG_COMPUTELNPRIOR
+    	printf("computeLnPrior - threadNum: %d; totalFlux: %+e\n", threadNum, totalFlux);
+        printf("computeLnPrior - threadNum: %d; lowestFlux: %+e\n", threadNum, lowestFlux);
+        printf("computeLnPrior - threadNum: %d; highestFlux: %+e\n", threadNum, highestFlux);
+        printf("computeLnPrior - threadNum: %d; period: %+e\n", threadNum, period);
+        printf("computeLnPrior - threadNum: %d; 2.0*dt: %+e\n", threadNum, 2.0*dt);
+        printf("computeLnPrior - threadNum: %d; 10.0*T: %+e\n", threadNum, 10.0*T);
+        printf("computeLnPrior - threadNum: %d; period: %+e\n", threadNum, period);
+        printf("computeLnPrior - threadNum: %d; periodCenter: %+e\n", threadNum, periodCenter*kali::Day);
+        printf("computeLnPrior - threadNum: %d; periodWidth: %+e\n", threadNum, periodWidth*kali::Day);
+        //printf("computeLnPrior - threadNum: %d;                                                                -0.5 ln 2pi: %+e\n", threadNum, -0.5*kali::log2Pi);
+        //printf("computeLnPrior - threadNum: %d;                                 -log2(periodWidth*kali::Day)/kali::log2OfE: %+e\n", threadNum, -log2(periodWidth*kali::Day)/kali::log2OfE);
+        //printf("computeLnPrior - threadNum: %d;                ((periodCenter*kali::Day) - period)/(periodWidth*kali::Day): %+e\n", threadNum, ((periodCenter*kali::Day) - period)/(periodWidth*kali::Day));
+        //printf("computeLnPrior - threadNum: %d; -0.5*pow(((periodCenter*kali::Day) - period)/(periodWidth*kali::Day), 2.0): %+e\n", threadNum, -0.5*pow(((periodCenter*kali::Day) - period)/(periodWidth*kali::Day), 2.0));
+        printf("computeLnPrior - threadNum: %d; periodPrior: %+e\n", threadNum, periodPrior);
+        printf("computeLnPrior - threadNum: %d; totalFlux: %+e\n", threadNum, totalFlux);
+        printf("computeLnPrior - threadNum: %d; fluxCenter: %+e\n", threadNum, fluxCenter);
+        printf("computeLnPrior - threadNum: %d; fluxWidth: %+e\n", threadNum, fluxWidth);
+        printf("computeLnPrior - threadNum: %d; totalFluxPrior: %+e\n", threadNum, totalFluxPrior);
+	    printf("computeLnPrior - threadNum: %d; LnPrior: %+4.3e\n",threadNum,LnPrior);
+	    printf("\n");
+	#endif
 
 	Data.currentLnPrior = LnPrior;
 
@@ -824,3 +872,34 @@ double kali::MBHB::computeLnLikelihood(LnLikeData *ptr2Data) {
 	Data.currentLnLikelihood = LnLikelihood;
 	return LnLikelihood;
 	}
+
+int kali::MBHB::Smoother(LnLikeData *ptr2Data, double *xSmooth) {
+    LnLikeData Data = *ptr2Data;
+
+	int numCadences = Data.numCadences;
+	double *t = Data.t;
+
+	for (int i = 0; i < numCadences; ++i) {
+		setEpoch(t[i]);
+		#ifdef DEBUG_SIMULATESYSTEM
+			printf("t[%d]: %+4.3e\n", i, getEpoch());
+			printf("a2: %+4.3e\n", getA2());
+			printf("r2: %+4.3e\n", getR2());
+			printf("theta2: %+4.3e\n", getTheta2());
+			printf("M: %+4.3e\n", getMeanAnomoly());
+			printf("E: %+4.3e\n", getEccentricAnomoly());
+			printf("nu: %+4.3e\n", getTrueAnomoly());
+			printf("beta2: %+4.3e\n", getBeta2());
+			printf("rbeta2: %+4.3e\n", getRadialBeta2());
+			printf("dF2: %+4.3e\n", getDopplerFactor2());
+			printf("bF2: %+4.3e\n", getBeamingFactor2());
+		#endif
+		//x[i] = totalFlux*(1.0 - fracBeamedFlux + fracBeamedFlux*getBeamingFactor2());
+		xSmooth[i] = totalFlux*getBeamingFactor2();
+		#ifdef DEBUG_SIMULATESYSTEM
+			printf("totalFlux*getBeamingFactor2(): %e\n",totalFlux*getBeamingFactor2());
+			//printf("totalFlux*(1.0 - fracBeamedFlux + fracBeamedFlux*getBeamingFactor2()): %e\n",totalFlux*(1.0 - fracBeamedFlux + fracBeamedFlux*getBeamingFactor2()));
+		#endif
+		}
+    return 0;
+    }

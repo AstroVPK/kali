@@ -79,7 +79,7 @@ public:
 	int add_ObservationNoise(int numCadences, double dt, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum);
 	//int extend_ObservationNoise(int numCadences, int cadenceNum, double tolIR, double fracIntrinsicVar, double fracNoiseToSignal, double *t, double *x, double *y, double *yerr, double *mask, unsigned int noiseSeed, int threadNum);
 
-	double compute_LnPrior(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
+	double compute_LnPrior(int numCadences, double dt, double startT, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth, int threadNum);
 	//double update_LnPrior(int numCadences, int cadenceNum, double tolIR, double maxSigma, double minTimescale, double maxTimescale, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
 
 	double compute_LnLikelihood(int numCadences, double dt, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
@@ -90,9 +90,9 @@ public:
 
 	//void compute_ACVF(int numLags, double *Lags, double *ACVF, int threadNum);
 
-	int fit_MBHBModel(int numCadences, double dt, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnPosterior);
+	int fit_MBHBModel(int numCadences, double dt, double startT, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth);
 
-	//int smooth_Interpolate(int numCadences, int cadenceNum, double tolIR, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, int threadNum);
+	int smooth_Lightcurve(int numCadences, double *t, double *xSmooth, int threadNum);
 	};
 
 } // namespace kali
