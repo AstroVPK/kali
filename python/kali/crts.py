@@ -99,8 +99,18 @@ class crtsLC(kali.lc.lc):
                     FluxCont.append(Flux[j])
             self.magerr[i] = np.std(np.array(MagCont), ddof=1)
             self.yerr[i] = np.std(np.array(FluxCont), ddof=1)
-            if self.yerr[i] == 0.0:
-                self.yerr[i] = self.y[i]/200.0  # Ugly hack in case the fluxes are all actaully the same.
+
+        SNRat = np.zeros(self.numCadences)
+        for i in xrange(self.numCadences):
+            if self.yerr[i] != 0.0:
+                SNRat[i] = self.y[i]/self.yerr[i]
+            else:
+                SNRat[i] = np.nan
+        meanSNRat = np.nanmedian(SNRat)
+
+        for i in xrange(self.numCadences):
+            if self.yerr[i] == 0.0 or np.isnan(self.yerr[i]):
+                self.yerr[i] = self.y[i]/meanSNRat  # Ugly hack in case the fluxes are all actaully the same.
 
         self.startT = self.t[0]/(1.0 + self.z)
         self.t = (self.t - self.startT)/(1.0 + self.z)
