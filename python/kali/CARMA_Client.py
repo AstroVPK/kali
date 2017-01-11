@@ -80,7 +80,7 @@ try:
 except CARMA_Client.SDSSError as err:
     warnings.warn(str(err))
 try:
-    servers.addServer("echidna", "tcp://173.75.227.192:5001", 1)
+    servers.addServer("echidna", "tcp://108.52.218.107:5001", 1)
 except CARMA_Client.SDSSError as err:
     warnings.warn(str(err))
 try:
