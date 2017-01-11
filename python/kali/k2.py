@@ -28,13 +28,15 @@ class k2LC(kali.lc.lc):
 
     sap = ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']
     pdcsap = ['pdcsap', 'mast', 'cal', 'calib', 'calibrated']
-    k2sff = ['k2sff', 'vj', 'vanderburg', 'vanderburgjohnson', 'vanderburg-johnson']
+    k2sff = ['k2sff', 'vj', 'v-j', 'vanderburg', 'vanderburgjohnson', 'vanderburg-johnson']
     k2sc = ['k2sc', 'aigrain']
     k2varcat = ['k2varcat', 'armstrong']
     everest = ['everest', 'luger']
 
     def _getCanonicalFileName(self, name, campaign, processing):
         fileName = ''
+        if campaign == 'c10':
+            campaign = 'c102'
         if processing in self.sap or processing in self.pdcsap:
             fileName = ''.join(['ktwo', name, '-', campaign, '_llc.dat'])
         elif (processing in self.k2sff or processing in self.k2sc or processing in self.k2varcat or
@@ -79,6 +81,7 @@ class k2LC(kali.lc.lc):
 
     def _getMAST(self, name, campaign, path, goid, gopi):
         baseURL = 'http://archive.stsci.edu/pub/k2/lightcurves'
+        mastRet = False
         recordFile = 'k2List.dat'
 
         fileName = self._getCanonicalFileName(name, campaign, 'mast')
@@ -91,17 +94,24 @@ class k2LC(kali.lc.lc):
             with open(recordFilePath, 'a') as record:
                 record.write('%s %s %s %s\n'%(name, campaign, goid, gopi))
             camp = ''.join(['c', str(int(campaign[1:]))])
+            if camp == 'c10':
+                camp = 'c102'
             name1Dir = ''.join([name[0:4], '00000'])
             name2Dir = ''.join([name[4:6], '000'])
             fullURL = '/'.join([baseURL, camp, name1Dir, name2Dir, fileNameFits])
             ret = self._fetchFromURL(fullURL)
             if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+                mastRet = True
             else:
                 raise ValueError('Invalid name & campaign combination!')
+        else:
+            mastRet = True
+        return mastRet
 
     def _getHLSP(self, name, campaign, path):
         baseURL = 'http://archive.stsci.edu/missions/hlsp'
+        hlspRet = [False, False, False, False]
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sff')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -114,8 +124,11 @@ class k2LC(kali.lc.lc):
             ret = self._fetchFromURL(fullURL)
             if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+                hlspRet[0] = True
             else:
                 pass
+        else:
+            hlspRet[0] = True
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -127,8 +140,11 @@ class k2LC(kali.lc.lc):
             ret = self._fetchFromURL(fullURL)
             if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+                hlspRet[1] = True
             else:
                 pass
+        else:
+            hlspRet[1] = True
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -141,8 +157,11 @@ class k2LC(kali.lc.lc):
             ret = self._fetchFromURL(fullURL)
             if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+                hlspRet[2] = True
             else:
                 pass
+        else:
+            hlspRet[2] = True
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -155,8 +174,13 @@ class k2LC(kali.lc.lc):
             ret = self._fetchFromURL(fullURL)
             if ret is not None:
                 result = urllib.urlretrieve(fullURL, filePathFits)
+                hlspRet[3] = True
             else:
                 pass
+        else:
+            hlspRet[3] = True
+
+        return hlspRet
 
     def _readMAST(self, name, campaign, path, processing):
         fileName = self._getCanonicalFileName(name, campaign, processing)
@@ -178,6 +202,7 @@ class k2LC(kali.lc.lc):
         self._dt = dt  # Increment between epochs.
         self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.terr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -188,6 +213,7 @@ class k2LC(kali.lc.lc):
             self.cadence[i] = int(dataLine[2])
             if dataLine[9] == 0:
                 self.t[i] = float(dataLine[0]) - self.startT
+                self.terr[i] = float(dataLine[1])
                 if processing in self.sap:
                     if not np.isnan(dataLine[3]) and not np.isnan(dataLine[4]):
                         self.y[i] = float(dataLine[3])
@@ -211,8 +237,10 @@ class k2LC(kali.lc.lc):
             else:
                 if not np.isnan(dataLine[0]):
                     self.t[i] = float(dataLine[0]) - self.startT
+                    self.terr[i] = float(dataLine[1])
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
+                    self.terr[i] = 0.0
                 self.yerr[i] = math.sqrt(sys.float_info[0])
                 self.mask[i] = 0.0
 
@@ -236,6 +264,7 @@ class k2LC(kali.lc.lc):
         self._dt = dt  # Increment between epochs.
         self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.terr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -247,11 +276,14 @@ class k2LC(kali.lc.lc):
             self.yerr[i] = math.sqrt(sys.float_info[0])
             if dataLine[9] == 0:
                 self.t[i] = float(dataLine[0]) - self.startT
+                self.terr[i] = float(dataLine[1])
             else:
                 if not np.isnan(dataLine[0]):
                     self.t[i] = float(dataLine[0]) - self.startT
+                    self.terr[i] = float(dataLine[1])
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
+                    self.terr[i] = 0.0
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sff')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -294,6 +326,7 @@ class k2LC(kali.lc.lc):
         self._dt = dt  # Increment between epochs.
         self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.terr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -305,11 +338,14 @@ class k2LC(kali.lc.lc):
             self.yerr[i] = math.sqrt(sys.float_info[0])
             if dataLine[9] == 0:
                 self.t[i] = float(dataLine[0]) - self.startT
+                self.terr[i] = float(dataLine[1])
             else:
                 if not np.isnan(dataLine[0]):
                     self.t[i] = float(dataLine[0]) - self.startT
+                    self.terr[i] = float(dataLine[1])
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
+                    self.terr[i] = 0.0
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2sc')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -347,6 +383,7 @@ class k2LC(kali.lc.lc):
         self._dt = dt  # Increment between epochs.
         self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.terr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -358,11 +395,14 @@ class k2LC(kali.lc.lc):
             self.yerr[i] = math.sqrt(sys.float_info[0])
             if dataLine[9] == 0:
                 self.t[i] = float(dataLine[0]) - self.startT
+                self.terr[i] = float(dataLine[1])
             else:
                 if not np.isnan(dataLine[0]):
                     self.t[i] = float(dataLine[0]) - self.startT
+                    self.terr[i] = float(dataLine[1])
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
+                    self.terr[i] = 0.0
 
         fileName = self._getCanonicalFileName(name, campaign, 'k2varcat')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -403,6 +443,7 @@ class k2LC(kali.lc.lc):
         self._dt = dt  # Increment between epochs.
         self.cadence = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.terr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -414,11 +455,14 @@ class k2LC(kali.lc.lc):
             self.yerr[i] = math.sqrt(sys.float_info[0])
             if dataLine[9] == 0:
                 self.t[i] = float(dataLine[0]) - self.startT
+                self.terr[i] = float(dataLine[1])
             else:
                 if not np.isnan(dataLine[0]):
                     self.t[i] = float(dataLine[0]) - self.startT
+                    self.terr[i] = float(dataLine[1])
                 else:
                     self.t[i] = self.t[i - 1] + self.dt
+                    self.terr[i] = 0.0
 
         fileName = self._getCanonicalFileName(name, campaign, 'everest')
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
@@ -452,6 +496,11 @@ class k2LC(kali.lc.lc):
         self.z = kwargs.get('z', 0.0)
         self.processing = kwargs.get('processing', 'k2sff').lower()
         self.campaign = kwargs.get('campaign', 'c05').lower()
+        if self.campaign[0] != 'c':
+            if int(self.campaign) < 10:
+                self.campaign = 'c0' + str(int(self.campaign))
+            else:
+                self.campaign = 'c' + self.campaign
         fileName = self._getCanonicalFileName(name, self.campaign, self.processing)
         self.goid = kwargs.get('goid', '').lower()
         self.gopi = kwargs.get('gopi', '').lower()
@@ -468,24 +517,39 @@ class k2LC(kali.lc.lc):
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$t$~(MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
-        # self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
         self._yunit = r'$F$~($\mathrm{e^{-}}$)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-        self._getMAST(name, self.campaign, self.path, self.goid, self.gopi)
-        self._getHLSP(name, self.campaign, self.path)
+        mastRet = self._getMAST(name, self.campaign, self.path, self.goid, self.gopi)
+        hlspRet = self._getHLSP(name, self.campaign, self.path)
 
         if self.processing in self.sap or self.processing in self.pdcsap:
-            self._readMAST(name, self.campaign, self.path, self.processing)
+            if mastRet:
+                self._readMAST(name, self.campaign, self.path, self.processing)
+            else:
+                raise ValueError('MAST light curve not found!')
         elif self.processing in self.k2sff:
-            self._readK2SFF(name, self.campaign, self.path, self.processing)
+            if hlspRet[0]:
+                self._readK2SFF(name, self.campaign, self.path, self.processing)
+            else:
+                raise ValueError('Vanderburg-Johnson light curve not found!')
         elif self.processing in self.k2sc:
-            self._readK2SC(name, self.campaign, self.path, self.processing)
+            if hlspRet[1]:
+                self._readK2SC(name, self.campaign, self.path, self.processing)
+            else:
+                raise ValueError('Aigrain Lightcurve not found!')
         elif self.processing in self.k2varcat:
-            self._readK2VARCAT(name, self.campaign, self.path, self.processing)
+            if hlspRet[2]:
+                self._readK2VARCAT(name, self.campaign, self.path, self.processing)
+            else:
+                raise ValueError('Armstrong light curve not found!')
         elif self.processing in self.everest:
-            self._readEVEREST(name, self.campaign, self.path, self.processing)
+            if hlspRet[3]:
+                self._readEVEREST(name, self.campaign, self.path, self.processing)
+            else:
+                raise ValueError('Luger light curve not found!')
         else:
-            raise ValueError('Processing not found!')
+            raise ValueError('Processing not understood!')
+
         for i in xrange(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
         coords = self._getCoordinates()
@@ -517,32 +581,6 @@ class k2LC(kali.lc.lc):
             vals = lineList[2].split(',')
             coord_str = vals[1] + ' ' + vals[2]
         return coord_str
-
-    '''def _catalogue(self):
-        try:
-            self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.ned = err
-            coord_str = None
-        else:
-            coord_str = '%f %+f'%(self.ned['RA(deg)'].tolist()[0], self.ned['DEC(deg)'].tolist()[0])
-            self.coordinates = SkyCoord(coord_str, unit=(units.deg, units.deg), frame='icrs')
-        try:
-            self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.simbad = err
-        else:
-            if coord_str is None:
-                coord_str = self.simbad['RA'].tolist()[0] + ' ' + self.simbad['DEC'].tolist()[0]
-                self.coordinates = SkyCoord(coord_str, unit=(units.hourangle, units.deg), frame='icrs')
-        try:
-            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.vizier = err
-        try:
-            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.sdss = err'''
 
     def write(self, name, path=None, **kwrags):
         pass

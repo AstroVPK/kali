@@ -46,10 +46,10 @@
         ], 
         "language": "c++", 
         "library_dirs": [
-            "$MKLROOT/lib/intel6"
+            "$MKLROOT/lib/inte"
         ], 
         "runtime_library_dirs": [
-            "$MKLROOT/lib/intel6"
+            "$MKLROOT/lib/inte"
         ]
     }, 
     "module_name": "LCTools_cython"

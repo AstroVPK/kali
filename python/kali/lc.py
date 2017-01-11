@@ -924,7 +924,10 @@ class lc(object):
         """
         if not self.isRegular:
             if not newdt:
-                newdt = self.mindt/10.0
+                if hasattr(self, 'terr'):
+                    newdt = np.mean(self.terr)
+                else:
+                    newdt = self.mindt/10.0
             if newdt > self.mindt:
                 raise ValueError('newdt cannot be greater than mindt')
             newLC = self.copy()
@@ -971,7 +974,7 @@ class lc(object):
             return self._acvflags, self._acvf, self._acvferr
         else:
             if not self.isRegular:
-                useLC = self.regularize(newdt)
+                useLC = self.regularize(newdt=newdt)
             else:
                 useLC = self
             self._acvflags = np.require(np.zeros(useLC.numCadences), requirements=[
@@ -990,7 +993,7 @@ class lc(object):
             return self._acflags, self._acf, self._acferr
         else:
             if not self.isRegular:
-                useLC = self.regularize(newdt)
+                useLC = self.regularize(newdt=newdt)
             else:
                 useLC = self
             self._acflags = np.require(np.zeros(useLC.numCadences), requirements=[
@@ -1026,7 +1029,7 @@ class lc(object):
             return self._sflags, self._sf, self._sferr
         else:
             if not self.isRegular:
-                useLC = self.regularize(newdt)
+                useLC = self.regularize(newdt=newdt)
             else:
                 useLC = self
             self._sflags = np.require(np.zeros(useLC.numCadences), requirements=[
@@ -1104,17 +1107,16 @@ class lc(object):
             plt.clf()
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
-            lagsE, acvfE, acvferrE = self.acvf(newdt)
+            lagsE, acvfE, acvferrE = self.acvf(newdt=newdt)
             if np.sum(acvfE) != 0.0:
-                plt.errorbar(lagsE[0], acvfE[0], acvferrE[0], label=r'obs. Autocovariance Function',
+                plt.errorbar(lagsE[0], acvfE[0], acvferrE[0],
+                             label=r'obs. Autocovariance Function', fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
+                plt.errorbar(lagsE[1:], acvfE[1:], acvferrE[1:],
                              fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
-                for i in xrange(1, lagsE.shape[0]):
-                    if acvfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acvfE[i], acvferrE[i], fmt='o', capsize=0, color=colory,
-                                     markeredgecolor='none', zorder=10)
-                plt.xlim(lagsE[1], lagsE[-1])
+                plt.xlim(lagsE[0], lagsE[-1])
         plt.xlabel(r'$\delta t$')
-        plt.ylabel(r'$ACVF$')
+        plt.ylabel(r'$\gamma(\delta t)$')
         plt.title(r'AutoCovariance Function')
         plt.legend(loc=3)
         if doShow:
@@ -1128,17 +1130,16 @@ class lc(object):
             plt.clf()
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
-            lagsE, acfE, acferrE = self.acf(newdt)
+            lagsE, acfE, acferrE = self.acf(newdt=newdt)
             if np.sum(acfE) != 0.0:
-                plt.errorbar(lagsE[0], acfE[0], acferrE[0], label=r'obs. Autocorrelation Function',
+                plt.errorbar(lagsE[0], acfE[0], acferrE[0],
+                             label=r'obs. Autocorrelation Function', fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
+                plt.errorbar(lagsE[1:], acfE[1:], acferrE[1:],
                              fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
-                for i in xrange(1, lagsE.shape[0]):
-                    if acfE[i] != 0.0:
-                        plt.errorbar(lagsE[i], acfE[i], acferrE[i], fmt='o', capsize=0, color=colory,
-                                     markeredgecolor='none', zorder=10)
-                plt.xlim(lagsE[1], lagsE[-1])
+                plt.xlim(lagsE[0], lagsE[-1])
         plt.xlabel(r'$\delta t$')
-        plt.ylabel(r'$ACF$')
+        plt.ylabel(r'$\rho(\delta t)$')
         plt.title(r'AutoCorrelation Function')
         plt.legend(loc=3)
         plt.ylim(-1.0, 1.0)
@@ -1176,6 +1177,10 @@ class lc(object):
         if clearFig:
             plt.clf()
         ln10 = math.log(10.0)
+        xmin = 0.0
+        xmax = -1.0*sys.float_info[0]
+        ymin = 1.0*sys.float_info[0]
+        ymax = -1.0*sys.float_info[0]
         if np.sum(self.y) != 0.0:
             lagsE, sfE, sferrE = self.sf(newdt)
             if np.sum(sfE) != 0.0:
@@ -1183,15 +1188,30 @@ class lc(object):
                 for i in xrange(1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
                         break
+                xmin = math.log10(lagsE[i])
+                if math.log10(lagsE[i]) > xmax:
+                    xmax = math.log10(lagsE[i])
+                if math.log10(sfE[i]) - math.fabs(sferrE[i]/(ln10*sfE[i])) < ymin:
+                    ymin = math.log10(sfE[i]) - math.fabs(sferrE[i]/(ln10*sfE[i]))
+                if math.log10(sfE[i]) + math.fabs(sferrE[i]/(ln10*sfE[i])) > ymax:
+                    ymax = math.log10(sfE[i]) + math.fabs(sferrE[i]/(ln10*sfE[i]))
                 plt.errorbar(math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(
                     sferrE[i]/(ln10*sfE[i])), label=r'obs. Structure Function', fmt='o', capsize=0,
                     color=colory, markeredgecolor='none', zorder=10)
                 startI = i
                 for i in xrange(i+1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
+                        if math.log10(lagsE[i]) > xmax:
+                            xmax = math.log10(lagsE[i])
+                        if math.log10(sfE[i]) < ymin:
+                            ymin = math.log10(sfE[i])
+                        if math.log10(sfE[i]) > ymax:
+                            ymax = math.log10(sfE[i])
                         plt.errorbar(
                             math.log10(lagsE[i]), math.log10(sfE[i]), math.fabs(sferrE[i]/(ln10*sfE[i])),
                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+            plt.xlim(xmin, xmax)
+            plt.ylim(1.1*ymin, 1.1*ymax)
         plt.xlabel(r'$\log \delta t$')
         plt.ylabel(r'$\log SF$')
         plt.title(r'Structure Function')

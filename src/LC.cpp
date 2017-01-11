@@ -37,9 +37,9 @@ int kali::acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn
 		}
 	if (count > 0.0) {
 		meanVal /= count;
-		}
-	meanErr = sqrt(errInMean)/count;
-	meanErrSq = pow(meanErr, 2.0);
+	    meanErr = sqrt(errInMean)/count;
+        }
+    meanErrSq = pow(meanErr, 2.0);
 	#pragma omp parallel for default(none) shared(numCadences, dt, count, tIn, yIn, yerrIn, maskIn, lagVals, acvfVals, acvfErrVals, meanVal, meanErr, meanErrSq)
 	for (int lagCad = 0; lagCad < numCadences; ++lagCad) {
 		lagVals[lagCad] = lagCad*dt;
@@ -70,8 +70,8 @@ int kali::acf(int numCadences, double dt, double *tIn, double *xIn, double *yIn,
 		}
 	if (count > 0.0) {
 		meanVal /= count;
-		}
-	meanErr = sqrt(errInMean)/count;
+	    meanErr = sqrt(errInMean)/count;
+        }
 	meanErrSq = pow(meanErr, 2.0);
 	#pragma omp parallel for default(none) shared(numCadences, dt, count, tIn, yIn, yerrIn, maskIn, lagVals, acfVals, acfErrVals, meanVal, meanErr, meanErrSq)
 	for (int lagCad = 0; lagCad < numCadences; ++lagCad) {
@@ -104,40 +104,44 @@ int kali::sf(int numCadences, double dt, double *tIn, double *xIn, double *yIn, 
 		printf("numCadences: %d\n",numCadences);
 		printf("dt: %f\n",dt);
 	#endif
-	#pragma omp parallel for default(none) shared(numCadences, dt, tIn, yIn, yerrIn, maskIn, lagVals, sfVals, sfErrVals)
-	for (int lagCad = 0; lagCad < numCadences; ++lagCad) {
-		#ifdef DEBUG_SF
-			printf("lagCad: %d\n",lagCad);
-			printf("numcadences - lagCad: %d\n",numCadences - lagCad);
-		#endif
+    #pragma omp parallel for default(none) shared(numCadences, sfVals, sfErrVals)
+    for (int i = 0; i < numCadences; ++i) {
+        sfVals[i] = 0.0;
+        sfErrVals[i] = 0.0;
+    }
+    double count = 0.0;
+    #pragma omp parallel for default(none) shared(numCadences, dt, tIn, yIn, yerrIn, maskIn, lagVals, sfVals, sfErrVals, count)
+	for (int lagCad = 1; lagCad < numCadences; ++lagCad) {
 		lagVals[lagCad] = lagCad*dt;
-		double valSum = 0.0, errSum = 0.0, count = 0.0;
+		count = 0.0;
 		for (int pointNum = 0; pointNum < numCadences - lagCad; ++pointNum) {
-			#ifdef DEBUG_SF
+			sfVals[lagCad] = sfVals[lagCad] + maskIn[pointNum]*maskIn[pointNum + lagCad]*pow((yIn[pointNum + lagCad] - yIn[pointNum]), 2.0);
+			sfErrVals[lagCad] = sfErrVals[lagCad] + 2.0*maskIn[pointNum]*maskIn[pointNum + lagCad]*pow((yIn[pointNum + lagCad] - yIn[pointNum]), 2.0)*(pow(yIn[pointNum + lagCad], 2.0) + pow(yIn[pointNum], 2.0));
+			count = count + maskIn[pointNum]*maskIn[pointNum + lagCad];
+            #ifdef DEBUG_SF
 				if ((maskIn[pointNum] == 1.0) and (maskIn[pointNum + lagCad] == 1.0)) {
-					printf("\n");
-					printf("y[%d]: %f\n", pointNum + lagCad, yIn[pointNum + lagCad]);
-					printf("y[%d]: %f\n", pointNum, yIn[pointNum]);
-					printf("term: %f\n", maskIn[pointNum]*maskIn[pointNum + lagCad]*pow((yIn[pointNum + lagCad] - yIn[pointNum]), 2.0));
+					printf("y[%d]: %e\n", pointNum + lagCad, yIn[pointNum + lagCad]);
+                    printf("mask[%d]: %e\n", pointNum + lagCad, maskIn[pointNum + lagCad]);
+					printf("y[%d]: %e\n", pointNum, yIn[pointNum]);
+                    printf("mask[%d]: %e\n", pointNum, maskIn[pointNum]);
+					printf("sfVals[%d]: %e\n", lagCad, sfVals[lagCad]);
+                    printf("sfErrVals[%d]: %e\n", lagCad, sfErrVals[lagCad]);
+                    printf("count: %f\n", count);
 					}
 			#endif
-			valSum += maskIn[pointNum]*maskIn[pointNum + lagCad]*pow((yIn[pointNum + lagCad] - yIn[pointNum]), 2.0);
-			errSum += 2.0*maskIn[pointNum]*maskIn[pointNum + lagCad]*pow((yIn[pointNum + lagCad] - yIn[pointNum]), 2.0)*(pow(yIn[pointNum + lagCad], 2.0) + pow(yIn[pointNum], 2.0));
-			count += maskIn[pointNum]*maskIn[pointNum + lagCad];
 			}
 		if (count > 0.0) {
-			#ifdef DEBUG_SF
-				printf("lagVals: %f\n",lagVals[lagCad]);
-				printf("count: %f\n",count);
-				printf("valSum: %f\n",valSum);
-				printf("errSum: %f\n",errSum);
-			#endif
-			sfVals[lagCad] = valSum/count;
-			sfErrVals[lagCad] = sqrt(errSum)/count;
-			} else {
-			sfVals[lagCad] = 0.0;
-			sfErrVals[lagCad] = 0.0;
+			sfVals[lagCad] = sfVals[lagCad]/count;
+			sfErrVals[lagCad] = sqrt(sfErrVals[lagCad])/count;
 			}
+        #ifdef DEBUG_SF
+            printf("\n");
+            printf("lagVals: %e\n", lagVals[lagCad]);
+			printf("count: %f\n", count);
+			printf("sfVals[%d]: %e\n", lagCad, sfVals[lagCad]);
+			printf("sfErrVals[%d]: %e\n", lagCad, sfErrVals[lagCad]);
+            printf("\n");
+		#endif
 		}
 	return 0;
 	}
