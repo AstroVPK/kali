@@ -18,6 +18,18 @@ def printV(*args):
         print ''
 
 
+def generateConfig():
+    import os
+    configFile = os.path.join(__file__[:__file__.rfind("CARMA_Client.py")], 'config.dat')
+    if os.path.isfile(configFile):
+        printV("Config File Found at %s" % configFile)
+    else:
+        printV("No Config File Found")
+        printV("Generating New Config File at %s" % configFile)
+        with open(configFile,'wb') as f:
+            f.write("vish15 tcp://vish15.physics.upenn.edu:5001")
+    return configFile
+
 class SDSSError(Exception):  # custom SDSSError that relates to serverside issues
 
     def __init__(self, message, errors=None):
@@ -32,10 +44,32 @@ class ServerList(dict):  # dictionary like class that manages the possible serve
 
         super(ServerList, self).__init__(*args, **kwargs)
         self.best = None
+        self.priority = {}
 
     def addServer(self, name, address, priority):  # add a server to our list of servers
         server = {"address": address, "priority": priority}
         self[name] = server
+        self.priority[priority] = name
+
+    def addServersFromFile(self, filename):
+
+        servers = []
+        priority = 0
+        with open(filename, 'rb') as f:
+            for line in f:
+                name, address = line.strip().split()
+                self.addServer(name, address, priority)
+                priority += 1
+
+    def saveServersToFile(self, filename):
+
+        lines = []
+        for p in sorted(self.priority.keys()):
+            name = self.priority[p]
+            address = self[name]['address']
+            lines.append(' '.join((name, address)))
+        with open(filename, 'wb') as f:
+            f.write('\n'.join(lines))
 
     def testServer(self, server):
 
@@ -75,19 +109,7 @@ class ServerList(dict):  # dictionary like class that manages the possible serve
 
 
 servers = ServerList()
-try:
-    servers.addServer("newton", "tcp://newton.physics.drexel.edu:5001", 2)
-except CARMA_Client.SDSSError as err:
-    warnings.warn(str(err))
-try:
-    servers.addServer("echidna", "tcp://173.75.227.192:5001", 1)
-except CARMA_Client.SDSSError as err:
-    warnings.warn(str(err))
-try:
-    servers.addServer("vish15", "tcp://vish15.physics.upenn.edu:5001", 0)
-except CARMA_Client.SDSSError as err:
-    warnings.warn(str(err))
-
+servers.addServersFromFile(generateConfig())
 servers.getBestServer()
 
 
