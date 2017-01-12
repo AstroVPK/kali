@@ -399,7 +399,10 @@ def hist2d(x, y, plot_contour_lines, pcolor_cmap, *args, **kwargs):
     plot_datapoints = kwargs.get("plot_datapoints", True)
     plot_contours = kwargs.get("plot_contours", True)
 
-    cmap = cm.get_cmap("gray")
+    if pcolor_cmap:
+        cmap = pcolor_cmap
+    else:
+        cmap = cm.get_cmap("gray")
     cmap._init()
     cmap._lut[:-3, :-1] = 0.
     cmap._lut[:-3, -1] = np.linspace(1, 0, cmap.N)
@@ -431,8 +434,8 @@ def hist2d(x, y, plot_contour_lines, pcolor_cmap, *args, **kwargs):
     X, Y = X[:-1], Y[:-1]
 
     if plot_datapoints:
-        ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
-                rasterized=True)
+        ax.scatter(x, y, c=kwargs.get('weights', None), marker='o', cmap=pcolor_cmap,
+                   edgecolor='none', zorder=-1, alpha=0.1, rasterized=False)
         if plot_contours:
             ax.contourf(X1, Y1, H.T, [V[-1], H.max()], cmap=LinearSegmentedColormap.from_list(
                 "cmap", ([1]*3, [1]*3), N=2), antialiased=True)

@@ -1193,6 +1193,8 @@ class MBHBTask(object):
         return newFig
 
     def plottriangle(self, doShow=False):
+        lnPosteriorChain = copy.copy(self.LnPosterior[:, self.nsteps/2:])
+        flatLnPosteriorChain = lnPosteriorChain.reshape(-1, order='F')
         orbitChain = copy.copy(self.timescaleChain[0:self.r, :, self.nsteps/2:])
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.ndims, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
@@ -1201,7 +1203,8 @@ class MBHBTask(object):
                                    1.05*np.max(self.timescaleChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
                         0.9, (0.85*np.min(self.timescaleChain[7, :, self.nsteps/2:]),
                               1.15*np.max(self.timescaleChain[7, :, self.nsteps/2:]))]
-        newFigOrb = orbitalTr = kali.util.triangle.corner(flatOrbitChain, labels=orbitLabels,
+        newFigOrb = orbitalTr = kali.util.triangle.corner(flatOrbitChain, weights=flatLnPosteriorChain,
+                                                          labels=orbitLabels,
                                                           show_titles=True,
                                                           title_fmt='.2e',
                                                           quantiles=[0.16, 0.5, 0.84],
@@ -1209,7 +1212,7 @@ class MBHBTask(object):
                                                           plot_contours=False,
                                                           plot_datapoints=True,
                                                           plot_contour_lines=False,
-                                                          pcolor_cmap=cm.gist_earth,
+                                                          pcolor_cmap=cm.plasma,
                                                           verbose=False)
 
         auxChain = copy.copy(self.auxillaryChain[:, :, self.nsteps/2:])
@@ -1223,7 +1226,8 @@ class MBHBTask(object):
         auxExtents = [0.9, 0.9, (0.95*np.min(self.auxillaryChain[2, :, self.nsteps/2:]),
                                  1.05*np.max(self.auxillaryChain[2, :, self.nsteps/2:])), 0.9, 0.9, 0.9,
                       0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
-        newFigAux = kali.util.triangle.corner(flatAuxChain, labels=auxLabels,
+        newFigAux = kali.util.triangle.corner(flatAuxChain, weights=flatLnPosteriorChain,
+                                              labels=auxLabels,
                                               show_titles=True,
                                               title_fmt='.2e',
                                               quantiles=[0.16, 0.5, 0.84],
@@ -1231,7 +1235,7 @@ class MBHBTask(object):
                                               plot_contours=False,
                                               plot_datapoints=True,
                                               plot_contour_lines=False,
-                                              pcolor_cmap=cm.gist_earth,
+                                              pcolor_cmap=cm.plasma,
                                               verbose=False)
         if doShow:
             plt.show(False)

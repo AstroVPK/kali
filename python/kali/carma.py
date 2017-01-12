@@ -1175,6 +1175,8 @@ class CARMATask(object):
         return newFig
 
     def plottriangle(self, doShow=False):
+        lnPosteriorChain = copy.copy(self.LnPosterior[:, self.nsteps/2:])
+        flatLnPosteriorChain = lnPosteriorChain.reshape(-1, order='F')
         stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
         flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims, -1), order='F'),
                                           axis1=0, axis2=1)
@@ -1184,14 +1186,15 @@ class CARMATask(object):
         for i in xrange(self.q):
             stochasticLabels.append(r'$\tau_{\mathrm{MA,}, %d}$ (d)'%(i + 1))
         stochasticLabels.append(r'$\mathrm{Amp.}$')
-        newFig = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,
+        newFig = kali.util.triangle.corner(flatStochasticChain, weights=flatLnPosteriorChain,
+                                           labels=stochasticLabels,
                                            show_titles=True,
                                            title_fmt='.2e',
                                            quantiles=[0.16, 0.5, 0.84],
                                            plot_contours=False,
                                            plot_datapoints=True,
                                            plot_contour_lines=False,
-                                           pcolor_cmap=cm.gist_earth,
+                                           pcolor_cmap=cm.plasma,
                                            verbose=False)
         if doShow:
             plt.show(False)
