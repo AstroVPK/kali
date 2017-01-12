@@ -72,6 +72,9 @@ class MBHBTask(object):
     SolarMass = 1.98855e30
     kms2ms = 1.0e3
     SolarMassPerCubicParsec = SolarMass/math.pow(Parsec, 3.0)
+    sigmaStars = 200.0
+    rhoStars = 1000.0
+    H = 16.0
 
     _dict = multi_key_dict.multi_key_dict()
     _dict[r'$a_{1}$ (pc)', 0, r'0', r'a1', r'a_1', r'$a_{1}$', r'$a_{1}~\mathrm{(pc)}$',
@@ -981,6 +984,12 @@ class MBHBTask(object):
         barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
         self._pDIC = barDeviance - devianceThetaBar
         self._dic = devianceThetaBar + 2.0*self.pDIC
+        self.rootChain
+        self.timescaleChain
+        self.bestTheta
+        self.bestRho
+        self.bestTau
+        self.auxillaryChain
         return res
 
     @property
@@ -1072,7 +1081,7 @@ class MBHBTask(object):
         observedLC._isSmoothed = True
         return res
 
-    @classmethod
+    '''@classmethod
     def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
         a1 = a1*cls.Parsec
         a2 = a2*cls.Parsec
@@ -1093,14 +1102,16 @@ class MBHBTask(object):
                   )/(H*cls.G*(cls.SolarMassPerCubicParsec*rhoStars)*aGW*cls.Parsec))/cls.Year
         MEject = (MTot*math.log(aHard/aGW))/1.0e6
         MTot = MTot/1.0e6
-        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject
+        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject'''
 
     @property
     def auxillaryChain(self):
         if hasattr(self, '_auxillaryChain'):
-            return self._auxillaryChain
+            return np.reshape(self._auxillaryChain, newshape=(13, self._nwalkers, self._nsteps), order='F')
         else:
-            self._auxillaryChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
+            self._auxillaryChain = np.require(np.zeros(13*self.nwalkers*self.nsteps),
+                                              requirements=['F', 'A', 'W', 'O', 'E'])
+            '''self._auxillaryChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
                                               requirements=['F', 'A', 'W', 'O', 'E'])
             for stepNum in xrange(self.nsteps):
                 for walkerNum in xrange(self.nwalkers):
@@ -1122,8 +1133,11 @@ class MBHBTask(object):
                     self._auxillaryChain[9, walkerNum, stepNum] = aHard
                     self._auxillaryChain[10, walkerNum, stepNum] = aGW
                     self._auxillaryChain[11, walkerNum, stepNum] = THard
-                    self._auxillaryChain[12, walkerNum, stepNum] = MEject
-            return self._auxillaryChain
+                    self._auxillaryChain[12, walkerNum, stepNum] = MEject'''
+            MBHBTask_cython.compute_Aux(self.ndims, self.nwalkers, self.nsteps,
+                                        self.sigmaStars, self.H, self.rhoStars,
+                                        self._Chain, self._auxillaryChain)
+            return np.reshape(self._auxillaryChain, newshape=(13, self._nwalkers, self._nsteps), order='F')
 
     def plotscatter(self, dimx, dimy, truthx=None, truthy=None, labelx=None, labely=None,
                     best=False, median=False,

@@ -25,6 +25,8 @@ struct KeplersEqnData {
 
 double KeplerEqn(const vector<double> &x, vector<double> &grad, void *p2Data);
 
+int computeAux(int ndims, int nwalkers, int nsteps, double sigmaStars, double H, double rhoStars, double *Chain, double *auxillaryChain);
+
 struct LnLikeData {
 	int numCadences;
 	double dt;

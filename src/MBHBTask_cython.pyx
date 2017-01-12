@@ -18,6 +18,9 @@ cdef double d2r(double degreeVal):
 cdef double r2d(double radianVal):
 	return radianVal*(180.0/pi)
 
+cdef extern from 'MBHB.hpp' namespace "kali":
+	int computeAux(int ndims, int nwalkers, int nsteps, double sigmaStars, double H, double rhoStars, double *Chain, double *auxillaryChain);
+
 cdef extern from 'MBHBTask.hpp' namespace "kali":
 	cdef cppclass MBHBTask:
 		MBHBTask(int numThreads) except+
@@ -75,6 +78,12 @@ cdef extern from 'MBHBTask.hpp' namespace "kali":
 		double compute_LnLikelihood(int numCadences, double dt, int cadenceNum, double *t, double *x, double *y, double *yerr, double *mask, int threadNum);
 		int fit_MBHBModel(int numCadences, double dt, double startT, double lowestFlux, double highestFlux, double *t, double *x, double *y, double *yerr, double *mask, int nwalkers, int nsteps, int maxEvals, double xTol, double mcmcA, unsigned int zSSeed, unsigned int walkerSeed, unsigned int moveSeed, unsigned int xSeed, double* xStart, double *Chain, double *LnPrior, double *LnLikelihood, double periodCenter, double periodWidth, double fluxCenter, double fluxWidth);
 		int smooth_Lightcurve(int numCadences, double *t, double *xSmooth, int threadNum);
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def compute_Aux(ndims, nwalkers, nsteps, sigmaStars, H, rhoStars, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] auxillaryChain not None):
+	computeAux(ndims, nwalkers, nsteps, sigmaStars, H, rhoStars, &Chain[0], &auxillaryChain[0])
+	return 0
 
 cdef class MBHBTask_cython:
 	cdef MBHBTask *thisptr

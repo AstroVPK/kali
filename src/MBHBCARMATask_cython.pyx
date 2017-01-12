@@ -10,6 +10,8 @@ from libcpp cimport bool
 cdef extern from 'MBHBCARMA.hpp' namespace "kali":
 	void getSigma(int numR, int numP, int numQ, double *Theta, double *SigmaOut)
 
+cdef extern from 'MBHBCARMA.hpp' namespace "kali":
+	int computeAux(int ndims, int nwalkers, int nsteps, double sigmaStars, double H, double rhoStars, double *Chain, double *auxillaryChain);
 
 cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 	cdef cppclass MBHBCARMATask:
@@ -97,12 +99,16 @@ cdef extern from 'MBHBCARMATask.hpp' namespace "kali":
 
 		int smooth_RTS(int numCadences, int cadenceNum, double tolIR, double startT, double *t, double *x, double *y, double *yerr, double *mask, double *lcX, double *lcP, double *XSmooth, double *PSmooth, double *xSmooth, double *xerrSmooth, int threadNum)
 
-
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def get_Sigma(rNum, pNum, qNum, np.ndarray[double, ndim=1, mode='c'] Theta not None, np.ndarray[double, ndim=1, mode='c'] Sigma not None):
 	getSigma(rNum, pNum, qNum, &Theta[0], &Sigma[0])
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def compute_Aux(ndims, nwalkers, nsteps, sigmaStars, H, rhoStars, np.ndarray[double, ndim=1, mode='c'] Chain not None, np.ndarray[double, ndim=1, mode='c'] auxillaryChain not None):
+	computeAux(ndims, nwalkers, nsteps, sigmaStars, H, rhoStars, &Chain[0], &auxillaryChain[0])
+	return 0
 
 cdef class MBHBCARMATask_cython:
 	cdef MBHBCARMATask *thisptr

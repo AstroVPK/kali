@@ -903,3 +903,46 @@ int kali::MBHB::Smoother(LnLikeData *ptr2Data, double *xSmooth) {
 		}
     return 0;
     }
+
+int kali::computeAux(int ndims, int nwalkers, int nsteps, double sigmaStars, double H, double rhoStars, double *Chain, double *auxillaryChain) {
+    #pragma omp parallel for default(none) shared(ndims, nwalkers, nsteps, sigmaStars, H, rhoStars, Chain, auxillaryChain, kali::Parsec, kali::Day, kali::fourPiSq, kali::G, kali::SolarMass, kali::c, kali::kms2ms, kali::SolarMassPerCubicParsec, kali::Year)
+    for (int stepNum = 0; stepNum < nsteps; ++stepNum) {
+        double a1 = 0.0, a2 = 0.0, T = 0.0, eccentricity = 0.0;
+        double MTot = 0.0, MRat = 0.0, m1 = 0.0, m2 = 0.0, MRed = 0.0, rPeri = 0.0, rApo = 0.0, rSch = 0.0, aHard = 0.0, numer = 0.0, denom = 0.0, aGW = 0.0, THard = 0.0, MEject = 0.0;
+        for (int walkerNum = 0; walkerNum < nwalkers; ++walkerNum) {
+            a1 = kali::Parsec*Chain[0 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            a2 = kali::Parsec*Chain[1 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            T = kali::Day*Chain[2 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            eccentricity = Chain[3 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            MTot = ((kali::fourPiSq*pow(a1 + a2, 3.0))/(kali::G*pow(T, 2.0)))/kali::SolarMass;
+            MRat = a1/a2;
+            m1 = (MTot*(1.0/(1.0 + MRat)))*kali::SolarMass;
+            m2 = (MTot*(MRat/(1.0 + MRat)))*kali::SolarMass;
+            MRed = m1*m2/(m1 + m2);
+            rPeri = ((a1 + a2)*(1.0 - eccentricity))/kali::Parsec;
+            rApo = ((a1 + a2)*(1.0 + eccentricity))/kali::Parsec;
+            rSch = ((2.0*kali::G*(MTot*kali::SolarMass))/(pow(kali::c, 2.0)))/kali::Parsec;
+            aHard = ((kali::G*MRed)/(4.0*pow((sigmaStars*kali::kms2ms), 2.0)))/kali::Parsec;
+            numer = 64.0*pow(kali::G, 2.0)*m1*m2*(MTot*kali::SolarMass)*(kali::kms2ms*sigmaStars);
+            denom = 5.0*H*pow(kali::c, 5.0)*(kali::SolarMassPerCubicParsec*rhoStars);
+            aGW = pow(numer/denom, 0.2)/kali::Parsec;
+            THard = ((sigmaStars*kali::kms2ms)/(H*kali::G*(kali::SolarMassPerCubicParsec*rhoStars)*aGW*kali::Parsec))/kali::Year;
+            MEject = (MTot*log(aHard/aGW))/1.0e6;
+            MTot = MTot/1.0e6;
+            auxillaryChain[0 + walkerNum*13 + stepNum*nwalkers*13] = Chain[0 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            auxillaryChain[1 + walkerNum*13 + stepNum*nwalkers*13] = Chain[1 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            auxillaryChain[2 + walkerNum*13 + stepNum*nwalkers*13] = Chain[2 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            auxillaryChain[3 + walkerNum*13 + stepNum*nwalkers*13] = Chain[3 + walkerNum*ndims + stepNum*nwalkers*ndims];
+            auxillaryChain[4 + walkerNum*13 + stepNum*nwalkers*13] = MTot;
+            auxillaryChain[5 + walkerNum*13 + stepNum*nwalkers*13] = MRat;
+            auxillaryChain[6 + walkerNum*13 + stepNum*nwalkers*13] = rPeri;
+            auxillaryChain[7 + walkerNum*13 + stepNum*nwalkers*13] = rApo;
+            auxillaryChain[8 + walkerNum*13 + stepNum*nwalkers*13] = rSch;
+            auxillaryChain[9 + walkerNum*13 + stepNum*nwalkers*13] = aHard;
+            auxillaryChain[10 + walkerNum*13 + stepNum*nwalkers*13] = aGW;
+            auxillaryChain[11 + walkerNum*13 + stepNum*nwalkers*13] = THard;
+            auxillaryChain[12 + walkerNum*13 + stepNum*nwalkers*13] = MEject;
+        }
+    }
+    return 0;
+}
