@@ -733,6 +733,10 @@ double kali::MBHB::computeLnPrior(LnLikeData *ptr2Data) {
 	mkl_domain_set_num_threads(1, MKL_DOMAIN_ALL);
 	double LnPrior = 0.0, timescale = 0.0, timescaleOsc = 0.0;
 
+    #ifdef DEBUG_COMPUTELNPRIOR
+        printf("computeLnPrior - threadNum: %d; LnPrior at start: %+4.3e\n",threadNum,LnPrior);
+    #endif
+
     if (m1 < 1.0e4*kali::SolarMass) {
 		LnPrior = -infiniteVal; // Restrict m1 > 10^4 M_Sum
 		}

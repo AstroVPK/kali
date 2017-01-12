@@ -1269,30 +1269,23 @@ class MBHBCARMATask(object):
 
     def estimate(self, observedLC):
         """!
-        Estimate period using gatspy
+        Estimate period using gatspy or scipy.spectral.periodogram
         """
-        '''
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast()
         else:
             model = gatspy.periodic.LombScargle()
-        model.optimizer.set(quiet=True, period_range=(observedLC.mindt/10.0, observedLC.T*10.0))
+        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T*2.0))
         model.fit(observedLC.t,
                   observedLC.y,
                   observedLC.yerr)
         periodEst = model.best_period
-        if periodEst < observedLC.mindt/10.0 or periodEst > observedLC.T*10.0:
+        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T*2.0:
             scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
-            freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
-                                observedLC.numCadences*100)
+            freqs = np.logspace(math.log10(1.0/(10.0*observedLC.T)), math.log10(1.0/(2.0*observedLC.meandt)),
+                                10000)
             periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
             periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
-        '''
-        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
-        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
-                            observedLC.numCadences*100)
-        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
-        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
         return periodEst
 
     def guess(self, periodEst):

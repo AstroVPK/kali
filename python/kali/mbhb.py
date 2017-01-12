@@ -658,25 +658,21 @@ class MBHBTask(object):
         Estimate intrinsicFlux, period, eccentricity, omega, tau, & a2sini
         """
         # fluxEst
-        '''
         if observedLC.numCadences > 50:
-            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(observedLC.t,
-                                                                                        observedLC.y,
-                                                                                        observedLC.yerr)
+            model = gatspy.periodic.LombScargleFast()
         else:
-            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(observedLC.t,
-                                                                                    observedLC.y,
-                                                                                    observedLC.yerr)
-        periods, power = model.periodogram_auto(nyquist_factor=observedLC.numCadences)
-        model.optimizer.period_range = (
-            2.0*np.mean(observedLC.t[1:] - observedLC.t[:-1]), observedLC.T)
+            model = gatspy.periodic.LombScargle()
+        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T*2.0))
+        model.fit(observedLC.t,
+                  observedLC.y,
+                  observedLC.yerr)
         periodEst = model.best_period
-        '''
-        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
-        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
-                            observedLC.numCadences*100)
-        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
-        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T*2.0:
+            scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
+            freqs = np.logspace(math.log10(1.0/(10.0*observedLC.T)), math.log10(1.0/(2.0*observedLC.meandt)),
+                                10000)
+            periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
+            periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
 
         numIntrinsicFlux = 100
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
@@ -720,35 +716,21 @@ class MBHBTask(object):
             dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
             dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
             dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
-        '''
-        if observedLC.numCadences > 50:
-            model = gatspy.periodic.LombScargleFast(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
-                                                                                        dzdtLC.y,
-                                                                                        dzdtLC.yerr)
-        else:
-            model = gatspy.periodic.LombScargle(optimizer_kwds={"quiet": True}).fit(dzdtLC.t,
-                                                                                    dzdtLC.y,
-                                                                                    dzdtLC.yerr)
-        periods, power = model.periodogram_auto(nyquist_factor=dzdtLC.numCadences)
-        model.optimizer.period_range = (2.0*np.mean(dzdtLC.t[1:] - dzdtLC.t[:-1]), dzdtLC.T)
-        periodEst = model.best_period
-        #################################################OR################################################
         if observedLC.numCadences > 50:
             model = gatspy.periodic.LombScargleFast()
         else:
             model = gatspy.periodic.LombScargle()
-        model.optimizer.set(quiet=True, period_range=(observedLC.mindt/10.0, observedLC.T*10.0))
-        model.fit(observedLC.t,
-                  observedLC.y,
-                  observedLC.yerr)
+        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T*2.0))
+        model.fit(dzdtLC.t,
+                  dzdtLC.y,
+                  dzdtLC.yerr)
         periodEst = model.best_period
-        if periodEst < 2.0*observedLC.mindt or periodEst > observedLC.T*10.0:
-        '''
-        scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
-        freqs = np.logspace(10.0/math.log10(observedLC.mindt), math.log10(observedLC.T/10.0),
-                            observedLC.numCadences*100)
-        periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
-        periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T*2.0:
+            scaled_y = (dzdtLC.y - dzdtLC.mean)/dzdtLC.std
+            freqs = np.logspace(math.log10(1.0/(10.0*observedLC.T)), math.log10(1.0/(2.0*observedLC.meandt)),
+                                10000)
+            periodogram = scipy.signal.spectral.lombscargle(dzdtLC.t, scaled_y, freqs)
+            periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
 
         # eccentricityEst & omega2Est
         # First find a full period going from rising to falling.
@@ -892,17 +874,22 @@ class MBHBTask(object):
         zDotLC = dzdtLC.copy()
         for i in xrange(zDotLC.numCadences):
             zDotLC.y[i] = zDotLC.y[i] - zDot
-        zDotSpline = UnivariateSpline(
-            zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)],
-            1.0/zDotLC.yerr[np.where(zDotLC.mask == 1.0)], k=3, s=2*zDotLC.numCadences, check_finite=True)
-        for i in xrange(zDotLC.numCadences):
-            zDotLC.x[i] = zDotSpline(zDotLC.t[i])
-        zDotZeros = zDotSpline.roots()
+        zDotZeros = list()
+        startSFactor = 2.01
+        while len(zDotZeros) < 3:
+            startSFactor -= 0.01
+            zDotSpline = UnivariateSpline(
+                zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)],
+                1.0/zDotLC.yerr[np.where(zDotLC.mask == 1.0)], k=3, s=startSFactor*zDotLC.numCadences,
+                check_finite=True)
+            for i in xrange(zDotLC.numCadences):
+                zDotLC.x[i] = zDotSpline(zDotLC.t[i])
+            zDotZeros = zDotSpline.roots()
         zDotFoldedLC = dzdtLC.fold(periodEst)
         zDotFoldedSpline = UnivariateSpline(
             zDotFoldedLC.t[np.where(zDotFoldedLC.mask == 1.0)],
             zDotFoldedLC.y[np.where(zDotFoldedLC.mask == 1.0)],
-            1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k=3, s=2*zDotFoldedLC.numCadences,
+            1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k=3, s=2.0*zDotFoldedLC.numCadences,
             check_finite=True)
         for i in xrange(zDotFoldedLC.numCadences):
             zDotFoldedLC.x[i] = zDotFoldedSpline(zDotFoldedLC.t[i])
@@ -922,12 +909,18 @@ class MBHBTask(object):
 
         return fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst
 
-    def guess(self, a2SinInclinationEst):
-        # a2Guess = random.uniform(a2SinInclinationEst, 1.0)
-        a2Guess = a2SinInclinationEst
-        # inclinationGuess = math.asin(a2SinInclinationEst/a2Guess)*(180.0/math.pi)
-        inclinationGuess = 90.0
-        a1Guess = random.uniform(0.0, a2Guess)
+    def guess(self, periodEst, a2SinInclinationEst):
+        a2Guess = 0.0
+        while (a2Guess < a2SinInclinationEst):
+            m1Val = math.pow(10.0, random.uniform(4.0, 10.0))
+            m2Val = math.pow(10.0, random.uniform(4.0, math.log10(m1Val)))
+            totalMassVal = m1Val + m2Val
+            axisRatioVal = m2Val/m1Val
+            aTotCube = (self.G*math.pow(periodEst*self.Day, 2.0)*totalMassVal*self.SolarMass)/self.fourPiSq
+            totalAxisVal = math.pow(aTotCube, 1.0/3.0)
+            a1Guess = ((axisRatioVal*totalAxisVal)/(1 + axisRatioVal))/self.Parsec
+            a2Guess = (totalAxisVal/(1 + axisRatioVal))/self.Parsec
+        inclinationGuess = r2d(math.asin(a2SinInclinationEst/a2Guess))
         return a1Guess, a2Guess, inclinationGuess
 
     def fit(self, observedLC, widthT=0.01, widthF=0.05,
@@ -953,7 +946,7 @@ class MBHBTask(object):
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             while noSuccess:
-                a1Guess, a2Guess, inclinationGuess = self.guess(a2sinInclinationEst)
+                a1Guess, a2Guess, inclinationGuess = self.guess(periodEst, a2sinInclinationEst)
                 ThetaGuess = np.array(
                     [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
                         fluxEst])
