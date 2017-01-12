@@ -1,3 +1,4 @@
+import os
 import zmq
 import warnings
 
@@ -5,6 +6,7 @@ import warnings
 TIMEOUT = 1000  # milliseconds
 VERBOSE = False
 RETRY = True  # Should we try to get another server if we can't connect?
+SERVERFILE = "serverlist.dat" # Base name of the file containing  server names
 
 if __name__ == '__main__':
     VERBOSE = True
@@ -17,18 +19,21 @@ def printV(*args):
             print arg,
         print ''
 
+def getBasePath(): # Get the base directory of this script
+    return __file__[:__file__.rfind("CARMA_Client.py")]
 
-def generateConfig():
-    import os
-    configFile = os.path.join(__file__[:__file__.rfind("CARMA_Client.py")], 'config.dat')
-    if os.path.isfile(configFile):
-        printV("Config File Found at %s" % configFile)
+def getServerFile(): # Return the full path the the server list file
+    return os.path.join(getBasePath(), SERVERFILE)
+
+def generateConfig(): # generates the config and server files if not found
+    serverFile = getServerFile()
+    if os.path.isfile(serverFile):
+        printV("Server List Found at %s" % serverFile)
     else:
-        printV("No Config File Found")
-        printV("Generating New Config File at %s" % configFile)
-        with open(configFile,'wb') as f:
+        printV("No Server List Found")
+        printV("Generating New Server List at %s" % serverFile)
+        with open(serverFile,'wb') as f:
             f.write("vish15 tcp://vish15.physics.upenn.edu:5001")
-    return configFile
 
 class SDSSError(Exception):  # custom SDSSError that relates to serverside issues
 
@@ -108,9 +113,10 @@ class ServerList(dict):  # dictionary like class that manages the possible serve
             raise SDSSError("Bad Server: %s" % server, server)
 
 
-servers = ServerList()
-servers.addServersFromFile(generateConfig())
-servers.getBestServer()
+generateConfig() # Setup the server list and config if needed
+servers = ServerList() # Instantiate a new server list
+servers.addServersFromFile(getServerFile()) # Add servers from our server list
+servers.getBestServer() # Find the best server based on priority and availability
 
 
 def getSocket():
