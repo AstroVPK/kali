@@ -15,7 +15,7 @@
 #include <omp.h>
 #include <limits>
 #include "LC.hpp"
-
+#include <stdio.h>
 //#define DEBUG_SF
 //#define DEBUG_DACF
 //#define DEBUG_DACF_DEEP
@@ -30,26 +30,47 @@ int kali::acvf(int numCadences, double dt, double *tIn, double *xIn, double *yIn
 	double meanVal = 0.0;
 	double errInMean = 0.0, meanErr = 0.0, meanErrSq = 0.0;
 	double count = 0.0;
+	double* yInNorm = (double*)malloc(sizeof(double)*numCadences);
+	double* tN = (double*)malloc(sizeof(double)*numCadences);
+	bool* mask = (bool*)malloc(sizeof(bool)*numCadences);
+	int* maskIndex;
+	int maskIndexSize=0;
+	double yInNormSqr;
+	double yerrInNormSqr;
+
 	for (int i = 0; i < numCadences; ++i) {
 		meanVal += maskIn[i]*yIn[i];
 		errInMean += maskIn[i]*pow(yerrIn[i], 2.0);
 		count += maskIn[i];
+		mask[i] = (int)(maskIn[i]+0.5);
+		if (mask[i]) maskIndexSize++;
 		}
+	maskIndex = (int*)malloc(sizeof(int)*maskIndexSize);
 	if (count > 0.0) {
 		meanVal /= count;
+		meanErr = sqrt(errInMean)/count;
+		meanErrSq = meanErr*meanErr;
 		}
-	meanErr = sqrt(errInMean)/count;
-	meanErrSq = pow(meanErr, 2.0);
-	#pragma omp parallel for default(none) shared(numCadences, dt, count, tIn, yIn, yerrIn, maskIn, lagVals, acvfVals, acvfErrVals, meanVal, meanErr, meanErrSq)
+	int j = 0;
+	for (int i = 0; i < numCadences; ++i) {
+		if (mask[i]) {
+			yInNorm[i] = yIn[i]-meanVal;
+			yInNormSqr = yInNorm[i]*yInNorm[i];
+			yerrInNormSqr = yerrIn[i]*yerrIn[i]+meanErrSq;
+			tN[i] = yerrInNormSqr/yInNormSqr;
+			maskIndex[j++] = i;
+			}
+		}
+	#pragma omp parallel for default(none) shared(numCadences, dt, count, tN, yInNorm, mask, maskIndex, lagVals, acvfVals, acvfErrVals)// schedule(dynamic)
 	for (int lagCad = 0; lagCad < numCadences; ++lagCad) {
 		lagVals[lagCad] = lagCad*dt;
-		double fSq = 0.0, t1 = 0.0, t2 = 0.0, errSum = 0.0;
-		for (int pointNum = 0; pointNum < numCadences - lagCad; ++pointNum) {
-			acvfVals[lagCad] += maskIn[pointNum]*maskIn[pointNum + lagCad]*(yIn[pointNum] - meanVal)*(yIn[pointNum + lagCad] - meanVal);
-			fSq = pow((yIn[pointNum + lagCad] - meanVal)*(yIn[pointNum] - meanVal), 2.0);
-			t1 = (pow(yerrIn[pointNum + lagCad], 2.0) + meanErrSq)/pow(yIn[pointNum + lagCad] - meanVal, 2.0);
-			t2 = (pow(yerrIn[pointNum], 2.0) + meanErrSq)/pow(yIn[pointNum] - meanVal, 2.0);
-			errSum += maskIn[pointNum]*maskIn[pointNum + lagCad]*fSq*(t1 + t2);
+		double errSum=0.0, f=0.0;
+		for (int* index = maskIndex; *index < numCadences - lagCad; ++index) {
+			if (mask[*index+lagCad]) {
+				f = yInNorm[*index]*yInNorm[*index+lagCad];
+				acvfVals[lagCad] += f;
+				errSum += f*f*(tN[*index]+tN[*index+lagCad]);
+				}
 			}
 		if (count > 0.0) {
 			acvfVals[lagCad] /= count;

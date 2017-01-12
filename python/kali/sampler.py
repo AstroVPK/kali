@@ -20,10 +20,19 @@ import matplotlib.pyplot as plt
 import pdb as pdb
 
 try:
+    import rand
+except ImportError:
+    print 'Cannot import rand! kali is not setup. Setup kali by sourcing bin/setup.sh'
+    sys.exit(1)
+try:
     import kali.lc
+except ImportError:
+    print 'Cannot import kali.lc! kali is not setup. Setup kali by sourcing bin/setup.sh'
+    sys.exit(1)
+try:
     from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print 'Cannot import kali.util.mpl_settings! kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 fhgt = 10
@@ -41,7 +50,7 @@ class sampler(object):
         \brief Initialize the sampler.
 
         """
-        if isinstance(lcObj, kali.lc.basicLC):
+        if isinstance(lcObj, kali.lc.lc):
             self.min_dt = np.min(lcObj.t[1:] - lcObj.t[:-1])
             self.max_T = lcObj.t[-1] - lcObj.t[0]
             self.lcObj = lcObj
@@ -74,34 +83,9 @@ class jumpSampler(sampler):
         returnLC.yerr = yerrNew
         returnLC.mask = maskNew
         returnLC._numCadences = newNumCadences
-        returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
-        returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
-        returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
-        returnLC._mindt = float(np.nanmin(returnLC.t))
-        returnLC._maxdt = float(np.nanmax(returnLC.t))
-        count = int(np.sum(returnLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_meanSum += returnLC.mask[i]*returnLC.y[i]
-            yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
-        if count > 0.0:
-            returnLC._mean = y_meanSum/count
-            returnLC._meanerr = yerr_meanSum/count
-        else:
-            returnLC._mean = 0.0
-            returnLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
-            yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
-        if count > 0.0:
-            returnLC._std = math.sqrt(y_stdSum/count)
-            returnLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            returnLC._std = 0.0
-            returnLC._stderr = 0.0
+        returnLC._checkIsRegular()
+        returnLC._times()
+        returnLC._statistics()
         return returnLC
 
 
@@ -110,6 +94,8 @@ class bernoulliSampler(sampler):
     def sample(self, **kwargs):
         returnLC = self.lcObj.copy()
         probVal = kwargs.get('probability', 1.0)
+        sampleSeedVal = kwargs.get('sampleSeed', rand.rdrand(np.array([0], dtype='uint32')))
+        np.random.seed(seed=sampleSeedVal)
         keepArray = spstats.bernoulli.rvs(probVal, size=self.lcObj.numCadences)
         newNumCadences = np.sum(keepArray)
         tNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -132,34 +118,9 @@ class bernoulliSampler(sampler):
         returnLC.yerr = yerrNew
         returnLC.mask = maskNew
         returnLC._numCadences = newNumCadences
-        returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
-        returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
-        returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
-        returnLC._mindt = float(np.nanmin(returnLC.t))
-        returnLC._maxdt = float(np.nanmax(returnLC.t))
-        count = int(np.sum(returnLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_meanSum += returnLC.mask[i]*returnLC.y[i]
-            yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
-        if count > 0.0:
-            returnLC._mean = y_meanSum/count
-            returnLC._meanerr = yerr_meanSum/count
-        else:
-            returnLC._mean = 0.0
-            returnLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
-            yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
-        if count > 0.0:
-            returnLC._std = math.sqrt(y_stdSum/count)
-            returnLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            returnLC._std = 0.0
-            returnLC._stderr = 0.0
+        returnLC._checkIsRegular()
+        returnLC._times()
+        returnLC._statistics()
         return returnLC
 
 
@@ -194,32 +155,54 @@ class matchSampler(sampler):
         returnLC.yerr = yerrNew
         returnLC.mask = maskNew
         returnLC._numCadences = newNumCadences
-        returnLC._T = float(returnLC.t[-1] - returnLC.t[0])
-        returnLC._dt = float(returnLC.t[1] - returnLC.t[0])
-        returnLC._meandt = float(np.nanmean(returnLC.t[1:] - returnLC.t[:-1]))
-        returnLC._mindt = float(np.nanmin(returnLC.t))
-        returnLC._maxdt = float(np.nanmax(returnLC.t))
-        count = int(np.sum(returnLC.mask))
-        y_meanSum = 0.0
-        yerr_meanSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_meanSum += returnLC.mask[i]*returnLC.y[i]
-            yerr_meanSum += returnLC.mask[i]*returnLC.yerr[i]
-        if count > 0.0:
-            returnLC._mean = y_meanSum/count
-            returnLC._meanerr = yerr_meanSum/count
+        returnLC._checkIsRegular()
+        returnLC._times()
+        returnLC._statistics()
+        return returnLC
+
+
+class sincSampler(sampler):
+
+    def normalizedSincSq(self, widthVal, centerVal, t):
+        if ((t - centerVal)/widthVal) == 0:
+            val = 1.0
         else:
-            returnLC._mean = 0.0
-            returnLC._meanerr = 0.0
-        y_stdSum = 0.0
-        yerr_stdSum = 0.0
-        for i in xrange(returnLC.numCadences):
-            y_stdSum += math.pow(returnLC.mask[i]*returnLC.y[i] - returnLC._mean, 2.0)
-            yerr_stdSum += math.pow(returnLC.mask[i]*returnLC.yerr[i] - returnLC._meanerr, 2.0)
-        if count > 0.0:
-            returnLC._std = math.sqrt(y_stdSum/count)
-            returnLC._stderr = math.sqrt(yerr_stdSum/count)
-        else:
-            returnLC._std = 0.0
-            returnLC._stderr = 0.0
+            val = math.fabs(math.sin(
+                math.pi*((t - centerVal)/widthVal))/(math.pi*((t - centerVal)/widthVal)))
+        return val
+
+    def sample(self, **kwargs):
+        returnLC = self.lcObj.copy()
+        widthVal = kwargs.get('width', returnLC.T/10.0)
+        centerVal = kwargs.get('center', returnLC.T/2.0)
+        sampleSeedVal = kwargs.get('sampleSeed', rand.rdrand(np.array([0], dtype='uint32')))
+        np.random.seed(seed=sampleSeedVal)
+        del returnLC.t
+        del returnLC.x
+        del returnLC.y
+        del returnLC.yerr
+        del returnLC.mask
+        tList = list()
+        xList = list()
+        yList = list()
+        yerrList = list()
+        maskList = list()
+        for i in xrange(self.lcObj.numCadences):
+            keepYN = np.random.binomial(1, self.normalizedSincSq(widthVal, centerVal, self.lcObj.t[i]))
+            if keepYN == 1:
+                tList.append(self.lcObj.t[i])
+                xList.append(self.lcObj.x[i])
+                yList.append(self.lcObj.y[i])
+                yerrList.append(self.lcObj.yerr[i])
+                maskList.append(self.lcObj.mask[i])
+        newNumCadences = len(tList)
+        returnLC.t = np.require(np.array(tList), requirements=['F', 'A', 'W', 'O', 'E'])
+        returnLC.x = np.require(np.array(xList), requirements=['F', 'A', 'W', 'O', 'E'])
+        returnLC.y = np.require(np.array(yList), requirements=['F', 'A', 'W', 'O', 'E'])
+        returnLC.yerr = np.require(np.array(yerrList), requirements=['F', 'A', 'W', 'O', 'E'])
+        returnLC.mask = np.require(np.array(maskList), requirements=['F', 'A', 'W', 'O', 'E'])
+        returnLC._numCadences = newNumCadences
+        returnLC._checkIsRegular()
+        returnLC._times()
+        returnLC._statistics()
         return returnLC

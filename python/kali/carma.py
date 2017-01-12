@@ -336,10 +336,12 @@ class CARMATask(object):
             self._timescaleChain = np.require(
                 np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='float64'),
                 requirements=['F', 'A', 'W', 'O', 'E'])
-            for stepNum in xrange(self._nsteps):
-                for walkerNum in xrange(self._nwalkers):
-                    self._timescaleChain[:, walkerNum, stepNum] = timescales(
-                        self._p, self._q, rootChain[:, walkerNum, stepNum])
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore')
+                for stepNum in xrange(self._nsteps):
+                    for walkerNum in xrange(self._nwalkers):
+                        self._timescaleChain[:, walkerNum, stepNum] = timescales(
+                            self._p, self._q, rootChain[:, walkerNum, stepNum])
         return self._timescaleChain
 
     @property
@@ -488,20 +490,19 @@ class CARMATask(object):
             tnum = 0
         if tIn is None and duration is not None:
             numCadences = int(round(float(duration)/self._taskCython.get_dt(threadNum=tnum)))
-            intrinsicLC = kali.lc.basicLC(
-                numCadences, dt=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
-                fracIntrinsicVar=fracIntrinsicVar, fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
-                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+            intrinsicLC = kali.lc.mockLC(name='', band='', numCadences=numCadences,
+                                         deltaT=self._taskCython.get_dt(threadNum=tnum), tolIR=tolIR,
+                                         fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
         elif duration is None and tIn is not None:
             numCadences = tIn.shape[0]
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
-            y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            mask = np.require(np.array(numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-            intrinsicLC = kali.lc.externalLC(
-                name='', band='', t=t, y=y, yerr=yerr, mask=mask, fracIntrinsicVar=fracIntrinsicVar,
-                fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
-                minTimescale=minTimescale, maxTimescale=maxTimescale, pSim=self._p, qSim=self._q)
+            intrinsicLC = kali.lc.mockLC(name='', band='', tIn=t, fracIntrinsicVar=fracIntrinsicVar,
+                                         fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
+                                         minTimescale=minTimescale, maxTimescale=maxTimescale,
+                                         pSim=self._p, qSim=self._q)
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
             rand.rdrand(randSeed)
@@ -665,7 +666,8 @@ class CARMATask(object):
                                                                 observedLC.maxSigma*observedLC.std,
                                                                 observedLC.minTimescale*observedLC.mindt,
                                                                 observedLC.maxTimescale*observedLC.T,
-                                                                observedLC.t, observedLC.x, observedLC.y,
+                                                                observedLC.t, observedLC.x,
+                                                                observedLC.y - observedLC.mean,
                                                                 observedLC.yerr, observedLC.mask, tnum)
         return observedLC._logPrior
 
@@ -684,8 +686,8 @@ class CARMATask(object):
                     observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
             observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t,
-                observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]),
-                observedLC.yerr, observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
+                observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask,
+                observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         elif observedLC._computedCadenceNum == observedLC.numCadences - 1:
@@ -693,9 +695,8 @@ class CARMATask(object):
         else:
             observedLC._logLikelihood = self._taskCython.update_LnLikelihood(
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC._logLikelihood,
-                observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y -
-                np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr, observedLC.mask,
-                observedLC.XComp, observedLC.PComp, tnum)
+                observedLC.tolIR, observedLC.t, observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr,
+                observedLC.mask, observedLC.XComp, observedLC.PComp, tnum)
             observedLC._logPosterior = observedLC._logPrior + observedLC._logLikelihood
             observedLC._computedCadenceNum = observedLC.numCadences - 1
         return observedLC._logLikelihood
@@ -959,8 +960,8 @@ class CARMATask(object):
         for walkerNum in xrange(self.nwalkers):
             noSuccess = True
             sigmaFactor = 1.0e0
-            RhoGuess = -1.0 / \
-                np.power(10.0, ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10))
+            exp = ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
+            RhoGuess = -1.0/np.power(10.0, exp)
             while noSuccess:
                 RhoGuess[self.p + self.q] = sigmaFactor*observedLC.std
                 ThetaGuess = coeffs(self.p, self.q, RhoGuess)
@@ -977,9 +978,9 @@ class CARMATask(object):
         res = self._taskCython.fit_CARMAModel(
             observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std,
             observedLC.minTimescale*observedLC.mindt, observedLC.maxTimescale*observedLC.T, observedLC.t,
-            observedLC.x, observedLC.y - np.mean(observedLC.y[np.nonzero(observedLC.mask)]), observedLC.yerr,
-            observedLC.mask, self.nwalkers, self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed,
-            walkerSeed, moveSeed, xSeed, xStart, self._Chain, self._LnPosterior)
+            observedLC.x, observedLC.y - observedLC.mean, observedLC.yerr, observedLC.mask, self.nwalkers,
+            self.nsteps, self.maxEvals, self.xTol, self.mcmcA, zSSeed, walkerSeed, moveSeed, xSeed, xStart,
+            self._Chain, self._LnPosterior)
         return res
 
     def smooth(self, observedLC, tnum=None):

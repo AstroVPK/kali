@@ -223,7 +223,7 @@ plt.errorbar(lagsEst, sfEst, sferrEst, label=r'$SF(\delta t)$ (est)',
 plt.xlabel(r'$\log_{10}\delta t$')
 plt.ylabel(r'$\log_{10} SF$')
 plt.legend(loc=2)
-plt.show()
+plt.show(True)
 
 if args.stop:
     pdb.set_trace()

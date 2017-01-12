@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import kali.carma
 import kali.k2
 
-plt.ion()
 
 lc212141173 = kali.k2.k2LC(name='212141173', campaign='c05', band='Kepler',
                            pwd=os.path.join(os.environ['KALI'], 'examples/data'), processing='vj')
@@ -21,4 +20,4 @@ lc212141173.plotacvf()
 lc212141173.plotacf()
 lc212141173.plotsf()
 
-pdb.set_trace()
+plt.show(True)

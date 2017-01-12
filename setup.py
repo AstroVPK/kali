@@ -60,12 +60,15 @@ System = platform.system()
 if System == 'Linux':
     MKLLIBS = ['-L$MKLROOT/lib/intel64', '-lmkl_rt', '-lpthread', '-lm', '-ldl']
 elif System == 'Darwin':
-    VERFLAGS += ['-stdlib=libc++']
+    if os.environ['CC'] == 'icpc':
+        VERFLAGS += ['-stdlib=libc++']
+    elif os.environ['CC'] == 'g++':
+        VERFLAGS = []
     MKLLIBS = ['-L$MKLROOT/lib', '-Wl,-rpath,$MKLROOT/lib', '-lmkl_rt', '-lpthread', '-lm', '-ldl']
 else:
     MKLLIBS = []
 
-MKLDIR = MKLLIBS[0][2:-1]
+MKLDIR = MKLLIBS[0][2:-3]
 
 rand_sourceList = ['rand.pyx', 'rdrand.cpp']
 rand_List = [os.path.join(os.environ['PWD'], 'src', srcFile) for srcFile in rand_sourceList]

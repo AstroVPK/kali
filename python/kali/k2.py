@@ -18,7 +18,7 @@ except ImportError:
     sys.exit(1)
 
 
-class k2LC(kali.lc.basicLC):
+class k2LC(kali.lc.lc):
 
     sap = ['sap', 'raw', 'uncal', 'un-cal', 'uncalibrated', 'un-calibrated']
     pdcsap = ['pdcsap', 'mast', 'cal', 'calib', 'calibrated']
@@ -428,31 +428,33 @@ class k2LC(kali.lc.basicLC):
         self.gopi = kwargs.get('gopi', '').lower()
         if path is None:
             try:
-                path = os.environ['K2DATADIR']
+                self.path = os.environ['K2DATADIR']
             except KeyError:
                 raise KeyError('Environment variable "K2DATADIR" not set! Please set "K2DATADIR" to point \
                 where all K2 data should live first...')
-        filePath = os.path.join(path, fileName)
+        else:
+            self.path = path
+        filePath = os.path.join(self.path, fileName)
 
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
-        self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
+        self._xunit = r'$t$~(MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         # self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
-        self._yunit = r'$F$'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
+        self._yunit = r'$F$~($\mathrm{e^{-}}$)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
 
-        self._getMAST(name, self.campaign, path, self.goid, self.gopi)
-        self._getHLSP(name, self.campaign, path)
+        self._getMAST(name, self.campaign, self.path, self.goid, self.gopi)
+        self._getHLSP(name, self.campaign, self.path)
 
         if self.processing in self.sap or self.processing in self.pdcsap:
-            self._readMAST(name, self.campaign, path, self.processing)
+            self._readMAST(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2sff:
-            self._readK2SFF(name, self.campaign, path, self.processing)
+            self._readK2SFF(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2sc:
-            self._readK2SC(name, self.campaign, path, self.processing)
+            self._readK2SC(name, self.campaign, self.path, self.processing)
         elif self.processing in self.k2varcat:
-            self._readK2VARCAT(name, self.campaign, path, self.processing)
+            self._readK2VARCAT(name, self.campaign, self.path, self.processing)
         elif self.processing in self.everest:
-            self._readEVEREST(name, self.campaign, path, self.processing)
+            self._readEVEREST(name, self.campaign, self.path, self.processing)
         else:
             raise ValueError('Processing not found!')
 

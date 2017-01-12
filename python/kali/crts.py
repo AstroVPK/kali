@@ -18,20 +18,22 @@ except ImportError:
     sys.exit(1)
 
 
-class crtsLC(kali.lc.basicLC):
+class crtsLC(kali.lc.lc):
 
     def read(self, name, band=r'V', path=None, **kwargs):
         if path is None:
             try:
-                path = os.environ['CRTSDATADIR']
+                self.path = os.environ['CRTSDATADIR']
             except KeyError:
                 raise KeyError(
                     'Environment variable "CRTSDATADIR" not set! Please set "CRTSDATADIR" to point where all \
                     CRTS data should live first...')
+        else:
+            self.path = path
         self.z = kwargs.get('z', 0.0)
         extension = kwargs.get('extension', '.txt')
         source = kwargs.get('source', 'batch')
-        fullPath = os.path.join(path, name + extension)
+        fullPath = os.path.join(self.path, name + extension)
         with open(fullPath, 'rb') as fileOpen:
             allLines = fileOpen.readlines()
         allLines = [line.rstrip('\n') for line in allLines]

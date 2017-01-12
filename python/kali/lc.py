@@ -124,8 +124,7 @@ class lc(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, numCadences=None, dt=None, meandt=None, mindt=None, dtSmooth=None, name=None,
-                 band=None, xunit=None, yunit=None, sampler=None, path=None, **kwargs):
+    def __init__(self, name=None, band=None, path=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
@@ -181,35 +180,7 @@ class lc(object):
                                         expected for supplied (i.e. full path or name etc...) will be
                                         determined by the subclass.
         """
-        if name is not None and band is not None:
-            self.read(name=name, band=band, path=path, **kwargs)
-        else:
-            self._numCadences = numCadences     # The number of cadences in the light curve. This is not the
-            # same thing as the number of actual observations as we can have missing observations.
-            self.t = np.require(np.zeros(self.numCadences), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of timestamps
-            self.x = np.require(np.zeros(self.numCadences), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of intrinsic fluxes.
-            self.y = np.require(np.zeros(self.numCadences), requirements=[
-                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed fluxes.
-            self.yerr = np.require(np.zeros(self.numCadences), requirements=[
-                                   'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed flux errors.
-            self.mask = np.require(np.zeros(self.numCadences), requirements=[
-                                   'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-            for i in xrange(self._numCadences):
-                self.t[i] = i*dt
-                self.mask[i] = 1.0
-            # timestamp.
-            if str(xunit)[0] != '$':
-                self._xunit = r'$' + str(xunit) + '$'  # Unit in which time is measured (eg. s, sec,
-                # seconds etc...).
-            else:
-                self._xunit = str(xunit)
-            if str(yunit)[0] != '$':
-                self._yunit = r'$' + str(yunit) + '$'  # Unit in which the flux is measured (eg Wm^{-2}
-                # etc...).
-            else:
-                self._yunit = str(yunit)
+        self.read(name=name, band=band, path=path, **kwargs)
         self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
         self._observedCadenceNum = -1   # How many cadences have already been observed.
         self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
@@ -230,19 +201,12 @@ class lc(object):
         self._maxSigma = kwargs.get('maxSigma', 2.0)
         self._minTimescale = kwargs.get('minTimescale', 2.0)
         self._maxTimescale = kwargs.get('maxTimescale', 0.5)
-        self._dt = float(self.t[1] - self.t[0])
-        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
-        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
-        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
-        self._T = float(self.t[-1] - self.t[0])
-        self._isSmoothed = False  # Has the LC been smoothed?
-        self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
-        if sampler is not None:
-            self._sampler = sampler(self)
-        else:
-            self._sampler = None
+        self._sampler = kwargs.get('sampler', 'sincSampler')
+        self._times()
         self._checkIsRegular()
         self._statistics()
+        self._isSmoothed = False  # Has the LC been smoothed?
+        self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
 
     @property
     def numCadences(self):
@@ -284,7 +248,7 @@ class lc(object):
             large_number = math.sqrt(sys.float_info[0])
             if self.pSim > 0:
                 if value > self.pSim:
-                    iterMax = self.pSim
+                        iterMax = self.pSim
                 elif value < self.pSim:
                     iterMax = value
                 for i in xrange(iterMax):
@@ -418,10 +382,7 @@ class lc(object):
 
     @xunit.setter
     def xunit(self, value):
-        if str(value)[0] != r'$':
-            self._xunit = r'$' + str(value) + r'$'
-        else:
-            self._xunit = str(value)
+        self._xunit = str(value)
 
     @property
     def yunit(self):
@@ -429,10 +390,7 @@ class lc(object):
 
     @yunit.setter
     def yunit(self, value):
-        if str(value)[0] != r'$':
-            self._yunit = r'$' + str(value) + r'$'
-        else:
-            self._yunit = str(value)
+        self._yunit = str(value)
 
     @property
     def tolIR(self):
@@ -517,6 +475,13 @@ class lc(object):
         \brief Standard deviation of the observation errors yerr.
         """
         return self._stderr
+
+    def _times(self):
+        self._dt = float(self.t[1] - self.t[0])
+        self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
+        self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
+        self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+        self._T = float(self.t[-1] - self.t[0])
 
     def _statistics(self):
         """!
@@ -641,10 +606,7 @@ class lc(object):
             self.y[key] = val.y
             self.yerr[key] = val.yerr
             self.mask[key] = val.mask
-        self._mean = np.mean(self.y)
-        self._std = np.std(self.y)
-        self._meanerr = np.mean(self.yerr)
-        self._stderr = np.std(self.yerr)
+        self._statistics()
 
     def __iter__(self):
         """!
@@ -718,9 +680,8 @@ class lc(object):
         """
         lccopy = self.copy()
         lccopy.x = -1.0*(self.x - np.mean(self.x)) + np.mean(self.x)
-        lccopy.y = -1.0*(self.y - self._mean) + self._mean
-        lccopy._mean = np.mean(lccopy.y)
-        lccopy._std = np.std(lccopy.y)
+        lccopy.y = -1.0*(self.y - self.mean) + self.mean
+        lccopy._statistics()
         return lccopy
 
     def __abs__(self):
@@ -731,9 +692,8 @@ class lc(object):
         """
         lccopy = self.copy()
         lccopy.x = np.abs(self.x - np.mean(self.x)) + np.mean(self.x)
-        lccopy.y = np.abs(self.y - self._mean) + self._mean
-        lccopy._mean = np.mean(lccopy.y)
-        lccopy._std = np.std(lccopy.y)
+        lccopy.y = np.abs(self.y - self.mean) + self.mean
+        lccopy._statistics()
         return lccopy
 
     def __add__(self, other):
@@ -747,17 +707,13 @@ class lc(object):
                 isinstance(other, complex)):
             lccopy.x += other
             lccopy.y += other
-            lccopy._mean = np.mean(lccopy.y)
-            lccopy._std = np.std(lccopy.y)
+            lccopy._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
                 lccopy.x += other.x
                 lccopy.y += other.y
                 lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
-                lccopy._mean = np.mean(lccopy.y)
-                lccopy._std = np.std(lccopy.y)
-                lccopy._mean = np.mean(lccopy.yerr)
-                lccopy._stderr = np.std(lccopy.yerr)
+                lccopy._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
         else:
@@ -798,16 +754,13 @@ class lc(object):
                 isinstance(other, complex)):
             self.x += other
             self.y += other
-            self._mean += other
+            self._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
                 self.x += other.x
                 self.y += other.y
                 self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
-                self._mean = np.mean(self.y)
-                self._std = np.std(self.y)
-                self._mean = np.mean(self.yerr)
-                self._stderr = np.std(self.yerr)
+                self._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
         return self
@@ -836,10 +789,7 @@ class lc(object):
             lccopy.x *= other
             lccopy.y *= other
             lccopy.yerr *= other
-            lccopy._mean += other
-            lccopy._std *= other
-            lccopy._meanerr *= other
-            lccopy._stderr *= other
+            lccopy._statistics()
             return lccopy
         else:
             raise NotImplemented
@@ -899,10 +849,7 @@ class lc(object):
             self.x *= other
             self.y *= other
             self.yerr *= other
-            self._mean += other
-            self._std *= other
-            self._meanerr *= other
-            self._stderr *= other
+            self._statistics()
             return self
         else:
             raise NotImplemented
@@ -922,10 +869,7 @@ class lc(object):
             self.x *= (1.0/other)
             self.y *= (1.0/other)
             self.yerr *= (1.0/other)
-            self._mean += (1.0/other)
-            self._std *= (1.0/other)
-            self._meanerr *= (1.0/other)
-            self._stderr *= (1.0/other)
+            self._statistics()
             return self
         else:
             raise NotImplemented
@@ -1348,28 +1292,68 @@ class lcIterator(object):
         return self
 
 
-class basicLC(lc):
+class mockLC(lc):
 
-    def read(self, name=None, band=None, pwd=None, **kwargs):
-        pass
+    def read(self, name=None, band=None, path=None, **kwargs):
+        self.name = name
+        self.band = band
+        if path is None:
+            try:
+                self.path = os.environ['DATADIR']
+            except KeyError:
+                # raise KeyError('Environment variable "DATADIR" not set! Please set "DATADIR" to point where
+                # all SDSS S82 data should live first...')
+                self.path = os.environ['HOME']
+        else:
+            elf.path = path
+        numCadences = kwargs.get('numCadences')  # The number of cadences in the light curve. This is
+        # not the same thing as the number of actual observations as we can have missing observations.
+        deltaT = kwargs.get('deltaT')
+        tIn = kwargs.get('tIn')
+        if numCadences is not None and tIn is None:
+            if deltaT is not None:
+                self.numCadences = numCadences
+                self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+                self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+                self.startT = 0.0
+                for i in xrange(self._numCadences):
+                    self.t[i] = i*deltaT
+                    self.mask[i] = 1.0
+            else:
+                raise ValueError('Must supply deltaT if numCadences is supplied!')
+        elif tIn is not None and numCadences is None and deltaT is None:
+            self.t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
+            self.startT = self.t[0]
+            self.t = self.t - self.startT
+            self.numCadences = self.t.shape[0]
+            self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        else:
+            raise ValueError('Error! Supply either numCadences & dt or tIn')
+        self.x = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.y = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
+        self.xunit = kwargs.get('xunit', r'$t$')
+        self.yunit = kwargs.get('yunit', r'$F$')
 
     def write(self, name=None, band=None, pwd=None, **kwargs):
         pass
 
 
-class externalLC(basicLC):
+class externalLC(lc):
 
     def read(self, name, band, path=None, **kwargs):
-        self._name = name
-        self._band = band
+        self.name = name
+        self.band = band
         if path is None:
             try:
-                path = os.environ['DATADIR']
+                self.path = os.environ['DATADIR']
             except KeyError:
                 # raise KeyError('Environment variable "DATADIR" not set! Please set "DATADIR" to point where
                 # all SDSS S82 data should live first...')
-                path = os.environ['HOME']
-        t = kwargs.get('t')
+                self.path = os.environ['HOME']
+        else:
+            self.path = path
+        t = kwargs.get('tIn')
         if t is not None:
             self.t = np.require(t, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
@@ -1377,18 +1361,20 @@ class externalLC(basicLC):
         self._numCadences = self.t.shape[0]
         self.x = np.require(
             kwargs.get('x', np.zeros(self.numCadences)), requirements=['F', 'A', 'W', 'O', 'E'])
-        y = kwargs.get('y')
+        y = kwargs.get('yIn')
         if y is not None:
             self.y = np.require(y, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
             raise KeyError('Must supply key-word argument y!')
-        yerr = kwargs.get('yerr')
+        yerr = kwargs.get('yerrIn')
         if yerr is not None:
             self.yerr = np.require(yerr, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
             raise Keyerror('Must supply key-word argument yerr!')
-        mask = kwargs.get('mask')
+        mask = kwargs.get('maskIn')
         if mask is not None:
             self.mask = np.require(mask, requirements=['F', 'A', 'W', 'O', 'E'])
         else:
             raise Keyerror('Must supply key-word argument mask!')
+        self.xunit = kwargs.get('xunit', r'$t$')
+        self.yunit = kwargs.get('yunit', r'$F$')

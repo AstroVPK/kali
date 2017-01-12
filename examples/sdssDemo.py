@@ -68,7 +68,7 @@ parser.add_argument('-maxS', '--maxSigma', type=float, default=2.0,
                     help=r'Maximum allowed sigma = maxSigma*var(lc)')
 parser.add_argument('--stop', dest='stop', action='store_true', help=r'Stop at end?')
 parser.add_argument('--no-stop', dest='stop', action='store_false', help=r'Do not stop at end?')
-parser.set_defaults(stop=True)
+parser.set_defaults(stop=False)
 args = parser.parse_args()
 
 P = args.p
@@ -457,7 +457,7 @@ if args.g or args.r:
             plt.tight_layout()
 
     if args.plot:
-        plt.show()
+        plt.show(True)
 
 if args.stop:
     pdb.set_trace()
