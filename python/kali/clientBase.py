@@ -20,7 +20,7 @@ def printV(*args):
         print ''
 
 def getBasePath(): # Get the base directory of this script
-    return __file__[:__file__.rfind("CARMA_Client.py")]
+    return __file__[:__file__.rfind("clientBase.py")]
 
 def getServerFile(): # Return the full path the the server list file
     return os.path.join(getBasePath(), SERVERFILE)
