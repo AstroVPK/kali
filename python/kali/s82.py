@@ -27,7 +27,7 @@ try:
     from kali.util.mpl_settings import set_plot_params
     import kali.util.mcmcviz as mcmcviz
     import kali.util.triangle as triangle
-    import kali.CARMA_Client as cc
+    import kali.clientBase as cc
 except ImportError:
     print 'kali not found! Try setting up kali if you have it installed. Unable to proceed!!'
     sys.exit(0)
