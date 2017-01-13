@@ -662,17 +662,18 @@ class MBHBTask(object):
             model = gatspy.periodic.LombScargleFast()
         else:
             model = gatspy.periodic.LombScargle()
-        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T*2.0))
+        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T))
         model.fit(observedLC.t,
                   observedLC.y,
                   observedLC.yerr)
         periodEst = model.best_period
-        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T*2.0:
+        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T:
             scaled_y = (observedLC.y - observedLC.mean)/observedLC.std
-            freqs = np.logspace(math.log10(1.0/(10.0*observedLC.T)), math.log10(1.0/(2.0*observedLC.meandt)),
-                                10000)
-            periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, freqs)
-            periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+            angFreqs = np.logspace(math.log10((2.0*math.pi)/(observedLC.T)),
+                                   math.log10((2.0*math.pi)/(2.0*observedLC.meandt)),
+                                   10000)
+            periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, angFreqs)
+            periodEst = 2.0*math.pi/angFreqs[np.argmax(periodogram)]
 
         numIntrinsicFlux = 100
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)])
@@ -720,17 +721,18 @@ class MBHBTask(object):
             model = gatspy.periodic.LombScargleFast()
         else:
             model = gatspy.periodic.LombScargle()
-        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T*2.0))
+        model.optimizer.set(quiet=True, period_range=(2.0*observedLC.meandt, observedLC.T))
         model.fit(dzdtLC.t,
                   dzdtLC.y,
                   dzdtLC.yerr)
         periodEst = model.best_period
-        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T*2.0:
+        if periodEst < 2.0*observedLC.meandt or periodEst > observedLC.T:
             scaled_y = (dzdtLC.y - dzdtLC.mean)/dzdtLC.std
-            freqs = np.logspace(math.log10(1.0/(10.0*observedLC.T)), math.log10(1.0/(2.0*observedLC.meandt)),
-                                10000)
-            periodogram = scipy.signal.spectral.lombscargle(dzdtLC.t, scaled_y, freqs)
-            periodEst = 2.0*math.pi/freqs[np.argmax(periodogram)]
+            angFreqs = np.logspace(math.log10((2.0*math.pi)/(observedLC.T)),
+                                   math.log10((2.0*math.pi)/(2.0*observedLC.meandt)),
+                                   10000)
+            periodogram = scipy.signal.spectral.lombscargle(observedLC.t, scaled_y, angFreqs)
+            periodEst = 2.0*math.pi/angFreqs[np.argmax(periodogram)]
 
         # eccentricityEst & omega2Est
         # First find a full period going from rising to falling.

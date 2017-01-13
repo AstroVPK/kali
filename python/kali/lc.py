@@ -1047,8 +1047,15 @@ class lc(object):
                                                                                            '_periodogramerr'):
             return self._periodogramlags, self._periodogram, self._periodogramerr
         else:
-            model = gatspy.periodic.LombScargleFast().fit(self.t, self.y, self.yerr)
-            self._periodogramlags, self._periodogram = model.periodogram_auto(nyquist_factor=2)
+            if self.numCadences > 50:
+                model = gatspy.periodic.LombScargleFast()
+            else:
+                model = gatspy.periodic.LombScargle()
+            model.optimizer.set(quiet=True, period_range=(2.0*self.meandt, self.T))
+            model.fit(self.t,
+                      self.y,
+                      self.yerr)
+            self._periodogramlags, self._periodogram = model.periodogram_auto()
             self._periodogramlags = np.require(np.array(self._periodogramlags),
                                                requirements=['F', 'A', 'W', 'O', 'E'])
             self._periodogram = np.require(np.array(self._periodogram),
