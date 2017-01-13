@@ -1013,6 +1013,11 @@ class CARMATask(object):
         barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
         self._pDIC = barDeviance - devianceThetaBar
         self._dic = devianceThetaBar + 2.0*self.pDIC
+        self.rootChain
+        self.timescaleChain
+        self.bestTheta
+        self.bestRho
+        self.bestTau
         return res
 
     @property
