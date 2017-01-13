@@ -32,6 +32,7 @@ try:
     import kali.lc
     from kali.util.mpl_settings import set_plot_params
     import kali.util.classproperty
+    import kali.util.triangle
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -1590,7 +1591,7 @@ class MBHBCARMATask(object):
             plt.show(False)
         return newFig
 
-    def plottriangle(self, doShow=False):
+    def plottriangle(self, doShow=False, plot_contours=True, cmap="hot"):
         orbitChain = copy.copy(self.timescaleChain[0:self.r, :, self.nsteps/2:])
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.r, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
@@ -1604,10 +1605,10 @@ class MBHBCARMATask(object):
                                               title_fmt='.2e',
                                               quantiles=[0.16, 0.5, 0.84],
                                               extents=orbitExtents,
-                                              plot_contours=False,
-                                              plot_datapoints=True,
+                                              plot_contours=plot_contours,
+                                              plot_datapoints=False,
                                               plot_contour_lines=False,
-                                              pcolor_cmap=cm.gist_earth,
+                                              pcolor_cmap=cm.get_cmap(cmap),
                                               verbose=False)
 
         stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
@@ -1623,10 +1624,10 @@ class MBHBCARMATask(object):
                                               show_titles=True,
                                               title_fmt='.2e',
                                               quantiles=[0.16, 0.5, 0.84],
-                                              plot_contours=False,
-                                              plot_datapoints=True,
+                                              plot_contours=plot_contours,
+                                              plot_datapoints=False,
                                               plot_contour_lines=False,
-                                              pcolor_cmap=cm.gist_earth,
+                                              pcolor_cmap=cm.get_cmap(cmap),
                                               verbose=False)
 
         auxChain = copy.copy(self.auxillaryChain[:, :, self.nsteps/2:])
@@ -1645,10 +1646,10 @@ class MBHBCARMATask(object):
                                               title_fmt='.2e',
                                               quantiles=[0.16, 0.5, 0.84],
                                               extents=auxExtents,
-                                              plot_contours=False,
-                                              plot_datapoints=True,
+                                              plot_contours=plot_contours,
+                                              plot_datapoints=False,
                                               plot_contour_lines=False,
-                                              pcolor_cmap=cm.gist_earth,
+                                              pcolor_cmap=cm.get_cmap(cmap),
                                               verbose=False)
         if doShow:
             plt.show(False)

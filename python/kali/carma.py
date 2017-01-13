@@ -29,6 +29,7 @@ try:
     import kali.lc
     from kali.util.mpl_settings import set_plot_params
     import kali.util.classproperty
+    import kali.util.triangle
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
@@ -1174,7 +1175,7 @@ class CARMATask(object):
             plt.show(False)
         return newFig
 
-    def plottriangle(self, doShow=False):
+    def plottriangle(self, doShow=False, plot_contours=True, cmap="hot"):
         stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
         flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims, -1), order='F'),
                                           axis1=0, axis2=1)
@@ -1188,10 +1189,10 @@ class CARMATask(object):
                                            show_titles=True,
                                            title_fmt='.2e',
                                            quantiles=[0.16, 0.5, 0.84],
-                                           plot_contours=False,
-                                           plot_datapoints=True,
+                                           plot_contours=plot_contours,
+                                           plot_datapoints=False,
                                            plot_contour_lines=False,
-                                           pcolor_cmap=cm.gist_earth,
+                                           pcolor_cmap=cm.get_cmap(cmap),
                                            verbose=False)
         if doShow:
             plt.show(False)
