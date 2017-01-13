@@ -37,7 +37,9 @@ except ImportError:
 fhgt = 10
 fwid = 16
 set_plot_params(useTex=True)
-
+COLORX = r'#984ea3'
+COLORY = r'#ff7f00'
+COLORS = [r'#4daf4a', r'#ccebc5']
 ln10 = math.log(10)
 
 
@@ -913,18 +915,29 @@ class CARMATask(object):
             psd[freq] = psdnumerator[freq]/psddenominator[freq]
         return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
 
-    def plotpsd(self, fig=-5, LC=None, doShow=False, clearFig=True):
+    def plotpsd(self, fig=-5, LC=None, doShow=False, clearFig=True,
+                colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
         if LC is not None:
-            start = LC.mindt
-            stop = LC.T
+            start = 1.0/LC.T
+            stop = 1.0/LC.mindt
+            if np.sum(LC.y) != 0.0:
+                freqsE, periodogramE, periodogramerrE = LC.periodogram()
         else:
             start = 1.0e-4
             stop = 1.0e3
         freqsM, psdM, psdNumer, psdDenom, psdNumerComp, psdDenomComp = self.psd(
             start=start, stop=stop, num=1000, spacing='log')
+        if LC is not None:
+            normalizationRatio = psdM[0]/periodogramE[0]
+            for i in xrange(freqsE.shape[0]):
+                periodogramE[i] = normalizationRatio*periodogramE[i]
+            plt.plot(np.log10(freqsE), np.log10(periodogramE), color=colory, zorder=-5)
+            plt.fill_between(np.log10(freqsE), np.log10(periodogramE - periodogramerrE),
+                             np.log10(periodogramE + periodogramerrE),
+                             facecolor=colory, alpha=0.5, zorder=-5)
         plt.plot(np.log10(freqsM[1:]), np.log10(
             psdM[1:]), label=r'$\ln PSD$', color='#000000', zorder=5, linewidth=6)
         plt.plot(np.log10(freqsM[1:]), np.log10(psdNumer[1:]),
@@ -1175,7 +1188,7 @@ class CARMATask(object):
             plt.show(False)
         return newFig
 
-    def plottriangle(self, doShow=False, plot_contours=True, cmap="hot"):
+    def plottriangle(self, doShow=False, plot_contours=True, cmap='cubehelix'):
         stochasticChain = copy.copy(self.timescaleChain[self.r:, :, self.nsteps/2:])
         flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims, -1), order='F'),
                                           axis1=0, axis2=1)

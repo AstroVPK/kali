@@ -41,8 +41,8 @@ set_plot_params(useTex=True)
 COLORX = r'#984ea3'
 COLORY = r'#ff7f00'
 COLORS = [r'#4daf4a', r'#ccebc5']
-
 ln10 = math.log(10)
+
 plt.ion()
 
 
@@ -1044,9 +1044,10 @@ class lc(object):
             return self._sflags, self._sf, self._sferr
 
     def periodogram(self):
-        if hasattr(self, '_periodogramlags') and hasattr(self, '_periodogram') and hasattr(self,
-                                                                                           '_periodogramerr'):
-            return self._periodogramlags, self._periodogram, self._periodogramerr
+        if (hasattr(self, '_periodogramfreqs') and
+                hasattr(self, '_periodogram') and
+                hasattr(self, '_periodogramerr')):
+            return self._periodogramfreqs, self._periodogram, self._periodogramerr
         else:
             if self.numCadences > 50:
                 model = gatspy.periodic.LombScargleFast()
@@ -1056,9 +1057,9 @@ class lc(object):
             model.fit(self.t,
                       self.y,
                       self.yerr)
-            self._periodogramlags, self._periodogram = model.periodogram_auto()
-            self._periodogramlags = np.require(np.array(self._periodogramlags),
-                                               requirements=['F', 'A', 'W', 'O', 'E'])
+            periodogramlags, self._periodogram = model.periodogram_auto()
+            self._periodogramfreqs = np.require(1.0/np.array(periodogramlags),
+                                                requirements=['F', 'A', 'W', 'O', 'E'])
             self._periodogram = np.require(np.array(self._periodogram),
                                            requirements=['F', 'A', 'W', 'O', 'E'])
             self._periodogramerr = np.require(np.array(self._periodogram.shape[0]*[0.0]),
@@ -1066,7 +1067,7 @@ class lc(object):
             for i in xrange(self._periodogram.shape[0]):
                 if self._periodogram[i] <= 0.0:
                     self._periodogram[i] = np.nan
-            return self._periodogramlags, self._periodogram, self._periodogramerr
+            return self._periodogramfreqs, self._periodogram, self._periodogramerr
 
     def plot(self, fig=-1, doShow=False, clearFig=True, colorx=COLORX, colory=COLORY, colors=COLORS):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
@@ -1233,20 +1234,12 @@ class lc(object):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
-        ln10 = math.log(10.0)
         if np.sum(self.y) != 0.0:
-            lagsE, periodogramE, periodogramerrE = self.periodogram()
-            '''if np.sum(periodogramE) != 0.0:
-                for i in xrange(0, lagsE.shape[0]):
-                    if periodogramE[i] > 0.0:
-                        plt.errorbar(
-                            math.log10(lagsE[i]), math.log10(periodogramE[i]),
-                            math.fabs(periodogramerrE[i]/(ln10*periodogramE[i])), fmt='o', capsize=0,
-                            color=colory, markeredgecolor='none', zorder=10)'''
-            plt.loglog(lagsE, periodogramE, color=colory, zorder=-5)
-            plt.fill_between(lagsE, periodogramE - periodogramerrE,
+            freqsE, periodogramE, periodogramerrE = self.periodogram()
+            plt.loglog(freqsE, periodogramE, color=colory, zorder=-5)
+            plt.fill_between(freqsE, periodogramE - periodogramerrE,
                              periodogramE + periodogramerrE, facecolor=colory, alpha=0.5, zorder=-5)
-        plt.xlabel(r'$\log t$')
+        plt.xlabel(r'$\log \nu$')
         plt.ylabel(r'$\log P$')
         plt.title(r'Periodogram')
         plt.legend(loc=2)
