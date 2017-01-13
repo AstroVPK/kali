@@ -41,6 +41,10 @@ except ImportError:
 fhgt = 10
 fwid = 16
 set_plot_params(useTex=True)
+COLORX = r'#984ea3'
+COLORY = r'#ff7f00'
+COLORS = [r'#4daf4a', r'#ccebc5']
+ln10 = math.log(10)
 
 
 def d2r(degree):
@@ -1193,7 +1197,7 @@ class MBHBTask(object):
             plt.show(False)
         return newFig
 
-    def plottriangle(self, doShow=False, plot_contours=True, cmap="hot"):
+    def plottriangle(self, doShow=False, plot_contours=True, cmap='cubehelix'):
         orbitChain = copy.copy(self.timescaleChain[0:self.r, :, self.nsteps/2:])
         flatOrbitChain = np.swapaxes(orbitChain.reshape((self.ndims, -1), order='F'), axis1=0, axis2=1)
         orbitLabels = [r'$a_{1}$ (pc)', r'$a_{2}$ (pc)', r'$T$ (d)', r'$e$', r'$\Omega$ (deg.)', r'$i$ (deg)',
