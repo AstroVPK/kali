@@ -43,6 +43,7 @@ COLORY = r'#ff7f00'
 COLORS = [r'#4daf4a', r'#ccebc5']
 
 ln10 = math.log(10)
+plt.ion()
 
 
 class epoch(object):

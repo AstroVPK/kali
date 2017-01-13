@@ -17,6 +17,8 @@ except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
+plt.ion()
+
 
 class crtsLC(kali.lc.lc):
 
