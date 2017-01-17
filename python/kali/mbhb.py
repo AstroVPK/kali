@@ -93,7 +93,8 @@ class MBHBTask(object):
     _dict[r'$\tau$ (d)', 6, r'6', r'$\tau~\mathrm{(d)}$', r'Tau', r'tau'] = 6
     _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
 
-    def __init__(self, nthreads=psutil.cpu_count(logical=True), nwalkers=25*psutil.cpu_count(logical=True),
+    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True),
+                 nwalkers=25*psutil.cpu_count(logical=True),
                  nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
             assert nthreads > 0, r'nthreads must be greater than 0'
@@ -271,11 +272,12 @@ class MBHBTask(object):
         return self._dic
 
     def __repr__(self):
-        return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
-                                                         self._maxEvals, self._xTol)
+        return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
+                                                                 self._nwalkers, self._nsteps,
+                                                                 self._maxEvals, self._xTol)
 
     def __str__(self):
-        line = 'ndims: %d\n'%(self._ndims)
+        line = 'p: %d; q: %d; ndims: %d\n'%(self._p, self._q, self._ndims)
         line += 'nthreads (Number of hardware threads to use): %d\n'%(self._nthreads)
         line += 'nwalkers (Number of MCMC walkers): %d\n'%(self._nwalkers)
         line += 'nsteps (Number of MCMC steps): %d\n'%(self.nsteps)
