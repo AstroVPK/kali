@@ -20,16 +20,23 @@ from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
 plt.ion()
-
+cc = None
+ONLINE=True #Connected to the internet
+try:
+    import kali.clientBase as cc
+except Exception as e:
+    print e
+    print "Setting Mode to OFFLINE"
+    ONLINE=False
 try:
     import kali.lc
     import kali.carma
     from kali.util.mpl_settings import set_plot_params
     import kali.util.mcmcviz as mcmcviz
     import kali.util.triangle as triangle
-    import kali.clientBase as cc
-except ImportError:
+except ImportError as e:
     print 'kali not found! Try setting up kali if you have it installed. Unable to proceed!!'
+    print e
     sys.exit(0)
 
 try:
@@ -65,10 +72,30 @@ def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
 class sdssLC(kali.lc.lc):
 
     def _getRandLC(self):
-        return cc.getRandLC()
+        global ONLINE, cc
+        if ONLINE: 
+            return cc.getRandLC()
+        else:
+            try:
+                import clientBase as cc
+                ONLINE=True
+                return self._getRandLC()
+            except Exception as e:
+                print "Cannot Load from Server in Offline Mode"
+                return None
 
     def _getLC(self, ID):
-        return cc.getLC(ID)
+        global ONLINE, cc
+        if ONLINE:
+            return cc.getLC(ID)
+        else:
+            try:
+                import clientBase as cc
+                ONLINE=True
+                return self._getLC(ID)
+            except Exception as e:
+                 print "Cannot Load from Server in Offline Mode"
+                 return None
 
     def fit(self, pMin=1, pMax=1, qMin=-1, qMax=-1, nwalkers=200, nsteps=1000, xTol=0.001, maxEvals=10000):
         self.taskDict = dict()
