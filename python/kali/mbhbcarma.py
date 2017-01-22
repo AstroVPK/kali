@@ -171,6 +171,7 @@ def timescales(p, q, Rho):
 
 class MBHBCARMATask(object):
 
+    _type = 'kali.mbhbcarma'
     _r = 8
     G = 6.67408e-11
     c = 299792458.0
@@ -241,6 +242,7 @@ class MBHBCARMATask(object):
                                                                          self._nburn)
             self._pDIC = None
             self._dic = None
+            self._name = 'kali.MBHBCARMATask(%d, %d)'%(self.p, self.q)
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -259,6 +261,15 @@ class MBHBCARMATask(object):
         self.__dict__ = copy.copy(state)
         self._taskCython = MBHBCARMATask_cython.MBHBCARMATask_cython(self._p, self._q, self._nthreads,
                                                                      self._nburn)
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def type(self):
+        return self._type
+
+    @property
+    def name(self):
+        return self._name
 
     @kali.util.classproperty.ClassProperty
     @classmethod

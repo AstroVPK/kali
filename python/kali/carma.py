@@ -154,6 +154,7 @@ def timescales(p, q, Rho):
 
 class CARMATask(object):
 
+    _type = 'kali.carma'
     _r = 0
     _dict = multi_key_dict.multi_key_dict()
 
@@ -198,6 +199,7 @@ class CARMATask(object):
                                                                  self._nburn)
             self._pDIC = None
             self._dic = None
+            self._name = 'kali.CARMATask(%d, %d)'%(self.p, self.q)
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -215,6 +217,15 @@ class CARMATask(object):
         """
         self.__dict__ = copy.copy(state)
         self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads, self._nburn)
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def type(self):
+        return self._type
+
+    @property
+    def name(self):
+        return self._name
 
     @kali.util.classproperty.ClassProperty
     @classmethod

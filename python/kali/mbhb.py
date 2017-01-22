@@ -64,6 +64,8 @@ def _f7(seq):
 
 class MBHBTask(object):
 
+    _type = 'kali.mbhb'
+    _name = 'kali.MBHBTask()'
     _r = 8
     G = 6.67408e-11
     c = 299792458.0
@@ -93,10 +95,12 @@ class MBHBTask(object):
     _dict[r'$\tau$ (d)', 6, r'6', r'$\tau~\mathrm{(d)}$', r'Tau', r'tau'] = 6
     _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
 
-    def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True),
+    def __init__(self, p=0, q=0, nthreads=psutil.cpu_count(logical=True),
                  nwalkers=25*psutil.cpu_count(logical=True),
                  nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
+            assert p == 0, r'p must be 0'
+            assert q == 0, r'q must be 0'
             assert nthreads > 0, r'nthreads must be greater than 0'
             assert isinstance(nthreads, int), r'nthreads must be an integer'
             assert nwalkers > 0, r'nwalkers must be greater than 0'
@@ -107,6 +111,8 @@ class MBHBTask(object):
             assert isinstance(maxEvals, int), r'maxEvals must be an integer'
             assert xTol > 0.0, r'xTol must be greater than 0'
             assert isinstance(xTol, float), r'xTol must be a float'
+            self._p = p
+            self._q = q
             self._ndims = self.r
             self._nthreads = nthreads
             self._nwalkers = nwalkers
@@ -143,8 +149,26 @@ class MBHBTask(object):
 
     @kali.util.classproperty.ClassProperty
     @classmethod
+    def type(self):
+        return self._type
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def name(self):
+        return self._name
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
     def r(self):
         return self._r
+
+    @property
+    def p(self):
+        return self._p
+
+    @property
+    def q(self):
+        return self._q
 
     @property
     def nthreads(self):
@@ -329,7 +353,7 @@ class MBHBTask(object):
         assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
         return bool(self._taskCython.check_Theta(Theta, tnum))
 
-    def set(self, Theta, tnum=None):
+    def set(self, dt, Theta, tnum=None):
         if tnum is None:
             tnum = 0
         assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
