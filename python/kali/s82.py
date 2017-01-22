@@ -18,9 +18,6 @@ import pdb
 from astropy import units
 from astropy.coordinates import SkyCoord
 
-import matplotlib.pyplot as plt
-plt.ion()
-
 try:
     import kali.lc
     import kali.carma
@@ -38,6 +35,8 @@ except KeyError as Err:
     warnings.warn('No display environment! Using matplotlib backend "Agg"')
     import matplotlib
     matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 b_ = dict(u=1.4e-10, g=0.9e-10, r=1.2e-10, i=1.8e-10, z=7.4e-10)  # band softening parameter
 f0 = 3631.0  # Jy

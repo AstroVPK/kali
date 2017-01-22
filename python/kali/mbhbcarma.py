@@ -1618,9 +1618,9 @@ class MBHBCARMATask(object):
                                           axis1=0, axis2=1)
         stochasticLabels = []
         for i in xrange(self.p):
-            stochasticLabels.append(r'$\tau_{\mathrm{AR,}, %d}$ (d)'%(i + 1))
+            stochasticLabels.append(r'$\tau_{\mathrm{AR,} %d}$ (d)'%(i + 1))
         for i in xrange(self.q):
-            stochasticLabels.append(r'$\tau_{\mathrm{MA,}, %d}$ (d)'%(i + 1))
+            stochasticLabels.append(r'$\tau_{\mathrm{MA,} %d}$ (d)'%(i + 1))
         stochasticLabels.append(r'$\mathrm{Amp.}$')
         newFigSto = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,
                                               show_titles=True,

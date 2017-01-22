@@ -7,17 +7,21 @@ import sys as sys
 import subprocess
 import re
 import argparse
-import matplotlib.pyplot as plt
 import pdb
 
 try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+try:
     import kali.lc
-    import kali.carma
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
-
-plt.ion()
 
 
 class crtsLC(kali.lc.lc):

@@ -23,10 +23,16 @@ import gatspy.periodic
 from astropy import units
 from astropy.coordinates import SkyCoord
 
+try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 try:
-    import rand as rand
+    import rand
     import LCTools_cython
     import kali.sampler
     import kali.kernel
@@ -42,8 +48,6 @@ COLORX = r'#984ea3'
 COLORY = r'#ff7f00'
 COLORS = [r'#4daf4a', r'#ccebc5']
 ln10 = math.log(10)
-
-plt.ion()
 
 
 class epoch(object):
