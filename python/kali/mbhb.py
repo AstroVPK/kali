@@ -983,7 +983,7 @@ class MBHBTask(object):
                 ThetaGuess = np.array(
                     [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
                         fluxEst])
-                res = self.set(ThetaGuess)
+                res = self.set(observedLC.dt, ThetaGuess)
                 lnPrior = self.logPrior(observedLC)
                 if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
