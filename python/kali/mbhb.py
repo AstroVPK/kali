@@ -1005,7 +1005,7 @@ class MBHBTask(object):
         for dimNum in xrange(self.ndims):
             meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
         meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
-        self.set(meanTheta)
+        self.set(observedLC.dt, meanTheta)
         devianceThetaBar = -2.0*self.logLikelihood(observedLC)
         barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
         self._pDIC = barDeviance - devianceThetaBar
