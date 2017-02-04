@@ -57,21 +57,25 @@ curves.
     """
 
     def __init__(self, lcs, models=['carma(1,0)'], widthT=0.25, widthF=0.25,
+                 save=True, plot=True, ext=None, pdf=False, rerun=False, dpi=300,
                  nthreads=psutil.cpu_count(logical=True),
                  nwalkers=25*psutil.cpu_count(logical=False), nsteps=10000,
                  maxEvals=10000, xTol=0.001, mcmcA=2.0):
         self.widthT = widthT
         self.widthF = widthF
-        self._save = True
-        self._plot = True
-        System = platform.system()
-        if System == 'Linux':
-            self._ext = 'jpg'
-        elif System == 'Darwin':
-            self._ext = 'png'
-        self._pdf = False
-        self._rerun = False
-        self._dpi = 300
+        self._save = save
+        self._plot = plot
+        if ext is None:
+            System = platform.system()
+            if System == 'Linux':
+                self._ext = 'jpg'
+            elif System == 'Darwin':
+                self._ext = 'png'
+        else:
+            self._ext = ext
+        self._pdf = pdf
+        self._rerun = rerun
+        self._dpi = dpi
         self._modellist = list()
         self._lclist = list()
         self._init_models(models, nthreads=nthreads, nwalkers=nwalkers, nsteps=nsteps, maxEvals=maxEvals,
