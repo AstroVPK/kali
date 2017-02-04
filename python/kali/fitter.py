@@ -43,7 +43,8 @@ class fitter(object):
 \copybrief fitter_
 
 The objects that implement CARMA, MBHB, etc... fitting are designed to be reused with multiple different light
-curves.
+curves. fitter objects are designed to fit multiple light curves to multiple models, reusing each model
+repeatedly
 
 \section kali_fitter_fitter_Initialize       Initialization
 \copydoc \_\_init\_\_
@@ -223,6 +224,7 @@ curves.
 
     def _fit(self, lc, model):
         print 'Fitting lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id)
+        model.clear()
         startTask = time.time()
         model.fit(lc, widthT=self.widthT, widthF=self.widthF)
         stopTask = time.time()

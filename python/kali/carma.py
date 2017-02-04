@@ -1080,6 +1080,18 @@ class CARMATask(object):
             self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
             return self._bestTau
 
+    def clear(self):
+        if hasattr(self, '_rootChain'):
+            del self._rootChain
+        if hasattr(self, '_timescaleChain'):
+            del self._timescaleChain
+        if hasattr(self, '_bestTheta'):
+            del self._bestTheta
+        if hasattr(self, '_bestRho'):
+            del self._bestRho
+        if hasattr(self, '_bestTau'):
+            del self._bestTau
+
     def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
         if tnum is None:
             tnum = 0

@@ -1052,6 +1052,18 @@ class MBHBTask(object):
             self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
             return self._bestTau
 
+    def clear(self):
+        if hasattr(self, '_rootChain'):
+            del self._rootChain
+        if hasattr(self, '_timescaleChain'):
+            del self._timescaleChain
+        if hasattr(self, '_bestTheta'):
+            del self._bestTheta
+        if hasattr(self, '_bestRho'):
+            del self._bestRho
+        if hasattr(self, '_bestTau'):
+            del self._bestTau
+
     def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
         if tnum is None:
             tnum = 0
@@ -1111,29 +1123,6 @@ class MBHBTask(object):
         observedLC._isSmoothed = True
         return res
 
-    '''@classmethod
-    def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
-        a1 = a1*cls.Parsec
-        a2 = a2*cls.Parsec
-        T = T*cls.Day
-        MTot = ((cls.fourPiSq*math.pow(a1 + a2, 3.0))/(cls.G*math.pow(T, 2.0)))/cls.SolarMass
-        MRat = a1/a2
-        m1 = (MTot*(1.0/(1.0 + MRat)))*cls.SolarMass
-        m2 = (MTot*(MRat/(1.0 + MRat)))*cls.SolarMass
-        MRed = m1*m2/(m1 + m2)
-        rPeri = ((a1 + a2)*(1.0 - eccentricity))/cls.Parsec
-        rApo = ((a1 + a2)*(1.0 + eccentricity))/cls.Parsec
-        rSch = ((2.0*cls.G*(MTot*cls.SolarMass))/(math.pow(cls.c, 2.0)))/cls.Parsec
-        aHard = ((cls.G*MRed)/(4.0*math.pow((sigmaStars*cls.kms2ms), 2.0)))/cls.Parsec
-        numer = 64.0*math.pow(cls.G, 2.0)*m1*m2*(MTot*cls.SolarMass)*(cls.kms2ms*sigmaStars)
-        denom = 5.0*H*math.pow(cls.c, 5.0)*(cls.SolarMassPerCubicParsec*rhoStars)
-        aGW = math.pow(numer/denom, 0.2)/cls.Parsec
-        THard = ((sigmaStars*cls.kms2ms
-                  )/(H*cls.G*(cls.SolarMassPerCubicParsec*rhoStars)*aGW*cls.Parsec))/cls.Year
-        MEject = (MTot*math.log(aHard/aGW))/1.0e6
-        MTot = MTot/1.0e6
-        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject'''
-
     @property
     def auxillaryChain(self):
         if hasattr(self, '_auxillaryChain'):
@@ -1141,29 +1130,6 @@ class MBHBTask(object):
         else:
             self._auxillaryChain = np.require(np.zeros(13*self.nwalkers*self.nsteps),
                                               requirements=['F', 'A', 'W', 'O', 'E'])
-            '''self._auxillaryChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
-                                              requirements=['F', 'A', 'W', 'O', 'E'])
-            for stepNum in xrange(self.nsteps):
-                for walkerNum in xrange(self.nwalkers):
-                    a1 = self.Chain[0, walkerNum, stepNum]
-                    a2 = self.Chain[1, walkerNum, stepNum]
-                    T = self.Chain[2, walkerNum, stepNum]
-                    eccentricity = self.Chain[3, walkerNum, stepNum]
-                    mTot, q, rPeri, rApo, rSch, aHard, aGW, THard, MEject = self._auxillary(a1, a2,
-                                                                                            T, eccentricity)
-                    self._auxillaryChain[0, walkerNum, stepNum] = a1
-                    self._auxillaryChain[1, walkerNum, stepNum] = a2
-                    self._auxillaryChain[2, walkerNum, stepNum] = T
-                    self._auxillaryChain[3, walkerNum, stepNum] = eccentricity
-                    self._auxillaryChain[4, walkerNum, stepNum] = mTot
-                    self._auxillaryChain[5, walkerNum, stepNum] = q
-                    self._auxillaryChain[6, walkerNum, stepNum] = rPeri
-                    self._auxillaryChain[7, walkerNum, stepNum] = rApo
-                    self._auxillaryChain[8, walkerNum, stepNum] = rSch
-                    self._auxillaryChain[9, walkerNum, stepNum] = aHard
-                    self._auxillaryChain[10, walkerNum, stepNum] = aGW
-                    self._auxillaryChain[11, walkerNum, stepNum] = THard
-                    self._auxillaryChain[12, walkerNum, stepNum] = MEject'''
             MBHBTask_cython.compute_Aux(self.ndims, self.nwalkers, self.nsteps,
                                         self.sigmaStars, self.H, self.rhoStars,
                                         self._Chain, self._auxillaryChain)
