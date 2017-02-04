@@ -171,6 +171,10 @@ class MBHBTask(object):
         return self._q
 
     @property
+    def id(self):
+        return self.type + '.' + str(self.p) + '.' + str(self.q)
+
+    @property
     def nthreads(self):
         return self._nthreads
 

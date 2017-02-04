@@ -223,37 +223,6 @@ class lc(object):
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if not hasattr(self, 'coordinates'):
             self.coordinates = kwargs.get('coordinates')
-        '''try:
-            self._catalogue()
-        except Exception as Err:
-            self.simbad = Err
-            self.ned = Err
-            self.vizier = Err
-            self.sdss = Err'''
-
-    '''def _catalogue(self):
-        if self.coordinates is not None:
-            try:
-                self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.simbad = Err
-            try:
-                self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.ned = Err
-            try:
-                self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.vizier = Err
-            try:
-                self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.sdss = Err
-        else:
-            try:
-                self.ned = Ned.query_object(self.name)
-            except Exception as Err:
-                self.ned = Err'''
 
     @property
     def numCadences(self):
@@ -376,6 +345,14 @@ class lc(object):
         self._meandt = value
 
     @property
+    def mediandt(self):
+        return self._mediandt
+
+    @mediandt.setter
+    def mediandt(self, value):
+        self._mediandt = value
+
+    @property
     def mindt(self):
         return self._mindt
 
@@ -422,6 +399,10 @@ class lc(object):
     @band.setter
     def band(self, value):
         self._band = str(value)
+
+    @property
+    def id(self):
+        return self.name + '.' + self.band
 
     @property
     def xunit(self):
@@ -528,6 +509,7 @@ class lc(object):
         self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
         self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
         self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+        self._mediandt = float(np.nanmedian(self.t[1:] - self.t[:-1]))
         self._T = float(self.t[-1] - self.t[0])
 
     def _statistics(self):

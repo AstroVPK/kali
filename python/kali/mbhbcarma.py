@@ -313,6 +313,10 @@ class MBHBCARMATask(object):
             raise AttributeError(str(err))
 
     @property
+    def id(self):
+        return self.type + '.' + str(self.p) + '.' + str(self.q)
+
+    @property
     def nthreads(self):
         return self._nthreads
 

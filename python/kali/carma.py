@@ -269,6 +269,10 @@ class CARMATask(object):
             raise AttributeError(str(err))
 
     @property
+    def id(self):
+        return self.type + '.' + str(self.p) + '.' + str(self.q)
+
+    @property
     def nthreads(self):
         return self._nthreads
 
@@ -982,7 +986,8 @@ class CARMATask(object):
             plt.show(False)
         return newFig
 
-    def fit(self, observedLC, zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
+    def fit(self, observedLC, widthT=0.01, widthF=0.05,
+            zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
         observedLC.pComp = self.p
         observedLC.qComp = self.q
         randSeed = np.zeros(1, dtype='uint32')

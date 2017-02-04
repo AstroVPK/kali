@@ -57,7 +57,7 @@ def luptitude_to_flux(mag, err, band):  # Converts a Luptitude to an SDSS flux
 def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
 
     t = np.zeros(time.shape[0])
-    t[1:] = np.cumsum((time[1:] - time[:-1])/(1+z))
+    t[1:] = np.cumsum((time[1:] - time[:-1])/(1 + z))
     return t
 
 
@@ -270,7 +270,7 @@ class sdssLC(kali.lc.lc):
     def newRandLC(self, band):
         return sdssLC(name='', band=band)
 
-    def plot(self, fig=-1, doShow=False, clearFig=True):
+    def plot(self, fig=-1, doShow=False, clearFig=True, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
@@ -312,7 +312,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotacvf(self, fig=-2, newdt=None, doShow=False):
+    def plotacvf(self, fig=-2, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
@@ -331,7 +331,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotacf(self, fig=-3, newdt=None, doShow=False):
+    def plotacf(self, fig=-3, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
@@ -351,7 +351,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotsf(self, fig=-4, newdt=None, doShow=False):
+    def plotsf(self, fig=-4, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.loglog(1.0, 1.0)
         if np.sum(self.y) != 0.0:
@@ -397,11 +397,13 @@ class sdssLC(kali.lc.lc):
             self._name, self.z, data = self._getRandLC()
         else:
             self._name, self.z, data = self._getLC(name)
+        self.z = float(self.z)
         t = data['mjd_%s' % band]
         y = data['calMag_%s' % band]
         yerr = data['calMagErr_%s' % band]
         y, yerr = luptitude_to_flux(y, yerr, band)
-        t = time_to_restFrame(t, float(self.z))
+        self.startT = float(t[0])
+        t = time_to_restFrame(t, self.z)
 
         meanYerr = np.mean(yerr)
         stdYerr = np.std(yerr)
@@ -433,7 +435,6 @@ class sdssLC(kali.lc.lc):
         self.y = np.require(np.array(yList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.array(yerrList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.startT = float(self.t[0])
         self.t = self.t - self.t[0]
         self._name = self.name.split('/')[-1].split('_')[1]
         self._band = band
@@ -455,32 +456,6 @@ class sdssLC(kali.lc.lc):
         coord_str = (self.name[0:2] + ' ' + self.name[2:4] + ' ' + self.name[4:9] + ' ' +
                      self.name[9:12] + ' ' + self.name[12:14] + ' ' + self.name[14:18])
         return coord_str
-
-    '''def _catalogue(self):
-        try:
-            self.ned = Ned.query_object('SDSS J' + self.name)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.ned = err
-            coord_str = None
-        else:
-            coord_str = '%f %+f'%(self.ned['RA(deg)'].tolist()[0], self.ned['DEC(deg)'].tolist()[0])
-            self.coordinates = SkyCoord(coord_str, unit=(units.deg, units.deg), frame='icrs')
-        try:
-            self.simbad = Simbad.query_object('SDSS J' + self.name)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.simbad = err
-        else:
-            if coord_str is None:
-                coord_str = self.simbad['RA'].tolist()[0] + ' ' + self.simbad['DEC'].tolist()[0]
-                self.coordinates = SkyCoord(coord_str, unit=(units.hourangle, units.deg), frame='icrs')
-        try:
-            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.vizier = err
-        try:
-            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.sdss = err'''
 
     def write(self, name=None, band=None, path=None):
         print "Saving..."
