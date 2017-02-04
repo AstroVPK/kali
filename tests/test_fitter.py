@@ -40,7 +40,6 @@ class TestFitter(unittest.TestCase):
 
     def test_one(self):
         newFitter = kali.fitter.fitter(self.lcs, models=self.models, nsteps=1000)
-        newFitter.rerun = True
         newFitter.run()
 
 if __name__ == "__main__":
