@@ -10,6 +10,7 @@ import platform
 import types
 import cPickle as pickle
 import matplotlib.pyplot as plt
+import brewer2mpl
 import pdb
 
 try:
@@ -58,7 +59,7 @@ repeatedly
     """
 
     def __init__(self, lcs, models=['carma(1,0)'], widthT=0.25, widthF=0.25,
-                 save=True, plot=True, ext=None, pdf=False, rerun=False, dpi=300,
+                 save=True, plot=True, ext=None, pdf=False, rerun=False, dpi=300, numoverlay=3,
                  nthreads=psutil.cpu_count(logical=True),
                  nwalkers=25*psutil.cpu_count(logical=False), nsteps=10000,
                  maxEvals=10000, xTol=0.001, mcmcA=2.0):
@@ -77,7 +78,11 @@ repeatedly
         self._pdf = pdf
         self._rerun = rerun
         self._dpi = dpi
-        self._modellist = list()
+        if numoverlay <= 9:
+            self._numoverlay = numoverlay
+        else:
+            raise ValueError('Cannot overlay more than 9 model fits on lc!')  # colorbrewer only has 9 paired
+            # color choices!
         self._lclist = list()
         self._init_models(models, nthreads=nthreads, nwalkers=nwalkers, nsteps=nsteps, maxEvals=maxEvals,
                           xTol=xTol, mcmcA=mcmcA)
@@ -145,12 +150,24 @@ repeatedly
         if isinstance(value, types.IntType):
             self._dpi = value
 
+    @property
+    def numoverlay(self):
+        return self._numoverlay
+
+    @numoverlay.setter
+    def numoverlay(self, value):
+        if isinstance(value, types.IntType):
+            if value <= 9:
+                self._numoverlay = value
+            else:
+                raise ValueError('Cannot overlay more than 9 model fits on lc!')  # colorbrewer only has 9
+                # paired color choices!
+
     def _init_models(self, models, nthreads, nwalkers, nsteps, maxEvals, xTol, mcmcA):
         if not models:
             raise ValueError('No models specified!')
         self._models = list()
         for model in models:
-            original = model
             model = model.lower()
             kaliRegex = re.compile('kali\.')
             res = re.findall(kaliRegex, model)
@@ -183,14 +200,12 @@ repeatedly
                     Setup kali by sourcing bin/setup.sh'%(model)
                     sys.exit(1)
 
-            self._modellist.append(original)
             for orderQ in orderQList:
-                exec('fitTask = kali.%s.%sTask(p=%d, q=%d, \
+                self._models.append('kali.%s.%sTask(p=%d,q=%d, \
                 nthreads=%d, nwalkers=%d, nsteps=%d, \
                 maxEvals=%d, xTol=%f, mcmcA=%f)'%(model, model.upper(), orderP, orderQ,
                                                   nthreads, nwalkers, nsteps,
                                                   maxEvals, xTol, mcmcA))
-                self._models.append(fitTask)
 
     def _init_lcs(self, lcs):
         self._lcs = list()
@@ -256,7 +271,7 @@ repeatedly
             print 'Re-ordering models based on relative likelihood for lc %s'%(lc.id)
             dicDict = dict()
             dicList = list()
-            with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'r') as f:
+            with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'rb') as f:
                 f.readline()
                 for line in f:
                     words = line.rstrip('\n').split(' ')
@@ -269,8 +284,42 @@ repeatedly
                     relLike = self.relativeLikelihood(bestDIC, dicDict[w])
                     f.write('Model: %s; DIC: %+4.3e; Relative Likelihood: %+4.3e\n'%(w, dicDict[w], relLike))
 
+    def _plotbestfits(self):
+        primary = brewer2mpl.get_map('Set1', 'Qualitative', self.numoverlay).hex_colors
+        secondary = brewer2mpl.get_map('Pastel1', 'Qualitative', self.numoverlay).hex_colors
+        for lc in self.lcs:
+            print 'Plotting %d-best overlaid light curves for lc %s'%(self.numoverlay, lc.id)
+            lcplot = lc.plot(fig=100, colory=r'#000000')
+            with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'r') as f:
+                f.readline()
+                linecounter = 0
+                for line in f:
+                    if linecounter == self.numoverlay:
+                        break
+                    words = line.rstrip('\n').split(' ')
+                    infile = os.path.join(lc.path, lc.id, '%s.pkl'%(words[1].split(';')[0]))
+                    if os.path.isfile(infile):
+                        model = pickle.load(open(infile, 'rb'))
+                        print 'Plotting overlaid light curve for model %s'%(model.id)
+                        model.set(lc.dt, model.bestTheta)
+                        model.smooth(lc, stopT=(lc.t[-1] + lc.T*0.5))
+                        lc.plot(fig=100, colory=r'#000000',
+                                colors=[primary[linecounter], secondary[linecounter]],
+                                clearFig=False)
+                    linecounter += 1
+            if self.plot:
+                if not os.path.isfile(os.path.join(lc.path, lc.id, 'kali.comp.%s'%(self.ext))):
+                    lcplot.savefig(os.path.join(lc.path, lc.id, 'kali.comp.%s'%(self.ext)),
+                                   dpi=self.dpi)
+                if self.pdf:
+                    if not os.path.isfile(os.path.join(lc.path, lc.id, 'kali.comp.pdf')):
+                        lcplot.savefig(os.path.join(lc.path, lc.id, 'kali.comp.pdf'),
+                                       dpi=self.dpi)
+            plt.close(lcplot)
+
     def run(self):
-        for model in self.models:
+        for modelexec in self.models:
+            exec('model = %s'%(modelexec))
             for lc in self.lcs:
                 if self.rerun:
                     model = self._fit(lc, model)
@@ -283,7 +332,7 @@ repeatedly
                 with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'ab') as f:
                     f.write('Model: %s; DIC: %+17.16e\n'%(model.id, model.dic))
                 model.set(lc.dt, model.bestTheta)
-                model.smooth(lc, stopT=(lc.t[-1] + lc.T*0.5))
+                model.smooth(lc)
                 if self.save:
                     if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_kali.lc.pkl'%(model.id))):
                         with open(os.path.join(lc.path, lc.id, '%s_kali.lc.pkl'%(model.id)), 'wb') as out:
@@ -297,6 +346,7 @@ repeatedly
                         if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_kali.lc.pdf'%(model.id))):
                             lcplot.savefig(os.path.join(lc.path, lc.id, '%s_kali.lc.pdf'%(model.id)),
                                            dpi=self.dpi)
+                    plt.close(lcplot)
                     res = model.plottriangle()
                     if len(res) == 1:
                         if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext))):
@@ -346,4 +396,6 @@ repeatedly
                         plt.close(res[0][0])
                         plt.close(res[1][0])
                         plt.close(res[2][0])
+            del model
         self._reorder()
+        self._plotbestfits()
