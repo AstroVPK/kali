@@ -13,13 +13,13 @@ except ImportError:
     sys.exit(1)
 
 try:
-    import kali.fitter
+    import kali.taskmaster
 except ImportError:
-    print 'Could not import kali.fitter! kali may not be setup. Setup kali by sourcing bin/setup.sh'
+    print 'Could not import kali.taskmaster! kali may not be setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
 
 
-class TestFitter(unittest.TestCase):
+class TestTaskmaster(unittest.TestCase):
 
     def setUp(self):
         self.lcs = list()
@@ -39,8 +39,8 @@ class TestFitter(unittest.TestCase):
         del self.models
 
     def test_one(self):
-        newFitter = kali.fitter.fitter(self.lcs, models=self.models, nsteps=1000)
-        newFitter.run()
+        newTaskmaster = kali.taskmaster.taskmaster(self.lcs, models=self.models, nsteps=1000)
+        newTaskmaster.run()
 
 if __name__ == "__main__":
     unittest.main()
