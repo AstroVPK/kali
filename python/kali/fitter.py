@@ -204,7 +204,7 @@ repeatedly
                 if not os.path.isdir(os.path.join(lc.path, lc.id)):
                     os.mkdir(os.path.join(lc.path, lc.id))
                 with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'wb') as f:
-                    f.write('Light curve:%s; Band: %s; Redshift: %s\n'%(lc.name, lc.band, lc.z))
+                    f.write('Light curve: %s; Band: %s; Redshift: %s\n'%(lc.name, lc.band, lc.z))
                 if self.save:
                     with open(os.path.join(lc.path, lc.id, 'kali.lc.pkl'), 'wb') as out:
                         pickle.dump(lc, out)
@@ -237,15 +237,37 @@ repeatedly
         return model
 
     def _restore(self, lc, model):
-        print 'Restoring fit of lc %s at z = %f to model %s. ...'%(lc.id, lc.z, model.id)
+        print 'Restoring fit of lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id)
         startTask = time.time()
-        model = pickle.load(open(os.path.join(lc.path, lc.name, '%s.pkl'%(model.id)), 'rb'))
+        model = pickle.load(open(os.path.join(lc.path, lc.id, '%s.pkl'%(model.id)), 'rb'))
         stopTask = time.time()
         timeTask = stopTask - startTask
         print 'Restoration took %4.3f s = %4.3f min = %4.3f hrs'%(timeTask,
                                                                   timeTask/60.0,
                                                                   timeTask/3600.0)
         return model
+
+    @staticmethod
+    def relativeLikelihood(best, model):
+        return math.exp((best - model)/2.0)
+
+    def _reorder(self):
+        for lc in self.lcs:
+            print 'Re-ordering models based on relative likelihood for lc %s'%(lc.id)
+            dicDict = dict()
+            dicList = list()
+            with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'r') as f:
+                f.readline()
+                for line in f:
+                    words = line.rstrip('\n').split(' ')
+                    dicDict[words[1].split(';')[0]] = float(words[3])
+                    dicList.append(float(words[3]))
+            bestDIC = sorted(dicList)[0]
+            with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'wb') as f:
+                f.write('Light curve: %s; Band: %s; Redshift: %s\n'%(lc.name, lc.band, lc.z))
+                for w in sorted(dicDict, key=dicDict.get):
+                    relLike = self.relativeLikelihood(bestDIC, dicDict[w])
+                    f.write('Model: %s; DIC: %+4.3e; Relative Likelihood: %+4.3e\n'%(w, dicDict[w], relLike))
 
     def run(self):
         for model in self.models:
@@ -259,53 +281,69 @@ repeatedly
                     else:
                         model = self._fit(lc, model)
                 with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'ab') as f:
-                    f.write('Model: %s; DIC: %e\n'%(model.id, model.dic))
+                    f.write('Model: %s; DIC: %+17.16e\n'%(model.id, model.dic))
                 model.set(lc.dt, model.bestTheta)
                 model.smooth(lc, stopT=(lc.t[-1] + lc.T*0.5))
                 if self.save:
-                    with open(os.path.join(lc.path, lc.id, '%s_kali.lc.pkl'%(model.id)), 'wb') as out:
-                        pickle.dump(lc, out)
+                    if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_kali.lc.pkl'%(model.id))):
+                        with open(os.path.join(lc.path, lc.id, '%s_kali.lc.pkl'%(model.id)), 'wb') as out:
+                            pickle.dump(lc, out)
                 if self.plot:
                     lcplot = lc.plot(colory=r'#000000')
-                    lcplot.savefig(os.path.join(lc.path, lc.id, '%s_kali.lc.%s'%(model.id, self.ext)),
-                                   dpi=self.dpi)
-                    if self.pdf:
-                        lcplot.savefig(os.path.join(lc.path, lc.id, '%s_kali.lc.pdf'%(model.id)),
+                    if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_kali.lc.%s'%(model.id, self.ext))):
+                        lcplot.savefig(os.path.join(lc.path, lc.id, '%s_kali.lc.%s'%(model.id, self.ext)),
                                        dpi=self.dpi)
+                    if self.pdf:
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_kali.lc.pdf'%(model.id))):
+                            lcplot.savefig(os.path.join(lc.path, lc.id, '%s_kali.lc.pdf'%(model.id)),
+                                           dpi=self.dpi)
                     res = model.plottriangle()
                     if len(res) == 1:
-                        res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
-                        if self.pdf:
-                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id)),
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext))):
+                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext)),
                                               dpi=self.dpi)
+                        if self.pdf:
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id))):
+                                res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id)),
+                                                  dpi=self.dpi)
                         plt.close(res[0][0])
                     elif len(res) == 2:
-                        res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
-                        res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext))):
+                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext)),
+                                              dpi=self.dpi)
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext))):
+                            res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext)),
+                                              dpi=self.dpi)
                         if self.pdf:
-                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id)),
-                                              dpi=self.dpi)
-                            res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id)),
-                                              dpi=self.dpi)
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id))):
+                                res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id)),
+                                                  dpi=self.dpi)
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id))):
+                                res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id)),
+                                                  dpi=self.dpi)
                         plt.close(res[0][0])
                         plt.close(res[1][0])
                     elif len(res) == 3:
-                        res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
-                        res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
-                        res[2][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext)),
-                                          dpi=self.dpi)
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext))):
+                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.%s'%(model.id, self.ext)),
+                                              dpi=self.dpi)
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext))):
+                            res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.%s'%(model.id, self.ext)),
+                                              dpi=self.dpi)
+                        if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext))):
+                            res[2][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.%s'%(model.id, self.ext)),
+                                              dpi=self.dpi)
                         if self.pdf:
-                            res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id)),
-                                              dpi=self.dpi)
-                            res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id)),
-                                              dpi=self.dpi)
-                            res[2][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id)),
-                                              dpi=self.dpi)
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id))):
+                                res[0][0].savefig(os.path.join(lc.path, lc.id, '%s_sto.pdf'%(model.id)),
+                                                  dpi=self.dpi)
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id))):
+                                res[1][0].savefig(os.path.join(lc.path, lc.id, '%s_orb.pdf'%(model.id)),
+                                                  dpi=self.dpi)
+                            if not os.path.isfile(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id))):
+                                res[2][0].savefig(os.path.join(lc.path, lc.id, '%s_aux.pdf'%(model.id)),
+                                                  dpi=self.dpi)
                         plt.close(res[0][0])
                         plt.close(res[1][0])
                         plt.close(res[2][0])
+        self._reorder()
