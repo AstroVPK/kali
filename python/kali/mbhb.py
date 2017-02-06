@@ -64,6 +64,8 @@ def _f7(seq):
 
 class MBHBTask(object):
 
+    _type = 'kali.mbhb'
+    _name = 'kali.MBHBTask()'
     _r = 8
     G = 6.67408e-11
     c = 299792458.0
@@ -93,9 +95,12 @@ class MBHBTask(object):
     _dict[r'$\tau$ (d)', 6, r'6', r'$\tau~\mathrm{(d)}$', r'Tau', r'tau'] = 6
     _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
 
-    def __init__(self, nthreads=psutil.cpu_count(logical=True), nwalkers=25*psutil.cpu_count(logical=True),
+    def __init__(self, p=0, q=0, nthreads=psutil.cpu_count(logical=True),
+                 nwalkers=25*psutil.cpu_count(logical=True),
                  nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
+            assert p == 0, r'p must be 0'
+            assert q == 0, r'q must be 0'
             assert nthreads > 0, r'nthreads must be greater than 0'
             assert isinstance(nthreads, int), r'nthreads must be an integer'
             assert nwalkers > 0, r'nwalkers must be greater than 0'
@@ -106,6 +111,8 @@ class MBHBTask(object):
             assert isinstance(maxEvals, int), r'maxEvals must be an integer'
             assert xTol > 0.0, r'xTol must be greater than 0'
             assert isinstance(xTol, float), r'xTol must be a float'
+            self._p = p
+            self._q = q
             self._ndims = self.r
             self._nthreads = nthreads
             self._nwalkers = nwalkers
@@ -142,8 +149,30 @@ class MBHBTask(object):
 
     @kali.util.classproperty.ClassProperty
     @classmethod
+    def type(self):
+        return self._type
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def name(self):
+        return self._name
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
     def r(self):
         return self._r
+
+    @property
+    def p(self):
+        return self._p
+
+    @property
+    def q(self):
+        return self._q
+
+    @property
+    def id(self):
+        return self.type + '.' + str(self.p) + '.' + str(self.q)
 
     @property
     def nthreads(self):
@@ -271,11 +300,12 @@ class MBHBTask(object):
         return self._dic
 
     def __repr__(self):
-        return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %f)"%(self._nthreads, self._nwalkers, self._nsteps,
-                                                         self._maxEvals, self._xTol)
+        return "kali.mbhb.MBHBTask(%d, %d, %d, %d, %d, %d, %f)"%(self._p, self._q, self._nthreads,
+                                                                 self._nwalkers, self._nsteps,
+                                                                 self._maxEvals, self._xTol)
 
     def __str__(self):
-        line = 'ndims: %d\n'%(self._ndims)
+        line = 'p: %d; q: %d; ndims: %d\n'%(self._p, self._q, self._ndims)
         line += 'nthreads (Number of hardware threads to use): %d\n'%(self._nthreads)
         line += 'nwalkers (Number of MCMC walkers): %d\n'%(self._nwalkers)
         line += 'nsteps (Number of MCMC steps): %d\n'%(self.nsteps)
@@ -327,7 +357,7 @@ class MBHBTask(object):
         assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
         return bool(self._taskCython.check_Theta(Theta, tnum))
 
-    def set(self, Theta, tnum=None):
+    def set(self, dt, Theta, tnum=None):
         if tnum is None:
             tnum = 0
         assert Theta.shape == (self._ndims,), r'Too many coefficients in Theta'
@@ -957,7 +987,7 @@ class MBHBTask(object):
                 ThetaGuess = np.array(
                     [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
                         fluxEst])
-                res = self.set(ThetaGuess)
+                res = self.set(observedLC.dt, ThetaGuess)
                 lnPrior = self.logPrior(observedLC)
                 if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
@@ -979,7 +1009,7 @@ class MBHBTask(object):
         for dimNum in xrange(self.ndims):
             meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
         meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
-        self.set(meanTheta)
+        self.set(observedLC.dt, meanTheta)
         devianceThetaBar = -2.0*self.logLikelihood(observedLC)
         barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
         self._pDIC = barDeviance - devianceThetaBar
@@ -1021,6 +1051,18 @@ class MBHBTask(object):
             bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
             self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
             return self._bestTau
+
+    def clear(self):
+        if hasattr(self, '_rootChain'):
+            del self._rootChain
+        if hasattr(self, '_timescaleChain'):
+            del self._timescaleChain
+        if hasattr(self, '_bestTheta'):
+            del self._bestTheta
+        if hasattr(self, '_bestRho'):
+            del self._bestRho
+        if hasattr(self, '_bestTau'):
+            del self._bestTau
 
     def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
         if tnum is None:
@@ -1081,29 +1123,6 @@ class MBHBTask(object):
         observedLC._isSmoothed = True
         return res
 
-    '''@classmethod
-    def _auxillary(cls, a1, a2, T, eccentricity, sigmaStars=200.0, rhoStars=1000.0, H=16.0):
-        a1 = a1*cls.Parsec
-        a2 = a2*cls.Parsec
-        T = T*cls.Day
-        MTot = ((cls.fourPiSq*math.pow(a1 + a2, 3.0))/(cls.G*math.pow(T, 2.0)))/cls.SolarMass
-        MRat = a1/a2
-        m1 = (MTot*(1.0/(1.0 + MRat)))*cls.SolarMass
-        m2 = (MTot*(MRat/(1.0 + MRat)))*cls.SolarMass
-        MRed = m1*m2/(m1 + m2)
-        rPeri = ((a1 + a2)*(1.0 - eccentricity))/cls.Parsec
-        rApo = ((a1 + a2)*(1.0 + eccentricity))/cls.Parsec
-        rSch = ((2.0*cls.G*(MTot*cls.SolarMass))/(math.pow(cls.c, 2.0)))/cls.Parsec
-        aHard = ((cls.G*MRed)/(4.0*math.pow((sigmaStars*cls.kms2ms), 2.0)))/cls.Parsec
-        numer = 64.0*math.pow(cls.G, 2.0)*m1*m2*(MTot*cls.SolarMass)*(cls.kms2ms*sigmaStars)
-        denom = 5.0*H*math.pow(cls.c, 5.0)*(cls.SolarMassPerCubicParsec*rhoStars)
-        aGW = math.pow(numer/denom, 0.2)/cls.Parsec
-        THard = ((sigmaStars*cls.kms2ms
-                  )/(H*cls.G*(cls.SolarMassPerCubicParsec*rhoStars)*aGW*cls.Parsec))/cls.Year
-        MEject = (MTot*math.log(aHard/aGW))/1.0e6
-        MTot = MTot/1.0e6
-        return MTot, MRat, rPeri, rApo, rSch, aHard, aGW, THard, MEject'''
-
     @property
     def auxillaryChain(self):
         if hasattr(self, '_auxillaryChain'):
@@ -1111,29 +1130,6 @@ class MBHBTask(object):
         else:
             self._auxillaryChain = np.require(np.zeros(13*self.nwalkers*self.nsteps),
                                               requirements=['F', 'A', 'W', 'O', 'E'])
-            '''self._auxillaryChain = np.require(np.zeros((13, self._nwalkers, self._nsteps)),
-                                              requirements=['F', 'A', 'W', 'O', 'E'])
-            for stepNum in xrange(self.nsteps):
-                for walkerNum in xrange(self.nwalkers):
-                    a1 = self.Chain[0, walkerNum, stepNum]
-                    a2 = self.Chain[1, walkerNum, stepNum]
-                    T = self.Chain[2, walkerNum, stepNum]
-                    eccentricity = self.Chain[3, walkerNum, stepNum]
-                    mTot, q, rPeri, rApo, rSch, aHard, aGW, THard, MEject = self._auxillary(a1, a2,
-                                                                                            T, eccentricity)
-                    self._auxillaryChain[0, walkerNum, stepNum] = a1
-                    self._auxillaryChain[1, walkerNum, stepNum] = a2
-                    self._auxillaryChain[2, walkerNum, stepNum] = T
-                    self._auxillaryChain[3, walkerNum, stepNum] = eccentricity
-                    self._auxillaryChain[4, walkerNum, stepNum] = mTot
-                    self._auxillaryChain[5, walkerNum, stepNum] = q
-                    self._auxillaryChain[6, walkerNum, stepNum] = rPeri
-                    self._auxillaryChain[7, walkerNum, stepNum] = rApo
-                    self._auxillaryChain[8, walkerNum, stepNum] = rSch
-                    self._auxillaryChain[9, walkerNum, stepNum] = aHard
-                    self._auxillaryChain[10, walkerNum, stepNum] = aGW
-                    self._auxillaryChain[11, walkerNum, stepNum] = THard
-                    self._auxillaryChain[12, walkerNum, stepNum] = MEject'''
             MBHBTask_cython.compute_Aux(self.ndims, self.nwalkers, self.nsteps,
                                         self.sigmaStars, self.H, self.rhoStars,
                                         self._Chain, self._auxillaryChain)

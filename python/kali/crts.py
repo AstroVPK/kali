@@ -7,17 +7,21 @@ import sys as sys
 import subprocess
 import re
 import argparse
-import matplotlib.pyplot as plt
 import pdb
 
 try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+try:
     import kali.lc
-    import kali.carma
 except ImportError:
     print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
     sys.exit(1)
-
-plt.ion()
 
 
 class crtsLC(kali.lc.lc):
@@ -114,7 +118,7 @@ class crtsLC(kali.lc.lc):
             if self.yerr[i] == 0.0 or np.isnan(self.yerr[i]):
                 self.yerr[i] = self.y[i]/meanSNRat  # Ugly hack in case the fluxes are all actaully the same.
 
-        self.startT = self.t[0]/(1.0 + self.z)
+        self.startT = self.t[0]
         self.t = (self.t - self.startT)/(1.0 + self.z)
         self.x = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         self._name = str(name)  # The name of the light curve (usually the object's name).

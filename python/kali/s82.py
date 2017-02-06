@@ -15,19 +15,26 @@ import sys
 import os
 import pdb
 
+try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 from astropy import units
 from astropy.coordinates import SkyCoord
 
 import matplotlib.pyplot as plt
-plt.ion()
 cc = None
-ONLINE=True #Connected to the internet
+ONLINE = True  # Connected to the internet
 try:
     import kali.clientBase as cc
 except Exception as e:
     print e
     print "Setting Mode to OFFLINE"
-    ONLINE=False
+    ONLINE = False
 try:
     import kali.lc
     import kali.carma
@@ -39,12 +46,6 @@ except ImportError as e:
     print e
     sys.exit(0)
 
-try:
-    os.environ['DISPLAY']
-except KeyError as Err:
-    warnings.warn('No display environment! Using matplotlib backend "Agg"')
-    import matplotlib
-    matplotlib.use('Agg')
 
 b_ = dict(u=1.4e-10, g=0.9e-10, r=1.2e-10, i=1.8e-10, z=7.4e-10)  # band softening parameter
 f0 = 3631.0  # Jy
@@ -65,7 +66,7 @@ def luptitude_to_flux(mag, err, band):  # Converts a Luptitude to an SDSS flux
 def time_to_restFrame(time, z):  # Converts a cadence to the rest frame
 
     t = np.zeros(time.shape[0])
-    t[1:] = np.cumsum((time[1:] - time[:-1])/(1+z))
+    t[1:] = np.cumsum((time[1:] - time[:-1])/(1 + z))
     return t
 
 
@@ -73,7 +74,7 @@ class sdssLC(kali.lc.lc):
 
     def _getRandLC(self):
         global ONLINE, cc
-        if ONLINE: 
+        if ONLINE:
             return cc.getRandLC()
         else:
             try:
@@ -298,36 +299,66 @@ class sdssLC(kali.lc.lc):
     def newRandLC(self, band):
         return sdssLC(name='', band=band)
 
-    def plot(self, fig=-1, doShow=False, clearFig=True):
+    def plot(self, fig=-1, doShow=False, clearFig=True, colorx=None, colory=None, colors=None,
+             labelx=None, labely=None, labels=None):
+        if not colorx:
+            colorx = r'#000000'
+        if not colory:
+            colory = self.colorDict[self.band]
+        if not colors:
+            colors = [self.smoothColorDict[self.band], self.smoothErrColorDict[self.band]]
+        if not labelx:
+            labelx = r'True %s (%s-band)'%(self.name, self.band)
+        if not labely:
+            labely = r'Observed %s (%s-band)'%(self.name, self.band)
+        if not labels:
+            labels = r'Smoothed %s (%s-band)'%(self.name, self.band)
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
-            plt.plot(self.t, self.x, color='#000000', zorder=0)
-            plt.plot(self.t, self.x, color='#000000', marker='o', markeredgecolor='none', zorder=0)
+            plt.plot(self.t, self.x, color=colorx, zorder=0)
+            if labelx != 'none':
+                plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', label=labelx,
+                         zorder=0)
+            else:
+                plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', zorder=0)
         if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
-            plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
-                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color=self.colorDict[self.band], markeredgecolor='none', zorder=10)
+            if labely != 'none':
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], label=labely,
+                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+            else:
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0, color=colory,
+                             markeredgecolor='none', zorder=10)
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
-            plt.plot(
-                self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
-                color='#984ea3', zorder=0)
-            plt.plot(
-                self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
-                color='#984ea3', marker='o', markeredgecolor='none', zorder=0)
-            plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
-                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color='#ff7f00', markeredgecolor='none', zorder=10)
+            plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
+                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, zorder=0)
+            if labelx != 'none':
+                plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                         color=colorx, marker='o', markeredgecolor='none', label=labelx, zorder=0)
+            else:
+                plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                         color=colorx, marker='o', markeredgecolor='none', zorder=0)
+            if labely != 'none':
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], label=labely, fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
+            else:
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
         if self.isSmoothed:
-            plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[self.band], marker='o',
-                     markeredgecolor='none', zorder=-5)
-            plt.plot(self.tSmooth, self.xSmooth, color=self.smoothColorDict[self.band], zorder=-5)
-            plt.fill_between(
-                self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth + self.xerrSmooth,
-                facecolor=self.smoothErrColorDict[self.band], alpha=0.5, zorder=-5)
+            if labels != 'none':
+                plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
+                         marker='o', markeredgecolor='none', label=labels, zorder=-5)
+            else:
+                plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
+                         marker='o', markeredgecolor='none', zorder=-5)
+            plt.plot(self.tSmooth, self.xSmooth, color=colors[0], zorder=-5)
+            plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
+                             self.xerrSmooth, facecolor=colors[1], alpha=0.5, zorder=-5)
         if hasattr(self, 'tSmooth'):
             plt.xlim(self.tSmooth[0], self.tSmooth[-1])
         else:
@@ -340,7 +371,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotacvf(self, fig=-2, newdt=None, doShow=False):
+    def plotacvf(self, fig=-2, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
@@ -359,7 +390,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotacf(self, fig=-3, newdt=None, doShow=False):
+    def plotacf(self, fig=-3, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.plot(0.0, 0.0)
         if np.sum(self.y) != 0.0:
@@ -379,7 +410,7 @@ class sdssLC(kali.lc.lc):
             plt.show(False)
         return newFig
 
-    def plotsf(self, fig=-4, newdt=None, doShow=False):
+    def plotsf(self, fig=-4, newdt=None, doShow=False, **kwargs):
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         plt.loglog(1.0, 1.0)
         if np.sum(self.y) != 0.0:
@@ -425,11 +456,13 @@ class sdssLC(kali.lc.lc):
             self._name, self.z, data = self._getRandLC()
         else:
             self._name, self.z, data = self._getLC(name)
+        self.z = float(self.z)
         t = data['mjd_%s' % band]
         y = data['calMag_%s' % band]
         yerr = data['calMagErr_%s' % band]
         y, yerr = luptitude_to_flux(y, yerr, band)
-        t = time_to_restFrame(t, float(self.z))
+        self.startT = float(t[0])
+        t = time_to_restFrame(t, self.z)
 
         meanYerr = np.mean(yerr)
         stdYerr = np.std(yerr)
@@ -461,7 +494,6 @@ class sdssLC(kali.lc.lc):
         self.y = np.require(np.array(yList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.yerr = np.require(np.array(yerrList), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.array(self._numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        self.startT = float(self.t[0])
         self.t = self.t - self.t[0]
         self._name = self.name.split('/')[-1].split('_')[1]
         self._band = band
@@ -483,32 +515,6 @@ class sdssLC(kali.lc.lc):
         coord_str = (self.name[0:2] + ' ' + self.name[2:4] + ' ' + self.name[4:9] + ' ' +
                      self.name[9:12] + ' ' + self.name[12:14] + ' ' + self.name[14:18])
         return coord_str
-
-    '''def _catalogue(self):
-        try:
-            self.ned = Ned.query_object('SDSS J' + self.name)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.ned = err
-            coord_str = None
-        else:
-            coord_str = '%f %+f'%(self.ned['RA(deg)'].tolist()[0], self.ned['DEC(deg)'].tolist()[0])
-            self.coordinates = SkyCoord(coord_str, unit=(units.deg, units.deg), frame='icrs')
-        try:
-            self.simbad = Simbad.query_object('SDSS J' + self.name)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.simbad = err
-        else:
-            if coord_str is None:
-                coord_str = self.simbad['RA'].tolist()[0] + ' ' + self.simbad['DEC'].tolist()[0]
-                self.coordinates = SkyCoord(coord_str, unit=(units.hourangle, units.deg), frame='icrs')
-        try:
-            self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.vizier = err
-        try:
-            self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
-        except astroquery.exceptions.RemoteServiceError as err:
-            self.sdss = err'''
 
     def write(self, name=None, band=None, path=None):
         print "Saving..."
