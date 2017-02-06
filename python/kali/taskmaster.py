@@ -289,6 +289,7 @@ repeatedly
         secondary = brewer2mpl.get_map('Pastel1', 'Qualitative', self.numoverlay).hex_colors
         for lc in self.lcs:
             print 'Plotting %d-best overlaid light curves for lc %s'%(self.numoverlay, lc.id)
+            lc.removesmooth()
             lcplot = lc.plot(fig=100, colory=r'#000000')
             with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'r') as f:
                 f.readline()
@@ -304,8 +305,8 @@ repeatedly
                         model.set(lc.dt, model.bestTheta)
                         model.smooth(lc, stopT=(lc.t[-1] + lc.T*0.5))
                         lc.plot(fig=100, colory=r'#000000',
-                                colors=[primary[linecounter], secondary[linecounter]],
-                                clearFig=False)
+                                colors=[primary[linecounter], secondary[linecounter]], labely='none',
+                                labels=r'%s fit'%(model.id), clearFig=False)
                     linecounter += 1
             if self.plot:
                 if not os.path.isfile(os.path.join(lc.path, lc.id, 'kali.comp.%s'%(self.ext))):
