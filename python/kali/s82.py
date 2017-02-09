@@ -87,7 +87,7 @@ class sdssLC(kali.lc.lc):
     def _getLC(self, ID):
         global ONLINE, cc
         if ONLINE:
-            return cc.getLC(ID)
+            return cc.getNearestLC(ID, 5.0/3600)
         else:
             try:
                 import clientBase as cc
