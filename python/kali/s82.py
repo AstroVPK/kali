@@ -98,7 +98,7 @@ class sdssLC(kali.lc.lc):
                  print "Cannot Load from Server in Offline Mode"
                  return None
 
-    def fit(self, pMin=1, pMax=1, qMin=-1, qMax=-1, nwalkers=200, nsteps=1000, xTol=0.001, maxEvals=10000):
+    def fit(self, pMin=1, pMax=1, qMin=-1, qMax=-1, nwalkers=200, nsteps=1000, xTol=0.001, maxEvals=10000, doShow = True):
         self.taskDict = dict()
         self.DICDict = dict()
         self.totalTime = 0.0
@@ -153,7 +153,8 @@ class sdssLC(kali.lc.lc):
             self.bestLabelList.append("$a_{%d}$"%(i + 1))
         for i in range(self.qBest + 1):
             self.bestLabelList.append("$b_{%d}$"%(i))
-        mcmcviz.vizTriangle(self.pBest, self.qBest, self.bestTask.Chain,
+        if doShow:
+            mcmcviz.vizTriangle(self.pBest, self.qBest, self.bestTask.Chain,
                             labelList=self.bestLabelList, figTitle=self.bestFigTitle)
 
     def view(self):
