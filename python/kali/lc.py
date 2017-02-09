@@ -23,10 +23,16 @@ import gatspy.periodic
 from astropy import units
 from astropy.coordinates import SkyCoord
 
+try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 try:
-    import rand as rand
+    import rand
     import LCTools_cython
     import kali.sampler
     import kali.kernel
@@ -42,8 +48,6 @@ COLORX = r'#984ea3'
 COLORY = r'#ff7f00'
 COLORS = [r'#4daf4a', r'#ccebc5']
 ln10 = math.log(10)
-
-plt.ion()
 
 
 class epoch(object):
@@ -219,37 +223,6 @@ class lc(object):
         self._dtSmooth = kwargs.get('dtSmooth', self.mindt/10.0)
         if not hasattr(self, 'coordinates'):
             self.coordinates = kwargs.get('coordinates')
-        '''try:
-            self._catalogue()
-        except Exception as Err:
-            self.simbad = Err
-            self.ned = Err
-            self.vizier = Err
-            self.sdss = Err'''
-
-    '''def _catalogue(self):
-        if self.coordinates is not None:
-            try:
-                self.simbad = Simbad.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.simbad = Err
-            try:
-                self.ned = Ned.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.ned = Err
-            try:
-                self.vizier = Vizier.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.vizier = Err
-            try:
-                self.sdss = SDSS.query_region(self.coordinates, radius=5*units.arcsec)
-            except Exception as Err:
-                self.sdss = Err
-        else:
-            try:
-                self.ned = Ned.query_object(self.name)
-            except Exception as Err:
-                self.ned = Err'''
 
     @property
     def numCadences(self):
@@ -372,6 +345,14 @@ class lc(object):
         self._meandt = value
 
     @property
+    def mediandt(self):
+        return self._mediandt
+
+    @mediandt.setter
+    def mediandt(self, value):
+        self._mediandt = value
+
+    @property
     def mindt(self):
         return self._mindt
 
@@ -418,6 +399,10 @@ class lc(object):
     @band.setter
     def band(self, value):
         self._band = str(value)
+
+    @property
+    def id(self):
+        return self.name + '.' + self.band
 
     @property
     def xunit(self):
@@ -524,6 +509,7 @@ class lc(object):
         self._mindt = float(np.nanmin(self.t[1:] - self.t[:-1]))
         self._maxdt = float(np.nanmax(self.t[1:] - self.t[:-1]))
         self._meandt = float(np.nanmean(self.t[1:] - self.t[:-1]))
+        self._mediandt = float(np.nanmedian(self.t[1:] - self.t[:-1]))
         self._T = float(self.t[-1] - self.t[0])
 
     def _statistics(self):
@@ -1069,31 +1055,63 @@ class lc(object):
                     self._periodogram[i] = np.nan
             return self._periodogramfreqs, self._periodogram, self._periodogramerr
 
-    def plot(self, fig=-1, doShow=False, clearFig=True, colorx=COLORX, colory=COLORY, colors=COLORS):
+    def plot(self, fig=-1, doShow=False, clearFig=True, colorx=None, colory=None, colors=None,
+             labelx=None, labely=None, labels=None):
+        if not colorx:
+            colorx = COLORX
+        if not colory:
+            colory = COLORY
+        if not colors:
+            colors = COLORS
+        if not labelx:
+            labelx = r'True %s (%s-band)'%(self.name, self.band)
+        if not labely:
+            labely = r'%s (%s-band)'%(self.name, self.band)
+        if not labels:
+            labels = r'Smoothed %s (%s-band)'%(self.name, self.band)
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) == 0.0):
             plt.plot(self.t, self.x, color=colorx, zorder=0)
-            plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', zorder=0)
+            if labelx != 'none':
+                plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', label=labelx,
+                         zorder=0)
+            else:
+                plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', zorder=0)
         if (np.sum(self.x) == 0.0) and (np.sum(self.y) != 0.0):
-            plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
-                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+            if labely != 'none':
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], label=labely,
+                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+            else:
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0, color=colory,
+                             markeredgecolor='none', zorder=10)
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
                 self.y[np.where(self.mask == 1.0)[0]]), color=colorx, zorder=0)
-            plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, marker='o', markeredgecolor='none',
-                zorder=0)
-            plt.errorbar(
-                self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
-                self.yerr[np.where(self.mask == 1.0)[0]], label=r'%s (%s-band)'%(self.name, self.band),
-                fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+            if labelx != 'none':
+                plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                         color=colorx, marker='o', markeredgecolor='none', label=labelx, zorder=0)
+            else:
+                plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
+                         color=colorx, marker='o', markeredgecolor='none', zorder=0)
+            if labely != 'none':
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], label=labely, fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
+            else:
+                plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
+                             self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0,
+                             color=colory, markeredgecolor='none', zorder=10)
         if self.isSmoothed:
-            plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
-                     marker='o', markeredgecolor='none', zorder=-5)
+            if labels != 'none':
+                plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
+                         marker='o', markeredgecolor='none', label=labels, zorder=-5)
+            else:
+                plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
+                         marker='o', markeredgecolor='none', zorder=-5)
             plt.plot(self.tSmooth, self.xSmooth, color=colors[0], zorder=-5)
             plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
                              self.xerrSmooth, facecolor=colors[1], alpha=0.5, zorder=-5)
@@ -1381,6 +1399,18 @@ class lc(object):
         convKernel(self, newLC)
         newLC._statistics()
         return newLC
+
+    def removesmooth(self):
+        del self.numCadencesSmooth
+        del self.tSmooth
+        del self.xSmooth
+        del self.xerrSmooth
+        del self.ySmooth
+        del self.yerrSmooth
+        del self.maskSmooth
+        del self.XSmooth
+        del self.PSmooth
+        self._isSmoothed = False
 
     @abc.abstractmethod
     def read(self, name, band, path=os.environ['PWD'], **kwargs):

@@ -14,8 +14,13 @@ import pdb
 from astropy import units
 from astropy.coordinates import SkyCoord
 
+try:
+    os.environ['DISPLAY']
+except KeyError as Err:
+    warnings.warn('No display environment! Using matplotlib backend "Agg"')
+    import matplotlib
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-plt.ion()
 
 try:
     import kali.lc

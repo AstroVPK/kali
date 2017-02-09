@@ -21,7 +21,8 @@ class surveyLC(libcarma.basicLC):
     def read(self, name, band='?', path=os.environ['?DATADIR'], **kwargs):
         # CODE here to open the data file ####
 
-        # CODE HERE to construct t, x, y, yerr, & mask + numCadences, startT + other properties you want to track.
+        # CODE HERE to construct t, x, y, yerr, & mask + numCadences, startT + other properties you want to
+        # track.
 
         self._name = str(name)  # The name of the light curve (usually the object's name).
         self._band = str(r'V')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).

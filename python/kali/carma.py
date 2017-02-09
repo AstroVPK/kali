@@ -154,6 +154,7 @@ def timescales(p, q, Rho):
 
 class CARMATask(object):
 
+    _type = 'kali.carma'
     _r = 0
     _dict = multi_key_dict.multi_key_dict()
 
@@ -198,6 +199,7 @@ class CARMATask(object):
                                                                  self._nburn)
             self._pDIC = None
             self._dic = None
+            self._name = 'kali.CARMATask(%d, %d)'%(self.p, self.q)
         except AssertionError as err:
             raise AttributeError(str(err))
 
@@ -215,6 +217,15 @@ class CARMATask(object):
         """
         self.__dict__ = copy.copy(state)
         self._taskCython = CARMATask_cython.CARMATask_cython(self._p, self._q, self._nthreads, self._nburn)
+
+    @kali.util.classproperty.ClassProperty
+    @classmethod
+    def type(self):
+        return self._type
+
+    @property
+    def name(self):
+        return self._name
 
     @kali.util.classproperty.ClassProperty
     @classmethod
@@ -256,6 +267,10 @@ class CARMATask(object):
                                      requirements=['F', 'A', 'W', 'O', 'E'])
         except AssertionError as err:
             raise AttributeError(str(err))
+
+    @property
+    def id(self):
+        return self.type + '.' + str(self.p) + '.' + str(self.q)
 
     @property
     def nthreads(self):
@@ -971,7 +986,8 @@ class CARMATask(object):
             plt.show(False)
         return newFig
 
-    def fit(self, observedLC, zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
+    def fit(self, observedLC, widthT=0.01, widthF=0.05,
+            zSSeed=None, walkerSeed=None, moveSeed=None, xSeed=None):
         observedLC.pComp = self.p
         observedLC.qComp = self.q
         randSeed = np.zeros(1, dtype='uint32')
@@ -1063,6 +1079,18 @@ class CARMATask(object):
             bestStep = np.where(np.max(self.LnPosterior) == self.LnPosterior)[1][0]
             self._bestTau = copy.copy(self.timescaleChain[:, bestWalker, bestStep])
             return self._bestTau
+
+    def clear(self):
+        if hasattr(self, '_rootChain'):
+            del self._rootChain
+        if hasattr(self, '_timescaleChain'):
+            del self._timescaleChain
+        if hasattr(self, '_bestTheta'):
+            del self._bestTheta
+        if hasattr(self, '_bestRho'):
+            del self._bestRho
+        if hasattr(self, '_bestTau'):
+            del self._bestTau
 
     def smooth(self, observedLC, startT=None, stopT=None, tnum=None):
         if tnum is None:
@@ -1194,9 +1222,9 @@ class CARMATask(object):
                                           axis1=0, axis2=1)
         stochasticLabels = []
         for i in xrange(self.p):
-            stochasticLabels.append(r'$\tau_{\mathrm{AR,}, %d}$ (d)'%(i + 1))
+            stochasticLabels.append(r'$\tau_{\mathrm{AR,} %d}$ (d)'%(i + 1))
         for i in xrange(self.q):
-            stochasticLabels.append(r'$\tau_{\mathrm{MA,}, %d}$ (d)'%(i + 1))
+            stochasticLabels.append(r'$\tau_{\mathrm{MA,} %d}$ (d)'%(i + 1))
         stochasticLabels.append(r'$\mathrm{Amp.}$')
         newFig = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,
                                            show_titles=True,
