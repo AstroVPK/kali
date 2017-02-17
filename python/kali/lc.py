@@ -1133,7 +1133,7 @@ class lc(object):
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')
-        plt.legend(bbox_to_anchor=(0.0, 1.02, 1.0, 0.102), loc=3, ncol=2, mode="expand", borderaxespad=0.0)
+        plt.legend()
         if doShow:
             plt.show(False)
         return newFig
