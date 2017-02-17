@@ -732,16 +732,19 @@ class lc(object):
         Add another light curve or scalar to the light curve.
         """
         lccopy = self.copy()
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
-            lccopy.x += other
-            lccopy.y += other
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
+            if np.mean(self.x) != 0.0:
+                lccopy.x += other
+            if np.mean(self.y) != 0.0:
+                lccopy.y += other
             lccopy._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
-                lccopy.x += other.x
-                lccopy.y += other.y
-                lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+                if np.mean(self.x) != 0.0 and np.mean(other.x) != 0.0:
+                    lccopy.x += other.x
+                if np.mean(self.y) != 0.0 and np.mean(other.y) != 0.0:
+                    lccopy.y += other.y
+                    lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
                 lccopy._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
@@ -779,16 +782,19 @@ class lc(object):
 
         Inplace add another light curve or scalar to the light curve.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
-            self.x += other
-            self.y += other
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
+            if np.mean(self.x) != 0.0:
+                self.x += other
+            if np.mean(self.y) != 0.0:
+                self.y += other
             self._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
-                self.x += other.x
-                self.y += other.y
-                self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+                if np.mean(self.x) != 0.0 and np.mean(other.x) != 0.0:
+                    self.x += other.x
+                if np.mean(self.y) != 0.0 and np.mean(other.y) != 0.0:
+                    self.y += other.y
+                    self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
                 self._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
@@ -808,8 +814,7 @@ class lc(object):
 
         Multiply the light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -845,8 +850,7 @@ class lc(object):
 
         Divide the light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -869,8 +873,7 @@ class lc(object):
 
         Inplace multiply a light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -889,8 +892,7 @@ class lc(object):
 
         Inplace divide a light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -1131,7 +1133,7 @@ class lc(object):
         plt.xlabel(self.xunit)
         plt.ylabel(self.yunit)
         plt.title(r'Light curve')
-        plt.legend()
+        plt.legend(bbox_to_anchor=(0.0, 1.02, 1.0, 0.102), loc=3, ncol=2, mode="expand", borderaxespad=0.0)
         if doShow:
             plt.show(False)
         return newFig
