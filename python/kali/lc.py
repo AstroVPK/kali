@@ -732,16 +732,19 @@ class lc(object):
         Add another light curve or scalar to the light curve.
         """
         lccopy = self.copy()
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
-            lccopy.x += other
-            lccopy.y += other
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
+            if np.mean(self.x) != 0.0:
+                lccopy.x += other
+            if np.mean(self.y) != 0.0:
+                lccopy.y += other
             lccopy._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
-                lccopy.x += other.x
-                lccopy.y += other.y
-                lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+                if np.mean(self.x) != 0.0 and np.mean(other.x) != 0.0:
+                    lccopy.x += other.x
+                if np.mean(self.y) != 0.0 and np.mean(other.y) != 0.0:
+                    lccopy.y += other.y
+                    lccopy.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
                 lccopy._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
@@ -779,16 +782,19 @@ class lc(object):
 
         Inplace add another light curve or scalar to the light curve.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
-            self.x += other
-            self.y += other
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
+            if np.mean(self.x) != 0.0:
+                self.x += other
+            if np.mean(self.y) != 0.0:
+                self.y += other
             self._statistics()
         elif isinstance(other, lc):
             if other.numCadences == self.numCadences:
-                self.x += other.x
-                self.y += other.y
-                self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
+                if np.mean(self.x) != 0.0 and np.mean(other.x) != 0.0:
+                    self.x += other.x
+                if np.mean(self.y) != 0.0 and np.mean(other.y) != 0.0:
+                    self.y += other.y
+                    self.yerr = np.sqrt(np.power(self.yerr, 2.0) + np.power(other.yerr, 2.0))
                 self._statistics()
             else:
                 raise ValueError('Light curves have un-equal length')
@@ -808,8 +814,7 @@ class lc(object):
 
         Multiply the light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -845,8 +850,7 @@ class lc(object):
 
         Divide the light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -869,8 +873,7 @@ class lc(object):
 
         Inplace multiply a light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -889,8 +892,7 @@ class lc(object):
 
         Inplace divide a light curve by a scalar.
         """
-        if (isinstance(other, int) or isinstance(other, int) or isinstance(other, float) or
-                isinstance(other, complex)):
+        if (isinstance(other, int) or isinstance(other, float) or isinstance(other, complex)):
             if isinstance(other, complex):
                 other = complex(other)
             else:
@@ -1056,7 +1058,7 @@ class lc(object):
             return self._periodogramfreqs, self._periodogram, self._periodogramerr
 
     def plot(self, fig=-1, doShow=False, clearFig=True, colorx=None, colory=None, colors=None,
-             labelx=None, labely=None, labels=None):
+             labelx=None, labely=None, alphax=None, alphay=None, alphas=None, labels=None):
         if not colorx:
             colorx = COLORX
         if not colory:
@@ -1069,6 +1071,12 @@ class lc(object):
             labely = r'%s (%s-band)'%(self.name, self.band)
         if not labels:
             labels = r'Smoothed %s (%s-band)'%(self.name, self.band)
+        if not alphax:
+            alphax = 1.0
+        if not alphay:
+            alphay = 1.0
+        if not alphas:
+            alphas = [1.0, 0.5]
         newFig = plt.figure(fig, figsize=(fwid, fhgt))
         if clearFig:
             plt.clf()
@@ -1076,6 +1084,7 @@ class lc(object):
             plt.plot(self.t, self.x, color=colorx, zorder=0)
             if labelx != 'none':
                 plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', label=labelx,
+                         alpha=alphax,
                          zorder=0)
             else:
                 plt.plot(self.t, self.x, color=colorx, marker='o', markeredgecolor='none', zorder=0)
@@ -1083,38 +1092,40 @@ class lc(object):
             if labely != 'none':
                 plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                              self.yerr[np.where(self.mask == 1.0)[0]], label=labely,
-                             fmt='o', capsize=0, color=colory, markeredgecolor='none', zorder=10)
+                             fmt='o', capsize=0, color=colory, markeredgecolor='none', alpha=alphay,
+                             zorder=10)
             else:
                 plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                              self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0, color=colory,
-                             markeredgecolor='none', zorder=10)
+                             alpha=alphay, markeredgecolor='none', zorder=10)
         if (np.sum(self.x) != 0.0) and (np.sum(self.y) != 0.0):
             plt.plot(self.t, self.x - np.mean(self.x) + np.mean(
-                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, zorder=0)
+                self.y[np.where(self.mask == 1.0)[0]]), color=colorx, alpha=alphax, zorder=0)
             if labelx != 'none':
                 plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
-                         color=colorx, marker='o', markeredgecolor='none', label=labelx, zorder=0)
+                         color=colorx, marker='o', markeredgecolor='none', label=labelx, alpha=alphax,
+                         zorder=0)
             else:
                 plt.plot(self.t, self.x - np.mean(self.x) + np.mean(self.y[np.where(self.mask == 1.0)[0]]),
-                         color=colorx, marker='o', markeredgecolor='none', zorder=0)
+                         color=colorx, marker='o', markeredgecolor='none', alpha=alphax, zorder=0)
             if labely != 'none':
                 plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                              self.yerr[np.where(self.mask == 1.0)[0]], label=labely, fmt='o', capsize=0,
-                             color=colory, markeredgecolor='none', zorder=10)
+                             color=colory, alpha=alphay, markeredgecolor='none', zorder=10)
             else:
                 plt.errorbar(self.t[np.where(self.mask == 1.0)[0]], self.y[np.where(self.mask == 1.0)[0]],
                              self.yerr[np.where(self.mask == 1.0)[0]], fmt='o', capsize=0,
-                             color=colory, markeredgecolor='none', zorder=10)
+                             color=colory, alpha=alphay, markeredgecolor='none', zorder=10)
         if self.isSmoothed:
             if labels != 'none':
                 plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
-                         marker='o', markeredgecolor='none', label=labels, zorder=-5)
+                         marker='o', markeredgecolor='none', label=labels[0], alpha=alphas[0], zorder=-5)
             else:
                 plt.plot(self.tSmooth, self.xSmooth, color=colors[0],
-                         marker='o', markeredgecolor='none', zorder=-5)
-            plt.plot(self.tSmooth, self.xSmooth, color=colors[0], zorder=-5)
+                         marker='o', markeredgecolor='none', alpha=alphas[0], zorder=-5)
+            plt.plot(self.tSmooth, self.xSmooth, color=colors[0], alpha=alphas[0], zorder=-5)
             plt.fill_between(self.tSmooth, self.xSmooth - self.xerrSmooth, self.xSmooth +
-                             self.xerrSmooth, facecolor=colors[1], alpha=0.5, zorder=-5)
+                             self.xerrSmooth, facecolor=colors[1], alpha=alphas[1], zorder=-5)
         if hasattr(self, 'tSmooth'):
             plt.xlim(self.tSmooth[0], self.tSmooth[-1])
         else:
