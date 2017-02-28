@@ -33,7 +33,8 @@ def generateConfig(): # generates the config and server files if not found
         printV("No Server List Found")
         printV("Generating New Server List at %s" % serverFile)
         with open(serverFile,'wb') as f:
-            f.write("vish15 tcp://vish15.physics.upenn.edu:5001")
+            f.write("vish15 tcp://vish15.physics.upenn.edu:5001\n")
+            f.write("echidna tcp://108.52.218.107:5001")
 
 class SDSSError(Exception):  # custom SDSSError that relates to serverside issues
 
