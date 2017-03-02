@@ -34,15 +34,15 @@ NLOpt are required. Either of the Intel C++ Compiler or the GNU C++ Compiler are
 to eventually support the clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is
 recommended.
 
-You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
-`icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
-compiler is installed in a non-standard location and can be resolved by setting the environment variable
-`GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
-`g++` compiler, execute the command
+.. You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
+   `icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
+   compiler is installed in a non-standard location and can be resolved by setting the environment variable
+   `GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
+   `g++` compiler, execute the command
 
-`bash-prompt$ g++ --print-search-dirs`
+   `bash-prompt$ g++ --print-search-dirs`
 
-and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
+   and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
 If you upgrade to Sierra 10.12.1 on Mac, you may find that the compiler is unable to link against `nlopt`
 because the `nlopt` library cannot be found anymore. This issue is resolvable by simply updating your shared
