@@ -40,9 +40,9 @@ recommended.
    `GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
    `g++` compiler, execute the command
 
-   `bash-prompt$ g++ --print-search-dirs`
+.. `bash-prompt$ g++ --print-search-dirs`
 
-   and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
+.. and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
 
 If you upgrade to Sierra 10.12.1 on Mac, you may find that the compiler is unable to link against `nlopt`
 because the `nlopt` library cannot be found anymore. This issue is resolvable by simply updating your shared
