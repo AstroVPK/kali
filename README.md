@@ -25,6 +25,8 @@ Install instructions are provided for Linux & Mac OSX machines. The following OS
 
 6. Ubuntu 16.04 LTS Xenial Xerus
 
+7. CentOS Linux 7 on an Intel Knights Landing (KNL) CPU
+
 If you are working on Mac OSX, please be sure to install the latest XCode. You will need to have Anaconda
 Python (free), the Intel C++ Compiler XE (free for students) or the GNU C++ Compiler (free),
 Intel MKL (free), NLOpt (free), `cython` (free), `future` (free), `fitsio` (free), `py.test` (free), `gatspy`
@@ -34,19 +36,8 @@ NLOpt are required. Either of the Intel C++ Compiler or the GNU C++ Compiler are
 to eventually support the clang++ Compiler as well. Brandon Kelly's `carma_pack` is not required but is
 recommended.
 
-.. You may encounter the following error when running `bash-prompt$ python setup.py build_ext` -
-   `icpc: error #10001: could not find directory in which g++-x.x resides`. This error occurs when the `g++`
-   compiler is installed in a non-standard location and can be resolved by setting the environment variable
-   `GXX_ROOT` to the installation location of the `g++` compiler. To determine the installation location of the
-   `g++` compiler, execute the command
-
-.. `bash-prompt$ g++ --print-search-dirs`
-
-.. and set `GXX_ROOT` to the location indicated by the install field from the output of the above command.
-
 If you upgrade to Sierra 10.12.1 on Mac, you may find that the compiler is unable to link against `nlopt`
-because the `nlopt` library cannot be found anymore. This issue is resolvable by simply updating your shared
-library cache (i.e. doing the Mac OSX equivalent of running `ldconfig` for Linux).
+because the `nlopt` library cannot be found anymore. This issue is resolvable by reinstalling `nlopt`.
 
 If you have a kali import error, e.g. when attempting to run tests, it is because of the Mac OSX Sytems
 Integrity Protection (SIP) technology cleaning your shell environment. This means that the environment passed
