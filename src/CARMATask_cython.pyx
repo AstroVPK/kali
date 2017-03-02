@@ -66,7 +66,7 @@ cdef class CARMATask_cython:
 
 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
 		if numThreads == None:
-			numThreads = int(psutil.cpu_count(logical = False))
+			numThreads = int(psutil.cpu_count(logical = True))
 		if numBurn == None:
 			numBurn = 1000000
 		self.thisptr = new CARMATask(p, q, numThreads, numBurn)

@@ -38,7 +38,7 @@ class TestSmooth(unittest.TestCase):
     def setUp(self):
         self.p = 2
         self.q = 1
-        self.nWalkers = 25*psutil.cpu_count(logical=True)
+        self.nWalkers = psutil.cpu_count(logical=True)
         self.nSteps = 200
         self.dt = 0.01
         self.T = 1000.0

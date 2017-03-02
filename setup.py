@@ -34,7 +34,7 @@ def which(program):
 if which('icpc') is not None:
     os.environ['CC'] = 'icpc'
     os.environ['CXX'] = 'icpc'
-    VERFLAGS = ['-gxx-name=g++-4.8', '-std=c++11']
+    VERFLAGS = ['-std=c++11']
     CPPFLAGS = ['-O3', '-xHost', '-ip', '-parallel', '-funroll-loops', '-fno-alias', '-fno-fnalias',
                 '-fargument-noalias', '-fstrict-aliasing', '-ansi-alias', '-fno-stack-protector-all', '-Wall']
     OMPFLAGS = ['-qopenmp', '-qopenmp-simd', '-qopt-report=5', '-qopt-report-phase=all']

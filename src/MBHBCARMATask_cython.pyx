@@ -115,7 +115,7 @@ cdef class MBHBCARMATask_cython:
 
 	def __cinit__(self, p, q, numThreads = None, numBurn = None):
 		if numThreads == None:
-			numThreads = int(psutil.cpu_count(logical = False))
+			numThreads = int(psutil.cpu_count(logical = True))
 		if numBurn == None:
 			numBurn = 1000000
 		self.thisptr = new MBHBCARMATask(p, q, numThreads, numBurn)
