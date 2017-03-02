@@ -52,8 +52,8 @@ parser.add_argument('-libcarmaChain', '--lC', type=str,
 parser.add_argument('-cmcmcChain', '--cC', type=str,
                     default='cmcmcChain', help=r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type=int, default=250, help=r'Number of steps per walker')
-parser.add_argument('-nwalkers', '--nwalkers', type=int, default=25 *
-                    psutil.cpu_count(logical=True), help=r'Number of walkers')
+parser.add_argument('-nwalkers', '--nwalkers', type=int, default=psutil.cpu_count(logical=True),
+                    help=r'Number of walkers')
 parser.add_argument('-pMax', '--pMax', type=int, default=1, help=r'Maximum C-AR order')
 parser.add_argument('-pMin', '--pMin', type=int, default=1, help=r'Minimum C-AR order')
 parser.add_argument('-qMax', '--qMax', type=int, default=-1, help=r'Maximum C-MA order')
