@@ -48,7 +48,7 @@ parser.add_argument('-libcarmaChain', '--lC', type=str, default='libcarmaChain',
                     help=r'kali.carma Chain Filename')
 parser.add_argument('-cmcmcChain', '--cC', type=str, default='cmcmcChain', help=r'carma_pack Chain Filename')
 parser.add_argument('-nsteps', '--nsteps', type=int, default=250, help=r'Number of steps per walker')
-parser.add_argument('-nwalkers', '--nwalkers', type=int, default=25*psutil.cpu_count(logical=True),
+parser.add_argument('-nwalkers', '--nwalkers', type=int, default=psutil.cpu_count(logical=True),
                     help=r'Number of walkers')
 parser.add_argument('-p', '--p', type=int, default=2, help=r'C-AR order')
 parser.add_argument('-q', '--q', type=int, default=1, help=r'C-MA order')
