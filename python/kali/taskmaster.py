@@ -61,7 +61,7 @@ repeatedly
     def __init__(self, lcs, models=['carma(1,0)'], widthT=0.25, widthF=0.25,
                  save=True, plot=True, ext=None, pdf=False, rerun=False, dpi=300, numoverlay=3,
                  nthreads=psutil.cpu_count(logical=True),
-                 nwalkers=25*psutil.cpu_count(logical=False), nsteps=10000,
+                 nwalkers=psutil.cpu_count(logical=False), nsteps=10000,
                  maxEvals=10000, xTol=0.001, mcmcA=2.0):
         self.widthT = widthT
         self.widthF = widthF

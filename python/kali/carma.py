@@ -159,7 +159,7 @@ class CARMATask(object):
     _dict = multi_key_dict.multi_key_dict()
 
     def __init__(self, p, q, nthreads=psutil.cpu_count(logical=True), nburn=1000000,
-                 nwalkers=25*psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
+                 nwalkers=psutil.cpu_count(logical=True), nsteps=250, maxEvals=10000, xTol=0.001,
                  mcmcA=2.0):
         try:
             assert p > q, r'p must be greater than q'

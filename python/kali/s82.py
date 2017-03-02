@@ -596,8 +596,8 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--band', type=str, default='r', help=r'SDSS band')
     parser.add_argument('-nsteps', '--nsteps', type=int,
                         default=1000, help=r'Number of steps per walker')
-    parser.add_argument('-nwalkers', '--nwalkers', type=int, default=25 *
-                        psutil.cpu_count(logical=True), help=r'Number of walkers')
+    parser.add_argument('-nwalkers', '--nwalkers', type=int, default=psutil.cpu_count(logical=True),
+                        help=r'Number of walkers')
     parser.add_argument('-pMax', '--pMax', type=int, default=1, help=r'Maximum C-AR order')
     parser.add_argument('-pMin', '--pMin', type=int, default=1, help=r'Minimum C-AR order')
     parser.add_argument('-qMax', '--qMax', type=int, default=-1, help=r'Maximum C-MA order')

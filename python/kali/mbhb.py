@@ -96,7 +96,7 @@ class MBHBTask(object):
     _dict[r'$F$', 7, r'7', r'Flux', r'flux'] = 7
 
     def __init__(self, p=0, q=0, nthreads=psutil.cpu_count(logical=True),
-                 nwalkers=25*psutil.cpu_count(logical=True),
+                 nwalkers=psutil.cpu_count(logical=True),
                  nsteps=250, maxEvals=10000, xTol=0.01, mcmcA=2.0):
         try:
             assert p == 0, r'p must be 0'

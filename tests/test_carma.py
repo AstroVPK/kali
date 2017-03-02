@@ -33,7 +33,7 @@ class TestFitCARMA10(unittest.TestCase):
     def setUp(self):
         self.p = 1
         self.q = 0
-        self.nWalkers = 25*psutil.cpu_count(logical=True)
+        self.nWalkers = psutil.cpu_count(logical=True)
         self.nSteps = 200
         self.dt = 0.01
         self.T = 1000.0
