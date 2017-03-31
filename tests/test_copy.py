@@ -2,6 +2,7 @@ import math
 import cmath
 import numpy as np
 import unittest
+import os
 import pdb
 
 import matplotlib.pyplot as plt
@@ -21,6 +22,7 @@ BURNSEED = 731647386
 DISTSEED = 219038190
 NOISESEED = 87238923
 
+kalidir = os.environ['KALI']
 
 class TestCopyMockLC(unittest.TestCase):
 
@@ -69,7 +71,8 @@ class TestCopySDSSLC(unittest.TestCase):
 class TestCopyK2LC(unittest.TestCase):
 
     def test_copy(self):
-        nl = kali.k2.k2LC(name='211991001', band='Kep', campaign='c05')
+        nl = kali.k2.k2LC(name='205905563', band='Kep', campaign='c03', path=os.path.join(kalidir, 'examples',
+                                                                                          'data'))
         nlCopy = nl.copy()
         nl.t[0] = 100.0
         self.assertNotEqual(nl.t[0], nlCopy.t[0])
@@ -78,7 +81,7 @@ class TestCopyK2LC(unittest.TestCase):
 class TestCopyCRTSLC(unittest.TestCase):
 
     def test_copy(self):
-        nl = kali.crts.crtsLC(name='PG1302-102', band='V')
+        nl = kali.crts.crtsLC(name='OJ287', band='V', path = os.path.join(kalidir, 'examples', 'data'))
         nlCopy = nl.copy()
         nl.t[0] = 100.0
         self.assertNotEqual(nl.t[0], nlCopy.t[0])
