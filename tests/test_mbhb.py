@@ -41,6 +41,7 @@ class TestPeriod(unittest.TestCase):
 
     def test_period(self):
         nt = kali.mbhb.MBHBTask()
+        dt = 0.1
         EarthMass = 3.0025138e-12  # 10^6 MSun
         SunMass = 1.0e-6  # 10^6 MSun
         EarthOrbitRadius = 4.84814e-6  # AU
@@ -49,7 +50,7 @@ class TestPeriod(unittest.TestCase):
         EarthOrbitEccentricity = 0.0167
         Theta = np.array(
             [SunOrbitRadius, EarthOrbitRadius, Period, EarthOrbitEccentricity, 0.0, 0.0, 0.0, 100.0])
-        res = nt.set(Theta)
+        res = nt.set(dt, Theta)
         self.assertEqual(res, 0)
         self.assertAlmostEqual(nt.m1(), SunMass, 3)
         self.assertAlmostEqual(nt.m2(), EarthMass, 3)
@@ -58,6 +59,7 @@ class TestPeriod(unittest.TestCase):
 class TestNoInclination(unittest.TestCase):
 
     def setUp(self):
+        self.dt = 0.1
         self.a1 = 0.01
         self.a2 = 0.02
         self.period = 10.0*DayInYear
@@ -75,8 +77,8 @@ class TestNoInclination(unittest.TestCase):
                 self.flux])
         self.nt1 = kali.mbhb.MBHBTask()
         self.nt2 = kali.mbhb.MBHBTask()
-        self.nt1.set(self.Theta1)
-        self.nt2.set(self.Theta2)
+        self.nt1.set(self.dt, self.Theta1)
+        self.nt2.set(self.dt, self.Theta2)
 
     def tearDown(self):
         del self.Theta1
@@ -84,11 +86,9 @@ class TestNoInclination(unittest.TestCase):
         del self.nt1
         del self.nt2
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_masses(self):
         self.assertEqual(self.nt1.q(), (self.a1/self.a2))
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_beamingFactor(self):
         self.nt1(0.0)  # We start at Day 0
         bF1 = self.nt1.beamingFactor1()  # Get the beaming factor
@@ -97,7 +97,6 @@ class TestNoInclination(unittest.TestCase):
         bF2 = self.nt1.beamingFactor1()  # Get the beaming factor again
         self.assertEqual(bF1, bF2)  # Since the orbital inclination is zero, these should be the same.
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_lightCurve(self):
         nl1 = self.nt1.simulate(self.nt1.period()*10.0)
         nl2 = self.nt2.simulate(self.nt2.period()*10.0)
@@ -107,6 +106,7 @@ class TestNoInclination(unittest.TestCase):
 class TestInclinationNoNoise(unittest.TestCase):
 
     def setUp(self):
+        self.dt = 0.1
         self.a1 = 0.01
         self.a2 = 0.02
         self.period = 10.0*DayInYear
@@ -128,8 +128,8 @@ class TestInclinationNoNoise(unittest.TestCase):
                 self.flux])
         self.nt1 = kali.mbhb.MBHBTask()
         self.nt2 = kali.mbhb.MBHBTask()
-        self.nt1.set(self.Theta1)
-        self.nt2.set(self.Theta2)
+        self.nt1.set(self.dt, self.Theta1)
+        self.nt2.set(self.dt, self.Theta2)
 
     def tearDown(self):
         del self.Theta1
@@ -137,11 +137,9 @@ class TestInclinationNoNoise(unittest.TestCase):
         del self.nt1
         del self.nt2
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_masses(self):
         self.assertEqual(self.nt1.q(), (self.a1/self.a2))
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_beamingFactor(self):
         self.nt1(0.0)  # We start at Day 0
         bF1 = self.nt1.beamingFactor1()  # Get the beaming factor
@@ -149,7 +147,6 @@ class TestInclinationNoNoise(unittest.TestCase):
         bF2 = self.nt1.beamingFactor1()  # Get the beaming factor again
         self.assertNotEqual(bF1, bF2)  # Since the orbital inclination is 90, these should not be the same.
 
-    @unittest.skipIf(skipLnLikelihood or skipWorking, 'Skipping LnLikelihood tests')
     def test_lightCurve(self):
         n2s = 1.0e-18
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
@@ -172,6 +169,7 @@ class TestInclinationNoNoise(unittest.TestCase):
 class TestInclinationNoise(unittest.TestCase):
 
     def setUp(self):
+        self.dt = 0.1
         self.a1 = 0.01
         self.a2 = 0.02
         self.period = 10.0*DayInYear
@@ -193,8 +191,8 @@ class TestInclinationNoise(unittest.TestCase):
                 self.flux])
         self.nt1 = kali.mbhb.MBHBTask()
         self.nt2 = kali.mbhb.MBHBTask()
-        self.nt1.set(self.Theta1)
-        self.nt2.set(self.Theta2)
+        self.nt1.set(self.dt, self.Theta1)
+        self.nt2.set(self.dt, self.Theta2)
 
     def tearDown(self):
         del self.Theta1
@@ -202,11 +200,9 @@ class TestInclinationNoise(unittest.TestCase):
         del self.nt1
         del self.nt2
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_masses(self):
         self.assertEqual(self.nt1.q(), (self.a1/self.a2))
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_beamingFactor(self):
         self.nt1(0.0)  # We start at Day 0
         bF1 = self.nt1.beamingFactor1()  # Get the beaming factor
@@ -214,7 +210,6 @@ class TestInclinationNoise(unittest.TestCase):
         bF2 = self.nt1.beamingFactor1()  # Get the beaming factor again
         self.assertNotEqual(bF1, bF2)  # Since the orbital inclination is zero, these should be the same.
 
-    @unittest.skipIf(skipLnLikelihood or skipWorking, 'Skipping LnLikelihood tests')
     def test_lightCurveVLowNoise(self):
         n2s = 1.0e-4
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
@@ -233,7 +228,6 @@ class TestInclinationNoise(unittest.TestCase):
         self.assertGreater(LnLike22, LnLike12)
         self.assertGreater(LnLike22, LnLike21)
 
-    @unittest.skipIf(skipLnLikelihood or skipWorking, 'Skipping LnLikelihood tests')
     def test_lightCurveLowNoise(self):
         n2s = 1.0e-3
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
@@ -252,7 +246,6 @@ class TestInclinationNoise(unittest.TestCase):
         self.assertGreater(LnLike22, LnLike12)
         self.assertGreater(LnLike22, LnLike21)
 
-    @unittest.skipIf(skipLnLikelihood or skipWorking, 'Skipping LnLikelihood tests')
     def test_lightCurveNoise(self):
         n2s = 1.0e-2
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
@@ -271,7 +264,6 @@ class TestInclinationNoise(unittest.TestCase):
         self.assertGreater(LnLike22, LnLike12)
         self.assertGreater(LnLike22, LnLike21)
 
-    @unittest.skipIf(skipLnLikelihood or skipWorking, 'Skipping LnLikelihood tests')
     def test_lightCurveHighNoise(self):
         n2s = 5.0e-2
         nl1 = self.nt1.simulate(self.nt1.period()*10.0, fracNoiseToSignal=n2s)
@@ -294,6 +286,7 @@ class TestInclinationNoise(unittest.TestCase):
 class TestEstimate(unittest.TestCase):
 
     def setUp(self):
+        self.dt = 0.1
         self.n2s = 1.0e-3
         self.a1 = 0.01
         self.a2 = 0.02
@@ -317,7 +310,6 @@ class TestEstimate(unittest.TestCase):
                                           )/(self.nt1.a2()*math.sin(self.inclination*(math.pi/180.0)))),
                                0.0, delta=1.0)
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_estimates1(self):
         self.eccentricity = 0.4
         self.omega1 = 15.0
@@ -327,13 +319,12 @@ class TestEstimate(unittest.TestCase):
         self.Theta1 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau,
                 self.flux])
-        self.nt1.set(self.Theta1)
+        self.nt1.set(self.dt, self.Theta1)
         nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
         self.nt1.observe(nl1, noiseSeed=NOISESEED)
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_estimates2(self):
         self.eccentricity = 0.5
         self.omega1 = 15.0
@@ -343,13 +334,12 @@ class TestEstimate(unittest.TestCase):
         self.Theta1 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau,
                 self.flux])
-        self.nt1.set(self.Theta1)
+        self.nt1.set(self.dt, self.Theta1)
         nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
         self.nt1.observe(nl1, noiseSeed=NOISESEED)
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_estimates3(self):
         self.eccentricity = 0.6
         self.omega1 = 15.0
@@ -365,7 +355,6 @@ class TestEstimate(unittest.TestCase):
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.nt1.estimate(nl1)
         self.checkAsserts(fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst)
 
-    @unittest.skipIf(skipWorking, 'Works!')
     def test_estimates4(self):
         self.eccentricity = 0.6
         self.omega1 = 15.0
@@ -375,7 +364,7 @@ class TestEstimate(unittest.TestCase):
         self.Theta1 = np.array(
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau,
                 self.flux])
-        self.nt1.set(self.Theta1)
+        self.nt1.set(self.dt, self.Theta1)
         for i in xrange(10):
             nl1 = self.nt1.simulate(self.period*10.0, fracNoiseToSignal=self.n2s)
             self.nt1.observe(nl1, noiseSeed=NOISESEED)
@@ -386,7 +375,7 @@ class TestEstimate(unittest.TestCase):
             ThetaEst = np.array(
                 [a1Guess, a2Guess, periodEst, eccentricityEst, omega1Est, inclinationGuess, tauEst,
                     fluxEst])
-            res = ntEst.set(ThetaEst)
+            res = ntEst.set(self.dt, ThetaEst)
             self.assertGreaterEqual(self.nt1.logPosterior(nl1), ntEst.logPosterior(nl1))
             nlEst = ntEst.simulate(periodEst*10.0, fracNoiseToSignal=self.n2s)
             ntEst.observe(nlEst, noiseSeed=NOISESEED)
@@ -395,6 +384,7 @@ class TestEstimate(unittest.TestCase):
 
 class TestFit(unittest.TestCase):
     def setUp(self):
+        self.dt = 0.1
         self.n2s = 1.0e-3
         self.nsteps = 2000
         self.a1 = 0.01
@@ -409,7 +399,7 @@ class TestFit(unittest.TestCase):
             [self.a1, self.a2, self.period, self.eccentricity, self.omega1, self.inclination, self.tau,
                 self.flux])
         self.nt1 = kali.mbhb.MBHBTask()
-        self.nt1.set(self.Theta)
+        self.nt1.set(self.dt, self.Theta)
         self.nl1 = self.nt1.simulate(self.period*5.0, fracNoiseToSignal=self.n2s)
         self.nt1.observe(self.nl1, noiseSeed=NOISESEED)
 
@@ -418,7 +408,6 @@ class TestFit(unittest.TestCase):
         del self.nt1
         del self.nl1
 
-    # @unittest.skipIf(skipWorking, 'Works!')
     def test_fit(self):
         ntFit = kali.mbhb.MBHBTask(nsteps=self.nsteps)
         ntFit.fit(self.nl1, zSSeed=ZSSEED, walkerSeed=WALKERSEED, moveSeed=MOVESEED, xSeed=XSEED)

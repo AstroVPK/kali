@@ -20,6 +20,7 @@ except ImportError:
     sys.exit(1)
 
 
+@unittest.skipUnless(kali.s82.ONLINE, 's82 server offline! Skipping test...')
 class TestTaskmaster(unittest.TestCase):
 
     def setUp(self):

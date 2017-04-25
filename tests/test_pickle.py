@@ -38,7 +38,7 @@ MOVESEED = 131343786
 XSEED = 2348713647
 
 
-@unittest.skipIf(skipWorking, 'Works!')
+@unittest.skipUnless(kali.s82.ONLINE, 's82 server offline! Skipping test...')
 class TestPickleLC(unittest.TestCase):
     def setUp(self):
         self.dirpath = tempfile.mkdtemp()
@@ -56,7 +56,7 @@ class TestPickleLC(unittest.TestCase):
         np.testing.assert_array_equal(aNewSDSSlcReborn.t, aNewSDSSlcDoppelganger.t)
 
 
-@unittest.skipIf(skipWorking, 'Works!')
+@unittest.skipUnless(kali.s82.ONLINE, 's82 server offline! Skipping test...')
 class TestPickleTask(unittest.TestCase):
     def setUp(self):
         self.dirpath = tempfile.mkdtemp()

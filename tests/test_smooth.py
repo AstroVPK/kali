@@ -49,6 +49,7 @@ class TestSmooth(unittest.TestCase):
     def tearDown(self):
         del self.newTask
 
+    @unittest.skipUnless(kali.s82.ONLINE, 's82 server offline! Skipping test...')
     def test_noiselessrecovery(self):
         N2S = 1.0e-18
         newLC = kali.s82.sdssLC(name='rand', band=r'r')

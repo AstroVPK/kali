@@ -22,6 +22,7 @@ NOISESEED = 87238923
 class TestIrregularMBHB(unittest.TestCase):
 
     def setUp(self):
+        self.dt = 0.1
         self.a1 = 0.01
         self.a2 = 0.02
         self.period = 10.0*DayInYear
@@ -34,7 +35,7 @@ class TestIrregularMBHB(unittest.TestCase):
             self.a1, self.a2, self.period, self.eccentricity, self.omega1_1, self.inclination, self.tau,
             self.flux])
         self.nt = kali.mbhb.MBHBTask()
-        self.nt.set(self.theta)
+        self.nt.set(self.dt, self.theta)
 
     def tearDown(self):
         del self.nt

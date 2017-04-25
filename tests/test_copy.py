@@ -59,6 +59,7 @@ class TestCopyMockLC(unittest.TestCase):
         self.assertNotEqual(nl.t[0], nlCopy.t[0])
 
 
+@unittest.skipUnless(kali.s82.ONLINE, 's82 server offline! Skipping test...')
 class TestCopySDSSLC(unittest.TestCase):
 
     def test_copy(self):

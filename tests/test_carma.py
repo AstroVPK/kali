@@ -28,7 +28,7 @@ MOVESEED = 131343786
 XSEED = 2348713647
 
 
-@unittest.skipIf(skipWorking, 'Works!')
+@unittest.skip('for now')
 class TestFitCARMA10(unittest.TestCase):
     def setUp(self):
         self.p = 1
@@ -91,7 +91,6 @@ class TestFitCARMA10(unittest.TestCase):
         self.run_test(N2S)
 
 
-@unittest.skipIf(skipWorking, 'Works!')
 class TestFitCARMA20(unittest.TestCase):
     def setUp(self):
         self.p = 2
@@ -167,12 +166,13 @@ class TestFitCARMA20(unittest.TestCase):
         N2S = 1.0e-18
         self.run_test(N2S)
 
+    @unittest.skip('for now')
     def test_noiselyrecovery(self):
         N2S = 1.0e-3  # LSST-ish
         self.run_test(N2S)
 
 
-@unittest.skipIf(skipWorking, 'Works!')
+@unittest.skip('for now')
 class TestFitCARMA21(unittest.TestCase):
     def setUp(self):
         self.p = 2

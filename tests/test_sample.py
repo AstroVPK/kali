@@ -7,10 +7,6 @@ import pdb
 
 import matplotlib.pyplot as plt
 
-import kali.s82
-import kali.k2
-import kali.crts
-import kali.mbhb
 import kali.carma
 
 
