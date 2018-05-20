@@ -497,7 +497,7 @@ class k2LC(kali.lc.lc):
             if self.mask[i] == 1.0:
                 self.yerr[i] = noise
 
-    def read(self, name, band=None, path=None, **kwargs):
+    def read(self, name, band=None, path=None, ancillary=None, **kwargs):
         self.z = kwargs.get('z', 0.0)
         self.processing = kwargs.get('processing', 'k2sff').lower()
         self.campaign = kwargs.get('campaign', 'c05').lower()
@@ -523,6 +523,7 @@ class k2LC(kali.lc.lc):
         self._band = str(r'Kep')  # The name of the photometric band (eg. HSC-I or SDSS-g etc..).
         self._xunit = r'$t$~(MJD)'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         self._yunit = r'$F$~($\mathrm{e^{-}}$)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
+        self._ancillary = ancillary
 
         mastRet = self._getMAST(name, self.campaign, self.path, self.goid, self.gopi)
         hlspRet = self._getHLSP(name, self.campaign, self.path)

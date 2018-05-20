@@ -18,7 +18,7 @@ except ImportError:
 
 class surveyLC(libcarma.basicLC):
 
-    def read(self, name, band='?', path=os.environ['?DATADIR'], **kwargs):
+    def read(self, name, band='?', path=os.environ['?DATADIR'], ancillary=None, **kwargs):
         # CODE here to open the data file ####
 
         # CODE HERE to construct t, x, y, yerr, & mask + numCadences, startT + other properties you want to
@@ -29,6 +29,7 @@ class surveyLC(libcarma.basicLC):
         self._xunit = r'$d$'  # Unit in which time is measured (eg. s, sec, seconds etc...).
         # self._yunit = r'who the f*** knows?' ## Unit in which the flux is measured (eg Wm^{-2} etc...).
         self._yunit = r'$F$ (Jy)'  # Unit in which the flux is measured (eg Wm^{-2} etc...).
+        self._ancillary = ancillary
 
     def write(self, name, path=None, **kwrags):
         pass

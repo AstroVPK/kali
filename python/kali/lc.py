@@ -138,7 +138,7 @@ class lc(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name=None, band=None, path=None, **kwargs):
+    def __init__(self, name=None, band=None, path=None, ancillary=None, **kwargs):
         """!
         \brief Initialize a new light curve
 
@@ -194,7 +194,7 @@ class lc(object):
                                         expected for supplied (i.e. full path or name etc...) will be
                                         determined by the subclass.
         """
-        self.read(name=name, band=band, path=path, **kwargs)
+        self.read(name=name, band=band, path=path, ancillary=ancillary, **kwargs)
         self._simulatedCadenceNum = -1      # How many cadences have already been simulated.
         self._observedCadenceNum = -1   # How many cadences have already been observed.
         self._computedCadenceNum = -1   # How many cadences have been LnLikelihood'd already.
@@ -401,8 +401,19 @@ class lc(object):
         self._band = str(value)
 
     @property
+    def ancillary(self):
+        return self._ancillary
+
+    @ancillary.setter
+    def ancillary(self, value):
+        self._ancillary = str(value)
+
+    @property
     def id(self):
-        return self.name + '.' + self.band
+        if self.ancillary is not None:
+            return self.name + '.' + self.band + '.' + self.ancillary
+        else:
+            return self.name + '.' + self.band
 
     @property
     def xunit(self):
@@ -1472,7 +1483,7 @@ class lcIterator(object):
 
 class mockLC(lc):
 
-    def read(self, name=None, band=None, path=None, **kwargs):
+    def read(self, name=None, band=None, path=None, ancillary=None, **kwargs):
         self.name = name
         self.band = band
         if path is None:
@@ -1484,6 +1495,7 @@ class mockLC(lc):
                 self.path = os.environ['HOME']
         else:
             elf.path = path
+        self._ancillary = ancillary
         numCadences = kwargs.get('numCadences')  # The number of cadences in the light curve. This is
         # not the same thing as the number of actual observations as we can have missing observations.
         deltaT = kwargs.get('deltaT')
@@ -1531,6 +1543,7 @@ class externalLC(lc):
                 self.path = os.environ['HOME']
         else:
             self.path = path
+        self._ancillary = ancillary
         t = kwargs.get('tIn')
         if t is not None:
             self.t = np.require(t, requirements=['F', 'A', 'W', 'O', 'E'])
