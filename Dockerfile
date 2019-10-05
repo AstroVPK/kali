@@ -76,14 +76,17 @@ RUN conda install cython future pytest numpy matplotlib scipy jupyter
 RUN pip install gatspy multi_key_dict fitsio==0.9.8 acor brewer2mpl sklearn zmq psutil astropy
 
 # Install kali
-WORKDIR /home
+WORKDIR /home/kali
 COPY . . 
-WORKDIR /home/kali/
 RUN COMPILERVARS_ARCHITECTURE=intel64 . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh && \
     . /opt/intel/mkl/bin/mklvars.sh intel64 && python setup.py build_ext
 
-# Setup
+RUN apt-get install dos2unix
+RUN dos2unix /home/kali/bin/setup.sh  # for those windows users
+
+# Final Setup
 SHELL ["/bin/bash", "-c"]
 RUN echo "source /home/kali/bin/setup.sh" >> ~/.bashrc
 RUN echo "DISPLAY=:0.0" >> ~/.bashrc
+CMD /bin/bash -c "source /root/.bashrc && bash"
 ENTRYPOINT [ "/bin/bash", "-c" ]
