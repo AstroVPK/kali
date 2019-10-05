@@ -81,7 +81,7 @@ COPY . .
 RUN COMPILERVARS_ARCHITECTURE=intel64 . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh && \
     . /opt/intel/mkl/bin/mklvars.sh intel64 && python setup.py build_ext
 
-RUN apt-get install dos2unix
+RUN apt-get install dos2unix 
 RUN dos2unix /home/kali/bin/setup.sh  # for those windows users
 
 # Final Setup
