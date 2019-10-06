@@ -88,5 +88,6 @@ RUN dos2unix /home/kali/bin/setup.sh  # for those windows users
 SHELL ["/bin/bash", "-c"]
 RUN echo "source /home/kali/bin/setup.sh" >> ~/.bashrc
 RUN echo "DISPLAY=:0.0" >> ~/.bashrc
-CMD /bin/bash -c "source /root/.bashrc && bash"
-ENTRYPOINT [ "/bin/bash", "-c" ]
+
+ENTRYPOINT ["/bin/bash", "--login", "-ic"]
+CMD bash
