@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 try:
     import kali.lc
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 
@@ -52,7 +52,7 @@ class crtsLC(kali.lc.lc):
         RA = list()
         Dec = list()
         MJD = list()
-        for i in xrange(1, len(allLines)-1):
+        for i in range(1, len(allLines)-1):
             splitLine = re.split(r'[ ,|\t]+', allLines[i])
             if int(splitLine[6]) == 0:
                 masterID.append(int(float(splitLine[0])))
@@ -67,7 +67,7 @@ class crtsLC(kali.lc.lc):
         zipped = sorted(zip(MJD, masterID, Mag, MagErr, Flux, FluxErr, RA, Dec))
         MJD, masterID, Mag, MagErr, Flux, FluxErr, RA, Dec = zip(*zipped)
         oldNumCadences = len(MJD)
-        intMJD = np.array(sorted(list(set([int(MJD[i]//1) for i in xrange(len(MJD))]))))
+        intMJD = np.array(sorted(list(set([int(MJD[i]//1) for i in range(len(MJD))]))))
         self.numCadences = len(intMJD)
         self.t = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mag = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -79,7 +79,7 @@ class crtsLC(kali.lc.lc):
         self.mask = np.require(np.array(self.numCadences*[1.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         self.counts = np.require(np.array(self.numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
 
-        for i in xrange(oldNumCadences):
+        for i in range(oldNumCadences):
             index = np.where(int(MJD[i]//1) == intMJD)[0][0]
             self.t[index] += MJD[i]
             self.mag[index] += Mag[i]
@@ -92,7 +92,7 @@ class crtsLC(kali.lc.lc):
 
         MagCont = list()
         FluxCont = list()
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             self.t[i] = self.t[i]/self.counts[i]
             self.mag[i] = self.mag[i]/self.counts[i]
             self.y[i] = self.y[i]/self.counts[i]
@@ -100,7 +100,7 @@ class crtsLC(kali.lc.lc):
             self.Dec[i] = self.Dec[i]/self.counts[i]
             del MagCont[:]
             del FluxCont[:]
-            for j in xrange(oldNumCadences):
+            for j in range(oldNumCadences):
                 if int(MJD[j]//1) == intMJD[i]:
                     MagCont.append(Mag[j])
                     FluxCont.append(Flux[j])
@@ -108,14 +108,14 @@ class crtsLC(kali.lc.lc):
             self.yerr[i] = np.std(np.array(FluxCont), ddof=1)
 
         SNRat = np.zeros(self.numCadences)
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             if self.yerr[i] != 0.0:
                 SNRat[i] = self.y[i]/self.yerr[i]
             else:
                 SNRat[i] = np.nan
         meanSNRat = np.nanmedian(SNRat)
 
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             if self.yerr[i] == 0.0 or np.isnan(self.yerr[i]):
                 self.yerr[i] = self.y[i]/meanSNRat  # Ugly hack in case the fluxes are all actaully the same.
 

@@ -16,13 +16,13 @@ import pdb
 try:
     import kali.lc
 except ImportError:
-    print 'Could not import kali.lc! kali may not be setup. Setup kali by sourcing bin/setup.sh'
+    print('Could not import kali.lc! kali may not be setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 try:
     import kali.util.triangle
 except ImportError:
-    print 'Could not import kali.util.triangle! kali may not be setup. Setup kali by sourcing bin/setup.sh'
+    print('Could not import kali.util.triangle! kali may not be setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 
@@ -182,7 +182,7 @@ repeatedly
             elif len(orderList) == 1:
                 model = model.split('(')[0]
                 orderP = int(orderList[0])
-                orderQList = [i for i in xrange(orderP)]
+                orderQList = [i for i in range(orderP)]
             elif len(orderList) == 0:
                 if model != 'mbhb':
                     raise ValueError('Model %s could not be interpreted!'%(original))
@@ -196,8 +196,7 @@ repeatedly
                 try:
                     exec('import ' + modulename)
                 except ImportError:
-                    print 'Could not import kali.%s! kali may not be setup. \
-                    Setup kali by sourcing bin/setup.sh'%(model)
+                    print('Could not import kali.%s! kali may not be setup. Setup kali by sourcing bin/setup.sh'%(model))
                     sys.exit(1)
 
             for orderQ in orderQList:
@@ -238,28 +237,28 @@ repeatedly
                     plt.close(periodplot)
 
     def _fit(self, lc, model):
-        print 'Fitting lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id)
+        print('Fitting lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id))
         model.clear()
         startTask = time.time()
         model.fit(lc, widthT=self.widthT, widthF=self.widthF)
         stopTask = time.time()
         timeTask = stopTask - startTask
-        print 'Fitting took %4.3f s = %4.3f min = %4.3f hrs'%(timeTask,
+        print('Fitting took %4.3f s = %4.3f min = %4.3f hrs'%(timeTask,
                                                               timeTask/60.0,
-                                                              timeTask/3600.0)
+                                                              timeTask/3600.0))
         if self.save:
             pickle.dump(model, open(os.path.join(lc.path, lc.id, '%s.pkl'%(model.id)), 'wb'))
         return model
 
     def _restore(self, lc, model):
-        print 'Restoring fit of lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id)
+        print('Restoring fit of lc %s at z = %f to model %s ...'%(lc.id, lc.z, model.id))
         startTask = time.time()
         model = pickle.load(open(os.path.join(lc.path, lc.id, '%s.pkl'%(model.id)), 'rb'))
         stopTask = time.time()
         timeTask = stopTask - startTask
-        print 'Restoration took %4.3f s = %4.3f min = %4.3f hrs'%(timeTask,
+        print('Restoration took %4.3f s = %4.3f min = %4.3f hrs'%(timeTask,
                                                                   timeTask/60.0,
-                                                                  timeTask/3600.0)
+                                                                  timeTask/3600.0))
         return model
 
     @staticmethod
@@ -268,7 +267,7 @@ repeatedly
 
     def _reorder(self):
         for lc in self.lcs:
-            print 'Re-ordering models based on relative likelihood for lc %s'%(lc.id)
+            print('Re-ordering models based on relative likelihood for lc %s'%(lc.id))
             dicDict = dict()
             dicList = list()
             with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'rb') as f:
@@ -288,7 +287,7 @@ repeatedly
         primary = brewer2mpl.get_map('Set1', 'Qualitative', self.numoverlay).hex_colors
         secondary = brewer2mpl.get_map('Pastel1', 'Qualitative', self.numoverlay).hex_colors
         for lc in self.lcs:
-            print 'Plotting %d-best overlaid light curves for lc %s'%(self.numoverlay, lc.id)
+            print('Plotting %d-best overlaid light curves for lc %s'%(self.numoverlay, lc.id))
             lc.removesmooth()
             lcplot = lc.plot(fig=100, colory=r'#000000')
             with open(os.path.join(lc.path, lc.id, 'kali.res.dat'), 'r') as f:
@@ -301,7 +300,7 @@ repeatedly
                     infile = os.path.join(lc.path, lc.id, '%s.pkl'%(words[1].split(';')[0]))
                     if os.path.isfile(infile):
                         model = pickle.load(open(infile, 'rb'))
-                        print 'Plotting overlaid light curve for model %s'%(model.id)
+                        print('Plotting overlaid light curve for model %s'%(model.id))
                         model.set(lc.dt, model.bestTheta)
                         model.smooth(lc, stopT=(lc.t[-1] + lc.T*0.5))
                         lc.plot(fig=100, colory=r'#000000',

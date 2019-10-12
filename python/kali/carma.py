@@ -31,7 +31,7 @@ try:
     import kali.util.classproperty
     import kali.util.triangle
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 fhgt = 10
@@ -68,17 +68,17 @@ def roots(p, q, Theta):
     r = CARMATask.r
     ARPoly = np.zeros(p + 1)
     ARPoly[0] = 1.0
-    for i in xrange(p):
+    for i in range(p):
         ARPoly[i + 1] = Theta[i]
     ARRoots = np.array(np.roots(ARPoly))
     MAPoly = np.zeros(q + 1)
-    for i in xrange(q + 1):
+    for i in range(q + 1):
         MAPoly[i] = Theta[p + q - i]
     MARoots = np.array(np.roots(MAPoly))
     Rho = np.zeros(p + q + 1, dtype='complex128')
-    for i in xrange(p):
+    for i in range(p):
         Rho[i] = ARRoots[i]
-    for i in xrange(q):
+    for i in range(q):
         Rho[p + i] = MARoots[i]
     Sigma = np.require(np.zeros(p*p), requirements=['F', 'A', 'W', 'O', 'E'])
     ThetaC = np.require(np.array(Theta), requirements=['F', 'A', 'W', 'O', 'E'])
@@ -90,11 +90,11 @@ def roots(p, q, Theta):
 def coeffs(p, q, Rho):
     r = CARMATask.r
     ARRoots = np.zeros(p, dtype='complex128')
-    for i in xrange(p):
+    for i in range(p):
         ARRoots[i] = Rho[i]
     ARPoly = np.array(np.poly(ARRoots))
     MARoots = np.zeros(q, dtype='complex128')
-    for i in xrange(q):
+    for i in range(q):
         MARoots[i] = Rho[p + i]
     if q == 0:
         MAPoly = np.ones(1)
@@ -113,12 +113,12 @@ def coeffs(p, q, Rho):
         bQ = 1.0
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
-        for i in xrange(q + 1):
+        for i in range(q + 1):
             MAPoly[i] = bQ*MAPoly[i]
     Theta = np.zeros(p + q + 1, dtype='float64')
-    for i in xrange(p):
+    for i in range(p):
         Theta[i] = ARPoly[i + 1].real
-    for i in xrange(q + 1):
+    for i in range(q + 1):
         Theta[p + i] = MAPoly[q - i].real
     return Theta
 
@@ -126,7 +126,7 @@ def coeffs(p, q, Rho):
 def timescales(p, q, Rho):
     r = CARMATask.r
     imagPairs = 0
-    for i in xrange(p):
+    for i in range(p):
         if Rho[r + i].imag != 0.0:
             imagPairs += 1
     numImag = imagPairs/2
@@ -138,7 +138,7 @@ def timescales(p, q, Rho):
     realAR = sorted([1.0/abs(x) for x in realRoots])
     imagAR = sorted([(2.0*math.pi)/abs(x) for x in imagRoots])
     imagPairs = 0
-    for i in xrange(q):
+    for i in range(q):
         if Rho[r + p + i].imag != 0.0:
             imagPairs += 1
     numImag = imagPairs/2
@@ -384,8 +384,8 @@ class CARMATask(object):
             self._rootChain = np.require(
                 np.zeros((self._ndims, self._nwalkers, self._nsteps), dtype='complex128'),
                 requirements=['F', 'A', 'W', 'O', 'E'])
-            for stepNum in xrange(self._nsteps):
-                for walkerNum in xrange(self._nwalkers):
+            for stepNum in range(self._nsteps):
+                for walkerNum in range(self._nwalkers):
                     self._rootChain[:, walkerNum, stepNum] = roots(
                         self._p, self._q, Chain[:, walkerNum, stepNum])
         return self._rootChain
@@ -401,8 +401,8 @@ class CARMATask(object):
                 requirements=['F', 'A', 'W', 'O', 'E'])
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
-                for stepNum in xrange(self._nsteps):
-                    for walkerNum in xrange(self._nwalkers):
+                for stepNum in range(self._nsteps):
+                    for walkerNum in range(self._nwalkers):
                         self._timescaleChain[:, walkerNum, stepNum] = timescales(
                             self._p, self._q, rootChain[:, walkerNum, stepNum])
         return self._timescaleChain
@@ -587,7 +587,7 @@ class CARMATask(object):
                                          fracNoiseToSignal=fracNoiseToSignal, tolIR=tolIR, maxSigma=maxSigma,
                                          minTimescale=minTimescale, maxTimescale=maxTimescale,
                                          pSim=self._p, qSim=self._q)
-            for i in xrange(intrinsicLC.numCadences):
+            for i in range(intrinsicLC.numCadences):
                 intrinsicLC.mask[i] = 1.0
         randSeed = np.zeros(1, dtype='uint32')
         if burnSeed is None:
@@ -637,19 +637,19 @@ class CARMATask(object):
         newy = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         newyerr = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         newmask = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-        for i in xrange(intrinsicLC.numCadences):
+        for i in range(intrinsicLC.numCadences):
             newt[i] = intrinsicLC.t[i]
             newx[i] = intrinsicLC.x[i]
             newy[i] = intrinsicLC.y[i]
             newyerr[i] = intrinsicLC.yerr[i]
             newmask[i] = intrinsicLC.mask[i]
         if tIn is None and duration is not None:
-            for i in xrange(intrinsicLC.numCadences, newNumCadences):
+            for i in range(intrinsicLC.numCadences, newNumCadences):
                 newt[i] = newt[intrinsicLC.numCadences - 1] + gapSize + \
                     (i - intrinsicLC.numCadences + 1)*self._taskCython.get_dt(threadNum=tnum)
                 newmask[i] = 1.0
         elif duration is None and gap is None and tIn is not None:
-            for i in xrange(intrinsicLC.numCadences, newNumCadences):
+            for i in range(intrinsicLC.numCadences, newNumCadences):
                 newt[i] = tIn[i - intrinsicLC.numCadences]
                 newmask[i] = 1.0
         else:
@@ -720,9 +720,9 @@ class CARMATask(object):
         if forced is True:
             observedLC._computedCadenceNum = -1
         if observedLC._computedCadenceNum == -1:
-            for rowCtr in xrange(observedLC.pComp):
+            for rowCtr in range(observedLC.pComp):
                 observedLC.XComp[rowCtr] = 0.0
-                for colCtr in xrange(observedLC.pComp):
+                for colCtr in range(observedLC.pComp):
                     observedLC.PComp[rowCtr + observedLC.pComp*colCtr] = 0.0
             observedLC._logLikelihood = self._taskCython.compute_LnLikelihood(
                 observedLC.numCadences, observedLC._computedCadenceNum, observedLC.tolIR, observedLC.t,
@@ -870,9 +870,9 @@ class CARMATask(object):
             aList.pop(0)
             return PSDVals
         else:
-            for freq in xrange(nfreqs):
+            for freq in range(nfreqs):
                 val = 0.0
-                for i in xrange(self.p + 1):
+                for i in range(self.p + 1):
                     j = 2*self.p - i - order
                     if ((j >= 0) and (j < self.p + 1)):
                         val += (aList[i]*aList[j]*((2.0*math.pi*1j*freqs[freq])**(
@@ -888,9 +888,9 @@ class CARMATask(object):
         if ((order % 2 == 1) or (order <= -1) or (order > 2*self.q)):
             return psdnumerator
         else:
-            for freq in xrange(nfreqs):
+            for freq in range(nfreqs):
                 val = 0.0
-                for i in xrange(self.q + 1):
+                for i in range(self.q + 1):
                     j = 2*self.q - i - order
                     if ((j >= 0) and (j < self.q + 1)):
                         val += (bList[i]*bList[j]*((2.0*math.pi*1j*freqs[freq])**(
@@ -916,16 +916,16 @@ class CARMATask(object):
         psddenominator = np.zeros(num)
         psd = np.zeros(num)
 
-        for orderVal in xrange(0, maxNumerOrder + 1, 2):
+        for orderVal in range(0, maxNumerOrder + 1, 2):
             psdnumeratorcomponent[:, orderVal/2] = self._psdnumerator(freqs, orderVal)
 
-        for orderVal in xrange(0, maxDenomOrder + 1, 2):
+        for orderVal in range(0, maxDenomOrder + 1, 2):
             psddenominatorcomponent[:, orderVal/2] = self._psddenominator(freqs, orderVal)
 
-        for freq in xrange(num):
-            for orderVal in xrange(0, maxNumerOrder + 1, 2):
+        for freq in range(num):
+            for orderVal in range(0, maxNumerOrder + 1, 2):
                 psdnumerator[freq] += psdnumeratorcomponent[freq, orderVal/2]
-            for orderVal in xrange(0, maxDenomOrder + 1, 2):
+            for orderVal in range(0, maxDenomOrder + 1, 2):
                 psddenominator[freq] += psddenominatorcomponent[freq, orderVal/2]
             psd[freq] = psdnumerator[freq]/psddenominator[freq]
         return freqs, psd, psdnumerator, psddenominator, psdnumeratorcomponent, psddenominatorcomponent
@@ -947,7 +947,7 @@ class CARMATask(object):
             start=start, stop=stop, num=1000, spacing='log')
         if LC is not None:
             normalizationRatio = psdM[0]/periodogramE[0]
-            for i in xrange(freqsE.shape[0]):
+            for i in range(freqsE.shape[0]):
                 periodogramE[i] = normalizationRatio*periodogramE[i]
             plt.plot(np.log10(freqsE), np.log10(periodogramE), color=colory, zorder=-5)
             plt.fill_between(np.log10(freqsE), np.log10(periodogramE - periodogramerrE),
@@ -959,7 +959,7 @@ class CARMATask(object):
                  label=r'$\ln PSD_{\mathrm{numerator}}$', color='#1f78b4', zorder=0, linewidth=4)
         plt.plot(np.log10(freqsM[1:]), -np.log10(psdDenom[1:]),
                  label=r'$-\ln PSD_{\mathrm{denominator}}$', color='#e31a1c', zorder=0, linewidth=4)
-        for i in xrange(psdNumerComp.shape[1]):
+        for i in range(psdNumerComp.shape[1]):
             plt.plot(np.log10(freqsM[1:]), np.log10(psdNumerComp[1:, i]),
                      color='#a6cee3', zorder=0, linewidth=2, linestyle=r'dashed')
             plt.annotate(
@@ -968,7 +968,7 @@ class CARMATask(object):
                 textcoords='data', arrowprops=dict(
                     arrowstyle='->', connectionstyle='angle3, angleA = 0, angleB = 90'),
                 ha='center', va='center', multialignment='center', zorder=100)
-        for i in xrange(psdDenomComp.shape[1]):
+        for i in range(psdDenomComp.shape[1]):
             plt.plot(np.log10(freqsM[1:]), -np.log10(psdDenomComp[1:, i]),
                      color='#fb9a99', zorder=0, linewidth=2, linestyle=r'dashed')
             plt.annotate(
@@ -1009,7 +1009,7 @@ class CARMATask(object):
         minTLog10 = math.log10(minT)
         maxTLog10 = math.log10(maxT)
 
-        for walkerNum in xrange(self.nwalkers):
+        for walkerNum in range(self.nwalkers):
             noSuccess = True
             sigmaFactor = 1.0e0
             exp = ((maxTLog10 - minTLog10)*np.random.random(self.p + self.q + 1) + minTLog10)
@@ -1022,10 +1022,10 @@ class CARMATask(object):
                 if res == 0 and lnPrior == 0.0:
                     noSuccess = False
                 else:
-                    print 'SigmaTrial: %e'%(RhoGuess[self.p + self.q])
+                    print('SigmaTrial: %e'%(RhoGuess[self.p + self.q]))
                     sigmaFactor *= 0.31622776601  # sqrt(0.1)
 
-            for dimNum in xrange(self.ndims):
+            for dimNum in range(self.ndims):
                 xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
         res = self._taskCython.fit_CARMAModel(
             observedLC.dt, observedLC.numCadences, observedLC.tolIR, observedLC.maxSigma*observedLC.std,
@@ -1035,12 +1035,12 @@ class CARMATask(object):
             self._Chain, self._LnPrior, self._LnLikelihood)
 
         meanTheta = list()
-        for dimNum in xrange(self.ndims):
-            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
+        for dimNum in range(self.ndims):
+            meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps//2:]))
         meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
         self.set(observedLC.dt, meanTheta)
         devianceThetaBar = -2.0*self.logLikelihood(observedLC)
-        barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps/2:])
+        barDeviance = np.mean(-2.0*self.LnLikelihood[:, self.nsteps//2:])
         self._pDIC = barDeviance - devianceThetaBar
         self._dic = devianceThetaBar + 2.0*self.pDIC
         self.rootChain
@@ -1128,7 +1128,7 @@ class CARMATask(object):
             requirements=['F', 'A', 'W', 'O', 'E'])
         unObsErr = math.sqrt(sys.float_info.max)
         obsCtr = 0
-        for i in xrange(observedLC.numCadencesSmooth):
+        for i in range(observedLC.numCadencesSmooth):
             if observedLC.tSmooth[i] == observedLC.t[obsCtr]:
                 observedLC.xSmooth[i] = 0.0
                 observedLC.xerrSmooth[i] = unObsErr
@@ -1149,7 +1149,7 @@ class CARMATask(object):
             observedLC.numCadencesSmooth, -1, observedLC.tolIR, observedLC.tSmooth, observedLC.xSmooth,
             observedLC.ySmooth - preSmoothYMean, observedLC.yerrSmooth, observedLC.maskSmooth,
             observedLC.XComp, observedLC.PComp, observedLC.XSmooth, observedLC.PSmooth, tnum)
-        for i in xrange(observedLC.numCadencesSmooth):
+        for i in range(observedLC.numCadencesSmooth):
             observedLC.xSmooth[i] = observedLC.XSmooth[i*observedLC.pComp] + preSmoothYMean
             try:
                 observedLC.xerrSmooth[i] = math.sqrt(observedLC.PSmooth[i*observedLC.pComp*observedLC.pComp])
@@ -1198,7 +1198,7 @@ class CARMATask(object):
         if clearFig:
             plt.clf()
         if dim < self.ndims:
-            for i in xrange(self.nwalkers):
+            for i in range(self.nwalkers):
                 plt.plot(self.timescaleChain[dim, i, :], c=r'#0000ff', alpha=0.1)
             plt.plot(np.median(self.timescaleChain[dim, :, :], axis=0), c=r'#ff0000')
             plt.fill_between(range(self.nsteps),
@@ -1221,9 +1221,9 @@ class CARMATask(object):
         flatStochasticChain = np.swapaxes(stochasticChain.reshape((self.ndims, -1), order='F'),
                                           axis1=0, axis2=1)
         stochasticLabels = []
-        for i in xrange(self.p):
+        for i in range(self.p):
             stochasticLabels.append(r'$\tau_{\mathrm{AR,} %d}$ (d)'%(i + 1))
-        for i in xrange(self.q):
+        for i in range(self.q):
             stochasticLabels.append(r'$\tau_{\mathrm{MA,} %d}$ (d)'%(i + 1))
         stochasticLabels.append(r'$\mathrm{Amp.}$')
         newFig = kali.util.triangle.corner(flatStochasticChain, labels=stochasticLabels,

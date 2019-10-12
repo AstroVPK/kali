@@ -32,8 +32,8 @@ ONLINE = True  # Connected to the internet
 try:
     import kali.clientBase as cc
 except Exception as e:
-    print e
-    print "Setting Mode to OFFLINE"
+    print(e)
+    print("Setting Mode to OFFLINE")
     ONLINE = False
 try:
     import kali.lc
@@ -42,8 +42,8 @@ try:
     import kali.util.mcmcviz as mcmcviz
     import kali.util.triangle as triangle
 except ImportError as e:
-    print 'kali not found! Try setting up kali if you have it installed. Unable to proceed!!'
-    print e
+    print('kali not found! Try setting up kali if you have it installed. Unable to proceed!!')
+    print(e)
     sys.exit(0)
 
 
@@ -82,7 +82,7 @@ class sdssLC(kali.lc.lc):
                 ONLINE=True
                 return self._getRandLC()
             except Exception as e:
-                print "Cannot Load from Server in Offline Mode"
+                print("Cannot Load from Server in Offline Mode")
                 return None
 
     def _getLC(self, ID):
@@ -95,7 +95,7 @@ class sdssLC(kali.lc.lc):
                 ONLINE=True
                 return self._getLC(ID)
             except Exception as e:
-                 print "Cannot Load from Server in Offline Mode"
+                 print("Cannot Load from Server in Offline Mode")
                  return None
 
     def fit(self, pMin=1, pMax=1, qMin=-1, qMax=-1, nwalkers=200, nsteps=1000, xTol=0.001, maxEvals=10000, doShow = True):
@@ -117,33 +117,33 @@ class sdssLC(kali.lc.lc):
         self.qMax = qMax
         self.qMin = qMin
 
-        for p in xrange(pMin, pMax + 1):
-            for q in xrange(qMin, min(p, qMax + 1)):
+        for p in range(pMin, pMax + 1):
+            for q in range(qMin, min(p, qMax + 1)):
                 nt = kali.carma.CARMATask(
                     p, q, nwalkers=nwalkers, nsteps=nsteps, xTol=xTol, maxEvals=maxEvals)
 
-                print 'Starting carma fitting for p = %d and q = %d...'%(p, q)
+                print('Starting carma fitting for p = %d and q = %d...'%(p, q))
                 startLCARMA = time.time()
                 nt.fit(self)
                 stopLCARMA = time.time()
                 timeLCARMA = stopLCARMA - startLCARMA
-                print 'carma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
-                                                                    timeLCARMA/60.0, timeLCARMA/3600.0)
+                print('carma took %4.3f s = %4.3f min = %4.3f hrs'%(timeLCARMA,
+                                                                    timeLCARMA/60.0, timeLCARMA/3600.0))
                 self.totalTime += timeLCARMA
 
                 Deviances = copy.copy(nt.LnPosterior[:, nsteps/2:]).reshape((-1))
                 DIC = 0.5*math.pow(np.nanstd(-2.0*Deviances), 2.0) + np.nanmean(-2.0*Deviances)
-                print 'C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC)
+                print('C-ARMA(%d,%d) DIC: %+4.3e'%(p, q, DIC))
                 self.DICDict['%d %d'%(p, q)] = DIC
                 self.taskDict['%d %d'%(p, q)] = nt
-        print 'Total time taken by carma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
+        print('Total time taken by carma is %4.3f s = %4.3f min = %4.3f hrs'%(self.totalTime,
                                                                               self.totalTime/60.0,
-                                                                              self.totalTime/3600.0)
+                                                                              self.totalTime/3600.0))
 
         sortedDICVals = sorted(self.DICDict.items(), key=operator.itemgetter(1))
         self.pBest = int(sortedDICVals[0][0].split()[0])
         self.qBest = int(sortedDICVals[0][0].split()[1])
-        print 'Best model is C-ARMA(%d,%d)'%(self.pBest, self.qBest)
+        print('Best model is C-ARMA(%d,%d)'%(self.pBest, self.qBest))
 
         self.bestTask = self.taskDict['%d %d'%(self.pBest, self.qBest)]
         self.bestFigTitle = 'Best Model: CARMA(%d,%d); DIC: %+4.3e'%(
@@ -167,19 +167,19 @@ class sdssLC(kali.lc.lc):
                         raw_input('View walkers in C-ARMA coefficients (0) or C-ARMA roots (1) or C-ARMA \
                         timescales (2):'))
                 except ValueError:
-                    print 'Bad input: integer required!'
+                    print('Bad input: integer required!')
             pView = -1
             while pView < 1 or pView > self.pMax:
                 try:
                     pView = int(raw_input('C-AR model order:'))
                 except ValueError:
-                    print 'Bad input: integer required!'
+                    print('Bad input: integer required!')
             qView = -1
             while qView < 0 or qView >= pView:
                 try:
                     qView = int(raw_input('C-MA model order:'))
                 except ValueError:
-                    print 'Bad input: integer required!'
+                    print('Bad input: integer required!')
 
             if whatToView == 0:
                 figTitle = 'CARMA(%d,%d); DIC: %+4.3e'%(pView, qView, self.DICDict['%d %d'%(pView, qView)])
@@ -198,13 +198,13 @@ class sdssLC(kali.lc.lc):
                     try:
                         dim1 = int(raw_input('1st Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 dim2 = -1
                 while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
                     try:
                         dim2 = int(raw_input('2nd Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 if dim1 < pView:
                     dim1Name = r'$a_{%d}$'%(dim1)
                 if dim1 >= pView and dim1 < pView + qView + 1:
@@ -235,13 +235,13 @@ class sdssLC(kali.lc.lc):
                     try:
                         dim1 = int(raw_input('1st Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 dim2 = -1
                 while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
                     try:
                         dim2 = int(raw_input('2nd Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 if dim1 < pView:
                     dim1Name = r'$r_{%d}$'%(dim1)
                 if dim1 >= pView and dim1 < pView + qView:
@@ -273,13 +273,13 @@ class sdssLC(kali.lc.lc):
                     try:
                         dim1 = int(raw_input('1st Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 dim2 = -1
                 while dim2 < 0 or dim2 > pView + qView + 1 or dim2 == dim1:
                     try:
                         dim2 = int(raw_input('2nd Dimension to view:'))
                     except ValueError:
-                        print 'Bad input: integer required!'
+                        print('Bad input: integer required!')
                 if dim1 < pView + qView:
                     dim1Name = r'$\tau_{%d}$'%(dim1)
                 if dim1 == pView + qView:
@@ -444,12 +444,12 @@ class sdssLC(kali.lc.lc):
                 filename = 'SDSSFit_'+name+'_'+band+'.p'
                 try:
                     with open(filename) as f:
-                        print "File Found, loading Pickle"
+                        print("File Found, loading Pickle")
                         self.__dict__.update(cPickle.load(f))
                         return
                 except Exception as e:
-                    print str(e)
-                    print "File not found, loading new from server..."
+                    print(str(e))
+                    print("File not found, loading new from server...")
 
         self.OutlierDetectionYVal = kwargs.get('outlierDetectionYVal', np.inf)
         self.OutlierDetectionYERRVal = kwargs.get('outlierDetectionYERRVal', 5.0)
@@ -470,7 +470,7 @@ class sdssLC(kali.lc.lc):
         tListTemp = list()
         yListTemp = list()
         yerrListTemp = list()
-        for i in xrange(t.shape[0]):
+        for i in range(t.shape[0]):
             # Outlier rejection! 5-sigma
             if math.fabs(yerr[i] - meanYerr) < self.OutlierDetectionYERRVal*stdYerr:
                 tListTemp.append(t[i])
@@ -482,7 +482,7 @@ class sdssLC(kali.lc.lc):
         tList = list()
         yList = list()
         yerrList = list()
-        for i in xrange(len(tListTemp)):
+        for i in range(len(tListTemp)):
             # Disabled outlier rejection! Could try 3-sigma
             if math.fabs(yListTemp[i] - meanY) < self.OutlierDetectionYVal*stdY:
                 tList.append(tListTemp[i])
@@ -518,13 +518,12 @@ class sdssLC(kali.lc.lc):
         return coord_str
 
     def write(self, name=None, band=None, path=None):
-        print "Saving..."
+        print("Saving...")
         outData = {}
         try:
             outData['version'] = kali.carma.__version__
         except AttributeError:
-            print "Vishal, please add a __version__ to kali.carma or allow direct import of kali - How do I \
-            do this?"
+            print("Vishal, please add a __version__ to kali.carma or allow direct import of kali - How do I do this?")
             pass
         outData.update(self.__dict__)
         del outData['_lcCython']
@@ -587,7 +586,7 @@ def test(band='r', nsteps=1000, nwalkers=200, pMax=1, pMin=1, qMax=-1, qMin=-1, 
                     elif whichParam in ['plot', 'stop', 'fit', 'viewer']:
                         argDict[whichParam] = bool(whatValue)
                     else:
-                        print 'Unrecognized fit parameter!'
+                        print('Unrecognized fit parameter!')
                     changeAnother = str(raw_input('Would you like to change any other parameters? (y/n):'))
     newLC.write()
 

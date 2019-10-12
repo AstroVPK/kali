@@ -1,7 +1,6 @@
 import math as math
 import numpy as np
 import urllib
-import urllib2
 import os as os
 import sys as sys
 import warnings
@@ -25,7 +24,7 @@ import matplotlib.pyplot as plt
 try:
     import kali.lc
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 

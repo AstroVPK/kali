@@ -35,7 +35,7 @@ try:
     import kali.util.classproperty
     import kali.util.triangle
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 fhgt = 10
@@ -601,7 +601,7 @@ class MBHBTask(object):
             t = np.require(np.array(tIn), requirements=['F', 'A', 'W', 'O', 'E'])
             intrinsicLC = kali.lc.mockLC(
                 name='', band='', tIn=t, fracNoiseToSignal=fracNoiseToSignal)
-            for i in xrange(intrinsicLC.numCadences):
+            for i in range(intrinsicLC.numCadences):
                 intrinsicLC.mask[i] = 1.0
         self._taskCython.make_IntrinsicLC(
             intrinsicLC.numCadences, intrinsicLC.dt, intrinsicLC.fracNoiseToSignal,
@@ -625,7 +625,7 @@ class MBHBTask(object):
         count = int(np.sum(intrinsicLC.mask))
         y_meanSum = 0.0
         yerr_meanSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
+        for i in range(intrinsicLC.numCadences):
             y_meanSum += intrinsicLC.mask[i]*intrinsicLC.y[i]
             yerr_meanSum += intrinsicLC.mask[i]*intrinsicLC.yerr[i]
         if count > 0.0:
@@ -636,7 +636,7 @@ class MBHBTask(object):
             intrinsicLC._meanerr = 0.0
         y_stdSum = 0.0
         yerr_stdSum = 0.0
-        for i in xrange(intrinsicLC.numCadences):
+        for i in range(intrinsicLC.numCadences):
             y_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.y[i] - intrinsicLC._mean, 2.0)
             yerr_stdSum += math.pow(intrinsicLC.mask[i]*intrinsicLC.yerr[i] - intrinsicLC._meanerr, 2.0)
         if count > 0.0:
@@ -717,20 +717,20 @@ class MBHBTask(object):
             observedLC.y[np.where(observedLC.mask == 1.0)]), num=numIntrinsicFlux)
         intrinsicFluxList = list()
         totalIntegralList = list()
-        for f in xrange(1, numIntrinsicFlux - 1):
+        for f in range(1, numIntrinsicFlux - 1):
             beamedLC = observedLC.copy()
             beamedLC.x = np.require(np.zeros(beamedLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-            for i in xrange(beamedLC.numCadences):
+            for i in range(beamedLC.numCadences):
                 beamedLC.y[i] = observedLC.y[i]/intrinsicFlux[f]
                 beamedLC.yerr[i] = observedLC.yerr[i]/intrinsicFlux[f]
             dopplerLC = beamedLC.copy()
             dopplerLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-            for i in xrange(observedLC.numCadences):
+            for i in range(observedLC.numCadences):
                 dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
                 dopplerLC.yerr[i] = (1.0/3.44)*math.fabs(dopplerLC.y[i]*(beamedLC.yerr[i]/beamedLC.y[i]))
             dzdtLC = dopplerLC.copy()
             dzdtLC.x = np.require(np.zeros(dopplerLC.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-            for i in xrange(observedLC.numCadences):
+            for i in range(observedLC.numCadences):
                 dzdtLC.y[i] = 1.0 - (1.0/dopplerLC.y[i])
                 dzdtLC.yerr[i] = math.fabs((-1.0*dopplerLC.yerr[i])/math.pow(dopplerLC.y[i], 2.0))
             foldedLC = dzdtLC.fold(periodEst)
@@ -745,7 +745,7 @@ class MBHBTask(object):
             np.where(np.array(totalIntegralList) == np.min(np.array(totalIntegralList)))[0][0]]
 
         # periodEst
-        for i in xrange(beamedLC.numCadences):
+        for i in range(beamedLC.numCadences):
             beamedLC.y[i] = observedLC.y[i]/fluxEst
             beamedLC.yerr[i] = observedLC.yerr[i]/fluxEst
             dopplerLC.y[i] = math.pow(beamedLC.y[i], 1.0/3.44)
@@ -789,7 +789,7 @@ class MBHBTask(object):
             foldedLC.t[np.where(foldedLC.mask == 1.0)], foldedLC.y[np.where(foldedLC.mask == 1.0)],
             1.0/foldedLC.yerr[np.where(foldedLC.mask == 1.0)], k=3, s=2*foldedLC.numCadences,
             check_finite=True)
-        for i in xrange(fitLC.numCadences):
+        for i in range(fitLC.numCadences):
             fitLC.x[i] = foldedSpline(fitLC.t[i])
         # Now get the roots and find the falling root
         tZeros = foldedSpline.roots()
@@ -852,7 +852,7 @@ class MBHBTask(object):
                 tRising = tZeros[np.where(root_groups == RisingGroupNumber)[0]][0]
             else:
                 RisingRootCands = tZeros[np.where(root_groups == RisingGroupNumber)[0]]
-                for i in xrange(RisingRootCands.shape[0]):
+                for i in range(RisingRootCands.shape[0]):
                     if foldedSpline.derivatives(RisingRootCands[i])[1] > 0.0:
                         tRising = RisingRootCands[i]
                         break
@@ -861,7 +861,7 @@ class MBHBTask(object):
                 tFalling = tZeros[np.where(root_groups == FallingGroupNumber)[0]][0]
             else:
                 FallingRootCands = tZeros[np.where(root_groups == FallingGroupNumber)[0]]
-                for i in xrange(FallingRootCands.shape[0]):
+                for i in range(FallingRootCands.shape[0]):
                     if foldedSpline.derivatives(FallingRootCands[i])[1] < 0.0:
                         tFalling = FallingRootCands[i]
                         break
@@ -870,7 +870,7 @@ class MBHBTask(object):
                 tFull = tZeros[np.where(root_groups == FullGroupNumber)[0]][0]
             else:
                 FullRootCands = tZeros[np.where(root_groups == FullGroupNumber)[0]]
-                for i in xrange(FullRootCands.shape[0]):
+                for i in range(FullRootCands.shape[0]):
                     if foldedSpline.derivatives(FullRootCands[i])[1] > 0.0:
                         tFull = FullRootCands[i]
                         break
@@ -909,7 +909,7 @@ class MBHBTask(object):
         # tauEst
         zDot = KEst*(1.0 + eccentricityEst)*(eCosOmega2/eccentricityEst)
         zDotLC = dzdtLC.copy()
-        for i in xrange(zDotLC.numCadences):
+        for i in range(zDotLC.numCadences):
             zDotLC.y[i] = zDotLC.y[i] - zDot
         zDotZeros = list()
         startSFactor = 2.01
@@ -919,7 +919,7 @@ class MBHBTask(object):
                 zDotLC.t[np.where(zDotLC.mask == 1.0)], zDotLC.y[np.where(zDotLC.mask == 1.0)],
                 1.0/zDotLC.yerr[np.where(zDotLC.mask == 1.0)], k=3, s=startSFactor*zDotLC.numCadences,
                 check_finite=True)
-            for i in xrange(zDotLC.numCadences):
+            for i in range(zDotLC.numCadences):
                 zDotLC.x[i] = zDotSpline(zDotLC.t[i])
             zDotZeros = zDotSpline.roots()
         zDotFoldedLC = dzdtLC.fold(periodEst)
@@ -928,7 +928,7 @@ class MBHBTask(object):
             zDotFoldedLC.y[np.where(zDotFoldedLC.mask == 1.0)],
             1.0/zDotFoldedLC.yerr[np.where(zDotFoldedLC.mask == 1.0)], k=3, s=2.0*zDotFoldedLC.numCadences,
             check_finite=True)
-        for i in xrange(zDotFoldedLC.numCadences):
+        for i in range(zDotFoldedLC.numCadences):
             zDotFoldedLC.x[i] = zDotFoldedSpline(zDotFoldedLC.t[i])
         tC = zDotFoldedLC.t[np.where(np.max(zDotFoldedLC.x) == zDotFoldedLC.x)[0][0]]
         nuC = (360.0 - omega2Est)%360.0
@@ -980,7 +980,7 @@ class MBHBTask(object):
         fluxEst, periodEst, eccentricityEst, omega1Est, tauEst, a2sinInclinationEst = self.estimate(
             observedLC)
 
-        for walkerNum in xrange(self.nwalkers):
+        for walkerNum in range(self.nwalkers):
             noSuccess = True
             while noSuccess:
                 a1Guess, a2Guess, inclinationGuess = self.guess(periodEst, a2sinInclinationEst)
@@ -991,7 +991,7 @@ class MBHBTask(object):
                 lnPrior = self.logPrior(observedLC)
                 if res == 0 and not np.isinf(lnPrior):
                     noSuccess = False
-            for dimNum in xrange(self.ndims):
+            for dimNum in range(self.ndims):
                 xStart[dimNum + walkerNum*self.ndims] = ThetaGuess[dimNum]
 
         lowestFlux = np.min(observedLC.y[np.where(observedLC.mask == 1.0)[0]])
@@ -1006,7 +1006,7 @@ class MBHBTask(object):
             fluxEst, widthF*fluxEst)
 
         meanTheta = list()
-        for dimNum in xrange(self.ndims):
+        for dimNum in range(self.ndims):
             meanTheta.append(np.mean(self.Chain[dimNum, :, self.nsteps/2:]))
         meanTheta = np.require(meanTheta, requirements=['F', 'A', 'W', 'O', 'E'])
         self.set(observedLC.dt, meanTheta)
@@ -1100,7 +1100,7 @@ class MBHBTask(object):
             requirements=['F', 'A', 'W', 'O', 'E'])
         unObsErr = 0.0
         obsCtr = 0
-        for i in xrange(observedLC.numCadencesSmooth):
+        for i in range(observedLC.numCadencesSmooth):
             if observedLC.tSmooth[i] == observedLC.t[obsCtr]:
                 observedLC.xSmooth[i] = 0.0
                 observedLC.xerrSmooth[i] = unObsErr
@@ -1175,7 +1175,7 @@ class MBHBTask(object):
         if clearFig:
             plt.clf()
         if dim < self.ndims:
-            for i in xrange(self.nwalkers):
+            for i in range(self.nwalkers):
                 plt.plot(self.timescaleChain[dim, i, :], c=r'#0000ff', alpha=0.1)
             plt.plot(np.median(self.timescaleChain[dim, :, :], axis=0), c=r'#ff0000')
             plt.fill_between(range(self.nsteps),

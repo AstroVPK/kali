@@ -31,8 +31,8 @@ class Lanczos(Kernel):
         return self._lanczos(x - y)
 
     def __call__(self, srcLC, destLC):
-        for i in xrange(destLC.numCadences):
-            for j in xrange(srcLC.numCadences):
+        for i in range(destLC.numCadences):
+            for j in range(srcLC.numCadences):
                 destLC.x[i] += self._lanczos1d(srcLC.t[j], destLC.t[i])*srcLC.mask[j]*srcLC.x[j]
                 destLC.y[i] += self._lanczos1d(srcLC.t[j], destLC.t[i])*srcLC.mask[j]*srcLC.y[j]
                 destLC.yerr[i] += math.pow(self._lanczos1d(srcLC.t[j],

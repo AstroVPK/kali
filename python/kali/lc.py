@@ -38,7 +38,7 @@ try:
     import kali.kernel
     from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 fhgt = 10
@@ -267,14 +267,14 @@ class lc(object):
                         iterMax = self.pSim
                 elif value < self.pSim:
                     iterMax = value
-                for i in xrange(iterMax):
+                for i in range(iterMax):
                     newXSim[i] = self.XSim[i]
-                    for j in xrange(iterMax):
+                    for j in range(iterMax):
                         newPSim[i + j*value] = self.PSim[i + j*self.pSim]
             elif self.pSim == 0:
-                for i in xrange(value):
+                for i in range(value):
                     newXSim[i] = 0.0
-                    for j in xrange(value):
+                    for j in range(value):
                         newPSim[i + j*value] = 0.0
             self._pSim = value
             self.XSim = newXSim
@@ -297,14 +297,14 @@ class lc(object):
                     iterMax = self.pComp
                 elif value < self.pComp:
                     iterMax = value
-                for i in xrange(iterMax):
+                for i in range(iterMax):
                     newXComp[i] = self.XComp[i]
-                    for j in xrange(iterMax):
+                    for j in range(iterMax):
                         newPComp[i + j*value] = self.PComp[i + j*self.pComp]
             elif self.pComp == 0.0:
-                for i in xrange(value):
+                for i in range(value):
                     newXComp[i] = 0.0
-                    for j in xrange(value):
+                    for j in range(value):
                         newPComp[i + j*value] = 0.0
             self._pComp = value
             self.XComp = newXComp
@@ -530,7 +530,7 @@ class lc(object):
         count = int(np.sum(self.mask))
         y_meanSum = 0.0
         yerr_meanSum = 0.0
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             y_meanSum += self.mask[i]*self.y[i]
             yerr_meanSum += self.mask[i]*self.yerr[i]
         if count > 0.0:
@@ -541,7 +541,7 @@ class lc(object):
             self._meanerr = 0.0
         y_stdSum = 0.0
         yerr_stdSum = 0.0
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             y_stdSum += math.pow(self.mask[i]*self.y[i] - self._mean, 2.0)
             yerr_stdSum += math.pow(self.mask[i]*self.yerr[i] - self._meanerr, 2.0)
         if count > 0.0:
@@ -592,7 +592,7 @@ class lc(object):
         line += '  maxTimescale (Maximum allowed timescale factor): %e\n'%(self._maxTimescale)
         line += '\n'
         epochline = ''
-        for i in xrange(self._numCadences - 1):
+        for i in range(self._numCadences - 1):
             epochline += str(self[i])
             epochline += '\n'
         epochline += str(self[self._numCadences - 1])
@@ -687,7 +687,7 @@ class lc(object):
         \brief Set the isRegular flag if the lc is regular to within the specified tolerence.
         """
         self._isRegular = True
-        for i in xrange(1, self.numCadences):
+        for i in range(1, self.numCadences):
             t_incr = self.t[i] - self.t[i-1]
             fracChange = abs((t_incr - self.dt)/((t_incr + self.dt)/2.0))
             if fracChange > self._tolIR:
@@ -952,9 +952,9 @@ class lc(object):
                                     'F', 'A', 'W', 'O', 'E'])  # Numpy array of observed flux errors.
             newLC.mask = np.require(np.zeros(newLC.numCadences), requirements=[
                                     'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-            for i in xrange(newLC.numCadences):
+            for i in range(newLC.numCadences):
                 newLC.t[i] = i*newLC.dt + self.t[0]
-            for i in xrange(self.numCadences):
+            for i in range(self.numCadences):
                 tOff = (self.t[i] - self.t[0])
                 index = int(math.floor(tOff/newLC.dt))
                 newLC.x[index] = self.x[i]
@@ -1063,7 +1063,7 @@ class lc(object):
                                            requirements=['F', 'A', 'W', 'O', 'E'])
             self._periodogramerr = np.require(np.array(self._periodogram.shape[0]*[0.0]),
                                               requirements=['F', 'A', 'W', 'O', 'E'])
-            for i in xrange(self._periodogram.shape[0]):
+            for i in range(self._periodogram.shape[0]):
                 if self._periodogram[i] <= 0.0:
                     self._periodogram[i] = np.nan
             return self._periodogramfreqs, self._periodogram, self._periodogramerr
@@ -1207,7 +1207,7 @@ class lc(object):
                 plt.errorbar(
                     lagsE[0], dacfE[0], dacferrE[0], label=r'obs. Discrete Autocorrelation Function', fmt='o',
                     capsize=0, color=colory, markeredgecolor='none', zorder=10)
-                for i in xrange(0, lagsE.shape[0]):
+                for i in range(0, lagsE.shape[0]):
                     if dacfE[i] != 0.0:
                         plt.errorbar(lagsE[i], dacfE[i], dacferrE[i], fmt='o', capsize=0, color=colory,
                                      markeredgecolor='none', zorder=10)
@@ -1234,7 +1234,7 @@ class lc(object):
             lagsE, sfE, sferrE = self.sf(newdt)
             if np.sum(sfE) != 0.0:
                 i = 1
-                for i in xrange(1, lagsE.shape[0]):
+                for i in range(1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
                         break
                 xmin = math.log10(lagsE[i])
@@ -1248,7 +1248,7 @@ class lc(object):
                     sferrE[i]/(ln10*sfE[i])), label=r'obs. Structure Function', fmt='o', capsize=0,
                     color=colory, markeredgecolor='none', zorder=10)
                 startI = i
-                for i in xrange(i+1, lagsE.shape[0]):
+                for i in range(i+1, lagsE.shape[0]):
                     if sfE[i] != 0.0:
                         if math.log10(lagsE[i]) > xmax:
                             xmax = math.log10(lagsE[i])
@@ -1307,7 +1307,7 @@ class lc(object):
         spl = UnivariateSpline(
             self.t[np.where(self.mask == 1.0)], self.y[np.where(self.mask == 1.0)],
             1.0/self.yerr[np.where(self.mask == 1.0)], k=degree, check_finite=True)
-        for i in xrange(newLC.numCadences):
+        for i in range(newLC.numCadences):
             newLC.t[i] = self.t[0] + i*newLC.dt
             newLC.x[i] = spl(newLC.t[i])
         return newLC
@@ -1343,7 +1343,7 @@ class lc(object):
         yList = list()
         yerrList = list()
         maskList = list()
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             tList.append((self.t[i] - tStart)%foldPeriod)
             xList.append(self.x[i])
             yList.append(self.y[i])
@@ -1372,7 +1372,7 @@ class lc(object):
         yList = list()
         yerrList = list()
         maskList = list()
-        for i in xrange(newLC.numCadences):
+        for i in range(newLC.numCadences):
             tList.append(np.mean(self.t[i*binRatio:(i + 1)*binRatio]))
             xList.append(np.mean(self.x[i*binRatio:(i + 1)*binRatio]))
             yList.append(np.mean(self.y[i*binRatio:(i + 1)*binRatio]))
@@ -1408,7 +1408,7 @@ class lc(object):
         newLC.y = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         newLC.yerr = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
         newLC.mask = np.require(np.array(numCadences*[0.0]), requirements=['F', 'A', 'W', 'O', 'E'])
-        for i in xrange(numCadences):
+        for i in range(numCadences):
             newLC.t[i] = self.t[0] + i*dt
             newLC.mask[i] = 1.0
         newLC.numCadences = numCadences
@@ -1506,7 +1506,7 @@ class mockLC(lc):
                 self.t = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
                 self.mask = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
                 self.startT = kwargs.get('startT', 0.0)
-                for i in xrange(self._numCadences):
+                for i in range(self._numCadences):
                     self.t[i] = i*deltaT
                     self.mask[i] = 1.0
             else:

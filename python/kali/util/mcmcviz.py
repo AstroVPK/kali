@@ -81,13 +81,13 @@ def vizWalkers(Chain, LogPosterior, dim1, dim1Name, dim2, dim2Name):
     nsteps = Chain.shape[2]
 
     def init():
-        for walkerNum in xrange(nwalkers):
+        for walkerNum in range(nwalkers):
             lineList[walkerNum].set_data([], [])
         step_text.set_text('stepNum: ')
         return lineList + [step_text]
 
     def animate(stepNum):
-        for walkerNum in xrange(nwalkers):
+        for walkerNum in range(nwalkers):
             colorVal = scalarMap.to_rgba(LogPosterior[walkerNum, stepNum])
             lineList[walkerNum].set_data([Chain[dim1, walkerNum, stepNum], 0.0],
                                          [Chain[dim2, walkerNum, stepNum], 0.0])
@@ -108,7 +108,7 @@ def vizWalkers(Chain, LogPosterior, dim1, dim1Name, dim2, dim2Name):
     cNorm = colors.Normalize(vmin=np.nanmin(LogPosterior[:, :]), vmax=np.nanmax(LogPosterior[:, :]))
     scalarMap = cm.ScalarMappable(norm=cNorm, cmap=jet)
     lineList = list()
-    for walkerNum in xrange(nwalkers):
+    for walkerNum in range(nwalkers):
         line, = ax.plot([], [], 'o', ms=10, color='#000000')
         lineList.append(line)
     plt.tight_layout()

@@ -22,17 +22,17 @@ import pdb as pdb
 try:
     import rand
 except ImportError:
-    print 'Cannot import rand! kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('Cannot import rand! kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 try:
     import kali.lc
 except ImportError:
-    print 'Cannot import kali.lc! kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('Cannot import kali.lc! kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 try:
     from kali.util.mpl_settings import set_plot_params
 except ImportError:
-    print 'Cannot import kali.util.mpl_settings! kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('Cannot import kali.util.mpl_settings! kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 fhgt = 10
@@ -71,7 +71,7 @@ class jumpSampler(sampler):
         yNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-        for i in xrange(newNumCadences):
+        for i in range(newNumCadences):
             tNew[i] = self.lcObj.t[jumpVal*i]
             xNew[i] = self.lcObj.x[jumpVal*i]
             yNew[i] = self.lcObj.y[jumpVal*i]
@@ -104,7 +104,7 @@ class bernoulliSampler(sampler):
         yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         counter = 0
-        for i in xrange(self.lcObj.numCadences):
+        for i in range(self.lcObj.numCadences):
             if keepArray[i] == 1:
                 tNew[counter] = self.lcObj.t[i]
                 xNew[counter] = self.lcObj.x[i]
@@ -142,7 +142,7 @@ class matchSampler(sampler):
         yNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         yerrNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         maskNew = np.require(np.zeros(newNumCadences), requirements=['F', 'A', 'W', 'O', 'E'])
-        for i in xrange(newNumCadences):
+        for i in range(newNumCadences):
             index = np.where(self.lcObj.t > timeStamps[i])[0][0]
             tNew[i] = self.lcObj.t[index]
             xNew[i] = self.lcObj.x[index]
@@ -187,7 +187,7 @@ class sincSampler(sampler):
         yList = list()
         yerrList = list()
         maskList = list()
-        for i in xrange(self.lcObj.numCadences):
+        for i in range(self.lcObj.numCadences):
             keepYN = np.random.binomial(1, self.normalizedSincSq(widthVal, centerVal, self.lcObj.t[i]))
             if keepYN == 1:
                 tList.append(self.lcObj.t[i])

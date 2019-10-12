@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 try:
     import kali.lc
 except ImportError:
-    print 'kali is not setup. Setup kali by sourcing bin/setup.sh'
+    print('kali is not setup. Setup kali by sourcing bin/setup.sh')
     sys.exit(1)
 
 
@@ -213,7 +213,7 @@ class k2LC(kali.lc.lc):
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             dataLine = dataInFile[i]
             self.cadence[i] = int(dataLine[2])
             if dataLine[9] == 0:
@@ -275,7 +275,7 @@ class k2LC(kali.lc.lc):
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             dataLine = MASTInFile[i]
             self.cadence[i] = int(dataLine[2])
             self.yerr[i] = math.sqrt(sys.float_info[0])
@@ -294,7 +294,7 @@ class k2LC(kali.lc.lc):
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
         filePathFits = os.path.join(path, fileNameFits)
         dataInFile = fitsio.read(filePathFits)
-        for i in xrange(dataInFile.shape[0]):
+        for i in range(dataInFile.shape[0]):
             dataLine = dataInFile[i]
             cadNum = int(dataLine[5])
             index = np.where(self.cadence == cadNum)[0][0]
@@ -303,11 +303,11 @@ class k2LC(kali.lc.lc):
 
         valSum = 0.0
         countSum = 0.0
-        for i in xrange(self.numCadences - 1):
+        for i in range(self.numCadences - 1):
             valSum += self.mask[i + 1]*self.mask[i]*math.pow((self.y[i + 1] - self.y[i]), 2.0)
             countSum += self.mask[i + 1]*self.mask[i]
         noise = math.sqrt(valSum/countSum)
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             if self.mask[i] == 1.0:
                 self.yerr[i] = noise
 
@@ -337,7 +337,7 @@ class k2LC(kali.lc.lc):
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             dataLine = MASTInFile[i]
             self.cadence[i] = int(dataLine[2])
             self.yerr[i] = math.sqrt(sys.float_info[0])
@@ -356,7 +356,7 @@ class k2LC(kali.lc.lc):
         fileNameFits = ''.join([fileName[0:-3], 'fits'])
         filePathFits = os.path.join(path, fileNameFits)
         dataInFile = fitsio.read(filePathFits)
-        for i in xrange(dataInFile.shape[0]):
+        for i in range(dataInFile.shape[0]):
             dataLine = dataInFile[i]
             if dataLine[7] == 0:
                 time = float(dataLine[0]) - self.startT
@@ -394,7 +394,7 @@ class k2LC(kali.lc.lc):
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             dataLine = MASTInFile[i]
             self.cadence[i] = int(dataLine[2])
             self.yerr[i] = math.sqrt(sys.float_info[0])
@@ -417,7 +417,7 @@ class k2LC(kali.lc.lc):
         except IOError as Err:
             pass
         else:
-            for i in xrange(dataInFile.shape[0]):
+            for i in range(dataInFile.shape[0]):
                 dataLine = dataInFile[i]
                 time = float(dataLine[0]) - self.startT
                 if not np.isnan(time):
@@ -454,7 +454,7 @@ class k2LC(kali.lc.lc):
         self.yerr = np.require(np.zeros(self.numCadences), requirements=['F', 'A', 'W', 'O', 'E'])
         self.mask = np.require(np.zeros(self.numCadences), requirements=[
                                'F', 'A', 'W', 'O', 'E'])  # Numpy array of mask values.
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             dataLine = MASTInFile[i]
             self.cadence[i] = int(dataLine[2])
             self.yerr[i] = math.sqrt(sys.float_info[0])
@@ -477,7 +477,7 @@ class k2LC(kali.lc.lc):
         except IOError as Err:
             pass
         else:
-            for i in xrange(dataInFile.shape[0]):
+            for i in range(dataInFile.shape[0]):
                 dataLine = dataInFile[i]
                 time = float(dataLine[0]) - self.startT
                 if not np.isnan(time):
@@ -489,11 +489,11 @@ class k2LC(kali.lc.lc):
                     pass
         valSum = 0.0
         countSum = 0.0
-        for i in xrange(self.numCadences - 1):
+        for i in range(self.numCadences - 1):
             valSum += self.mask[i + 1]*self.mask[i]*math.pow((self.y[i + 1] - self.y[i]), 2.0)
             countSum += self.mask[i + 1]*self.mask[i]
         noise = math.sqrt(valSum/countSum)
-        for i in xrange(self.numCadences):
+        for i in range(self.numCadences):
             if self.mask[i] == 1.0:
                 self.yerr[i] = noise
 
@@ -556,7 +556,7 @@ class k2LC(kali.lc.lc):
         else:
             raise ValueError('Processing not understood!')
 
-        for i in xrange(self._numCadences):
+        for i in range(self._numCadences):
             self.t[i] = self.t[i]/(1.0 + self.z)
         coords = self._getCoordinates()
         if coords:
@@ -572,8 +572,7 @@ class k2LC(kali.lc.lc):
         try:
             lines = urllib.urlopen(url)
         except (urllib2.HTTPError, urllib2.URLError, IOError) as err:
-            print 'Could not reach %s -\
-            %s may not be functioning at this time. Error %s'%(url, url, err)
+            print('Could not reach %s - %s may not be functioning at this time. Error %s'%(url, url, err))
             sys.exit(-1)
         data = {}
         counter = 0
