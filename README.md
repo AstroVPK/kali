@@ -10,6 +10,18 @@ Version: 2.0.0
 
 Install
 -------
+# Docker installation
+
+The easiest way to install is with docker. However, this does not currently include `carma_pack`.
+
+1. git clone https://github.com/AstroVPK/kali.git 
+2. `docker build -t kali .`
+3. [optional: run tests] `docker run -it --rm kali-astrovpk "pytest tests/"`
+3. For jupyter `docker run -it -e DISPLAY=:0.0 --rm -p 8888:8888 kali "jupyter notebook --no-browser --ip=0.0.0.0 --port=8888 --allow-root"`
+4. For bash `docker run -it -e DISPLAY=:0.0 --rm -p 8888:8888 kali`
+
+
+# Direct installation
 Install instructions are provided for Linux & Mac OSX machines. The following OSs have been tested
 
 
